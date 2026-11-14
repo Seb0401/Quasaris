@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Crown, Droplets, FlaskConical, Leaf, Mountain, PencilLine, Sprout, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, Mountain, PencilLine, Sprout, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
 import { Reveal } from "@/components/motion/reveal";
@@ -64,6 +64,7 @@ export function CompararClient() {
           })}</p>
         )}
         <Link href={`/${locale}/rotaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><PencilLine size={14} />{t("rotaciones.edit")}</Link>
+        <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><Combine size={14} />{t("group.title")}</Link>
       </div>
 
       {data.source.power === "mock" && <p className="ui-alert tone-warn"><FlaskConical size={16} />{t("comparar.mockWarning")}</p>}

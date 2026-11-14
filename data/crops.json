@@ -11,13 +11,25 @@
   },
   "crops": {
     "alfalfa": {
-      "name": { "es": "Alfalfa", "en": "Alfalfa" },
+      "name": {
+        "es": "Alfalfa",
+        "en": "Alfalfa"
+      },
       "family": "leguminosa",
       "fixesNitrogen": true,
       "perennial": true,
-      "kc": { "ini": 0.4, "mid": 0.95, "end": 0.9 },
+      "kc": {
+        "ini": 0.4,
+        "mid": 0.95,
+        "end": 0.9
+      },
       "kcAvg": 0.9,
-      "stagesDays": [0, 0, 365, 0],
+      "stagesDays": [
+        0,
+        0,
+        365,
+        0
+      ],
       "rootDepthM": 1.5,
       "tFrostC": -4,
       "tHeatC": 38,
@@ -27,15 +39,49 @@
       "sources": {
         "kc": "FAO-56 tabla 12 (promedio con efecto de cortes ≈ 0.90)",
         "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 40,
+        "nFixKg": 180,
+        "P": "med",
+        "K": "high",
+        "height": "low",
+        "labor": "med",
+        "cares": [
+          "cuts",
+          "aphids",
+          "noTrampling"
+        ],
+        "pests": [
+          "aphid",
+          "cutworm"
+        ],
+        "diseases": [
+          "rootRot"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": false
       }
     },
     "papa": {
-      "name": { "es": "Papa", "en": "Potato" },
+      "name": {
+        "es": "Papa",
+        "en": "Potato"
+      },
       "family": "solanacea",
       "fixesNitrogen": false,
       "perennial": false,
-      "kc": { "ini": 0.5, "mid": 1.15, "end": 0.75 },
-      "stagesDays": [30, 35, 50, 30],
+      "kc": {
+        "ini": 0.5,
+        "mid": 1.15,
+        "end": 0.75
+      },
+      "stagesDays": [
+        30,
+        35,
+        50,
+        30
+      ],
       "rootDepthM": 0.5,
       "tFrostC": 0,
       "tHeatC": 30,
@@ -46,15 +92,50 @@
         "kc": "FAO-56 tabla 12",
         "stages": "FAO-56 tabla 11 (zona semiárida), ajustado",
         "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 180,
+        "nFixKg": 0,
+        "P": "high",
+        "K": "high",
+        "height": "mid",
+        "labor": "high",
+        "cares": [
+          "hilling",
+          "lateBlight",
+          "andeanWeevil",
+          "rotation3y"
+        ],
+        "pests": [
+          "andeanWeevil",
+          "nematode"
+        ],
+        "diseases": [
+          "lateBlight"
+        ],
+        "humiditySensitive": true,
+        "weedSensitive": false
       }
     },
     "cebolla": {
-      "name": { "es": "Cebolla", "en": "Onion" },
+      "name": {
+        "es": "Cebolla",
+        "en": "Onion"
+      },
       "family": "aliacea",
       "fixesNitrogen": false,
       "perennial": false,
-      "kc": { "ini": 0.7, "mid": 1.05, "end": 0.75 },
-      "stagesDays": [15, 25, 70, 40],
+      "kc": {
+        "ini": 0.7,
+        "mid": 1.05,
+        "end": 0.75
+      },
+      "stagesDays": [
+        15,
+        25,
+        70,
+        40
+      ],
       "rootDepthM": 0.4,
       "tFrostC": -1,
       "tHeatC": 35,
@@ -65,15 +146,49 @@
         "kc": "FAO-56 tabla 12 (cebolla seca)",
         "stages": "FAO-56 tabla 11 (cebolla seca, zona árida)",
         "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 120,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "low",
+        "labor": "high",
+        "cares": [
+          "transplant",
+          "weeding",
+          "thrips",
+          "stopIrrigation"
+        ],
+        "pests": [
+          "thrips"
+        ],
+        "diseases": [
+          "downyMildew"
+        ],
+        "humiditySensitive": true,
+        "weedSensitive": true
       }
     },
     "maiz_chala": {
-      "name": { "es": "Maíz chala", "en": "Forage maize" },
+      "name": {
+        "es": "Maíz chala",
+        "en": "Forage maize"
+      },
       "family": "graminea",
       "fixesNitrogen": false,
       "perennial": false,
-      "kc": { "ini": 0.3, "mid": 1.2, "end": 0.5 },
-      "stagesDays": [20, 35, 40, 15],
+      "kc": {
+        "ini": 0.3,
+        "mid": 1.2,
+        "end": 0.5
+      },
+      "stagesDays": [
+        20,
+        35,
+        40,
+        15
+      ],
       "rootDepthM": 1.0,
       "tFrostC": 0,
       "tHeatC": 38,
@@ -84,15 +199,48 @@
         "kc": "FAO-56 tabla 12 (maíz para ensilaje: Kc final 0.35–0.60)",
         "stages": "FAO-56 tabla 11, cosecha anticipada para forraje",
         "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 200,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "tall",
+        "labor": "med",
+        "cares": [
+          "splitN",
+          "armyworm",
+          "floweringWater"
+        ],
+        "pests": [
+          "armyworm"
+        ],
+        "diseases": [
+          "rust"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": false
       }
     },
     "haba": {
-      "name": { "es": "Haba", "en": "Faba bean" },
+      "name": {
+        "es": "Haba",
+        "en": "Faba bean"
+      },
       "family": "leguminosa",
       "fixesNitrogen": true,
       "perennial": false,
-      "kc": { "ini": 0.5, "mid": 1.15, "end": 0.35 },
-      "stagesDays": [20, 30, 40, 20],
+      "kc": {
+        "ini": 0.5,
+        "mid": 1.15,
+        "end": 0.35
+      },
+      "stagesDays": [
+        20,
+        30,
+        40,
+        20
+      ],
       "rootDepthM": 0.7,
       "tFrostC": -3,
       "tHeatC": 30,
@@ -103,15 +251,48 @@
         "kc": "FAO-56 tabla 12 (haba)",
         "stages": "FAO-56 tabla 11, ajustado a haba verde",
         "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 30,
+        "nFixKg": 100,
+        "P": "med",
+        "K": "med",
+        "height": "mid",
+        "labor": "low",
+        "cares": [
+          "chocolateSpot",
+          "aphids",
+          "coldTolerant"
+        ],
+        "pests": [
+          "aphid"
+        ],
+        "diseases": [
+          "chocolateSpot"
+        ],
+        "humiditySensitive": true,
+        "weedSensitive": false
       }
     },
     "frijol": {
-      "name": { "es": "Frijol", "en": "Dry bean" },
+      "name": {
+        "es": "Frijol",
+        "en": "Dry bean"
+      },
       "family": "leguminosa",
       "fixesNitrogen": true,
       "perennial": false,
-      "kc": { "ini": 0.4, "mid": 1.15, "end": 0.35 },
-      "stagesDays": [20, 30, 40, 20],
+      "kc": {
+        "ini": 0.4,
+        "mid": 1.15,
+        "end": 0.35
+      },
+      "stagesDays": [
+        20,
+        30,
+        40,
+        20
+      ],
       "rootDepthM": 0.6,
       "tFrostC": 2,
       "tHeatC": 32,
@@ -122,7 +303,73 @@
         "kc": "FAO-56 tabla 12 (frijol seco)",
         "stages": "FAO-56 tabla 11",
         "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 30,
+        "nFixKg": 60,
+        "P": "med",
+        "K": "med",
+        "height": "mid",
+        "labor": "med",
+        "cares": [
+          "frostSensitive",
+          "rust",
+          "whitefly"
+        ],
+        "pests": [
+          "whitefly"
+        ],
+        "diseases": [
+          "rust"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": false
       }
     }
-  }
+  },
+  "_agronomyNote": "Campo 'agronomy': referencias agronómicas generales (demanda de N en kg/ha por campaña, N fijado por leguminosas, niveles de P y K, cuidados, plagas). Valores orientativos, a validar con un agrónomo o INIA.",
+  "companions": [
+    {
+      "a": "maiz_chala",
+      "b": "frijol",
+      "effect": 2,
+      "reason": "milpa"
+    },
+    {
+      "a": "maiz_chala",
+      "b": "haba",
+      "effect": 1,
+      "reason": "legumeTall"
+    },
+    {
+      "a": "papa",
+      "b": "haba",
+      "effect": 1,
+      "reason": "andeanPair"
+    },
+    {
+      "a": "cebolla",
+      "b": "frijol",
+      "effect": -2,
+      "reason": "alliumLegume"
+    },
+    {
+      "a": "cebolla",
+      "b": "haba",
+      "effect": -2,
+      "reason": "alliumLegume"
+    },
+    {
+      "a": "papa",
+      "b": "maiz_chala",
+      "effect": -1,
+      "reason": "shadeHungry"
+    },
+    {
+      "a": "alfalfa",
+      "b": "*",
+      "effect": -1,
+      "reason": "perennialDense"
+    }
+  ]
 }
