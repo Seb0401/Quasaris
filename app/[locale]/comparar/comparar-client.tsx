@@ -1,39 +1,41 @@
 "use client";
 
-import { useT } from "@/components/i18n-provider";
+import { useLocale, useT } from "@/components/i18n-provider";
 import { RotationCard } from "@/components/cards/rotation-card";
 import { useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
+import { BarChart3, FlaskConical, LoaderCircle, Satellite } from "lucide-react";
+import { Reveal } from "@/components/motion/reveal";
 
 export function CompararClient() {
   const t = useT();
+  const locale = useLocale();
   const farm = useFarm();
   const data = useSimulation();
 
   if (!data) {
-    return <p className="py-12 text-center text-muted animate-pulse">🛰️ {t("comparar.loading")}</p>;
+    return <p className="flex items-center justify-center gap-2 py-12 text-center text-muted"><LoaderCircle size={19} className="animate-spin" />{t("comparar.loading")}</p>;
   }
 
   const byId = new Map(data.rotations.map((r) => [r.id, r]));
 
   return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <h1 className="text-2xl font-bold">{t("comparar.title")}</h1>
-        <p className="text-xs text-muted">{t("comparar.source", { from: data.source.period[0], to: data.source.period[1] })}</p>
+    <div className="dashboard-shell">
+      <header className="section-hero"><div><span className="panel-kicker"><BarChart3 size={16} /> QUASARIS / {locale === "es" ? "ESCENARIOS" : "SCENARIOS"}</span><h1>{t("comparar.title")}</h1><p>{t("comparar.source", { from: data.source.period[0], to: data.source.period[1] })}</p></div></header>
+      <div className="compare-intro mt-4">
         {data.source.elevationM !== undefined && (
-          <p className="text-xs text-muted">
-            🛰️ {t("comparar.fusion", { elev: Math.round(data.source.elevationM), n: data.source.cells?.length ?? 1 })}
+          <p>
+            <Satellite size={14} className="mr-1 inline" /> {t("comparar.fusion", { elev: Math.round(data.source.elevationM), n: data.source.cells?.length ?? 1 })}
           </p>
         )}
       </div>
       {data.source.power === "mock" && (
-        <p className="rounded-lg border border-warn bg-warn/10 px-3 py-2 text-sm">🧪 {t("comparar.mockWarning")}</p>
+        <p className="flex items-center gap-2 rounded-lg border border-warn bg-warn/10 px-3 py-2 text-sm"><FlaskConical size={17} />{t("comparar.mockWarning")}</p>
       )}
-      {farm.rotations.map((rot) => {
+      <div className="compare-grid">{farm.rotations.map((rot, index) => {
         const res = byId.get(rot.id);
-        return res ? <RotationCard key={rot.id} rotation={rot} result={res} /> : null;
-      })}
+        return res ? <Reveal key={rot.id} delay={index * 90}><RotationCard rotation={rot} result={res} /></Reveal> : null;
+      })}</div>
     </div>
   );
 }

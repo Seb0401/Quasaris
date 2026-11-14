@@ -2,6 +2,7 @@
 
 import { useT, useLocale } from "@/components/i18n-provider";
 import type { MonthStatus, Rotation, RotationResult } from "@/lib/contract";
+import { BadgeDollarSign, Clock3, Droplets, Leaf, ShieldAlert, XCircle } from "lucide-react";
 
 const MONTH_COLOR: Record<MonthStatus, string> = {
   ok: "bg-ok",
@@ -26,12 +27,12 @@ export function MonthStrip({ months, labels }: { months: MonthStatus[]; labels?:
   );
 }
 
-function Metric({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function Metric({ label, icon: Icon, value, sub }: { label: string; icon: typeof Droplets; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl bg-background p-3">
-      <div className="text-xs text-muted">{label}</div>
-      <div className="text-lg font-semibold tabular-nums">{value}</div>
-      {sub && <div className="text-[11px] text-muted tabular-nums">{sub}</div>}
+    <div className="metric-tile transition hover:-translate-y-1 hover:shadow-md">
+      <div className="flex items-center gap-1.5 text-xs text-muted"><Icon size={14} />{label}</div>
+      <strong className="block tabular-nums">{value}</strong>
+      {sub && <small className="tabular-nums">{sub}</small>}
     </div>
   );
 }
@@ -50,7 +51,7 @@ export function RotationCard({ rotation, result }: { rotation: Rotation; result:
   ];
 
   return (
-    <article className={`rounded-2xl border bg-surface p-4 flex flex-col gap-3 ${result.viable ? "border-border" : "border-danger"}`}>
+    <article className={`panel-card compare-card flex flex-col gap-3 p-5 ${result.viable ? "border-border" : "border-danger"}`} style={{ "--card-accent": rotation.isCurrent ? "#36a9ed" : result.viable ? "#42c987" : "#f0ad4b" } as React.CSSProperties}>
       <header className="flex items-start justify-between gap-3">
         <div>
           {rotation.isCurrent && (
@@ -64,21 +65,23 @@ export function RotationCard({ rotation, result }: { rotation: Rotation; result:
         </div>
       </header>
 
-      {!result.viable && <p className="rounded-lg bg-danger/10 text-danger text-sm font-semibold px-3 py-2">⛔ {t("comparar.notViable")}</p>}
+      {!result.viable && <p className="flex items-center gap-2 rounded-lg bg-danger/10 text-danger text-sm font-semibold px-3 py-2"><XCircle size={17} />{t("comparar.notViable")}</p>}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="metric-grid">
         <Metric
-          label={`💧 ${t("comparar.water")} (m³/ha)`}
+          icon={Droplets}
+          label={`${t("comparar.water")} (m³/ha)`}
           value={n.format(result.water.median)}
           sub={t("comparar.range", { p10: n.format(result.water.p10), p90: n.format(result.water.p90) })}
         />
         <Metric
-          label={`💰 ${t("comparar.income")} (S/ /ha)`}
+          icon={BadgeDollarSign}
+          label={`${t("comparar.income")} (S/ /ha)`}
           value={n.format(result.income.median)}
           sub={t("comparar.range", { p10: n.format(result.income.p10), p90: n.format(result.income.p90) })}
         />
-        <Metric label={`🌱 ${t("comparar.soilHealth")}`} value={pct.format(result.soil)} />
-        <Metric label={`⚠️ ${t("comparar.risk")}`} value={pct.format(result.risk.median)} />
+        <Metric icon={Leaf} label={t("comparar.soilHealth")} value={pct.format(result.soil)} />
+        <Metric icon={ShieldAlert} label={t("comparar.risk")} value={pct.format(result.risk.median)} />
       </div>
 
       <div className="flex flex-col gap-1">
@@ -92,8 +95,8 @@ export function RotationCard({ rotation, result }: { rotation: Rotation; result:
       </p>
 
       {result.highlights.map((h) => (
-        <p key={h.key + h.year} className="text-sm rounded-lg bg-warn/15 px-3 py-2">
-          🕰️ {t(`explain.${h.key}`, { year: h.year, ...Object.fromEntries(Object.entries(h.params).map(([k, v]) => [k, n.format(v)])) })}
+        <p key={h.key + h.year} className="flex items-start gap-2 text-sm rounded-lg bg-warn/15 px-3 py-2">
+          <Clock3 size={16} className="mt-0.5 shrink-0" />{t(`explain.${h.key}`, { year: h.year, ...Object.fromEntries(Object.entries(h.params).map(([k, v]) => [k, n.format(v)])) })}
         </p>
       ))}
 
