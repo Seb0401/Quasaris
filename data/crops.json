@@ -1,75 +1,128 @@
 {
-  "_note": "Valores aproximados. Kc de FAO-56 tabla 12 (verificar). Los campos null los completa el flujo D con fuente (MIDAGRI, INIA).",
+  "_note": "Valores ESTIMADOS para Majes, a validar con un agrónomo (flujo D). Kc y etapas: FAO-56 tablas 11 y 12, ajustadas. Rendimiento, precio y costo: órdenes de magnitud de referencias públicas de MIDAGRI (Arequipa); no son cifras oficiales. Temperaturas umbral: rangos agronómicos generales.",
+  "_units": {
+    "stagesDays": "[inicial, desarrollo, media, final] en días (FAO-56 tabla 11)",
+    "yieldTha": "t/ha por campaña (alfalfa: t/ha/año de forraje verde)",
+    "pricePENt": "S/ por tonelada en chacra",
+    "costPENha": "S/ por hectárea por campaña",
+    "tFrostC": "Tmin diaria bajo la cual hay daño por helada",
+    "tHeatC": "Tmax diaria sobre la cual hay estrés por calor",
+    "rootDepthM": "profundidad efectiva de raíz"
+  },
   "crops": {
     "alfalfa": {
       "name": { "es": "Alfalfa", "en": "Alfalfa" },
       "family": "leguminosa",
       "fixesNitrogen": true,
+      "perennial": true,
       "kc": { "ini": 0.4, "mid": 0.95, "end": 0.9 },
-      "cycleDays": null,
-      "rootDepthM": null,
-      "tMinC": null,
-      "tMaxC": null,
-      "yieldTha": null,
-      "pricePENt": null,
-      "costPENha": null,
-      "sources": { "kc": "FAO-56 tabla 12" }
+      "kcAvg": 0.9,
+      "stagesDays": [0, 0, 365, 0],
+      "rootDepthM": 1.5,
+      "tFrostC": -4,
+      "tHeatC": 38,
+      "yieldTha": 90,
+      "pricePENt": 200,
+      "costPENha": 7000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (promedio con efecto de cortes ≈ 0.90)",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      }
     },
     "papa": {
       "name": { "es": "Papa", "en": "Potato" },
       "family": "solanacea",
       "fixesNitrogen": false,
+      "perennial": false,
       "kc": { "ini": 0.5, "mid": 1.15, "end": 0.75 },
-      "cycleDays": null,
-      "rootDepthM": null,
-      "tMinC": null,
-      "tMaxC": null,
-      "yieldTha": null,
-      "pricePENt": null,
-      "costPENha": null,
-      "sources": { "kc": "FAO-56 tabla 12" }
+      "stagesDays": [30, 35, 50, 30],
+      "rootDepthM": 0.5,
+      "tFrostC": 0,
+      "tHeatC": 30,
+      "yieldTha": 35,
+      "pricePENt": 1000,
+      "costPENha": 22000,
+      "sources": {
+        "kc": "FAO-56 tabla 12",
+        "stages": "FAO-56 tabla 11 (zona semiárida), ajustado",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      }
     },
     "cebolla": {
       "name": { "es": "Cebolla", "en": "Onion" },
       "family": "aliacea",
       "fixesNitrogen": false,
+      "perennial": false,
       "kc": { "ini": 0.7, "mid": 1.05, "end": 0.75 },
-      "cycleDays": null,
-      "rootDepthM": null,
-      "tMinC": null,
-      "tMaxC": null,
-      "yieldTha": null,
-      "pricePENt": null,
-      "costPENha": null,
-      "sources": { "kc": "FAO-56 tabla 12" }
+      "stagesDays": [15, 25, 70, 40],
+      "rootDepthM": 0.4,
+      "tFrostC": -1,
+      "tHeatC": 35,
+      "yieldTha": 45,
+      "pricePENt": 800,
+      "costPENha": 20000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (cebolla seca)",
+        "stages": "FAO-56 tabla 11 (cebolla seca, zona árida)",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      }
     },
     "maiz_chala": {
       "name": { "es": "Maíz chala", "en": "Forage maize" },
       "family": "graminea",
       "fixesNitrogen": false,
+      "perennial": false,
       "kc": { "ini": 0.3, "mid": 1.2, "end": 0.5 },
-      "cycleDays": null,
-      "rootDepthM": null,
-      "tMinC": null,
-      "tMaxC": null,
-      "yieldTha": null,
-      "pricePENt": null,
-      "costPENha": null,
-      "sources": { "kc": "FAO-56 tabla 12 (Kc final 0.35–0.60)" }
+      "stagesDays": [20, 35, 40, 15],
+      "rootDepthM": 1.0,
+      "tFrostC": 0,
+      "tHeatC": 38,
+      "yieldTha": 60,
+      "pricePENt": 120,
+      "costPENha": 4500,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (maíz para ensilaje: Kc final 0.35–0.60)",
+        "stages": "FAO-56 tabla 11, cosecha anticipada para forraje",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      }
     },
     "haba": {
       "name": { "es": "Haba", "en": "Faba bean" },
       "family": "leguminosa",
       "fixesNitrogen": true,
+      "perennial": false,
+      "kc": { "ini": 0.5, "mid": 1.15, "end": 0.35 },
+      "stagesDays": [20, 30, 40, 20],
+      "rootDepthM": 0.7,
+      "tFrostC": -3,
+      "tHeatC": 30,
+      "yieldTha": 12,
+      "pricePENt": 1500,
+      "costPENha": 9000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (haba)",
+        "stages": "FAO-56 tabla 11, ajustado a haba verde",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      }
+    },
+    "frijol": {
+      "name": { "es": "Frijol", "en": "Dry bean" },
+      "family": "leguminosa",
+      "fixesNitrogen": true,
+      "perennial": false,
       "kc": { "ini": 0.4, "mid": 1.15, "end": 0.35 },
-      "cycleDays": null,
-      "rootDepthM": null,
-      "tMinC": null,
-      "tMaxC": null,
-      "yieldTha": null,
-      "pricePENt": null,
-      "costPENha": null,
-      "sources": { "kc": "FAO-56 tabla 12" }
+      "stagesDays": [20, 30, 40, 20],
+      "rootDepthM": 0.6,
+      "tFrostC": 2,
+      "tHeatC": 32,
+      "yieldTha": 2,
+      "pricePENt": 5000,
+      "costPENha": 6000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (frijol seco)",
+        "stages": "FAO-56 tabla 11",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      }
     }
   }
 }

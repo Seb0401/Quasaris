@@ -35,6 +35,11 @@ export function CompararClient() {
       <div>
         <h1 className="text-2xl font-bold">{t("comparar.title")}</h1>
         <p className="text-xs text-muted">{t("comparar.source", { from: data.source.period[0], to: data.source.period[1] })}</p>
+        {data.source.elevationM !== undefined && (
+          <p className="text-xs text-muted">
+            🛰️ {t("comparar.fusion", { elev: Math.round(data.source.elevationM), n: data.source.cells?.length ?? 1 })}
+          </p>
+        )}
       </div>
       {data.source.power === "mock" && (
         <p className="rounded-lg border border-warn bg-warn/10 px-3 py-2 text-sm">🧪 {t("comparar.mockWarning")}</p>

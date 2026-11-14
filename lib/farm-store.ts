@@ -15,15 +15,15 @@ export type FarmState = {
   rotations: Rotation[];
 };
 
-const KEY = "farmtwin.state.v1";
+const KEY = "farmtwin.state.v2";
 
 export const MAJES = { lat: -16.36, lon: -72.19 };
 
 const DEFAULT: FarmState = {
   ...MAJES,
   soilTexture: "arenoso",
-  irrigation: "gravedad",
-  waterAvailableM3ha: 14000,
+  irrigation: "aspersion",
+  waterAvailableM3ha: 15000, // estimado para Majes, a validar con AUTODEMA
   priorities: { water: 0.5, income: 0.5, soil: 0.5, risk: 0.5 },
   rotations: rotationsMajes.rotations as Rotation[],
 };

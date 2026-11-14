@@ -38,9 +38,22 @@
     "priorities": "¿Qué es más importante para ti?",
     "continue": "Comparar rotaciones"
   },
-  "irrigation": { "gravedad": "Gravedad", "aspersion": "Aspersión", "goteo": "Goteo" },
-  "soil": { "arenoso": "Arenoso", "franco": "Franco", "arcilloso": "Arcilloso" },
-  "priority": { "water": "Ahorrar agua", "income": "Ganar más", "soil": "Cuidar el suelo", "risk": "Evitar riesgos" },
+  "irrigation": {
+    "gravedad": "Gravedad",
+    "aspersion": "Aspersión",
+    "goteo": "Goteo"
+  },
+  "soil": {
+    "arenoso": "Arenoso",
+    "franco": "Franco",
+    "arcilloso": "Arcilloso"
+  },
+  "priority": {
+    "water": "Ahorrar agua",
+    "income": "Ganar más",
+    "soil": "Cuidar el suelo",
+    "risk": "Evitar riesgos"
+  },
   "comparar": {
     "title": "Comparar rotaciones",
     "loading": "Calculando con datos de la NASA…",
@@ -50,7 +63,7 @@
     "water": "Agua",
     "income": "Ingreso",
     "soilHealth": "Salud del suelo",
-    "risk": "Años con problemas",
+    "risk": "Riesgo (pérdida típica)",
     "range": "rango {p10} – {p90}",
     "source": "Fuente: NASA POWER {from}–{to}",
     "mockWarning": "Datos de prueba: el motor real aún no está conectado.",
@@ -59,34 +72,50 @@
     "benefits": "Beneficios",
     "missing": "Qué falta saber",
     "review": "Qué revisar con un experto",
-    "months": "Año típico"
+    "months": "Año típico",
+    "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER"
   },
-  "month": { "ok": "Bien", "water_stress": "Estrés hídrico", "climate_risk": "Helada o calor", "bare": "Campo desnudo" },
+  "month": {
+    "ok": "Bien",
+    "water_stress": "Estrés hídrico",
+    "climate_risk": "Helada o calor",
+    "bare": "Campo desnudo"
+  },
   "soon": {
     "title": "En construcción",
     "text": "Esta sección la está construyendo el equipo. Vuelve pronto."
   },
   "explain": {
     "why.current": "Es lo que siembras hoy: sirve de punto de comparación.",
-    "why.income": "Combina cultivos comerciales de buen precio en la zona.",
-    "why.soilWater": "Incluye una leguminosa que aporta nitrógeno y usa menos agua.",
-    "evidence.power20y": "20 años de clima diario de NASA POWER en tu parcela.",
-    "evidence.et0High": "La evapotranspiración en Majes es alta todo el año.",
-    "evidence.frostWinter": "Riesgo de helada entre junio y agosto.",
+    "why.bestWater": "Es la rotación que menos agua necesita en tu parcela.",
+    "why.bestIncome": "Es la rotación con mayor ingreso esperado.",
+    "why.bestSoil": "Es la rotación que más cuida tu suelo.",
+    "why.balanced": "Equilibra agua, ingreso y suelo.",
+    "evidence.power20y": "21 años de clima diario de NASA POWER (2005–2025) en tu parcela.",
+    "evidence.et0": "Demanda de agua calculada con Penman-Monteith FAO-56 y coeficientes de cultivo FAO.",
+    "evidence.fusion": "Clima ajustado a la altitud real de tu parcela (relieve SRTM de NASA) combinando dos celdas de NASA POWER.",
+    "evidence.noFrost": "En 21 años no hubo días con temperatura bajo el umbral de helada de estos cultivos.",
+    "evidence.frostYears": "Hubo días de helada durante el ciclo de algún cultivo.",
     "evidence.legumeN": "Las leguminosas fijan nitrógeno del aire en el suelo.",
-    "benefit.forage": "Forraje para ganado lechero.",
-    "benefit.nitrogen": "Aporta nitrógeno al suelo.",
-    "benefit.income": "Mayor ingreso esperado.",
-    "benefit.pestCycle": "Cambiar de familia corta ciclos de plagas.",
     "benefit.water": "Menos agua por hectárea.",
-    "benefit.organicMatter": "Más materia orgánica.",
-    "missing.waterAllocation": "Tu asignación real de agua de AUTODEMA.",
-    "missing.prices": "Precios actualizados en chacra.",
-    "missing.fabaYield": "Rendimiento local del haba en Majes.",
+    "benefit.income": "Mayor ingreso esperado.",
+    "benefit.nitrogen": "Aporta nitrógeno al suelo y reduce fertilizante.",
+    "benefit.cover": "Suelo cubierto todo el año: menos erosión.",
+    "benefit.pestCycle": "Cambiar de familia de cultivo corta ciclos de plagas.",
+    "benefit.forage": "Forraje para ganado lechero.",
+    "benefit.baseline": "Sirve como referencia para comparar.",
+    "missing.waterAllocation": "Tu asignación real de agua (AUTODEMA / junta de usuarios).",
+    "missing.prices": "Precios en chacra actualizados (los usados son estimados).",
+    "missing.localYield": "Rendimientos reales de tu parcela.",
+    "missing.groundStation": "Validación con una estación de SENAMHI cercana.",
+    "review.waterShortage": "Con tu agua no alcanza: revisa el sistema de riego o el área a sembrar.",
+    "review.frost": "Fechas de siembra frente a las heladas.",
+    "review.legumeVariety": "Variedad de leguminosa adecuada para la zona.",
+    "review.market": "Compradores y precios para los cultivos comerciales.",
     "review.alfalfaAge": "Edad y estado de tu alfalfar.",
-    "review.potatoFrost": "Fecha de siembra de papa frente a heladas.",
-    "review.market": "Compradores para la cebolla y la papa.",
-    "review.legumeVariety": "Variedad de haba adecuada para la zona.",
-    "highlight.driestYear": "{year}: el año más exigente; habría necesitado {extraM3ha} m³/ha más que lo normal."
+    "review.sowingDates": "Fechas de siembra recomendadas por INIA para Majes.",
+    "highlight.driestYear": "{year}: el año más exigente; habría necesitado {extraM3ha} m³/ha más que lo normal.",
+    "highlight.worstYear": "{year}: el peor año; habrías ganado S/ {lossPEN} menos por hectárea.",
+    "highlight.problemYears": "{count} de {total} años con problemas (agua o clima). El último: {year}."
   }
 }

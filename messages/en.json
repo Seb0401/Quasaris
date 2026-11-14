@@ -38,9 +38,22 @@
     "priorities": "What matters most to you?",
     "continue": "Compare rotations"
   },
-  "irrigation": { "gravedad": "Furrow", "aspersion": "Sprinkler", "goteo": "Drip" },
-  "soil": { "arenoso": "Sandy", "franco": "Loam", "arcilloso": "Clay" },
-  "priority": { "water": "Save water", "income": "Earn more", "soil": "Care for the soil", "risk": "Avoid risk" },
+  "irrigation": {
+    "gravedad": "Furrow",
+    "aspersion": "Sprinkler",
+    "goteo": "Drip"
+  },
+  "soil": {
+    "arenoso": "Sandy",
+    "franco": "Loam",
+    "arcilloso": "Clay"
+  },
+  "priority": {
+    "water": "Save water",
+    "income": "Earn more",
+    "soil": "Care for the soil",
+    "risk": "Avoid risk"
+  },
   "comparar": {
     "title": "Compare rotations",
     "loading": "Calculating with NASA data…",
@@ -50,7 +63,7 @@
     "water": "Water",
     "income": "Income",
     "soilHealth": "Soil health",
-    "risk": "Years with problems",
+    "risk": "Risk (typical loss)",
     "range": "range {p10} – {p90}",
     "source": "Source: NASA POWER {from}–{to}",
     "mockWarning": "Test data: the real engine is not connected yet.",
@@ -59,34 +72,50 @@
     "benefits": "Benefits",
     "missing": "What we don't know yet",
     "review": "Check with an expert",
-    "months": "Typical year"
+    "months": "Typical year",
+    "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells"
   },
-  "month": { "ok": "Good", "water_stress": "Water stress", "climate_risk": "Frost or heat", "bare": "Bare field" },
+  "month": {
+    "ok": "Good",
+    "water_stress": "Water stress",
+    "climate_risk": "Frost or heat",
+    "bare": "Bare field"
+  },
   "soon": {
     "title": "Under construction",
     "text": "The team is building this section. Check back soon."
   },
   "explain": {
     "why.current": "This is what you grow today: it's the baseline.",
-    "why.income": "Combines cash crops with good local prices.",
-    "why.soilWater": "Includes a legume that adds nitrogen and uses less water.",
-    "evidence.power20y": "20 years of daily NASA POWER climate at your field.",
-    "evidence.et0High": "Evapotranspiration in Majes is high all year.",
-    "evidence.frostWinter": "Frost risk between June and August.",
+    "why.bestWater": "This rotation needs the least water on your field.",
+    "why.bestIncome": "This rotation has the highest expected income.",
+    "why.bestSoil": "This rotation takes the best care of your soil.",
+    "why.balanced": "It balances water, income and soil.",
+    "evidence.power20y": "21 years of daily NASA POWER climate (2005–2025) at your field.",
+    "evidence.et0": "Water demand computed with FAO-56 Penman-Monteith and FAO crop coefficients.",
+    "evidence.fusion": "Climate adjusted to your field's real altitude (NASA SRTM terrain) by blending two NASA POWER cells.",
+    "evidence.noFrost": "In 21 years there were no days below these crops' frost threshold.",
+    "evidence.frostYears": "There were frost days during some crop's cycle.",
     "evidence.legumeN": "Legumes fix nitrogen from the air into the soil.",
-    "benefit.forage": "Forage for dairy cattle.",
-    "benefit.nitrogen": "Adds nitrogen to the soil.",
-    "benefit.income": "Higher expected income.",
-    "benefit.pestCycle": "Switching plant families breaks pest cycles.",
     "benefit.water": "Less water per hectare.",
-    "benefit.organicMatter": "More organic matter.",
-    "missing.waterAllocation": "Your actual water allocation from AUTODEMA.",
-    "missing.prices": "Up-to-date farm-gate prices.",
-    "missing.fabaYield": "Local faba bean yield in Majes.",
+    "benefit.income": "Higher expected income.",
+    "benefit.nitrogen": "Adds nitrogen to the soil and reduces fertilizer.",
+    "benefit.cover": "Soil covered all year: less erosion.",
+    "benefit.pestCycle": "Switching crop families breaks pest cycles.",
+    "benefit.forage": "Forage for dairy cattle.",
+    "benefit.baseline": "Useful as a baseline for comparison.",
+    "missing.waterAllocation": "Your actual water allocation (AUTODEMA / water users' board).",
+    "missing.prices": "Up-to-date farm-gate prices (current values are estimates).",
+    "missing.localYield": "Actual yields on your field.",
+    "missing.groundStation": "Validation against a nearby SENAMHI station.",
+    "review.waterShortage": "Your water isn't enough: review the irrigation system or planted area.",
+    "review.frost": "Planting dates vs. frost.",
+    "review.legumeVariety": "Legume variety suited to the area.",
+    "review.market": "Buyers and prices for the cash crops.",
     "review.alfalfaAge": "Age and condition of your alfalfa stand.",
-    "review.potatoFrost": "Potato planting date vs. frost.",
-    "review.market": "Buyers for onion and potato.",
-    "review.legumeVariety": "Faba bean variety suited to the area.",
-    "highlight.driestYear": "{year}: the toughest year; it would have needed {extraM3ha} m³/ha more than usual."
+    "review.sowingDates": "Planting dates recommended by INIA for Majes.",
+    "highlight.driestYear": "{year}: the toughest year; it would have needed {extraM3ha} m³/ha more than usual.",
+    "highlight.worstYear": "{year}: the worst year; you would have earned S/ {lossPEN} less per hectare.",
+    "highlight.problemYears": "{count} of {total} years with problems (water or climate). Latest: {year}."
   }
 }

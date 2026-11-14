@@ -16,7 +16,7 @@ Requisitos: Node 22 o superior y Python 3.12 o superior.
 npm install
 python -m venv .venv
 # Windows: .venv\Scripts\activate   ·   macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt uvicorn pytest
+pip install -r requirements-dev.txt
 
 npm run dev:py   # motor Python en http://127.0.0.1:8000 (docs en /api/py/docs)
 npm run dev      # PWA en http://localhost:3000 (reenvía /api/py/* al motor)

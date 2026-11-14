@@ -88,9 +88,20 @@ class RotationResult(BaseModel):
     explain: Explain
 
 
+class PowerCell(BaseModel):
+    lat: float
+    lon: float
+    elevation: float
+    weight: float
+
+
 class Source(BaseModel):
     power: Literal["live", "cache", "mock"]
     period: tuple[int, int]
+    # Opcionales (fusión de datos): elevación SRTM usada y celdas POWER combinadas
+    elevationM: Optional[float] = None
+    method: Optional[Literal["blend", "single"]] = None
+    cells: Optional[list[PowerCell]] = None
 
 
 class SimulateResponse(BaseModel):

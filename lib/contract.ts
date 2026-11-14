@@ -77,8 +77,17 @@ export type RotationResult = {
   explain: Explain;
 };
 
+export type PowerCell = { lat: number; lon: number; elevation: number; weight: number };
+
 export type SimulateResponse = {
-  source: { power: "live" | "cache" | "mock"; period: [number, number] };
+  source: {
+    power: "live" | "cache" | "mock";
+    period: [number, number];
+    /** Fusión de datos: elevación SRTM de la parcela y celdas POWER combinadas (opcional) */
+    elevationM?: number;
+    method?: "blend" | "single";
+    cells?: PowerCell[];
+  };
   rotations: RotationResult[];
 };
 
