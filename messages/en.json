@@ -275,7 +275,9 @@
       "water_stress": "water stress",
       "climate_risk": "frost or heat",
       "dry": "out of water",
-      "bare": "resting"
+      "bare": "resting",
+      "disease": "with fungus",
+      "pest": "with pests"
     },
     "event": {
       "dry": "The reservoir is empty! {n} plots are drying out.",
@@ -338,7 +340,8 @@
       "sow": "Plant",
       "climate": "Weather",
       "whatif": "What if…",
-      "goals": "Goals"
+      "goals": "Goals",
+      "risks": "Risks"
     },
     "mode": {
       "paint": "Paint",
@@ -369,7 +372,9 @@
       "water_stress": "a high-demand month: the crop needs more water than your monthly share.",
       "climate_risk": "there were days colder or hotter than this crop tolerates.",
       "dry": "the reservoir is empty: without irrigation the plant dries out and yields less.",
-      "bare": "no crop this month; the soil rests but is exposed to erosion."
+      "bare": "no crop this month; the soil rests but is exposed to erosion.",
+      "disease": "heavy rain and humidity favor fungi (late blight, downy mildew, chocolate spot) on this crop.",
+      "pest": "a pest outbreak hits it harder because many plots share the same family (monoculture)."
     },
     "climate": {
       "temp": "Average temperature",
@@ -391,6 +396,77 @@
       "irrigation": "Irrigation system",
       "effect": "With this irrigation and soil, efficiency is {eff}. Your farm needs {water} m³ this year and you have {cap} m³.",
       "reset": "Back to reality"
+    },
+    "enso": {
+      "nino": "Niño",
+      "nina": "Niña"
+    },
+    "risk": {
+      "none": "No major hazards for this layout in this year. Try another year or add an event in What if…",
+      "summary": "{n} alerts this year ({high} severe). Tap one to jump to that month.",
+      "allYear": "all year",
+      "lots": "Plots {lots}",
+      "simulated": "Simulated event"
+    },
+    "hazard": {
+      "title": "Weather events",
+      "hint": "Add an event on top of the real year and see which plots get damaged. Years marked Niño or Niña are real years with those events.",
+      "month": "Month",
+      "from": "from",
+      "cut": "Water cut",
+      "remove": "Remove"
+    },
+    "alert": {
+      "frost": {
+        "title": "Hard frost",
+        "what": "A −3 °C night burns leaves and flowers of sensitive crops.",
+        "action": "Irrigate the evening before, cover nurseries and avoid potato or bean in frost weeks."
+      },
+      "heat": {
+        "title": "Heat wave",
+        "what": "Highs of 34 °C: sensitive crops close their pores and water demand rises 15%.",
+        "action": "Irrigate early or at night and give priority to flowering crops."
+      },
+      "drought": {
+        "title": "Drought / water cut",
+        "what": "The water users' board cuts allocations due to low water in the upper basin.",
+        "action": "Leave plots fallow or with legumes and switch high-value crops to drip."
+      },
+      "heavyRain": {
+        "title": "Heavy rain",
+        "what": "Too much humidity: fungi on sensitive crops and soil washing off bare plots.",
+        "action": "Improve drainage, apply preventive fungicide and cover bare soil."
+      },
+      "pests": {
+        "title": "Pest outbreak",
+        "what": "A pest spreads; it hits harder where many plots share the same family.",
+        "action": "Scout weekly, control early and mix families in your rotation."
+      },
+      "dry": {
+        "title": "Reservoir empty",
+        "what": "Your water for the year ran out: crops dry out and yield less.",
+        "action": "Plant less area, switch to rotations with legumes or improve irrigation."
+      },
+      "climate": {
+        "title": "Real frost or heat",
+        "what": "According to NASA POWER, this month had days outside what some of your crops tolerate.",
+        "action": "Check those crops' planting dates or choose more tolerant varieties."
+      },
+      "waterPeak": {
+        "title": "High-demand month",
+        "what": "Most plots need more water than your monthly share.",
+        "action": "Plan irrigation turns or store water in the reservoir in earlier months."
+      },
+      "monoculture": {
+        "title": "Monoculture pest risk",
+        "what": "Over half the farm is one family: pests and diseases spread easily.",
+        "action": "Mix different families on neighboring plots and rotate every season."
+      },
+      "erosion": {
+        "title": "Erosion on bare plots",
+        "what": "With heavy rain, uncovered soil washes away and loses organic matter.",
+        "action": "Plant a cover crop or leave stubble on those plots."
+      }
     }
   },
   "rotaciones": {

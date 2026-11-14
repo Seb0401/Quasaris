@@ -24,6 +24,9 @@ import {
 import { useSimulation } from "@/lib/use-simulation";
 import { SKY_GRADIENT, type Weather } from "@/components/granja/farm-scene";
 import { Celebration, Tutorial, playCoin } from "@/components/granja/overlays";
+import { AlertIcon, RiskPanel } from "@/components/granja/risk-panel";
+import { HazardControls } from "@/components/granja/hazard-controls";
+import { ENSO_YEARS } from "@/lib/granja-events";
 import { Reveal } from "@/components/motion/reveal";
 import { LoadingOrbit, PageHeader, Panel, RangeInput } from "@/components/ui/kit";
 import { Droplets, Gamepad2, Sprout, Waves } from "lucide-react";
@@ -50,7 +53,7 @@ const LENSES: { id: Lens; Icon: (p: { size?: number }) => React.JSX.Element }[] 
   { id: "soil", Icon: SoilIcon },
   { id: "income", Icon: ProfitIcon },
 ];
-type Tab = "sow" | "climate" | "whatif" | "goals";
+type Tab = "sow" | "climate" | "risks" | "whatif" | "goals";
 
 /**
  * Detecta WebGL UNA sola vez. Antes se llamaba en cada render y cada llamada creaba un contexto WebGL
@@ -174,8 +177,8 @@ function Farm() {
   const history = useRef<string[][]>([]);
 
   const sim = useMemo(
-    () => (data ? simulateYear(data, granja.tiles, granja.haPerTile, granja.year, water, palette) : null),
-    [data, granja.tiles, granja.haPerTile, granja.year, water, palette],
+    () => (data ? simulateYear(data, granja.tiles, granja.haPerTile, granja.year, water, palette, granja.events) : null),
+    [data, granja.tiles, granja.haPerTile, granja.year, water, palette, granja.events],
   );
   const years = useMemo(() => (data ? notableYears(data) : []), [data]);
   const goals = useMemo(() => (sim ? evaluateGoals(sim.summary, granja.tiles.length) : []), [sim, granja.tiles.length]);
@@ -265,6 +268,7 @@ function Farm() {
             harvestTiles={snap.harvests.map((h) => h.tile)}
             harvestKey={`${granja.year}-${month}`}
             selectedTile={selected}
+            alertTiles={sim.alerts.filter((a) => a.month === month).flatMap((a) => a.tiles)}
             paintMode={paintMode}
             onPaint={paint}
             onSelect={select}
@@ -339,9 +343,17 @@ function Farm() {
 
       {/* panel inferior */}
       <div className="farm-sheet">
-        {snap.events.length > 0 && !collapsed && (
-          <div className="farm-sheet-event">{t(`granja.event.${snap.events[0].kind}`, { n: snap.events[0].tiles })}</div>
-        )}
+        {!collapsed &&
+          (() => {
+            const top = sim.alerts.filter((a) => a.month === month).sort((a, b) => (a.severity === "high" ? -1 : 1) - (b.severity === "high" ? -1 : 1))[0];
+            if (top)
+              return (
+                <button type="button" onClick={() => setTab("risks")} className="farm-sheet-event flex items-center gap-1.5 text-left">
+                  <AlertIcon kind={top.kind} size={15} /> <b>{t(`granja.alert.${top.kind}.title`)}:</b> {t(`granja.alert.${top.kind}.what`)}
+                </button>
+              );
+            return snap.events.length > 0 ? <div className="farm-sheet-event">{t(`granja.event.${snap.events[0].kind}`, { n: snap.events[0].tiles })}</div> : null;
+          })()}
         {/* tiempo */}
         <div className="flex items-center gap-2 px-3 pt-2">
           <button type="button" onClick={reset} aria-label={t("granja.reset")} className="time-btn farm-tbtn">
@@ -374,8 +386,8 @@ function Farm() {
         {!collapsed && (
           <>
             {!sel && (
-              <div className="mt-2 grid grid-cols-4 gap-1 px-3">
-                {(["sow", "climate", "whatif", "goals"] as Tab[]).map((k) => (
+              <div className="mt-2 grid grid-cols-5 gap-1 px-3">
+                {(["sow", "climate", "risks", "whatif", "goals"] as Tab[]).map((k) => (
                   <button key={k} type="button" onClick={() => setTab(k)} className={`rounded-xl py-1.5 text-xs font-semibold ${tab === k ? "farm-tab active" : "farm-tab"}`}>
                     {t(`granja.tab.${k}`)}
                   </button>
@@ -531,6 +543,7 @@ function Farm() {
                           return <I size={13} className="mr-0.5 inline" />;
                         })() : null}
                         {y.year}
+                        {ENSO_YEARS[y.year] && <span className="ml-1 rounded bg-white/10 px-1 text-[9px] font-bold uppercase">{t(`granja.enso.${ENSO_YEARS[y.year]}`)}</span>}
                       </button>
                     ))}
                   </div>
@@ -614,11 +627,14 @@ function Farm() {
                       cap: n.format(sim.summary.capacityM3),
                     })}
                   </p>
-                  <button type="button" onClick={() => setGranja({ tempDelta: 0, waterFactor: 1 })} className="self-start rounded-full bg-white/[.06] px-4 py-2 text-xs font-semibold">
+                  <HazardControls events={granja.events} month={month} onChange={(events) => setGranja({ events })} />
+                  <button type="button" onClick={() => setGranja({ tempDelta: 0, waterFactor: 1, events: [] })} className="self-start rounded-full bg-white/[.06] px-4 py-2 text-xs font-semibold">
                     <RotateCcw size={13} className="mr-1 inline" /> {t("granja.whatif.reset")}
                   </button>
                 </section>
               )}
+
+              {!sel && tab === "risks" && <RiskPanel alerts={sim.alerts} month={month} onPickMonth={(m) => setMonth(m)} />}
 
               {!sel && tab === "goals" && (
                 <section className="flex flex-col gap-2 text-sm">
@@ -727,7 +743,7 @@ function ResultRow({ label, mine, base, lowerIsBetter }: { label: string; mine: 
 
 /** Respaldo sin WebGL: la misma granja en una cuadrícula 2D. */
 function FlatFarm({ cols, tiles, selected, tints, onTap }: { cols: number; tiles: TileState[]; selected: number | null; tints?: (string | null)[]; onTap: (i: number) => void }) {
-  const BG: Record<string, string> = { ok: "#6e4a2f", water_stress: "#7d5638", climate_risk: "#6f7f93", dry: "#cdb487", bare: "#8d6a48" };
+  const BG: Record<string, string> = { ok: "#6e4a2f", water_stress: "#7d5638", climate_risk: "#6f7f93", dry: "#cdb487", bare: "#8d6a48" , disease: "#5d4a63", pest: "#6f6232" };
   return (
     <div className="grid h-full w-full content-center gap-1.5 bg-[#d9c49b] p-6 pb-[45%]" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
       {tiles.map((tl, i) => (

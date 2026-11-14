@@ -6,6 +6,7 @@
 import paletteJson from "@/data/rotations_palette.json";
 import type { MonthStatus, Rotation, SimulateResponse } from "@/lib/contract";
 import { CROPS, MONTH_START, cropOnDay, cycleDays, sowDay } from "@/lib/crop-calendar";
+import { HEAT_WATER_FACTOR, hazardDamage, type FarmAlert, type FarmEvent } from "@/lib/granja-events";
 
 export const PALETTE = paletteJson.rotations as Rotation[];
 export const BASELINE_ID = "actual";
@@ -43,7 +44,7 @@ export type TileState = {
   cropId: string | null;
   growth: number; // 0..1 dentro del ciclo
   stage: Stage | null;
-  status: MonthStatus | "dry"; // dry = el reservorio se vació
+  status: MonthStatus | "dry" | "disease" | "pest"; // dry = el reservorio se vació; disease/pest = eventos
 };
 
 export function stageOf(growth: number): Stage {
@@ -109,13 +110,20 @@ export function simulateYear(
   year: number,
   waterAvailableM3ha: number,
   palette: Rotation[] = PALETTE,
-): { months: MonthSnapshot[]; summary: YearSummary } {
+  farmEvents: FarmEvent[] = [],
+): { months: MonthSnapshot[]; summary: YearSummary; alerts: FarmAlert[] } {
   const byId = new Map(data.rotations.map((r) => [r.id, r]));
   const rot = new Map(palette.map((r) => [r.id, r]));
   const yearOf = (id: string) => byId.get(id)?.byYear.find((y) => y.year === year);
   const totalHa = tiles.length * haPerTile;
   const capacity = waterAvailableM3ha * totalHa;
+  // sequía / recorte de agua: desde su mes, la dotación del resto del año se reduce
+  const drought = farmEvents.find((e) => e.kind === "drought");
+  const capacityAt = (m: number) => (drought && m >= drought.month ? capacity * (1 - (drought.intensity ?? 0.3) * ((12 - drought.month) / 12)) : capacity);
 
+
+  const damage = tiles.map(() => 1); // factor de rendimiento acumulado por casilla
+  const alerts: FarmAlert[] = [];
   const months: MonthSnapshot[] = [];
   let used = 0;
   let income = 0;
@@ -129,23 +137,47 @@ export function simulateYear(
       const y = yearOf(id);
       monthWater += (y?.monthlyWaterM3ha?.[m] ?? (y ? y.waterM3ha / 12 : 0)) * haPerTile;
     });
+    const monthEvents = farmEvents.filter((e) => e.month === m);
+    if (monthEvents.some((e) => e.kind === "heat")) monthWater *= HEAT_WATER_FACTOR;
     used += monthWater;
-    if (used > capacity && dryFrom === 12) dryFrom = m;
+    const capNow = capacityAt(m);
+    if (used > capNow && dryFrom === 12) dryFrom = m;
+
+    // cultivos en el campo este mes y cuánto pesa cada familia (las plagas golpean más al monocultivo)
+    const active = tiles.map((id) => {
+      const r = rot.get(id);
+      return r ? cropAt(r, m) : { cropId: null, growth: 0 };
+    });
+    const famShare = new Map<string, number>();
+    active.forEach((a) => {
+      const f = a.cropId ? CROPS[a.cropId]?.family : undefined;
+      if (f) famShare.set(f, (famShare.get(f) ?? 0) + 1 / Math.max(tiles.length, 1));
+    });
 
     const tileStates: TileState[] = tiles.map((id, i) => {
       const r = rot.get(id);
       const y = yearOf(id);
-      const { cropId, growth } = r ? cropAt(r, m) : { cropId: null, growth: 0 };
+      const { cropId, growth } = active[i];
       let status: TileState["status"] = y?.months[m] ?? "bare";
       if (!cropId) status = "bare";
       else if (m >= dryFrom) status = "dry";
+      // fenómenos activados por el agricultor en este mes
+      for (const ev of monthEvents) {
+        if (ev.kind === "drought") continue;
+        const fam = cropId ? CROPS[cropId]?.family : undefined;
+        const dmg = hazardDamage(ev.kind, cropId, fam ? (famShare.get(fam) ?? 0) : 0);
+        if (dmg !== null) {
+          damage[i] *= dmg;
+          if (status !== "dry") status = ev.kind === "heavyRain" ? "disease" : ev.kind === "pests" ? "pest" : "climate_risk";
+        }
+      }
       if (status === "bare") bare++;
       if (r) {
         const share = incomeShare(r)[m];
         if (share > 0 && y) {
           // si el reservorio se vació, la cosecha rinde menos (proporcional al agua que faltó)
-          const waterFactor = m >= dryFrom ? Math.max(0.3, capacity / used) : 1;
-          income += y.incomePEN * haPerTile * share * waterFactor;
+          const waterFactor = m >= dryFrom ? Math.max(0.3, capNow / used) : 1;
+          income += y.incomePEN * haPerTile * share * waterFactor * damage[i];
           harvestMonths(r).forEach((hm, k) => hm === m && harvests.push({ tile: i, cropId: r.crops[k].cropId }));
         }
       }
@@ -158,16 +190,51 @@ export function simulateYear(
     if (count("climate_risk")) events.push({ kind: "climate_risk", tiles: count("climate_risk") });
     if (count("water_stress")) events.push({ kind: "water_stress", tiles: count("water_stress") });
 
-    months.push({ month: m, tiles: tileStates, waterUsedM3: used, waterCapacityM3: capacity, incomePEN: income, harvests, events });
+    months.push({ month: m, tiles: tileStates, waterUsedM3: used, waterCapacityM3: capNow, incomePEN: income, harvests, events });
+
+    // ---------- alertas del mes ----------
+    const idx = (pred: (t: TileState) => boolean) => tileStates.flatMap((t, i) => (pred(t) ? [i] : []));
+    const cropsOf = (ids: number[]) => Array.from(new Set(ids.map((i) => tileStates[i].cropId).filter(Boolean) as string[]));
+    for (const ev of monthEvents) {
+      if (ev.kind === "drought") {
+        alerts.push({ month: m, kind: "drought", severity: (ev.intensity ?? 0.3) >= 0.4 ? "high" : "med", tiles: [], crops: [], fromEvent: true });
+        continue;
+      }
+      const hit = idx((t) => t.cropId !== null && (t.status === "disease" || t.status === "pest" || t.status === "climate_risk"));
+      alerts.push({ month: m, kind: ev.kind, severity: hit.length > tiles.length / 2 ? "high" : hit.length ? "med" : "low", tiles: hit, crops: cropsOf(hit), fromEvent: true });
+      if (ev.kind === "heavyRain") {
+        const bareTiles = idx((t) => t.cropId === null);
+        if (bareTiles.length) alerts.push({ month: m, kind: "erosion", severity: "med", tiles: bareTiles, crops: [], fromEvent: true });
+      }
+    }
+    if (m === dryFrom) alerts.push({ month: m, kind: "dry", severity: "high", tiles: idx((t) => t.status === "dry"), crops: cropsOf(idx((t) => t.status === "dry")), fromEvent: false });
+    const real = idx((t) => t.status === "climate_risk" && !monthEvents.some((e) => e.kind === "frost" || e.kind === "heat"));
+    if (real.length) alerts.push({ month: m, kind: "climate", severity: real.length > 2 ? "high" : "med", tiles: real, crops: cropsOf(real), fromEvent: false });
+    const peak = idx((t) => t.status === "water_stress");
+    if (peak.length > tiles.length * 0.6 && m < dryFrom) alerts.push({ month: m, kind: "waterPeak", severity: "low", tiles: peak, crops: [], fromEvent: false });
   }
+
+  // plagas por monocultivo: una alerta al año si una misma rotación ocupa la mayor parte de la chacra
+  const sown = tiles.filter((id) => (rot.get(id)?.crops.length ?? 0) > 0);
+  const counts = new Map<string, number>();
+  sown.forEach((id) => counts.set(id, (counts.get(id) ?? 0) + 1));
+  const topRot = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+  const topShare = topRot ? topRot[1] / Math.max(tiles.length, 1) : 0;
+  if (topRot && topShare >= 0.6 && tiles.length > 1) {
+    const ids = tiles.flatMap((id, i) => (id === topRot[0] ? [i] : []));
+    const crops = Array.from(new Set((rot.get(topRot[0])?.crops ?? []).map((c) => c.cropId)));
+    alerts.push({ month: -1, kind: "monoculture", severity: topShare >= 0.8 ? "high" : "med", tiles: ids, crops, fromEvent: false });
+  }
+  alerts.sort((a, b) => a.month - b.month);
 
   const base = yearOf(BASELINE_ID);
   const soil = tiles.reduce((a, id) => a + (byId.get(id)?.soil ?? 0), 0) / Math.max(tiles.length, 1);
   return {
     months,
+    alerts,
     summary: {
       waterM3: used,
-      capacityM3: capacity,
+      capacityM3: capacityAt(11),
       incomePEN: income,
       soil,
       bareTileMonths: bare,

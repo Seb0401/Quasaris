@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import type { FarmEvent } from "@/lib/granja-events";
 
 /** Estado del modo granja (persistido en el celular). La zona, el agua y el riego viven en farm-store. */
 export type GranjaState = {
@@ -16,6 +17,7 @@ export type GranjaState = {
   sound: boolean;
   tempDelta: number; // escenario: °C sumados a todas las temperaturas
   waterFactor: number; // escenario: fracción del agua disponible (1 = normal)
+  events: FarmEvent[]; // fenómenos activados sobre el año real
 };
 
 const KEY = "farmtwin.granja.v1";
@@ -40,6 +42,7 @@ const DEFAULT: GranjaState = {
   sound: true,
   tempDelta: 0,
   waterFactor: 1,
+  events: [],
 };
 
 let state: GranjaState = DEFAULT;

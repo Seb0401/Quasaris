@@ -43,6 +43,8 @@ export const SOIL: Record<string, THREE.MeshStandardMaterial> = {
   climate_risk: flat("#6f7f93"),
   dry: flat("#cdb487"),
   bare: flat("#8d6a48"),
+  disease: flat("#5d4a63"),
+  pest: flat("#6f6232"),
 };
 
 export const GEO = {

@@ -36,6 +36,8 @@ type Props = {
   harvestTiles: number[];
   harvestKey: string;
   selectedTile: number | null;
+  /** Casillas afectadas por una alerta en este mes (marco rojo). */
+  alertTiles?: number[];
   /** Modo pintar: la cámara se bloquea y arrastrar el dedo pinta casillas. */
   paintMode: boolean;
   onPaint: (i: number, start: boolean) => void;
@@ -66,6 +68,7 @@ function Plot({
   z,
   state,
   selected,
+  alert,
   tint,
   paintMode,
   paintingRef,
@@ -77,6 +80,7 @@ function Plot({
   z: number;
   state: TileState;
   selected: boolean;
+  alert: boolean;
   tint: string | null;
   paintMode: boolean;
   paintingRef: React.RefObject<boolean>;
@@ -99,7 +103,7 @@ function Plot({
     if (paintMode || e.delta > 6) return; // en modo ver: tocar abre la ficha
     onSelect(i);
   };
-  const frame = selected ? "#ffffff" : rotationColor(state.rotationId);
+  const frame = selected ? "#ffffff" : alert ? "#ff5a4f" : rotationColor(state.rotationId);
   const soilMat = tint ? tintMat(tint) : (SOIL[state.status] ?? SOIL.bare);
   return (
     <group>
@@ -191,7 +195,7 @@ function AutoZoom({ span, height }: { span: number; height: number }) {
   return null;
 }
 
-export default function FarmScene({ cols, rows, tiles, reservoir, weather, harvestTiles, harvestKey, selectedTile, paintMode, onPaint, onSelect, tints }: Props) {
+export default function FarmScene({ cols, rows, tiles, reservoir, weather, harvestTiles, harvestKey, selectedTile, alertTiles, paintMode, onPaint, onSelect, tints }: Props) {
   const paintingRef = useRef(false);
   useEffect(() => {
     const stop = () => {
@@ -261,6 +265,7 @@ export default function FarmScene({ cols, rows, tiles, reservoir, weather, harve
             z={z}
             state={t}
             selected={selectedTile === i}
+            alert={alertTiles?.includes(i) ?? false}
             tint={tints?.[i] ?? null}
             paintMode={paintMode}
             paintingRef={paintingRef}

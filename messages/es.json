@@ -275,7 +275,9 @@
       "water_stress": "estrés hídrico",
       "climate_risk": "helada o calor",
       "dry": "sin agua",
-      "bare": "descansando"
+      "bare": "descansando",
+      "disease": "con hongos",
+      "pest": "con plaga"
     },
     "event": {
       "dry": "¡Se acabó el agua del reservorio! {n} casillas se secan.",
@@ -338,7 +340,8 @@
       "sow": "Sembrar",
       "climate": "Clima",
       "whatif": "¿Y si…?",
-      "goals": "Metas"
+      "goals": "Metas",
+      "risks": "Riesgos"
     },
     "mode": {
       "paint": "Pintar",
@@ -369,7 +372,9 @@
       "water_stress": "es un mes de mucha demanda: el cultivo pide más agua que tu cuota mensual.",
       "climate_risk": "hubo días más fríos o más calientes de lo que este cultivo tolera.",
       "dry": "el reservorio se vació: sin riego la planta se seca y rinde menos.",
-      "bare": "no hay cultivo este mes; el suelo descansa pero queda expuesto a la erosión."
+      "bare": "no hay cultivo este mes; el suelo descansa pero queda expuesto a la erosión.",
+      "disease": "la lluvia intensa y la humedad favorecen hongos (rancha, mildiu, mancha chocolate) en este cultivo.",
+      "pest": "un brote de plagas lo afecta más porque hay muchas casillas de la misma familia (monocultivo)."
     },
     "climate": {
       "temp": "Temperatura media",
@@ -391,6 +396,77 @@
       "irrigation": "Sistema de riego",
       "effect": "Con este riego y suelo, la eficiencia es {eff}. Tu chacra necesita {water} m³ en el año y tienes {cap} m³.",
       "reset": "Volver a la realidad"
+    },
+    "enso": {
+      "nino": "Niño",
+      "nina": "Niña"
+    },
+    "risk": {
+      "none": "No vemos peligros importantes para este reparto en este año. Prueba otro año o activa un fenómeno en ¿Y si…?.",
+      "summary": "{n} alertas en el año ({high} graves). Toca una para ir a ese mes.",
+      "allYear": "todo el año",
+      "lots": "Lotes {lots}",
+      "simulated": "Fenómeno simulado"
+    },
+    "hazard": {
+      "title": "Fenómenos",
+      "hint": "Agrega un fenómeno sobre el año real y mira qué casillas se dañan. Los años marcados Niño o Niña son años reales con esos eventos.",
+      "month": "Mes",
+      "from": "desde",
+      "cut": "Recorte de agua",
+      "remove": "Quitar"
+    },
+    "alert": {
+      "frost": {
+        "title": "Helada fuerte",
+        "what": "Una noche de −3 °C quema hojas y flores de los cultivos sensibles.",
+        "action": "Riega la tarde anterior, cubre almácigos y no siembres papa ni frijol en las semanas de helada."
+      },
+      "heat": {
+        "title": "Ola de calor",
+        "what": "Máximas de 34 °C: los cultivos sensibles cierran sus poros y la demanda de agua sube 15 %.",
+        "action": "Riega temprano o de noche y prioriza el agua para los cultivos en floración."
+      },
+      "drought": {
+        "title": "Sequía / recorte de agua",
+        "what": "La junta de usuarios recorta la dotación por falta de agua en la cuenca alta.",
+        "action": "Deja lotes en descanso o con leguminosas y pasa a goteo en los cultivos de mayor valor."
+      },
+      "heavyRain": {
+        "title": "Lluvia intensa",
+        "what": "Exceso de humedad: hongos en cultivos sensibles y arrastre de suelo en lotes desnudos.",
+        "action": "Mejora el drenaje, aplica fungicida preventivo y cubre el suelo desnudo."
+      },
+      "pests": {
+        "title": "Brote de plagas",
+        "what": "Una plaga se extiende; golpea más donde hay muchas casillas de la misma familia.",
+        "action": "Monitorea cada semana, usa control temprano y diversifica familias en la rotación."
+      },
+      "dry": {
+        "title": "Reservorio vacío",
+        "what": "Tu agua del año se acabó: los cultivos se secan y rinden menos.",
+        "action": "Siembra menos área, cambia a rotaciones con leguminosas o mejora el riego."
+      },
+      "climate": {
+        "title": "Helada o calor real",
+        "what": "Según NASA POWER, este mes hubo días fuera de lo que toleran algunos de tus cultivos.",
+        "action": "Revisa la fecha de siembra de esos cultivos o elige variedades más tolerantes."
+      },
+      "waterPeak": {
+        "title": "Mes de alta demanda",
+        "what": "La mayoría de casillas pide más agua que tu cuota mensual.",
+        "action": "Planifica turnos de riego o guarda agua en el reservorio los meses anteriores."
+      },
+      "monoculture": {
+        "title": "Riesgo de plagas por monocultivo",
+        "what": "Más de la mitad de la chacra es de la misma familia: plagas y enfermedades se propagan fácil.",
+        "action": "Mezcla familias distintas en lotes vecinos y rota cada campaña."
+      },
+      "erosion": {
+        "title": "Erosión en lotes desnudos",
+        "what": "Con lluvia fuerte, el suelo sin cultivo se lava y pierde materia orgánica.",
+        "action": "Siembra un cultivo de cobertura o deja rastrojo en esos lotes."
+      }
     }
   },
   "rotaciones": {
