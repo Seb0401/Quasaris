@@ -284,3 +284,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (prefers-reduced-motion:reduce) {
   .qx-home *,.qx-home *::before,.qx-home *::after { animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important; }
 }
+
+/* Plan de la chacra: impresión / PDF */
+@media print {
+  .desktop-sidebar, .mobile-header, .mobile-bottom-nav, .no-print, nextjs-portal { display: none !important; }
+  body { background: #fff !important; }
+  .app-main, main { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  .plan-print { max-width: none; }
+  .break-inside-avoid { break-inside: avoid; }
+}
