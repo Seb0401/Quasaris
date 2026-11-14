@@ -134,9 +134,10 @@ def run(req: SimulateRequest) -> SimulateResponse:
                 "elevationM": round(clim.elevation_m),
                 "method": clim.method,
                 "cells": clim.cells,
-                "rootZoneWetness": [round(float(clim.gwetroot[clim.month == m].mean()), 3) for m in range(1, 13)],
+                "rootZoneWetness": None if clim.gwetroot is None else [round(float(clim.gwetroot[clim.month == m].mean()), 3) for m in range(1, 13)],
                 "tempDeltaC": delta or None,
-                "climateByYear": climate_by_year(clim, et0) if req.includeClimate else None,
+                # MonthClimate.soil es obligatorio en el contrato: sin GWETROOT no se envía en vez de inventarlo
+                "climateByYear": climate_by_year(clim, et0) if req.includeClimate and clim.gwetroot is not None else None,
             },
             "rotations": rotations,
         }
@@ -183,7 +184,8 @@ def _explain(rot: Rotation, r: dict, flags: dict, clim: Climate) -> dict:
     if clim.method == "blend":
         evidence.append("evidence.fusion")
     evidence.append("evidence.frostYears" if frost else "evidence.noFrost")
-    evidence.append("evidence.soilDry" if float(clim.gwetroot.mean()) < SOIL_DRY else "evidence.soilSeasonal")
+    if clim.gwetroot is not None:  # sin GWETROOT no se afirma nada sobre el suelo
+        evidence.append("evidence.soilDry" if float(clim.gwetroot.mean()) < SOIL_DRY else "evidence.soilSeasonal")
     if legume:
         evidence.append("evidence.legumeN")
 
@@ -237,7 +239,7 @@ def climate_weeks(lat: float, lon: float, years: tuple[int, int] = (2005, 2025))
                 "pFrost": round(frost_years / n_years, 3),
                 "pHeat": round(heat_years / n_years, 3),
                 "et0MeanMm": round(float(et0[sel].mean()), 2),
-                "soilWetness": round(float(clim.gwetroot[sel].mean()), 3),
+                "soilWetness": None if clim.gwetroot is None else round(float(clim.gwetroot[sel].mean()), 3),
             }
         )
     return ClimateResponse.model_validate({"weeks": weeks})
