@@ -1,8 +1,19 @@
-import { gateway, stepCountIs, streamText, type ModelMessage } from "ai";
+import { APICallError, gateway, stepCountIs, streamText, type ModelMessage } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
 import { z } from "zod";
 import { chatTools, farmSchema } from "./tools";
 
 export const maxDuration = 60;
+const openRouter = process.env.OPENROUTER_API_KEY
+  ? createOpenAI({
+    apiKey: process.env.OPENROUTER_API_KEY,
+    baseURL: "https://openrouter.ai/api/v1",
+    headers: {
+      "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "https://farmtwin.vercel.app",
+      "X-Title": "FarmTwin",
+    },
+  })
+  : undefined;
 
 const textPart = z.object({ type: z.literal("text"), text: z.string().max(8000) });
 const photoPart = z.object({
@@ -53,12 +64,14 @@ export async function POST(request: Request) {
   if (!parsed.success) return Response.json({ error: "invalidRequest" }, { status: 400 });
 
   const { farm, locale, messages } = parsed.data;
-  if (!process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN && !process.env.VERCEL) {
+  if (!openRouter && !process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN && !process.env.VERCEL) {
     return Response.json({ error: "gatewayUnavailable" }, { status: 503 });
   }
 
   const result = streamText({
-    model: gateway(process.env.AI_GATEWAY_MODEL || "anthropic/claude-sonnet-5.5"),
+    model: openRouter
+      ? openRouter(process.env.OPENROUTER_MODEL || "openrouter/free")
+      : gateway(process.env.AI_GATEWAY_MODEL || "anthropic/claude-sonnet-5.5"),
     messages: toModelMessages(messages),
     tools: chatTools({ ...farm, locale }, request.signal),
     abortSignal: request.signal,
@@ -76,7 +89,11 @@ Never diagnose pests or diseases or prescribe treatments. Refer those questions 
 
   return result.toUIMessageStreamResponse({
     onError(error) {
-      console.error("[FarmTwin chat]", error instanceof Error ? error.name : "stream error");
+      const detail = error instanceof Error
+        ? error.message.replace(/sk-or-v1-[A-Za-z0-9_-]+/g, "[redacted]").slice(0, 500)
+        : "stream error";
+      console.error("[FarmTwin chat]", error instanceof Error ? error.name : "Error", detail);
+      if (APICallError.isInstance(error) && error.statusCode === 402) return "insufficientCredits";
       return "gatewayError";
     },
   });

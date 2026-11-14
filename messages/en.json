@@ -107,6 +107,7 @@
     "photoPrompt": "What can you see in this photo of the field?",
     "photoError": "The photo could not be prepared. Try a smaller JPEG, PNG, or WebP.",
     "gatewayUnavailable": "The assistant still needs a connection to AI Gateway.",
+    "insufficientCredits": "OpenRouter does not have enough credits for that model. Use the default free model or add credits to select Claude.",
     "gatewayError": "The reply could not be completed. Try again.",
     "retry": "Retry",
     "updated": "Your parcel was updated.",

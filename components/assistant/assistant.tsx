@@ -118,7 +118,11 @@ export function Assistant() {
     }
   }
 
-  const errorKey = error?.message.includes("gatewayUnavailable") ? "gatewayUnavailable" : "gatewayError";
+  const errorKey = error?.message.includes("gatewayUnavailable")
+    ? "gatewayUnavailable"
+    : error?.message.includes("insufficientCredits")
+      ? "insufficientCredits"
+      : "gatewayError";
 
   return (
     <section className="flex flex-col gap-4">

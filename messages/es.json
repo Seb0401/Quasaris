@@ -107,6 +107,7 @@
     "photoPrompt": "¿Qué se puede observar en esta foto del campo?",
     "photoError": "No se pudo preparar la foto. Prueba con un JPEG, PNG o WebP más pequeño.",
     "gatewayUnavailable": "El asistente todavía necesita conexión con AI Gateway.",
+    "insufficientCredits": "OpenRouter no tiene saldo suficiente para ese modelo. Usa el modelo gratuito predeterminado o agrega saldo para elegir Claude.",
     "gatewayError": "No se pudo completar la respuesta. Vuelve a intentarlo.",
     "retry": "Reintentar",
     "updated": "Se actualizó tu parcela.",
