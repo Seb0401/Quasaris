@@ -8,6 +8,7 @@ import type { chatTools } from "@/app/api/chat/tools";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { setFarm, useFarm } from "@/lib/farm-store";
 import { preparePhoto, recognitionConstructor, speak, useSpeechSupport, type Recognition } from "./media";
+import { MarkdownReply } from "./markdown-reply";
 
 type Message = UIMessage<unknown, never, InferUITools<ReturnType<typeof chatTools>>>;
 
@@ -162,7 +163,9 @@ export function Assistant() {
                 className={`w-fit max-w-full rounded-xl border border-border px-4 py-3 ${mine ? "self-end bg-brand/10" : "bg-surface"}`}>
                 <p className="text-xs font-semibold text-muted">{mine ? t("assistant.you") : "FarmTwin"}</p>
                 {hasPhoto && <p className="mt-1 text-xs text-muted">📷 {t("assistant.attached")}</p>}
-                <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-relaxed">{reply || t("assistant.waiting")}</p>
+                {mine
+                  ? <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-relaxed">{reply}</p>
+                  : <MarkdownReply>{reply || t("assistant.waiting")}</MarkdownReply>}
                 {!mine && reply && synthesis && !busy && (
                   <button type="button" className="mt-1 min-h-11 text-sm font-medium text-brand underline"
                     onClick={() => speak(reply, lang)}>{t("assistant.read")}</button>
