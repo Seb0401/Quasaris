@@ -426,5 +426,28 @@
         "source": "Reglas agronómicas generales (a validar con un agrónomo)"
       }
     }
+  },
+  "reco": {
+    "kicker": "Recomendación para tu parcela",
+    "switch": "Te conviene cambiar a",
+    "keep": "Tu rotación actual ya es la mejor opción",
+    "noneViable": "Con tu agua, ninguna rotación alcanza",
+    "noneText": "La mejor opción necesita {need} m³/ha y tienes {have} m³/ha. Estas son tus alternativas:",
+    "tryDrip": "Con riego por goteo esa rotación necesitaría unos {m3} m³/ha.",
+    "reduceArea": "Con el agua que tienes puedes regar bien el {pct} de tu chacra; el resto, en descanso o con cultivo de cobertura.",
+    "water": "Agua",
+    "income": "Ingreso",
+    "soil": "Suelo",
+    "why": "Por qué",
+    "reason": {
+      "water": "Ahorras {m3} m³/ha al año ({pct} menos que hoy).",
+      "income": "Ganas unos S/ {pen} más por hectárea al año.",
+      "soil": "Tu suelo mejora {pts} puntos (más nitrógeno y menos meses desnudo).",
+      "risk": "Baja el riesgo de pérdida en {pts} puntos en años difíciles."
+    },
+    "check": "Antes de decidir, revisa con tu técnico",
+    "toPlan": "Ver plan de mi chacra",
+    "toFarm": "Probar en la granja",
+    "source": "Mediana de 21 años reales (NASA POWER 2005–2025) frente a tu rotación actual. Precios y rendimientos son estimados."
   }
 }

@@ -426,5 +426,28 @@
         "source": "General agronomic rules (to validate with an agronomist)"
       }
     }
+  },
+  "reco": {
+    "kicker": "Recommendation for your field",
+    "switch": "You should switch to",
+    "keep": "Your current rotation is already the best option",
+    "noneViable": "With your water, no rotation fits",
+    "noneText": "The best option needs {need} m³/ha and you have {have} m³/ha. These are your alternatives:",
+    "tryDrip": "With drip irrigation that rotation would need about {m3} m³/ha.",
+    "reduceArea": "With your water you can properly irrigate {pct} of your farm; leave the rest fallow or with a cover crop.",
+    "water": "Water",
+    "income": "Income",
+    "soil": "Soil",
+    "why": "Why",
+    "reason": {
+      "water": "You save {m3} m³/ha per year ({pct} less than today).",
+      "income": "You earn about S/ {pen} more per hectare per year.",
+      "soil": "Your soil improves by {pts} points (more nitrogen, fewer bare months).",
+      "risk": "Loss risk in tough years drops by {pts} points."
+    },
+    "check": "Before deciding, check with your agronomist",
+    "toPlan": "See my farm plan",
+    "toFarm": "Try it on the farm",
+    "source": "Median of 21 real years (NASA POWER 2005–2025) vs. your current rotation. Prices and yields are estimates."
   }
 }
