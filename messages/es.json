@@ -35,6 +35,20 @@
     "water": "Agua disponible por campaña (m³/ha)",
     "irrigation": "Sistema de riego",
     "soil": "Textura del suelo",
+    "soilgridsTitle": "Referencia regional del suelo",
+    "soilgridsDescription": "Estimación de ISRIC SoilGrids para las coordenadas seleccionadas (resolución de 250 m).",
+    "soilgrids": {
+      "sand": "Arena · 0–5 cm",
+      "silt": "Limo · 0–5 cm",
+      "clay": "Arcilla · 0–5 cm",
+      "availableWater": "Retención potencial · 0–30 cm",
+      "uncertainty": "Cuantiles regionales de arena: {low}–{high} %. Retención potencial: {waterLow}–{waterHigh} mm entre celdas del área.",
+      "caveat": "Es una predicción regional, no una medición de tu parcela ni humedad actual; valida con una muestra de campo.",
+      "source": "ISRIC SoilGrids 2.0 · CC BY 4.0",
+      "updated": "Descargado {date}",
+      "openSource": "Ver fuente y metodología",
+      "outsideCoverage": "Aún no hay datos SoilGrids disponibles para estas coordenadas."
+    },
     "priorities": "¿Qué es más importante para ti?",
     "continue": "Comparar rotaciones"
   },
@@ -89,6 +103,7 @@
     "exampleRotation": "¿Por qué me conviene cambiar la alfalfa?",
     "exampleWater": "¿Y si me dan 20 % menos agua?",
     "exampleYear": "¿Cómo le habría ido a mi rotación en 2016?",
+    "exampleSoil": "¿Qué estima SoilGrids sobre el suelo de mi parcela?",
     "you": "Tú",
     "question": "Tu pregunta",
     "placeholder": "Escribe tu pregunta sobre la parcela…",

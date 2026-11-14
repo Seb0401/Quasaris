@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { setFarm, useFarm } from "@/lib/farm-store";
 import type { Irrigation, Priorities, SoilTexture } from "@/lib/contract";
+import { getMajesSoilGridsReference } from "@/lib/soilgrids";
 
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
   ssr: false,
@@ -42,6 +43,8 @@ export function ParcelaClient() {
   const t = useT();
   const locale = useLocale();
   const farm = useFarm();
+  const soilReference = getMajesSoilGridsReference(farm.lat, farm.lon);
+  const number = new Intl.NumberFormat(locale === "es" ? "es-PE" : "en-US", { maximumFractionDigits: 1 });
   const [locating, setLocating] = useState(false);
 
   const locate = () => {
@@ -100,6 +103,47 @@ export function ParcelaClient() {
           <span className="font-medium">🟫 {t("parcela.soil")}</span>
           <Choice value={farm.soilTexture} options={SOILS} label={(v) => t(`soil.${v}`)} onChange={(soilTexture) => setFarm({ soilTexture })} />
         </div>
+
+        <section aria-labelledby="soilgrids-title" className="flex flex-col gap-3 rounded-xl border border-border bg-background p-3">
+          <div>
+            <h3 id="soilgrids-title" className="font-semibold">{t("parcela.soilgridsTitle")}</h3>
+            <p className="text-sm text-muted">{t("parcela.soilgridsDescription")}</p>
+          </div>
+          {soilReference ? (
+            <>
+              <dl className="grid grid-cols-2 gap-2 text-sm">
+                {(["sand", "silt", "clay"] as const).map((property) => (
+                  <div key={property} className="rounded-lg border border-border p-2">
+                    <dt className="text-muted">{t(`parcela.soilgrids.${property}`)}</dt>
+                    <dd className="font-semibold">{number.format(soilReference.surfaceTexturePercent[property].median)}%</dd>
+                  </div>
+                ))}
+                <div className="rounded-lg border border-border p-2">
+                  <dt className="text-muted">{t("parcela.soilgrids.availableWater")}</dt>
+                  <dd className="font-semibold">{number.format(soilReference.potentialAvailableWater0to30cmMm.median)} mm</dd>
+                </div>
+              </dl>
+              <p className="text-xs text-muted">
+                {t("parcela.soilgrids.uncertainty", {
+                  low: number.format(soilReference.surfaceTexturePercent.sand.q05),
+                  high: number.format(soilReference.surfaceTexturePercent.sand.q95),
+                  waterLow: number.format(soilReference.potentialAvailableWater0to30cmMm.spatialP10),
+                  waterHigh: number.format(soilReference.potentialAvailableWater0to30cmMm.spatialP90),
+                })}
+              </p>
+              <p className="text-xs text-muted">
+                {t("parcela.soilgrids.caveat")} · {t("parcela.soilgrids.source")} · {t("parcela.soilgrids.updated", {
+                  date: new Date(soilReference.retrievedAt).toLocaleDateString(locale === "es" ? "es-PE" : "en-US", { timeZone: "UTC" }),
+                })}
+              </p>
+              <a href={soilReference.source} target="_blank" rel="noreferrer" className="text-sm font-medium text-brand underline underline-offset-4">
+                {t("parcela.soilgrids.openSource")}
+              </a>
+            </>
+          ) : (
+            <p className="text-sm text-muted">{t("parcela.soilgrids.outsideCoverage")}</p>
+          )}
+        </section>
 
         <div className="flex flex-col gap-3">
           <span className="font-medium">{t("parcela.priorities")}</span>

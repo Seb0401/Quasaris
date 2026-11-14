@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { SimulateRequest, SimulateResponse } from "@/lib/contract";
 import { simulateMock } from "@/lib/engine-client";
 import { getMessages } from "@/lib/i18n";
+import { getMajesSoilGridsReference } from "@/lib/soilgrids";
 
 const priorities = z.object({
   water: z.number().min(0).max(1),
@@ -108,6 +109,14 @@ export function chatTools(initialFarm: SimulateRequest, signal: AbortSignal) {
         term: z.enum(["et", "ndvi", "soilMoisture", "waterBalance", "frost", "satellite"]),
       }),
       execute: async ({ term }) => ({ definition: terms[term] }),
+    }),
+    consultarSueloRegional: tool({
+      description: "Get the available ISRIC SoilGrids regional soil reference for the current field coordinates. Use for questions about soil texture, profile, or potential water retention. It is a 250 m regional model summary, not a field measurement or current soil moisture.",
+      inputSchema: z.object({}),
+      execute: async () => getMajesSoilGridsReference(farm.lat, farm.lon) ?? {
+        available: false,
+        reason: "No cached SoilGrids reference covers these coordinates.",
+      },
     }),
     cambiarPrioridades: tool({
       description: "Update priorities or the water budget for a change explicitly requested by the farmer. For '20% less water' pass waterChangePercent=-20. Omit fields that should stay as they are. Call once per turn.",

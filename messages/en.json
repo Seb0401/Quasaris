@@ -35,6 +35,20 @@
     "water": "Water available per season (m³/ha)",
     "irrigation": "Irrigation system",
     "soil": "Soil texture",
+    "soilgridsTitle": "Regional soil reference",
+    "soilgridsDescription": "ISRIC SoilGrids estimate for the selected coordinates (250 m resolution).",
+    "soilgrids": {
+      "sand": "Sand · 0–5 cm",
+      "silt": "Silt · 0–5 cm",
+      "clay": "Clay · 0–5 cm",
+      "availableWater": "Potential available water · 0–30 cm",
+      "uncertainty": "Regional sand quantiles: {low}–{high}%. Potential available water: {waterLow}–{waterHigh} mm across area cells.",
+      "caveat": "This is a regional prediction, not a field measurement or current moisture; validate with a soil sample.",
+      "source": "ISRIC SoilGrids 2.0 · CC BY 4.0",
+      "updated": "Downloaded {date}",
+      "openSource": "View source and method",
+      "outsideCoverage": "SoilGrids data is not available for these coordinates yet."
+    },
     "priorities": "What matters most to you?",
     "continue": "Compare rotations"
   },
@@ -89,6 +103,7 @@
     "exampleRotation": "Why might I switch from alfalfa?",
     "exampleWater": "What if I get 20% less water?",
     "exampleYear": "How would my rotation have done in 2016?",
+    "exampleSoil": "What does SoilGrids estimate about my field's soil?",
     "you": "You",
     "question": "Your question",
     "placeholder": "Ask a question about your parcel…",

@@ -144,7 +144,7 @@ export function Assistant() {
 
       {messages.length === 0 && (
         <div className="flex flex-wrap gap-2">
-          {["exampleRotation", "exampleWater", "exampleYear"].map((key) => (
+          {["exampleRotation", "exampleWater", "exampleYear", "exampleSoil"].map((key) => (
             <button key={key} type="button" disabled={blocked} className={secondary} onClick={() => send(t(`assistant.${key}`))}>
               {t(`assistant.${key}`)}
             </button>
