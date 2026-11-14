@@ -469,7 +469,7 @@ function Farm() {
                     >
                       {t("granja.fillAll")}
                     </button>
-                    <Link href={`/${locale}/rotaciones`} className="rounded-full bg-white/[.06] px-3 py-1.5 text-xs font-semibold">
+                    <Link href={`/${locale}/agrupaciones`} className="rounded-full bg-white/[.06] px-3 py-1.5 text-xs font-semibold">
                       {t("rotaciones.create")}
                     </Link>
                   </div>

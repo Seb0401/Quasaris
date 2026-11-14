@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Plus, Repeat2, Star, Trash2, TriangleAlert, X } from "lucide-react";
+import { ArrowRight, Check, Combine, Plus, Repeat2, Star, Trash2, TriangleAlert, X } from "lucide-react";
+import { evaluateGroup } from "@/lib/grouping";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { Reveal } from "@/components/motion/reveal";
 import { Badge, PageHeader } from "@/components/ui/kit";
@@ -32,6 +33,7 @@ export function RotacionesClient() {
   return (
     <div className="ui-page">
       <PageHeader icon={Repeat2} kicker={es ? "EDITOR" : "EDITOR"} title={t("rotaciones.title")} subtitle={t("rotaciones.subtitle")} />
+      <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm self-start"><Combine size={14} />{t("group.title")}</Link>
 
       <div className="rotation-editor-grid">
         {farm.rotations.map((r, index) => {
@@ -87,6 +89,18 @@ export function RotacionesClient() {
                   )}
                 </div>
 
+                {r.crops.length > 0 && (() => {
+                  const ev = evaluateGroup(r.crops, "rotation", (id) => cropName(id, locale));
+                  const pro = ev.pros[0];
+                  const con = ev.cons[0];
+                  return (
+                    <div className="ui-hint">
+                      <b>{t(`group.verdict.${ev.verdict}`)} · {ev.score}/100</b>
+                      {pro && <span className="mt-1 flex items-start gap-1"><Check size={13} className="mt-0.5 shrink-0 text-ok" />{t(`group.point.${pro.key}`, pro.params)}</span>}
+                      {con && <span className="mt-0.5 flex items-start gap-1"><X size={13} className="mt-0.5 shrink-0 text-danger" />{t(`group.point.${con.key}`, con.params)}</span>}
+                    </div>
+                  );
+                })()}
                 {overlap > 0 && <p className="ui-alert tone-warn"><TriangleAlert size={15} />{t("rotaciones.overlap", { days: overlap })}</p>}
                 {bare.length > 0 && r.crops.length > 0 && <p className="ui-hint">{t("rotaciones.bare", { n: bare.length })}</p>}
 

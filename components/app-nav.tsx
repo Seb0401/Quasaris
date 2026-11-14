@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, CalendarDays, Clock3, Home, Tractor, Languages, MapPinned, Sparkles } from "lucide-react";
+import { BarChart3, BookOpen, CalendarDays, Combine, Clock3, Home, Tractor, Languages, MapPinned, Sparkles } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { QuasarisMark } from "@/components/brand/quasaris-mark";
 
@@ -43,6 +43,7 @@ export function AppNav() {
           </ul>
         </nav>
         <div className="sidebar-spacer" />
+        <Link href={`/${locale}/agrupaciones`} className="sidebar-secondary"><Combine size={18} />{t("group.title")}</Link>
         <Link href={`/${locale}/aprende`} className="sidebar-secondary"><BookOpen size={18} />{t("nav.aprende")}</Link>
         <Link href={`/${other}${rest ? `/${rest}` : ""}`} className="language-switch" aria-label={t("app.language")}><Languages size={17} />{other.toUpperCase()}</Link>
         <div className="mission-badge"><Sparkles size={16} /><span>{locale === "es" ? "Datos NASA · decisión local" : "NASA data · local decision"}</span></div>
