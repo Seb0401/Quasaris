@@ -2,13 +2,13 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowLeft, ArrowRight, Check, LoaderCircle, Scale } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, BarChart3, Check, Compass, LocateFixed, MapPin, Pencil, Scale, Sparkles } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { RecommendationCard } from "@/components/cards/recommendation-card";
 import { ProfitIcon, SoilIcon, WaterIcon } from "@/components/icons/farm-icons";
 import { RotationIcons } from "@/components/icons/rotation-icons";
-import { QuasarisMark } from "@/components/brand/quasaris-mark";
+import { LoadingOrbit, PageHeader } from "@/components/ui/kit";
 import type { Irrigation, Priorities, SoilTexture } from "@/lib/contract";
 import { efficiency } from "@/lib/crop-calendar";
 import { MAJES, setFarm, useFarm } from "@/lib/farm-store";
@@ -17,10 +17,11 @@ import { useSimulation } from "@/lib/use-simulation";
 
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
   ssr: false,
-  loading: () => <div className="h-72 w-full animate-pulse rounded-2xl bg-border" />,
+  loading: () => <div className="map-skeleton ui-skeleton" />,
 });
 
 const TYPICAL_WATER = 15000; // estimado para Majes (a validar con AUTODEMA)
+const WATER_PRESETS = [8000, 12000, 15000, 20000];
 const PROFILES: { id: string; p: Priorities; Icon: (p: { size?: number }) => React.JSX.Element }[] = [
   { id: "water", p: { water: 1, income: 0.35, soil: 0.35, risk: 0.5 }, Icon: WaterIcon },
   { id: "income", p: { water: 0.35, income: 1, soil: 0.3, risk: 0.5 }, Icon: ProfitIcon },
@@ -32,160 +33,179 @@ const STEPS = ["field", "resources", "priorities", "result"] as const;
 export function InicioClient() {
   const t = useT();
   const locale = useLocale();
+  const es = locale === "es";
   const farm = useFarm();
   const [step, setStep] = useState(0);
+  const [locating, setLocating] = useState(false);
   const data = useSimulation();
+  const topRef = useRef<HTMLDivElement>(null);
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const pct = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 0 });
   const profile = PROFILES.find((pr) => JSON.stringify(pr.p) === JSON.stringify(farm.priorities))?.id;
   const rec = data && step === 3 ? recommend(data, farm.rotations, farm) : null;
+  const current = farm.rotations.find((r) => r.isCurrent);
+
+  // al cambiar de paso, volver al inicio del contenido (importante en el celular)
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    const el = topRef.current;
+    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [step]);
+
+  const go = (i: number) => setStep(Math.max(0, Math.min(STEPS.length - 1, i)));
+  const locate = () => {
+    if (!navigator.geolocation) return;
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setFarm({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+        setLocating(false);
+      },
+      () => setLocating(false),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
+
+  // lo que eligió en cada paso, para el riel lateral
+  const summary = [
+    `${farm.lat.toFixed(3)}, ${farm.lon.toFixed(3)}`,
+    `${n.format(farm.waterAvailableM3ha)} m³/ha · ${t(`irrigation.${farm.irrigation}`)}`,
+    profile ? t(`wizard.priorities.${profile}.title`) : es ? "Personalizado" : "Custom",
+    rec ? rec.bestRotation.name : es ? "Pendiente" : "Pending",
+  ];
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-5">
-      <header className="flex items-center gap-3">
-        <QuasarisMark width={44} height={44} />
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted">{t("wizard.kicker")}</p>
-          <h1 className="text-2xl font-bold leading-tight">{t(`wizard.${STEPS[step]}.title`)}</h1>
-        </div>
-      </header>
+    <div className="ui-page wizard">
+      <PageHeader icon={Compass} kicker={t("wizard.kicker").toUpperCase()} title={es ? "Tu parcela en 4 pasos" : "Your field in 4 steps"} subtitle={es ? "Responde cuatro preguntas simples y te mostramos qué rotación conviene, con 21 años de datos de la NASA detrás." : "Answer four simple questions and we show you which rotation fits, backed by 21 years of NASA data."} />
 
-      {/* progreso */}
-      <ol className="grid grid-cols-4 gap-2" aria-label={t("wizard.kicker")}>
-        {STEPS.map((s, i) => (
-          <li key={s}>
-            <button type="button" onClick={() => setStep(i)} className="flex w-full flex-col gap-1 text-left" aria-current={i === step ? "step" : undefined}>
-              <span className={`h-1.5 rounded-full ${i <= step ? "bg-brand" : "bg-border"}`} />
-              <span className={`flex items-center gap-1 text-[11px] ${i === step ? "font-semibold" : "text-muted"}`}>
-                {i < step && <Check size={12} className="text-brand" />}
-                {t(`wizard.${s}.short`)}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ol>
-      <p className="text-sm text-muted">{t(`wizard.${STEPS[step]}.hint`)}</p>
-
-      {step === 0 && (
-        <section className="flex flex-col gap-3">
-          <ParcelMap lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} className="h-80" />
-          <button type="button" onClick={() => setFarm(MAJES)} className="self-start rounded-full border border-border px-3 py-1.5 text-xs font-semibold">
-            {t("wizard.field.useMajes")}
-          </button>
-        </section>
-      )}
-
-      {step === 1 && (
-        <section className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
-            <span className="flex items-center gap-1.5 font-semibold">
-              <WaterIcon /> {t("wizard.resources.water")}
-            </span>
-            <input
-              type="number"
-              inputMode="numeric"
-              min={0}
-              step={500}
-              value={farm.waterAvailableM3ha}
-              onChange={(e) => setFarm({ waterAvailableM3ha: Number(e.target.value) || 0 })}
-              className="rounded-xl border border-border bg-surface px-4 py-3 text-lg"
-            />
-            <button type="button" onClick={() => setFarm({ waterAvailableM3ha: TYPICAL_WATER })} className="self-start text-xs font-semibold text-brand">
-              {t("wizard.resources.dontKnow", { m3: n.format(TYPICAL_WATER) })}
-            </button>
+      <div className="wizard-layout" ref={topRef}>
+        {/* riel de pasos (PC) / barra de progreso (celular) */}
+        <aside className="wizard-rail" aria-label={t("wizard.kicker")}>
+          <div className="wizard-mobile-progress">
+            <span>{es ? `Paso ${step + 1} de ${STEPS.length}` : `Step ${step + 1} of ${STEPS.length}`}</span>
+            <b>{t(`wizard.${STEPS[step]}.short`)}</b>
+            <div><i style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} /></div>
           </div>
-
-          <Choice
-            title={t("wizard.resources.irrigation")}
-            value={farm.irrigation}
-            options={["gravedad", "aspersion", "goteo"] as Irrigation[]}
-            label={(v) => t(`irrigation.${v}`)}
-            sub={(v) => t("wizard.resources.eff", { eff: pct.format(efficiency(v, farm.soilTexture)) })}
-            onChange={(irrigation) => setFarm({ irrigation })}
-          />
-          <Choice
-            title={t("wizard.resources.soil")}
-            value={farm.soilTexture}
-            options={["arenoso", "franco", "arcilloso"] as SoilTexture[]}
-            label={(v) => t(`soil.${v}`)}
-            sub={(v) => t(`wizard.resources.soilHint.${v}`)}
-            onChange={(soilTexture) => setFarm({ soilTexture })}
-          />
-
-          <div className="flex flex-col gap-2">
-            <span className="font-semibold">{t("wizard.resources.current")}</span>
-            <div className="grid gap-2">
-              {farm.rotations.map((r) => (
-                <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => setFarm({ rotations: farm.rotations.map((x) => ({ ...x, isCurrent: x.id === r.id })) })}
-                  className={`flex items-center gap-2 rounded-xl border-2 px-3 py-2.5 text-left text-sm ${r.isCurrent ? "border-brand bg-brand/5 font-semibold" : "border-border bg-surface"}`}
-                >
-                  <RotationIcons rotation={r} size={18} className="text-brand" />
-                  <span className="flex-1">{r.name}</span>
-                  {r.isCurrent && <Check size={16} className="text-brand" />}
+          <ol>
+            {STEPS.map((s, i) => (
+              <li key={s} className={i === step ? "is-active" : i < step ? "is-done" : ""}>
+                <button type="button" onClick={() => go(i)} aria-current={i === step ? "step" : undefined}>
+                  <span className="wizard-step-num">{i < step ? <Check size={15} /> : i + 1}</span>
+                  <span className="wizard-step-text">
+                    <b>{t(`wizard.${s}.short`)}</b>
+                    <small>{summary[i]}</small>
+                  </span>
                 </button>
-              ))}
-            </div>
-            <Link href={`/${locale}/rotaciones`} className="self-start text-xs font-semibold text-brand">
-              {t("wizard.resources.other")}
-            </Link>
+              </li>
+            ))}
+          </ol>
+          <p className="wizard-rail-note"><Sparkles size={14} />{es ? "Puedes volver a cualquier paso tocándolo." : "Tap any step to go back to it."}</p>
+        </aside>
+
+        {/* contenido del paso */}
+        <section className="ui-panel wizard-panel">
+          <div className="wizard-step" key={step}>
+            <header className="wizard-step-head">
+              <span className="ui-panel-kicker">{es ? `PASO ${step + 1}` : `STEP ${step + 1}`}</span>
+              <h2>{t(`wizard.${STEPS[step]}.title`)}</h2>
+              <p>{t(`wizard.${STEPS[step]}.hint`)}</p>
+            </header>
+
+            {step === 0 && (
+              <div className="wizard-body">
+                <ParcelMap lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} compact />
+                <div className="wizard-actions-row">
+                  <button type="button" onClick={locate} disabled={locating} className="ui-btn ui-btn-ghost"><LocateFixed size={16} className={locating ? "animate-spin" : ""} />{es ? "Usar mi ubicación" : "Use my location"}</button>
+                  <button type="button" onClick={() => setFarm(MAJES)} className="ui-btn ui-btn-ghost"><MapPin size={16} />{t("wizard.field.useMajes")}</button>
+                </div>
+              </div>
+            )}
+
+            {step === 1 && (
+              <div className="wizard-body">
+                <div className="field-block">
+                  <span className="ui-label"><WaterIcon size={16} />{t("wizard.resources.water")}</span>
+                  <div className="ui-input-wrap">
+                    <input type="number" inputMode="numeric" min={0} step={500} value={farm.waterAvailableM3ha} onChange={(e) => setFarm({ waterAvailableM3ha: Number(e.target.value) || 0 })} className="ui-input" />
+                    <span>m³/ha</span>
+                  </div>
+                  <div className="preset-row">
+                    {WATER_PRESETS.map((v) => <button key={v} type="button" className={farm.waterAvailableM3ha === v ? "active" : ""} onClick={() => setFarm({ waterAvailableM3ha: v })}>{n.format(v)}</button>)}
+                  </div>
+                  <button type="button" onClick={() => setFarm({ waterAvailableM3ha: TYPICAL_WATER })} className="wizard-link">{t("wizard.resources.dontKnow", { m3: n.format(TYPICAL_WATER) })}</button>
+                </div>
+
+                <Choice title={t("wizard.resources.irrigation")} value={farm.irrigation} options={["gravedad", "aspersion", "goteo"] as Irrigation[]} label={(v) => t(`irrigation.${v}`)} sub={(v) => t("wizard.resources.eff", { eff: pct.format(efficiency(v, farm.soilTexture)) })} onChange={(irrigation) => setFarm({ irrigation })} />
+                <Choice title={t("wizard.resources.soil")} value={farm.soilTexture} options={["arenoso", "franco", "arcilloso"] as SoilTexture[]} label={(v) => t(`soil.${v}`)} sub={(v) => t(`wizard.resources.soilHint.${v}`)} onChange={(soilTexture) => setFarm({ soilTexture })} />
+
+                <div className="field-block">
+                  <span className="ui-label">{t("wizard.resources.current")}</span>
+                  <div className="wizard-rotations">
+                    {farm.rotations.map((r) => (
+                      <button key={r.id} type="button" aria-pressed={r.isCurrent} onClick={() => setFarm({ rotations: farm.rotations.map((x) => ({ ...x, isCurrent: x.id === r.id })) })} className={`wizard-option ${r.isCurrent ? "active" : ""}`}>
+                        <RotationIcons rotation={r} size={18} />
+                        <span>{r.name}</span>
+                        <i>{r.isCurrent && <Check size={14} />}</i>
+                      </button>
+                    ))}
+                  </div>
+                  <Link href={`/${locale}/rotaciones`} className="wizard-link"><Pencil size={13} />{t("wizard.resources.other")}</Link>
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="wizard-body">
+                <div className="wizard-profiles">
+                  {PROFILES.map((pr) => (
+                    <button key={pr.id} type="button" aria-pressed={profile === pr.id} onClick={() => setFarm({ priorities: pr.p })} className={`wizard-profile ${profile === pr.id ? "active" : ""}`}>
+                      <span className="wizard-profile-icon"><pr.Icon size={24} /></span>
+                      <span>
+                        <b>{t(`wizard.priorities.${pr.id}.title`)}</b>
+                        <small>{t(`wizard.priorities.${pr.id}.text`)}</small>
+                      </span>
+                      <i>{profile === pr.id && <Check size={14} />}</i>
+                    </button>
+                  ))}
+                </div>
+                <p className="ui-hint">{t("wizard.priorities.fine")}</p>
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="wizard-body">
+                {rec ? (
+                  <>
+                    <div className="wizard-recap">
+                      <span><MapPin size={13} />{farm.lat.toFixed(3)}, {farm.lon.toFixed(3)}</span>
+                      <span><WaterIcon size={13} />{n.format(farm.waterAvailableM3ha)} m³/ha</span>
+                      <span>{t(`irrigation.${farm.irrigation}`)} · {t(`soil.${farm.soilTexture}`)}</span>
+                      {current && <span>{es ? "Hoy:" : "Today:"} {current.name}</span>}
+                    </div>
+                    <RecommendationCard rec={rec} waterAvailable={farm.waterAvailableM3ha} />
+                    <Link href={`/${locale}/comparar`} className="ui-btn ui-btn-ghost self-start"><BarChart3 size={16} />{t("wizard.result.compare")}</Link>
+                  </>
+                ) : (
+                  <LoadingOrbit label={t("comparar.loading")} />
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* navegación: fija abajo en el celular */}
+          <div className="wizard-nav">
+            <button type="button" onClick={() => go(step - 1)} disabled={step === 0} className="ui-btn ui-btn-ghost"><ArrowLeft size={16} />{t("wizard.back")}</button>
+            {step < STEPS.length - 1 ? (
+              <button type="button" onClick={() => go(step + 1)} className="ui-btn">{step === 2 ? t("wizard.see") : t("wizard.next")}<ArrowRight size={16} /></button>
+            ) : (
+              <Link href={`/${locale}/comparar`} className="ui-btn">{es ? "Ver el detalle" : "See the detail"}<ArrowRight size={16} /></Link>
+            )}
           </div>
         </section>
-      )}
-
-      {step === 2 && (
-        <section className="grid gap-3 sm:grid-cols-2">
-          {PROFILES.map((pr) => (
-            <button
-              key={pr.id}
-              type="button"
-              onClick={() => setFarm({ priorities: pr.p })}
-              className={`flex items-start gap-3 rounded-2xl border-2 p-4 text-left ${profile === pr.id ? "border-brand bg-brand/5" : "border-border bg-surface"}`}
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background text-brand">
-                <pr.Icon size={22} />
-              </span>
-              <span>
-                <span className="block font-semibold">{t(`wizard.priorities.${pr.id}.title`)}</span>
-                <span className="block text-sm text-muted">{t(`wizard.priorities.${pr.id}.text`)}</span>
-              </span>
-            </button>
-          ))}
-          <p className="text-xs text-muted sm:col-span-2">{t("wizard.priorities.fine")}</p>
-        </section>
-      )}
-
-      {step === 3 && (
-        <section className="flex flex-col gap-3">
-          {rec ? (
-            <RecommendationCard rec={rec} waterAvailable={farm.waterAvailableM3ha} />
-          ) : (
-            <p className="flex items-center justify-center gap-2 py-10 text-muted">
-              <LoaderCircle size={18} className="animate-spin" /> {t("comparar.loading")}
-            </p>
-          )}
-          <Link href={`/${locale}/comparar`} className="self-start text-sm font-semibold text-brand">
-            {t("wizard.result.compare")}
-          </Link>
-        </section>
-      )}
-
-      <div className="flex items-center justify-between gap-3 pb-4">
-        <button
-          type="button"
-          onClick={() => setStep((s) => Math.max(0, s - 1))}
-          disabled={step === 0}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-3 text-sm font-semibold disabled:opacity-40"
-        >
-          <ArrowLeft size={16} /> {t("wizard.back")}
-        </button>
-        {step < 3 && (
-          <button type="button" onClick={() => setStep((s) => Math.min(3, s + 1))} className="inline-flex items-center gap-1.5 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-brand-ink">
-            {step === 2 ? t("wizard.see") : t("wizard.next")} <ArrowRight size={16} />
-          </button>
-        )}
       </div>
     </div>
   );
@@ -193,18 +213,13 @@ export function InicioClient() {
 
 function Choice<T extends string>({ title, value, options, label, sub, onChange }: { title: string; value: T; options: T[]; label: (v: T) => string; sub: (v: T) => string; onChange: (v: T) => void }) {
   return (
-    <div className="flex flex-col gap-2">
-      <span className="font-semibold">{title}</span>
-      <div className="grid grid-cols-3 gap-2">
+    <div className="field-block">
+      <span className="ui-label">{title}</span>
+      <div className="option-cards">
         {options.map((o) => (
-          <button
-            key={o}
-            type="button"
-            onClick={() => onChange(o)}
-            className={`flex flex-col items-start gap-0.5 rounded-xl border-2 px-3 py-2.5 text-left ${o === value ? "border-brand bg-brand/5" : "border-border bg-surface"}`}
-          >
-            <span className="text-sm font-semibold">{label(o)}</span>
-            <span className="text-[11px] leading-tight text-muted">{sub(o)}</span>
+          <button key={o} type="button" aria-pressed={o === value} onClick={() => onChange(o)} className={`option-card ${o === value ? "active" : ""}`}>
+            <b>{label(o)}</b>
+            <small>{sub(o)}</small>
           </button>
         ))}
       </div>

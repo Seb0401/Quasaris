@@ -175,7 +175,7 @@ function Duel({ rows, icon: Icon, title, hint, pick, format, lowerIsBetter, max,
             <div key={r.rotation.id} className={`duel-row ${win ? "is-winner" : ""}`}>
               <span className="duel-name" style={{ color: r.color }}>{r.rotation.name}</span>
               <div className="duel-track">
-                <i style={{ width: `${Math.max(2, (v / top) * 100)}%`, background: r.color, animationDelay: `${i * 120}ms` }} />
+                <i style={{ width: `${Math.max(2, (v / top) * 100)}%`, background: `linear-gradient(90deg, color-mix(in srgb, ${r.color} 65%, transparent), ${r.color})`, animationDelay: `${i * 120}ms` }} />
               </div>
               <b><CountUp value={v} format={format} />{win && <Crown size={12} />}</b>
             </div>

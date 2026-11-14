@@ -144,7 +144,7 @@ export function ScoreRing({ value, size = 112, stroke = 9, color = "var(--brand)
           strokeLinecap="round"
           strokeDasharray={c}
           strokeDashoffset={offset}
-          style={{ "--c": c, filter: `drop-shadow(0 0 8px ${color})` } as React.CSSProperties}
+          style={{ "--c": c } as React.CSSProperties}
         />
       </svg>
       <span className="ui-ring-value">
@@ -159,7 +159,7 @@ export function ScoreRing({ value, size = 112, stroke = 9, color = "var(--brand)
 export function Meter({ value, color = "var(--brand)", height = 8, marker }: { value: number; color?: string; height?: number; marker?: number }) {
   return (
     <div className="ui-meter" style={{ height }}>
-      <i style={{ width: `${Math.max(0, Math.min(1, value)) * 100}%`, background: color, boxShadow: color.includes("gradient") ? undefined : `0 0 14px ${color}` }} />
+      <i style={{ width: `${Math.max(0, Math.min(1, value)) * 100}%`, background: color.includes("gradient") ? color : `linear-gradient(90deg, color-mix(in srgb, ${color} 70%, transparent), ${color})` }} />
       {marker !== undefined && <b style={{ left: `${Math.max(0, Math.min(1, marker)) * 100}%` }} />}
     </div>
   );
