@@ -53,15 +53,24 @@ const LENSES: { id: Lens; Icon: (p: { size?: number }) => React.JSX.Element }[] 
 ];
 type Tab = "sow" | "climate" | "whatif" | "goals";
 
+/**
+ * Detecta WebGL UNA sola vez. Antes se llamaba en cada render y cada llamada creaba un contexto WebGL
+ * nuevo: tras unos toques el navegador llegaba a su límite y eliminaba el contexto de la granja 3D.
+ */
+let webglSupport: boolean | null = null;
 function hasWebGL() {
+  if (webglSupport !== null) return webglSupport;
   try {
     const c = document.createElement("canvas");
-    return Boolean(c.getContext("webgl2") || c.getContext("webgl"));
+    const gl = (c.getContext("webgl2") || c.getContext("webgl")) as WebGLRenderingContext | null;
+    webglSupport = Boolean(gl);
+    gl?.getExtension("WEBGL_lose_context")?.loseContext(); // libera el contexto de prueba
   } catch {
-    return false;
+    webglSupport = false;
   }
+  return webglSupport;
 }
-const webglStore = { sub: () => () => {}, get: () => hasWebGL(), server: () => true };
+const webglStore = { sub: () => () => {}, get: hasWebGL, server: () => true };
 const demoStore = { sub: () => () => {}, get: () => new URLSearchParams(window.location.search).has("demo"), server: () => false };
 // ?shot: capturas automáticas (sin tutorial)
 const shotStore = { sub: () => () => {}, get: () => new URLSearchParams(window.location.search).has("shot"), server: () => false };
