@@ -10,6 +10,7 @@ import { CountUp, HeroStat, Meter, PageHeader, Panel, RangeInput } from "@/compo
 import { setFarm, useFarm } from "@/lib/farm-store";
 import type { Irrigation, Priorities, SoilTexture } from "@/lib/contract";
 import { IRRIGATION_EFFICIENCY, effectiveEfficiency } from "@/lib/ui";
+import { getMajesSoilGridsReference } from "@/lib/soilgrids";
 
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), { ssr: false, loading: () => <div className="map-skeleton ui-skeleton" /> });
 
@@ -36,8 +37,10 @@ export function ParcelaClient() {
   const locale = useLocale();
   const es = locale === "es";
   const farm = useFarm();
+  const soilReference = getMajesSoilGridsReference(farm.lat, farm.lon);
   const [locating, setLocating] = useState(false);
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+  const soilNumber = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
 
   const locate = () => {
     if (!navigator.geolocation) return;
@@ -112,6 +115,41 @@ export function ParcelaClient() {
                   ))}
                 </div>
               </div>
+
+              <section className="soilgrids-insight" aria-labelledby="soilgrids-title">
+                <div>
+                  <small>{es ? "ISRIC SOILGRIDS · 250 M" : "ISRIC SOILGRIDS · 250 M"}</small>
+                  <h3 id="soilgrids-title">{t("parcela.soilgridsTitle")}</h3>
+                  <p>{t("parcela.soilgridsDescription")}</p>
+                </div>
+                {soilReference ? (
+                  <>
+                    <dl className="soilgrids-stats">
+                      {(["sand", "silt", "clay"] as const).map((property) => (
+                        <div key={property}>
+                          <dt>{t(`parcela.soilgrids.${property}`)}</dt>
+                          <dd>{soilNumber.format(soilReference.surfaceTexturePercent[property].median)}%</dd>
+                        </div>
+                      ))}
+                      <div>
+                        <dt>{t("parcela.soilgrids.availableWater")}</dt>
+                        <dd>{soilNumber.format(soilReference.potentialAvailableWater0to30cmMm.median)} mm</dd>
+                      </div>
+                    </dl>
+                    <p>{t("parcela.soilgrids.uncertainty", {
+                      low: soilNumber.format(soilReference.surfaceTexturePercent.sand.q05),
+                      high: soilNumber.format(soilReference.surfaceTexturePercent.sand.q95),
+                      waterLow: soilNumber.format(soilReference.potentialAvailableWater0to30cmMm.spatialP10),
+                      waterHigh: soilNumber.format(soilReference.potentialAvailableWater0to30cmMm.spatialP90),
+                    })}</p>
+                    <p>{t("parcela.soilgrids.caveat")}</p>
+                    <p>{t("parcela.soilgrids.source")} · {t("parcela.soilgrids.updated", {
+                      date: new Date(soilReference.retrievedAt).toLocaleDateString(locale, { timeZone: "UTC" }),
+                    })}</p>
+                    <a href={soilReference.source} target="_blank" rel="noreferrer">{t("parcela.soilgrids.openSource")}</a>
+                  </>
+                ) : <p>{t("parcela.soilgrids.outsideCoverage")}</p>}
+              </section>
 
               <div className="water-insight">
                 <div>
