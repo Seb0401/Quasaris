@@ -25,6 +25,19 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </Link>
       </section>
 
+      <Link
+        href={`/${locale}/granja`}
+        className="flex items-center gap-4 rounded-3xl border-2 border-brand bg-surface p-5 hover:shadow-md"
+      >
+        <span className="text-5xl" aria-hidden>
+          🚜
+        </span>
+        <span className="flex flex-col gap-1">
+          <span className="text-xl font-bold">{m.home.farmMode}</span>
+          <span className="text-sm text-muted">{m.home.farmModeText}</span>
+        </span>
+      </Link>
+
       <section className="grid gap-3 sm:grid-cols-3">
         {pillars.map((p) => (
           <Link

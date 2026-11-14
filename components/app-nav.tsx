@@ -8,7 +8,7 @@ const TABS = [
   { href: "parcela", icon: "📍" },
   { href: "comparar", icon: "⚖️" },
   { href: "tiempo", icon: "🕰️" },
-  { href: "asistente", icon: "🎙️" },
+  { href: "granja", icon: "🎮" },
   { href: "calendario", icon: "📅" },
 ] as const;
 

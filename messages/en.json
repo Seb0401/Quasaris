@@ -13,7 +13,8 @@
     "tiempo": "Time machine",
     "asistente": "Assistant",
     "calendario": "Calendar",
-    "aprende": "What does it mean?"
+    "aprende": "What does it mean?",
+    "granja": "Farm"
   },
   "home": {
     "start": "Start with my field",
@@ -23,7 +24,9 @@
     "presentText": "Ask FarmTwin with your voice and get a simple, data-backed explanation.",
     "futureTitle": "Future",
     "futureText": "Your planting calendar with frost and heat alerts for your crops.",
-    "disclaimer": "FarmTwin supports your decision; it does not replace your judgment or your local agronomist."
+    "disclaimer": "FarmTwin supports your decision; it does not replace your judgment or your local agronomist.",
+    "farmMode": "🎮 Farm mode",
+    "farmModeText": "Your farm in 3D: plant plot by plot, play a real NASA year and earn medals."
   },
   "parcela": {
     "title": "My field",
@@ -185,5 +188,57 @@
     "waterBody": "Estimated irrigation: {m3} m³/ha over 7 days (ET0 {et0} mm/day, NASA POWER). No frost or heat risk.",
     "bareTitle": "⬜ Bare field this week",
     "bareBody": "Good time to prepare the soil or plant a cover crop."
+  },
+  "granja": {
+    "title": "Farm mode",
+    "zoneHint": "Tap your area on the map, choose your farm size and build your farm.",
+    "size": "Farm size",
+    "tiles": "plots",
+    "build": "Build my farm",
+    "reservoir": "Reservoir",
+    "play": "Play the year",
+    "pause": "Pause",
+    "replay": "Again",
+    "reset": "Back to January",
+    "yearHint": "Pick a real year measured by NASA (🌵 driest, ❄️ frost, 🔥 heat):",
+    "tag": {
+      "driest": "The driest year",
+      "frost": "Frost happened",
+      "heat": "Extreme heat",
+      "wettest": "The easiest year"
+    },
+    "palette": "Choose what to plant and tap the plots",
+    "fillAll": "Paint all",
+    "fallow": "Fallow",
+    "paletteHint": "Values per hectare per year (2005–2025 median). All plots share the same reservoir.",
+    "tile": "Plot",
+    "status": {
+      "ok": "good",
+      "water_stress": "water stress",
+      "climate_risk": "frost or heat",
+      "dry": "out of water",
+      "bare": "resting"
+    },
+    "event": {
+      "dry": "🌵 The reservoir is empty! {n} plots are drying out.",
+      "climate_risk": "❄️ Extreme weather this month on {n} plots (NASA POWER data).",
+      "water_stress": "🌡️ High-demand month: {n} plots need more than your monthly share."
+    },
+    "goals": "Goals for the year",
+    "goalsHint": "Play the full year to earn the medals.",
+    "goal": {
+      "waterFits": "Water lasts all year",
+      "save20": "Save 20% water vs. alfalfa only",
+      "healthySoil": "Healthy soil (70% or more)",
+      "coveredSoil": "Soil covered almost all year",
+      "beatIncome": "Earn more than alfalfa only",
+      "diversity": "At least 3 different rotations"
+    },
+    "resultTitle": "{year} results",
+    "vsBaseline": "vs. alfalfa only:",
+    "resultHint": "Compared with planting alfalfa on all your {ha} ha, with the same real weather.",
+    "changeZone": "Change area",
+    "expert": "See detailed data",
+    "source": "Climate: NASA POWER + SRTM. Water and money per plot = FAO-56 engine result × area. Baseline: {base}."
   }
 }

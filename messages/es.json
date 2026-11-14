@@ -13,7 +13,8 @@
     "tiempo": "Máquina del tiempo",
     "asistente": "Asistente",
     "calendario": "Calendario",
-    "aprende": "¿Qué significa?"
+    "aprende": "¿Qué significa?",
+    "granja": "Granja"
   },
   "home": {
     "start": "Empezar con mi parcela",
@@ -23,7 +24,9 @@
     "presentText": "Pregúntale a FarmTwin con tu voz y recibe una explicación simple, con datos.",
     "futureTitle": "Futuro",
     "futureText": "Tu calendario de siembra con avisos de helada y calor para tus cultivos.",
-    "disclaimer": "FarmTwin apoya tu decisión; no reemplaza tu criterio ni el de tu técnico agrario."
+    "disclaimer": "FarmTwin apoya tu decisión; no reemplaza tu criterio ni el de tu técnico agrario.",
+    "farmMode": "🎮 Modo granja",
+    "farmModeText": "Tu chacra en 3D: siembra por casillas, juega un año real de la NASA y gana medallas."
   },
   "parcela": {
     "title": "Mi parcela",
@@ -185,5 +188,57 @@
     "waterBody": "Riego estimado: {m3} m³/ha en 7 días (ET0 {et0} mm/día, NASA POWER). Sin riesgo de helada ni calor.",
     "bareTitle": "⬜ Campo desnudo esta semana",
     "bareBody": "Buen momento para preparar el suelo o sembrar un cultivo de cobertura."
+  },
+  "granja": {
+    "title": "Modo granja",
+    "zoneHint": "Toca tu zona en el mapa, elige el tamaño de tu chacra y construye tu granja.",
+    "size": "Tamaño de tu chacra",
+    "tiles": "casillas",
+    "build": "Construir mi granja",
+    "reservoir": "Reservorio",
+    "play": "Jugar el año",
+    "pause": "Pausa",
+    "replay": "Otra vez",
+    "reset": "Volver a enero",
+    "yearHint": "Elige un año real medido por la NASA (🌵 el más seco, ❄️ con heladas, 🔥 con calor):",
+    "tag": {
+      "driest": "El año más seco",
+      "frost": "Hubo heladas",
+      "heat": "Hubo calor extremo",
+      "wettest": "El año más fácil"
+    },
+    "palette": "Elige qué sembrar y toca las casillas",
+    "fillAll": "Pintar todo",
+    "fallow": "Descanso",
+    "paletteHint": "Valores por hectárea y por año (mediana 2005–2025). Todas las casillas comparten el mismo reservorio.",
+    "tile": "Casilla",
+    "status": {
+      "ok": "bien",
+      "water_stress": "estrés hídrico",
+      "climate_risk": "helada o calor",
+      "dry": "sin agua",
+      "bare": "descansando"
+    },
+    "event": {
+      "dry": "🌵 ¡Se acabó el agua del reservorio! {n} casillas se secan.",
+      "climate_risk": "❄️ Clima extremo este mes en {n} casillas (dato NASA POWER).",
+      "water_stress": "🌡️ Mes de alta demanda: {n} casillas piden más agua que tu cuota mensual."
+    },
+    "goals": "Metas del año",
+    "goalsHint": "Juega el año completo para ganar las medallas.",
+    "goal": {
+      "waterFits": "El agua alcanza todo el año",
+      "save20": "Ahorra 20 % de agua frente a solo alfalfa",
+      "healthySoil": "Suelo sano (70 % o más)",
+      "coveredSoil": "Suelo cubierto casi todo el año",
+      "beatIncome": "Gana más que con solo alfalfa",
+      "diversity": "Al menos 3 rotaciones distintas"
+    },
+    "resultTitle": "Resultado de {year}",
+    "vsBaseline": "vs. solo alfalfa:",
+    "resultHint": "Comparado con sembrar alfalfa en todas tus {ha} ha, con el mismo clima real.",
+    "changeZone": "Cambiar zona",
+    "expert": "Ver datos detallados",
+    "source": "Clima: NASA POWER + SRTM. Agua y dinero por casilla = resultado del motor FAO-56 × área. Referencia: {base}."
   }
 }
