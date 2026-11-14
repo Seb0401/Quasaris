@@ -30,7 +30,7 @@ export const MAT = {
 
 export const SOIL: Record<string, THREE.MeshStandardMaterial> = {
   ok: flat("#6e4a2f"),
-  water_stress: flat("#9a7448"),
+  water_stress: flat("#7d5638"),
   climate_risk: flat("#6f7f93"),
   dry: flat("#cdb487"),
   bare: flat("#8d6a48"),

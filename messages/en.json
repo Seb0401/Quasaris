@@ -76,51 +76,7 @@
     "missing": "What we don't know yet",
     "review": "Check with an expert",
     "months": "Typical year",
-    "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells",
-    "bestLabel": "With your priorities and your water, the best option is",
-    "pending": "This rotation has no result yet: the FarmTwin engine will calculate it.",
-    "toTimeMachine": "See how they would have done over 20 years"
-  },
-  "charts": {
-    "title": "Quick comparison",
-    "water": "Water",
-    "income": "Income",
-    "score": "Score",
-    "yourWater": "Your water",
-    "note": "The bar is the typical year (median of 20 years) and the black line is the range between good and bad years.",
-    "scoreNote": "Score from 0 to 100 based on your priorities."
-  },
-  "editor": {
-    "open": "Edit",
-    "title": "My rotations",
-    "done": "Done",
-    "name": "Rotation name",
-    "remove": "Remove rotation",
-    "crop": "Crop",
-    "sowMonth": "Sowing month",
-    "removeCrop": "Remove crop",
-    "addCrop": "Add crop",
-    "addRotation": "Add rotation",
-    "reset": "Back to the examples",
-    "note": "Crops are planted in the order of the list. Changes are saved on your phone."
-  },
-  "map": {
-    "layers": "NASA layer",
-    "date": "Date",
-    "legendAlt": "{layer} legend",
-    "layer": {
-      "ndviMonthly": "Vegetation (NDVI)",
-      "ndvi16Day": "Vegetation (16 days)",
-      "smapRootZone": "Soil moisture",
-      "trueColor": "True color",
-      "none": "No layer"
-    },
-    "read": {
-      "ndviMonthly": "Green = active vegetation; brown = bare soil or desert. Monthly average, ~1 km squares.",
-      "ndvi16Day": "Green = active vegetation; brown = bare soil. 16-day average, ~250 m squares.",
-      "smapRootZone": "Yellow and orange = drier soil; green and blue = wetter, at root depth. ~9 km squares: it shows the region, not your field.",
-      "trueColor": "The area as your eye would see it from the MODIS satellite, in ~250 m squares."
-    }
+    "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells"
   },
   "aprende": {
     "title": "What does it mean?",
@@ -338,6 +294,36 @@
     "resultHint": "Compared with planting alfalfa on all your {ha} ha, with the same real weather.",
     "changeZone": "Change area",
     "expert": "See detailed data",
-    "source": "Climate: NASA POWER + SRTM. Water and money per plot = FAO-56 engine result × area. Baseline: {base}."
+    "source": "Climate: NASA POWER + SRTM. Water and money per plot = FAO-56 engine result × area. Baseline: {base}.",
+    "tutorial": {
+      "title": "Welcome to your farm!",
+      "paint": "Pick a rotation in the palette and tap plots to plant it. All plots share the reservoir's water.",
+      "year": "Choose a real year measured by NASA, e.g. 🌵 the driest.",
+      "play": "Press ▶ Play the year: watch crops grow, water drop and earn medals.",
+      "go": "Let's plant!"
+    },
+    "celebrate": {
+      "title": "You earned medals!",
+      "ok": "Keep playing"
+    }
+  },
+  "rotaciones": {
+    "title": "My rotations",
+    "subtitle": "Build your own rotations: pick crops and planting month. FarmTwin compares them with NASA data on every screen.",
+    "newName": "My rotation",
+    "name": "Rotation name",
+    "makeCurrent": "Set as current",
+    "crop": "Crop",
+    "sowMonth": "Planting month",
+    "sow": "Plant:",
+    "removeCrop": "Remove crop",
+    "addCrop": "Add crop",
+    "overlap": "Two crops overlap for {days} days: check the planting months.",
+    "bare": "{n} months with bare soil (in red above).",
+    "delete": "Delete rotation",
+    "add": "New rotation",
+    "hint": "Up to 5 rotations and 4 crops per rotation. Crop cycles come from FAO-56 (to validate with an agronomist).",
+    "edit": "Edit rotations",
+    "create": "＋ Create rotation"
   }
 }

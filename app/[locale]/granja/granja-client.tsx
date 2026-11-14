@@ -8,13 +8,14 @@ import type { SimulateResponse } from "@/lib/contract";
 import { cropName } from "@/lib/crop-calendar";
 import { setFarm, useFarm } from "@/lib/farm-store";
 import { FARM_SIZES, resizeFarm, setGranja, useGranja } from "@/lib/granja-store";
-import { BASELINE_ID, PALETTE, ROTATION_COLOR, evaluateGoals, notableYears, rotationEmoji, simulateYear, type TileState } from "@/lib/granja-sim";
+import { BASELINE_ID, buildPalette, evaluateGoals, notableYears, rotationColor, rotationEmoji, simulateYear, type TileState } from "@/lib/granja-sim";
 import { useSimulation } from "@/lib/use-simulation";
-import type { Weather } from "@/components/granja/farm-scene";
+import { SKY_GRADIENT, type Weather } from "@/components/granja/farm-scene";
+import { Celebration, Tutorial, playCoin } from "@/components/granja/overlays";
 
 const FarmScene = dynamic(() => import("@/components/granja/farm-scene"), {
   ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse bg-[#bfe3f5]" />,
+  loading: () => <div className="flex h-full w-full items-center justify-center text-4xl">🚜</div>,
 });
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
   ssr: false,
@@ -122,14 +123,15 @@ function Farm() {
   const farm = useFarm();
   const granja = useGranja();
   const webgl = useSyncExternalStore(webglStore.sub, webglStore.get, webglStore.server);
-  const data = useSimulation({ rotations: PALETTE, cacheKey: "farmtwin.granja.sim.v1", fallback: fallbackGranja });
+  const palette = useMemo(() => buildPalette(farm.rotations), [farm.rotations]);
+  const data = useSimulation({ rotations: palette, cacheKey: "farmtwin.granja.sim.v1", fallback: fallbackGranja });
 
   const [brush, setBrush] = useState<string>("suelo_agua");
   const [month, setMonth] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
 
-  const sim = useMemo(() => (data ? simulateYear(data, granja.tiles, granja.haPerTile, granja.year, farm.waterAvailableM3ha) : null), [data, granja.tiles, granja.haPerTile, granja.year, farm.waterAvailableM3ha]);
+  const sim = useMemo(() => (data ? simulateYear(data, granja.tiles, granja.haPerTile, granja.year, farm.waterAvailableM3ha, palette) : null), [data, granja.tiles, granja.haPerTile, granja.year, farm.waterAvailableM3ha, palette]);
   const years = useMemo(() => (data ? notableYears(data) : []), [data]);
   const goals = useMemo(() => (sim ? evaluateGoals(sim.summary, granja.tiles.length) : []), [sim, granja.tiles.length]);
   const finished = month === 11;
@@ -151,8 +153,15 @@ function Farm() {
   useEffect(() => {
     if (!finished || playing) return;
     const won = goals.filter((g) => g.done).map((g) => g.id);
-    if (won.some((g) => !granja.badges.includes(g))) setGranja((s) => ({ badges: Array.from(new Set([...s.badges, ...won])) }));
+    const fresh = won.filter((g) => !granja.badges.includes(g));
+    if (fresh.length) setGranja((s) => ({ badges: Array.from(new Set([...s.badges, ...won])), lastWon: fresh }));
   }, [finished, playing, goals, granja.badges]);
+
+  // sonido de moneda cuando hay cosecha en el mes
+  const harvestCount = sim?.months[month]?.harvests.length ?? 0;
+  useEffect(() => {
+    if (granja.sound && harvestCount > 0 && month > 0) playCoin();
+  }, [month, harvestCount, granja.sound]);
 
   const paint = useCallback(
     (i: number) => {
@@ -187,7 +196,7 @@ function Farm() {
   return (
     <div className="-mx-4 flex flex-col">
       {/* escena + HUD */}
-      <div className="relative h-[58vh] min-h-80 w-full overflow-hidden">
+      <div className="relative h-[58vh] min-h-80 w-full overflow-hidden transition-[background] duration-700" style={{ background: SKY_GRADIENT[weather] }}>
         {webgl ? (
           <FarmScene
             cols={granja.cols}
@@ -220,6 +229,17 @@ function Farm() {
             📅 {fmtMonth.format(new Date(granja.year, month, 1))} {granja.year}
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setGranja((s) => ({ sound: !s.sound }))}
+          aria-label={granja.sound ? "mute" : "sound"}
+          className="absolute right-3 top-16 rounded-full bg-white/85 px-2.5 py-1.5 text-sm shadow-sm"
+        >
+          {granja.sound ? "🔊" : "🔇"}
+        </button>
+        {!granja.tutorialDone && <Tutorial onClose={() => setGranja({ tutorialDone: true })} />}
+        {granja.lastWon.length > 0 && <Celebration medals={granja.lastWon} onClose={() => setGranja({ lastWon: [] })} />}
 
         {snap.events.length > 0 && (
           <div className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-col gap-1">
@@ -282,12 +302,17 @@ function Farm() {
         <section className="flex flex-col gap-2">
           <div className="flex items-baseline justify-between">
             <h2 className="font-semibold">🖌️ {t("granja.palette")}</h2>
-            <button type="button" onClick={() => setGranja((s) => ({ tiles: s.tiles.map(() => brush) }))} className="text-xs font-medium text-brand">
-              {t("granja.fillAll")}
-            </button>
+            <span className="flex gap-3">
+              <Link href={`/${locale}/rotaciones`} className="text-xs font-medium text-brand">
+                {t("rotaciones.create")}
+              </Link>
+              <button type="button" onClick={() => setGranja((s) => ({ tiles: s.tiles.map(() => brush) }))} className="text-xs font-medium text-brand">
+                {t("granja.fillAll")}
+              </button>
+            </span>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {PALETTE.map((r) => {
+            {palette.map((r) => {
               const res = byId.get(r.id);
               const active = brush === r.id;
               return (
@@ -296,11 +321,11 @@ function Farm() {
                   type="button"
                   onClick={() => setBrush(r.id)}
                   className={`flex flex-col items-start gap-0.5 rounded-xl border-2 bg-surface px-3 py-2 text-left ${active ? "shadow-md" : "border-transparent"}`}
-                  style={{ borderColor: active ? ROTATION_COLOR[r.id] : undefined }}
+                  style={{ borderColor: active ? rotationColor(r.id) : undefined }}
                 >
-                  <span className="text-lg leading-none">{rotationEmoji(r.id)}</span>
+                  <span className="text-lg leading-none">{rotationEmoji(r.id, palette)}</span>
                   <span className="text-xs font-semibold leading-tight">
-                    <span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: ROTATION_COLOR[r.id] }} />
+                    <span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: rotationColor(r.id) }} />
                     {r.id === "descanso" ? t("granja.fallow") : r.name}
                   </span>
                   {res && (
@@ -320,7 +345,7 @@ function Farm() {
             <b>
               {t("granja.tile")} {selected! + 1}
             </b>{" "}
-            · {rotationEmoji(sel.rotationId)} {PALETTE.find((p) => p.id === sel.rotationId)?.name} ·{" "}
+            · {rotationEmoji(sel.rotationId, palette)} {palette.find((p) => p.id === sel.rotationId)?.name} ·{" "}
             {sel.cropId ? `${cropName(sel.cropId, locale)} (${pct.format(sel.growth)})` : t("granja.fallow")} · {t(`granja.status.${sel.status}`)}
           </section>
         )}
@@ -361,7 +386,7 @@ function Farm() {
             📊 {t("granja.expert")}
           </Link>
         </div>
-        <p className="pb-2 text-[11px] text-muted">{t("granja.source", { base: PALETTE.find((p) => p.id === BASELINE_ID)?.name ?? "" })}</p>
+        <p className="pb-2 text-[11px] text-muted">{t("granja.source", { base: palette.find((p) => p.id === BASELINE_ID)?.name ?? "" })}</p>
       </div>
     </div>
   );
@@ -400,7 +425,7 @@ function FlatFarm({ cols, tiles, selected, onTap }: { cols: number; tiles: TileS
           type="button"
           onClick={() => onTap(i)}
           className="flex aspect-square items-center justify-center rounded-lg border-4 text-2xl"
-          style={{ background: BG[tl.status], borderColor: selected === i ? "#fff" : ROTATION_COLOR[tl.rotationId] }}
+          style={{ background: BG[tl.status], borderColor: selected === i ? "#fff" : rotationColor(tl.rotationId) }}
         >
           <span style={{ transform: `scale(${0.5 + tl.growth * 0.6})` }}>{tl.cropId ? EMO[tl.cropId] : ""}</span>
         </button>

@@ -5,7 +5,7 @@ import "../globals.css";
 import { I18nProvider } from "@/components/i18n-provider";
 import { AppNav } from "@/components/app-nav";
 import { SwRegister } from "@/components/sw-register";
-import { OfflineBanner } from "@/components/offline-banner";
+import { AssistantDrawer } from "@/components/assistant/assistant-drawer";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -15,7 +15,7 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const m = getMessages(locale);
   return {
@@ -27,22 +27,22 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
 }
 
 export const viewport: Viewport = {
-  themeColor: "#2f6b3a",
+  themeColor: "#071b2f",
   width: "device-width",
   initialScale: 1,
 };
 
-export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
+export default async function LocaleLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
   return (
     <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans overflow-x-clip">
+      <body className="font-sans overflow-x-clip">
         <I18nProvider locale={locale}>
           <AppNav />
-          <OfflineBanner />
-          <main className="flex-1 w-full min-w-0 max-w-3xl mx-auto px-4 pt-4 pb-28">{children}</main>
+          <main className="app-main">{children}</main>
+          <AssistantDrawer />
           <SwRegister />
         </I18nProvider>
       </body>

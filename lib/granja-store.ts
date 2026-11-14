@@ -11,6 +11,9 @@ export type GranjaState = {
   tiles: string[]; // id de rotación por casilla
   year: number;
   badges: string[]; // medallas ganadas (persisten entre partidas)
+  lastWon: string[]; // medallas nuevas por celebrar
+  tutorialDone: boolean;
+  sound: boolean;
 };
 
 const KEY = "farmtwin.granja.v1";
@@ -30,6 +33,9 @@ const DEFAULT: GranjaState = {
   tiles: Array(20).fill("actual"),
   year: 2016,
   badges: [],
+  lastWon: [],
+  tutorialDone: false,
+  sound: true,
 };
 
 let state: GranjaState = DEFAULT;

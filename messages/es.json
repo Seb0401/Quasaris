@@ -76,51 +76,7 @@
     "missing": "Qué falta saber",
     "review": "Qué revisar con un experto",
     "months": "Año típico",
-    "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER",
-    "bestLabel": "Con tus prioridades y tu agua, la mejor opción es",
-    "pending": "Esta rotación aún no tiene resultado: la calculará el motor de FarmTwin.",
-    "toTimeMachine": "Ver cómo les habría ido en 20 años"
-  },
-  "charts": {
-    "title": "Comparación rápida",
-    "water": "Agua",
-    "income": "Ingreso",
-    "score": "Puntaje",
-    "yourWater": "Tu agua",
-    "note": "La barra es el año típico (mediana de 20 años) y la línea negra, el rango entre años buenos y malos.",
-    "scoreNote": "Puntaje de 0 a 100 según tus prioridades."
-  },
-  "editor": {
-    "open": "Editar",
-    "title": "Mis rotaciones",
-    "done": "Listo",
-    "name": "Nombre de la rotación",
-    "remove": "Quitar rotación",
-    "crop": "Cultivo",
-    "sowMonth": "Mes de siembra",
-    "removeCrop": "Quitar cultivo",
-    "addCrop": "Agregar cultivo",
-    "addRotation": "Agregar rotación",
-    "reset": "Volver a las de ejemplo",
-    "note": "Los cultivos se siembran en el orden de la lista. Los cambios se guardan en tu teléfono."
-  },
-  "map": {
-    "layers": "Capa de la NASA",
-    "date": "Fecha",
-    "legendAlt": "Leyenda de {layer}",
-    "layer": {
-      "ndviMonthly": "Vegetación (NDVI)",
-      "ndvi16Day": "Vegetación (16 días)",
-      "smapRootZone": "Humedad del suelo",
-      "trueColor": "Color real",
-      "none": "Sin capa"
-    },
-    "read": {
-      "ndviMonthly": "Verde = vegetación activa; marrón = suelo desnudo o desierto. Promedio del mes, cuadros de ~1 km.",
-      "ndvi16Day": "Verde = vegetación activa; marrón = suelo desnudo. Promedio de 16 días, cuadros de ~250 m.",
-      "smapRootZone": "Amarillo y naranja = suelo más seco; verde y azul = más húmedo, a la profundidad de las raíces. Cuadros de ~9 km: muestra la región, no tu parcela.",
-      "trueColor": "La zona como la vería tu ojo desde el satélite MODIS, con cuadros de ~250 m."
-    }
+    "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER"
   },
   "aprende": {
     "title": "¿Qué significa?",
@@ -338,6 +294,36 @@
     "resultHint": "Comparado con sembrar alfalfa en todas tus {ha} ha, con el mismo clima real.",
     "changeZone": "Cambiar zona",
     "expert": "Ver datos detallados",
-    "source": "Clima: NASA POWER + SRTM. Agua y dinero por casilla = resultado del motor FAO-56 × área. Referencia: {base}."
+    "source": "Clima: NASA POWER + SRTM. Agua y dinero por casilla = resultado del motor FAO-56 × área. Referencia: {base}.",
+    "tutorial": {
+      "title": "¡Bienvenido a tu granja!",
+      "paint": "Elige una rotación en la paleta y toca las casillas para sembrarla. Todas comparten el agua del reservorio.",
+      "year": "Elige un año real medido por la NASA, por ejemplo 🌵 el más seco.",
+      "play": "Presiona ▶ Jugar el año: mira crecer tus cultivos, bajar el agua y ganar medallas.",
+      "go": "¡A sembrar!"
+    },
+    "celebrate": {
+      "title": "¡Ganaste medallas!",
+      "ok": "Seguir jugando"
+    }
+  },
+  "rotaciones": {
+    "title": "Mis rotaciones",
+    "subtitle": "Arma tus propias rotaciones: elige cultivos y mes de siembra. FarmTwin las compara con datos de la NASA en todas las pantallas.",
+    "newName": "Mi rotación",
+    "name": "Nombre de la rotación",
+    "makeCurrent": "Es la actual",
+    "crop": "Cultivo",
+    "sowMonth": "Mes de siembra",
+    "sow": "Siembra:",
+    "removeCrop": "Quitar cultivo",
+    "addCrop": "Agregar cultivo",
+    "overlap": "Dos cultivos se cruzan {days} días: revisa los meses de siembra.",
+    "bare": "{n} meses con el campo desnudo (en rojo arriba).",
+    "delete": "Borrar rotación",
+    "add": "Nueva rotación",
+    "hint": "Máximo 5 rotaciones y 4 cultivos por rotación. Los ciclos vienen de FAO-56 (a validar con un agrónomo).",
+    "edit": "Editar rotaciones",
+    "create": "＋ Crear rotación"
   }
 }

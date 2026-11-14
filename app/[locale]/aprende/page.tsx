@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BookOpen } from "lucide-react";
 import { getMessages } from "@/lib/i18n";
 
 /** "¿Qué significa?": cada término en dos líneas, con un ejemplo de Majes. Los textos viven en messages/*.json (aprende.*). */
@@ -15,19 +16,24 @@ const TOPICS = [
 
 type Topic = { title: string; text: string; example: string; source: string };
 
-export default async function AprendePage({ params }: PageProps<"/[locale]/aprende">) {
+export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const m = getMessages(locale);
   const a = m.aprende as unknown as Record<string, Topic> & { title: string; intro: string; exampleLabel: string; sourceLabel: string; back: string };
 
   return (
-    <div className="flex flex-col gap-5">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">📖 {a.title}</h1>
-        <p className="text-muted">{a.intro}</p>
+    <div className="dashboard-shell">
+      <header className="section-hero">
+        <div>
+          <span className="panel-kicker">
+            <BookOpen size={16} /> QUASARIS / {locale === "es" ? "GLOSARIO" : "GLOSSARY"}
+          </span>
+          <h1>{a.title}</h1>
+          <p>{a.intro}</p>
+        </div>
       </header>
 
-      <nav aria-label={a.title} className="flex flex-wrap gap-2">
+      <nav aria-label={a.title} className="mt-4 flex flex-wrap gap-2">
         {TOPICS.map(({ key, icon }) => (
           <a key={key} href={`#${key}`} className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
             {icon} {a[key].title}
@@ -35,7 +41,7 @@ export default async function AprendePage({ params }: PageProps<"/[locale]/apren
         ))}
       </nav>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {TOPICS.map(({ key, icon }) => {
           const topic = a[key];
           return (
@@ -59,9 +65,11 @@ export default async function AprendePage({ params }: PageProps<"/[locale]/apren
         })}
       </div>
 
-      <Link href={`/${locale}/comparar`} className="self-center rounded-full bg-brand text-brand-ink px-5 py-3 font-semibold">
-        {a.back} →
-      </Link>
+      <div className="mt-5 flex justify-center">
+        <Link href={`/${locale}/comparar`} className="rounded-full bg-brand text-brand-ink px-5 py-3 font-semibold">
+          {a.back} →
+        </Link>
+      </div>
     </div>
   );
 }

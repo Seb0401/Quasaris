@@ -29,8 +29,24 @@ export const CROP_EMOJI: Record<string, string> = {
   frijol: "🫘",
 };
 
-export function rotationEmoji(id: string) {
-  const r = PALETTE.find((p) => p.id === id);
+const CUSTOM_COLORS = ["#e0607e", "#3fb6a8", "#c9a227", "#7a6ad8", "#d77a3a"];
+
+/** Color de una rotación (las propias reciben un color estable según su id). */
+export function rotationColor(id: string): string {
+  if (ROTATION_COLOR[id]) return ROTATION_COLOR[id];
+  let h = 0;
+  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return CUSTOM_COLORS[h % CUSTOM_COLORS.length];
+}
+
+/** Paleta del modo granja: las 7 de base más las rotaciones propias del agricultor. */
+export function buildPalette(farmRotations: Rotation[]): Rotation[] {
+  const ids = new Set(PALETTE.map((r) => r.id));
+  return [...PALETTE, ...farmRotations.filter((r) => !ids.has(r.id) && r.crops.length > 0)];
+}
+
+export function rotationEmoji(id: string, palette: Rotation[] = PALETTE) {
+  const r = palette.find((p) => p.id === id);
   if (!r || r.crops.length === 0) return "⬜";
   return r.crops.map((c) => CROP_EMOJI[c.cropId] ?? "🌱").join("");
 }
@@ -93,9 +109,16 @@ function cropAt(r: Rotation, month: number): { cropId: string | null; growth: nu
   return best;
 }
 
-export function simulateYear(data: SimulateResponse, tiles: string[], haPerTile: number, year: number, waterAvailableM3ha: number): { months: MonthSnapshot[]; summary: YearSummary } {
+export function simulateYear(
+  data: SimulateResponse,
+  tiles: string[],
+  haPerTile: number,
+  year: number,
+  waterAvailableM3ha: number,
+  palette: Rotation[] = PALETTE,
+): { months: MonthSnapshot[]; summary: YearSummary } {
   const byId = new Map(data.rotations.map((r) => [r.id, r]));
-  const rot = new Map(PALETTE.map((r) => [r.id, r]));
+  const rot = new Map(palette.map((r) => [r.id, r]));
   const yearOf = (id: string) => byId.get(id)?.byYear.find((y) => y.year === year);
   const totalHa = tiles.length * haPerTile;
   const capacity = waterAvailableM3ha * totalHa;
