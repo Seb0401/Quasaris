@@ -29,18 +29,41 @@ export const CROP_EMOJI: Record<string, string> = {
   frijol: "🫘",
 };
 
-export function rotationEmoji(id: string) {
-  const r = PALETTE.find((p) => p.id === id);
+const CUSTOM_COLORS = ["#e0607e", "#3fb6a8", "#c9a227", "#7a6ad8", "#d77a3a"];
+
+/** Color de una rotación (las propias reciben un color estable según su id). */
+export function rotationColor(id: string): string {
+  if (ROTATION_COLOR[id]) return ROTATION_COLOR[id];
+  let h = 0;
+  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return CUSTOM_COLORS[h % CUSTOM_COLORS.length];
+}
+
+/** Paleta del modo granja: las 7 de base más las rotaciones propias del agricultor. */
+export function buildPalette(farmRotations: Rotation[]): Rotation[] {
+  const ids = new Set(PALETTE.map((r) => r.id));
+  return [...PALETTE, ...farmRotations.filter((r) => !ids.has(r.id) && r.crops.length > 0)];
+}
+
+export function rotationEmoji(id: string, palette: Rotation[] = PALETTE) {
+  const r = palette.find((p) => p.id === id);
   if (!r || r.crops.length === 0) return "⬜";
   return r.crops.map((c) => CROP_EMOJI[c.cropId] ?? "🌱").join("");
 }
+
+export type Stage = "sprout" | "grow" | "flower" | "harvest";
 
 export type TileState = {
   rotationId: string;
   cropId: string | null;
   growth: number; // 0..1 dentro del ciclo
+  stage: Stage | null;
   status: MonthStatus | "dry"; // dry = el reservorio se vació
 };
+
+export function stageOf(growth: number): Stage {
+  return growth < 0.18 ? "sprout" : growth < 0.55 ? "grow" : growth < 0.85 ? "flower" : "harvest";
+}
 
 export type MonthSnapshot = {
   month: number; // 0..11
@@ -88,14 +111,22 @@ function cropAt(r: Rotation, month: number): { cropId: string | null; growth: nu
   let best: { cropId: string | null; growth: number; kc: number } = { cropId: null, growth: 0, kc: 0 };
   for (const rc of r.crops) {
     const d = cropOnDay(rc, doy);
-    if (d && d.kc > best.kc) best = { cropId: rc.cropId, growth: CROPS[rc.cropId].perennial ? 0.8 : d.dayInCycle / cycleDays(rc.cropId), kc: d.kc };
+    // alfalfa (perenne): se corta cada ~2 meses, así que alterna rebrote y floración
+    if (d && d.kc > best.kc) best = { cropId: rc.cropId, growth: CROPS[rc.cropId].perennial ? (month % 2 === 0 ? 0.4 : 0.75) : d.dayInCycle / cycleDays(rc.cropId), kc: d.kc };
   }
   return best;
 }
 
-export function simulateYear(data: SimulateResponse, tiles: string[], haPerTile: number, year: number, waterAvailableM3ha: number): { months: MonthSnapshot[]; summary: YearSummary } {
+export function simulateYear(
+  data: SimulateResponse,
+  tiles: string[],
+  haPerTile: number,
+  year: number,
+  waterAvailableM3ha: number,
+  palette: Rotation[] = PALETTE,
+): { months: MonthSnapshot[]; summary: YearSummary } {
   const byId = new Map(data.rotations.map((r) => [r.id, r]));
-  const rot = new Map(PALETTE.map((r) => [r.id, r]));
+  const rot = new Map(palette.map((r) => [r.id, r]));
   const yearOf = (id: string) => byId.get(id)?.byYear.find((y) => y.year === year);
   const totalHa = tiles.length * haPerTile;
   const capacity = waterAvailableM3ha * totalHa;
@@ -133,7 +164,7 @@ export function simulateYear(data: SimulateResponse, tiles: string[], haPerTile:
           harvestMonths(r).forEach((hm, k) => hm === m && harvests.push({ tile: i, cropId: r.crops[k].cropId }));
         }
       }
-      return { rotationId: id, cropId, growth, status };
+      return { rotationId: id, cropId, growth, stage: cropId ? stageOf(growth) : null, status };
     });
 
     const count = (k: TileState["status"]) => tileStates.filter((t) => t.status === k).length;
@@ -192,3 +223,82 @@ export function notableYears(data: SimulateResponse): { year: number; tag: "drie
     return { year: y.year, tag };
   });
 }
+
+
+// ---------- gemelo digital: factores por casilla ----------
+
+export type Lens = "crop" | "water" | "temp" | "soil" | "income";
+
+export type TileFactors = {
+  waterM3: number; // riego bruto de la casilla en el mes
+  waterM3ha: number; // por hectárea
+  tempStress: number; // 0 (lejos de los límites del cultivo) .. 1 (en o más allá del límite)
+  tminAbs: number | null;
+  tmaxAbs: number | null;
+  frostLimit: number | null;
+  heatLimit: number | null;
+  soilHealth: number; // 0..1 (rotación)
+  incomeYear: number; // S/ de la casilla en el año
+  kc: number | null;
+};
+
+/** Factores de una casilla en un mes: lo que usan las capas y la ficha. */
+export function tileFactors(data: SimulateResponse, tile: TileState, year: number, month: number, haPerTile: number, palette: Rotation[] = PALETTE): TileFactors {
+  const res = data.rotations.find((r) => r.id === tile.rotationId);
+  const y = res?.byYear.find((b) => b.year === year);
+  const clim = data.source.climateByYear?.find((c) => c.year === year)?.months[month];
+  const crop = tile.cropId ? CROPS[tile.cropId] : null;
+  const waterM3ha = y?.monthlyWaterM3ha?.[month] ?? 0;
+  let tempStress = 0;
+  if (crop && clim) {
+    const margin = Math.min(clim.tminAbs - crop.tFrostC, crop.tHeatC - clim.tmaxAbs);
+    tempStress = Math.max(0, Math.min(1, 1 - margin / 8));
+  }
+  const rot = palette.find((r) => r.id === tile.rotationId);
+  const rc = rot?.crops.find((c) => c.cropId === tile.cropId);
+  const day = rc ? cropOnDay(rc, MONTH_START[month] + 14) : null;
+  return {
+    waterM3: waterM3ha * haPerTile,
+    waterM3ha,
+    tempStress,
+    tminAbs: clim?.tminAbs ?? null,
+    tmaxAbs: clim?.tmaxAbs ?? null,
+    frostLimit: crop?.tFrostC ?? null,
+    heatLimit: crop?.tHeatC ?? null,
+    soilHealth: res?.soil ?? 0,
+    incomeYear: (y?.incomePEN ?? 0) * haPerTile,
+    kc: day?.kc ?? null,
+  };
+}
+
+/** Escala de color de cada capa: 0..1 → color (verde = bien, rojo = mal). */
+const RAMP_GOOD_BAD = ["#3f9e5a", "#9cc65a", "#f0c94a", "#ec8a3c", "#d9473a"];
+const RAMP_BLUE = ["#e8f3fb", "#9fd0ef", "#4fa3dc", "#2b6cb0", "#1b3f7a"];
+
+function ramp(colors: string[], v: number) {
+  const x = Math.max(0, Math.min(0.999, v)) * (colors.length - 1);
+  return colors[Math.floor(x + 0.5)];
+}
+
+/** Color de la casilla para una capa (null = color normal del suelo). */
+export function lensColor(lens: Lens, f: TileFactors, maxWaterM3ha: number, maxIncome: number, minIncome: number): string | null {
+  switch (lens) {
+    case "water":
+      return ramp(RAMP_BLUE, maxWaterM3ha > 0 ? f.waterM3ha / maxWaterM3ha : 0);
+    case "temp":
+      return ramp(RAMP_GOOD_BAD, f.tempStress);
+    case "soil":
+      return ramp(RAMP_GOOD_BAD, 1 - f.soilHealth);
+    case "income":
+      return ramp(RAMP_GOOD_BAD, maxIncome > minIncome ? 1 - (f.incomeYear - minIncome) / (maxIncome - minIncome) : 0);
+    default:
+      return null;
+  }
+}
+
+export const LENS_RAMP: Record<Exclude<Lens, "crop">, string[]> = {
+  water: RAMP_BLUE,
+  temp: RAMP_GOOD_BAD,
+  soil: [...RAMP_GOOD_BAD],
+  income: [...RAMP_GOOD_BAD],
+};

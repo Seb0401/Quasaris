@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { TileState } from "@/lib/granja-sim";
-import { ROTATION_COLOR } from "@/lib/granja-sim";
+import { rotationColor } from "@/lib/granja-sim";
 import { Clouds, Cow, Farmer, Fence, House, Island, Pond, Tree, Volcano, Windmill } from "./diorama-props";
 import { GEO, MAT, SOIL, rand } from "./low-poly";
 import { PlantField } from "./plant-field";
@@ -36,8 +36,23 @@ type Props = {
   harvestTiles: number[];
   harvestKey: string;
   selectedTile: number | null;
-  onTileTap: (i: number) => void;
+  /** Modo pintar: la cámara se bloquea y arrastrar el dedo pinta casillas. */
+  paintMode: boolean;
+  onPaint: (i: number, start: boolean) => void;
+  onSelect: (i: number) => void;
+  /** Color de capa por casilla (null = suelo normal). */
+  tints?: (string | null)[];
 };
+
+const tintCache = new Map<string, THREE.MeshStandardMaterial>();
+function tintMat(color: string) {
+  let m = tintCache.get(color);
+  if (!m) {
+    m = new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 0.9 });
+    tintCache.set(color, m);
+  }
+  return m;
+}
 
 function tilePos(i: number, cols: number, rows: number): [number, number] {
   const c = i % cols;
@@ -45,22 +60,66 @@ function tilePos(i: number, cols: number, rows: number): [number, number] {
   return [(c - (cols - 1) / 2) * STEP, (r - (rows - 1) / 2) * STEP];
 }
 
-function Plot({ i, x, z, state, selected, onTap }: { i: number; x: number; z: number; state: TileState; selected: boolean; onTap: (i: number) => void }) {
-  const tap = (e: ThreeEvent<MouseEvent>) => {
+function Plot({
+  i,
+  x,
+  z,
+  state,
+  selected,
+  tint,
+  paintMode,
+  paintingRef,
+  onPaint,
+  onSelect,
+}: {
+  i: number;
+  x: number;
+  z: number;
+  state: TileState;
+  selected: boolean;
+  tint: string | null;
+  paintMode: boolean;
+  paintingRef: React.RefObject<boolean>;
+  onPaint: (i: number, start: boolean) => void;
+  onSelect: (i: number) => void;
+}) {
+  const down = (e: ThreeEvent<PointerEvent>) => {
+    if (!paintMode) return;
     e.stopPropagation();
-    if (e.delta > 6) return; // fue un arrastre de cámara
-    onTap(i);
+    paintingRef.current = true;
+    onPaint(i, true);
   };
-  const frame = selected ? "#ffffff" : (ROTATION_COLOR[state.rotationId] ?? "#999");
+  const over = (e: ThreeEvent<PointerEvent>) => {
+    if (!paintMode || !paintingRef.current) return;
+    e.stopPropagation();
+    onPaint(i, false);
+  };
+  const click = (e: ThreeEvent<MouseEvent>) => {
+    e.stopPropagation();
+    if (paintMode || e.delta > 6) return; // en modo ver: tocar abre la ficha
+    onSelect(i);
+  };
+  const frame = selected ? "#ffffff" : rotationColor(state.rotationId);
+  const soilMat = tint ? tintMat(tint) : (SOIL[state.status] ?? SOIL.bare);
   return (
     <group>
       <mesh position={[x, 0.06, z]} scale={[TILE + 0.16, 0.12, TILE + 0.16]} geometry={GEO.soil} receiveShadow>
         <meshStandardMaterial color={frame} flatShading emissive={selected ? "#ffffff" : "#000000"} emissiveIntensity={selected ? 0.4 : 0} />
       </mesh>
-      <mesh position={[x, SOIL_H / 2 + 0.06, z]} scale={[TILE, SOIL_H, TILE]} geometry={GEO.soil} material={SOIL[state.status] ?? SOIL.bare} onClick={tap} receiveShadow />
-      {[-0.66, 0, 0.66].map((d) => (
-        <mesh key={d} position={[x + d, SOIL_H + 0.08, z]} scale={[0.16, 0.06, TILE * 0.92]} geometry={GEO.soil} material={SOIL.bare} receiveShadow />
-      ))}
+      <mesh
+        position={[x, SOIL_H / 2 + 0.06, z]}
+        scale={[TILE, SOIL_H, TILE]}
+        geometry={GEO.soil}
+        material={soilMat}
+        onPointerDown={down}
+        onPointerOver={over}
+        onClick={click}
+        receiveShadow
+      />
+      {!tint &&
+        [-0.66, 0, 0.66].map((d) => (
+          <mesh key={d} position={[x + d, SOIL_H + 0.08, z]} scale={[0.16, 0.06, TILE * 0.92]} geometry={GEO.soil} material={SOIL.bare} receiveShadow />
+        ))}
     </group>
   );
 }
@@ -132,7 +191,19 @@ function AutoZoom({ span, height }: { span: number; height: number }) {
   return null;
 }
 
-export default function FarmScene({ cols, rows, tiles, reservoir, weather, harvestTiles, harvestKey, selectedTile, onTileTap }: Props) {
+export default function FarmScene({ cols, rows, tiles, reservoir, weather, harvestTiles, harvestKey, selectedTile, paintMode, onPaint, onSelect, tints }: Props) {
+  const paintingRef = useRef(false);
+  useEffect(() => {
+    const stop = () => {
+      paintingRef.current = false;
+    };
+    window.addEventListener("pointerup", stop);
+    window.addEventListener("pointercancel", stop);
+    return () => {
+      window.removeEventListener("pointerup", stop);
+      window.removeEventListener("pointercancel", stop);
+    };
+  }, []);
   const w = cols * STEP;
   const d = rows * STEP;
   const W = w + MARGIN_X * 2;
@@ -182,7 +253,21 @@ export default function FarmScene({ cols, rows, tiles, reservoir, weather, harve
 
       {tiles.map((t, i) => {
         const [x, z] = tilePos(i, cols, rows);
-        return <Plot key={i} i={i} x={x} z={z} state={t} selected={selectedTile === i} onTap={onTileTap} />;
+        return (
+          <Plot
+            key={i}
+            i={i}
+            x={x}
+            z={z}
+            state={t}
+            selected={selectedTile === i}
+            tint={tints?.[i] ?? null}
+            paintMode={paintMode}
+            paintingRef={paintingRef}
+            onPaint={onPaint}
+            onSelect={onSelect}
+          />
+        );
       })}
       <PlantField tiles={tiles} tileCenter={center} tileSize={TILE} soilTop={SOIL_H + 0.06} />
       {cows.map((c) => (
@@ -205,7 +290,7 @@ export default function FarmScene({ cols, rows, tiles, reservoir, weather, harve
       {weather === "frost" && <Particles kind="snow" width={Math.max(W, D)} />}
       {weather === "dry" && <Particles kind="dust" width={Math.max(W, D)} />}
 
-      <OrbitControls enablePan={false} minPolarAngle={0.85} maxPolarAngle={1.05} minZoom={8} maxZoom={120} enableDamping target={[0, 0, 0]} />
+      <OrbitControls enabled={!paintMode} enablePan={false} minPolarAngle={0.85} maxPolarAngle={1.05} minZoom={8} maxZoom={120} enableDamping target={[0, 0, 0]} />
     </Canvas>
   );
 }

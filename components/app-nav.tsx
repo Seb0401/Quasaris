@@ -22,6 +22,8 @@ export function AppNav() {
   const rest = pathname.split("/").slice(2).join("/");
   const other = locale === "es" ? "en" : "es";
   const label = (key: string) => key === "home" ? (locale === "es" ? "Inicio" : "Home") : t(`nav.${key}`);
+  // nombres cortos para la barra del celular (6 pestañas en una fila)
+  const short = (key: string) => (key === "tiempo" ? (locale === "es" ? "Tiempo" : "Time") : key === "parcela" ? (locale === "es" ? "Parcela" : "Field") : label(key));
 
   return (
     <>
@@ -56,7 +58,7 @@ export function AppNav() {
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const active = tab.href ? rest.startsWith(tab.href) : rest === "";
-            return <li key={tab.key}><Link href={`/${locale}${tab.href ? `/${tab.href}` : ""}`} className={active ? "active" : ""}><Icon size={21} /><span>{label(tab.key)}</span></Link></li>;
+            return <li key={tab.key}><Link href={`/${locale}${tab.href ? `/${tab.href}` : ""}`} className={active ? "active" : ""} aria-label={label(tab.key)}><Icon size={21} /><span>{short(tab.key)}</span></Link></li>;
           })}
         </ul>
       </nav>

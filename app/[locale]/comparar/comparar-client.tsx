@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Crown, Droplets, FlaskConical, Leaf, Mountain, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Crown, Droplets, FlaskConical, Leaf, Mountain, PencilLine, Sprout, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
 import { Reveal } from "@/components/motion/reveal";
@@ -48,7 +48,23 @@ export function CompararClient() {
         <HeroStat icon={Satellite} label="NASA POWER">{data.source.period[0]}–{data.source.period[1]}</HeroStat>
         {data.source.elevationM !== undefined && <HeroStat icon={Mountain} label={es ? "ALTITUD SRTM" : "SRTM ELEVATION"} tone="lime"><CountUp value={data.source.elevationM} format={(v) => `${n.format(v)} m`} /></HeroStat>}
         <HeroStat icon={Target} label={es ? "ESCENARIOS" : "SCENARIOS"} tone="amber">{rows.length}</HeroStat>
+        {data.source.rootZoneWetness && (
+          <HeroStat icon={Sprout} label={es ? "HUMEDAD SUELO" : "SOIL MOISTURE"} tone="sky">
+            <CountUp value={(data.source.rootZoneWetness.reduce((a, b) => a + b, 0) / data.source.rootZoneWetness.length) * 100} format={(v) => `${Math.round(v)}%`} />
+          </HeroStat>
+        )}
       </PageHeader>
+
+      <div className="compare-toolbar">
+        {data.source.rootZoneWetness && (
+          <p className="ui-hint"><Sprout size={14} />{t("comparar.soilWetness", {
+            pct: `${Math.round((data.source.rootZoneWetness.reduce((a, b) => a + b, 0) / data.source.rootZoneWetness.length) * 100)}%`,
+            min: `${Math.round(Math.min(...data.source.rootZoneWetness) * 100)}%`,
+            max: `${Math.round(Math.max(...data.source.rootZoneWetness) * 100)}%`,
+          })}</p>
+        )}
+        <Link href={`/${locale}/rotaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><PencilLine size={14} />{t("rotaciones.edit")}</Link>
+      </div>
 
       {data.source.power === "mock" && <p className="ui-alert tone-warn"><FlaskConical size={16} />{t("comparar.mockWarning")}</p>}
 

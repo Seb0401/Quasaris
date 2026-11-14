@@ -41,6 +41,7 @@ Parcela (lat, lon) ──► SRTM: altitud real ──► elige 2 celdas NASA PO
 | Datos SENAMHI Pampa de Majes (116006) | Equipo | Descarga manual; pasos en `docs/VALIDATION.md` §3. Luego: `python scripts/validate_senamhi.py` |
 | Escenario de agua de Majes | Equipo | Confirmar el agua asignada por hectárea y el sistema de riego más común. Hoy: aspersión y 15.000 m³/ha (estimado) en `lib/farm-store.ts` y `scripts/make_mock.py` |
 | Precios, rendimientos y costos | Agrónomo | Valores estimados en `data/crops.json` |
+| Fechas de siembra de la rotación "Ingreso" | Agrónomo | La papa (agosto, 145 días) se cruza 43 días con el maíz chala sembrado en diciembre; el editor `/rotaciones` lo marca. Ajustar en `data/rotations_majes.json` |
 | Completar `docs/AI_USAGE.md` | Equipo | Secciones marcadas con ✏️ |
 
 ## Correr en local

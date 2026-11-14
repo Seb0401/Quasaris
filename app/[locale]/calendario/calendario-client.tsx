@@ -170,6 +170,9 @@ export function CalendarioClient() {
                 <HeatRow icon={Snowflake} label={t("calendario.frostRow")} values={climate.weeks.map((w) => heat(w.pFrost, "#5cc8f5"))} empty={!anyFrost ? t("calendario.never") : undefined} />
                 <HeatRow icon={Flame} label={t("calendario.heatRow")} values={climate.weeks.map((w) => heat(w.pHeat, "#ff6b6b"))} empty={!anyHeat ? t("calendario.never") : undefined} />
                 <HeatRow icon={Droplets} label={t("calendario.et0Row")} values={climate.weeks.map((w) => heat(w.et0MeanMm / maxEt0, "#63def2"))} />
+                {climate.weeks[0]?.soilWetness !== undefined && (
+                  <HeatRow icon={Sprout} label={t("calendario.soilRow")} values={climate.weeks.map((w) => heat(Math.max(0, Math.min(1, ((w.soilWetness ?? 0.3) - 0.3) / 0.4)), "#b9ff63"))} />
+                )}
               </div>
             )}
 

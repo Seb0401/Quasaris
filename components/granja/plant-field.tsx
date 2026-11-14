@@ -3,7 +3,7 @@
 import { useFrame } from "@react-three/fiber";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import type { TileState } from "@/lib/granja-sim";
+import type { Stage, TileState } from "@/lib/granja-sim";
 import { GEO, MAT, rand } from "./low-poly";
 
 /**
@@ -16,41 +16,87 @@ type MatKey = keyof typeof MAT;
 type Look = "ok" | "dry" | "frost";
 type Part = { g: GeoKey; m: MatKey; p: [number, number, number]; r?: [number, number, number]; s?: [number, number, number] };
 
-const leaf = (look: Look): MatKey => (look === "dry" ? "leafDry" : look === "frost" ? "leafFrost" : "leaf");
-const dark = (look: Look): MatKey => (look === "ok" ? "leafDark" : leaf(look));
+const leaf = (look: Look, ok: MatKey = "leaf"): MatKey => (look === "dry" ? "leafDry" : look === "frost" ? "leafFrost" : ok);
 
-function parts(cropId: string, look: Look, growth: number): Part[] {
+/** Piezas de cada cultivo según su etapa: brote, crecimiento, flor y cosecha (bien distintas entre cultivos). */
+function parts(cropId: string, look: Look, stage: Stage): Part[] {
+  if (stage === "sprout") {
+    const m = leaf(look, "leafLight");
+    return [
+      { g: "sproutLeaf", m, p: [0.05, 0.1, 0], r: [0, 0, -0.5] },
+      { g: "sproutLeaf", m, p: [-0.05, 0.1, 0], r: [0, 0, 0.5] },
+    ];
+  }
+  const late = stage === "harvest";
   switch (cropId) {
     case "alfalfa":
       return [
-        { g: "bush", m: leaf(look), p: [0, 0.15, 0], s: [1.1, 0.6, 1.1] },
-        { g: "bushSmall", m: dark(look), p: [0.15, 0.22, 0.1] },
-        ...(growth > 0.6 && look === "ok" ? [{ g: "flower", m: "flowerPurple", p: [-0.05, 0.38, 0] } as Part] : []),
+        { g: "bush", m: leaf(look, "leafLight"), p: [0, 0.15, 0], s: [1.15, 0.65, 1.15] },
+        { g: "bushSmall", m: leaf(look, "leaf"), p: [0.16, 0.24, 0.1] },
+        ...(stage !== "grow" && look === "ok"
+          ? ([
+              { g: "flower", m: "flowerPurple", p: [-0.06, 0.4, 0] },
+              { g: "flower", m: "flowerPurple", p: [0.14, 0.38, 0.12] },
+              { g: "flower", m: "flowerPurple", p: [0.02, 0.36, -0.15] },
+            ] as Part[])
+          : []),
       ];
     case "papa":
       return [
-        { g: "bush", m: dark(look), p: [0, 0.25, 0], s: [1, 0.9, 1] },
-        ...(growth > 0.45 && growth < 0.8 && look === "ok" ? [{ g: "flower", m: "potatoFlower", p: [0.05, 0.52, 0.05] } as Part] : []),
+        { g: "bush", m: late ? leaf(look, "leafYellow") : leaf(look, "leafDark"), p: [0, 0.27, 0], s: [1.05, 0.95, 1.05] },
+        ...(stage === "flower" && look === "ok"
+          ? ([
+              { g: "flower", m: "whiteFlower", p: [0.06, 0.55, 0.05] },
+              { g: "flower", m: "whiteFlower", p: [-0.1, 0.5, -0.04] },
+            ] as Part[])
+          : []),
+        ...(late
+          ? ([
+              { g: "tuber", m: "tuber", p: [0.22, 0.05, 0.1] },
+              { g: "tuber", m: "tuber", p: [-0.2, 0.05, -0.08] },
+            ] as Part[])
+          : []),
       ];
-    case "cebolla":
+    case "cebolla": {
+      const m = late ? leaf(look, "leafYellow") : leaf(look, "onionLeaf");
+      const bulb: GeoKey = stage === "grow" ? "bulb" : "bulbBig";
+      const lean = late ? 0.9 : 0.25; // en cosecha las hojas se acuestan
       return [
-        { g: "bulb", m: "onionBulb", p: [0, 0.08, 0] },
-        { g: "blade", m: leaf(look), p: [0, 0.4, 0] },
-        { g: "blade", m: leaf(look), p: [0.06, 0.36, 0], r: [0, 0, -0.25] },
-        { g: "blade", m: leaf(look), p: [-0.06, 0.36, 0], r: [0, 0, 0.25] },
+        { g: bulb, m: "onionBulb", p: [0, 0.1, 0] },
+        { g: "blade", m, p: [0, late ? 0.25 : 0.42, 0], r: [late ? 0.6 : 0, 0, 0] },
+        { g: "blade", m, p: [0.07, 0.36, 0], r: [0, 0, -lean] },
+        { g: "blade", m, p: [-0.07, 0.36, 0], r: [0, 0, lean] },
       ];
-    case "maiz_chala":
+    }
+    case "maiz_chala": {
+      const tall = stage === "grow" ? 0.7 : 1;
+      const m = late ? leaf(look, "leafYellow") : leaf(look);
       return [
-        { g: "stalk", m: look === "ok" ? "cornStalk" : leaf(look), p: [0, 0.7, 0] },
-        { g: "cornLeaf", m: leaf(look), p: [0.18, 0.6, 0], r: [0, 0, -1] },
-        { g: "cornLeaf", m: leaf(look), p: [-0.18, 0.9, 0], r: [0, 0, 1] },
-        ...(growth > 0.55 ? [{ g: "cob", m: "cob", p: [0.09, 0.95, 0], r: [0, 0, -0.4] } as Part] : []),
+        { g: "stalk", m: late ? "leafYellow" : look === "ok" ? "cornStalk" : leaf(look), p: [0, 0.7 * tall, 0], s: [1, tall, 1] },
+        { g: "cornLeaf", m, p: [0.18, 0.55 * tall, 0], r: [0, 0, -1] },
+        { g: "cornLeaf", m, p: [-0.18, 0.85 * tall, 0], r: [0, 0, 1] },
+        ...(stage !== "grow" ? ([{ g: "tassel", m: "tassel", p: [0, 1.5, 0] }] as Part[]) : []),
+        ...(stage !== "grow" ? ([{ g: "cob", m: "cob", p: [0.09, 0.95, 0], r: [0, 0, -0.4] }] as Part[]) : []),
       ];
-    default: // haba, frijol
+    }
+    case "haba":
       return [
-        { g: "bushSmall", m: leaf(look), p: [0, 0.2, 0] },
-        { g: "bushSmall", m: dark(look), p: [0.08, 0.36, 0.04], s: [0.8, 0.8, 0.8] },
-        ...(growth > 0.5 ? [{ g: "pod", m: "pod", p: [-0.14, 0.24, 0.05], r: [0, 0, 0.6] } as Part] : []),
+        { g: "bushSmall", m: leaf(look, "habaLeaf"), p: [0, 0.22, 0], s: [0.9, 1.4, 0.9] },
+        { g: "bushSmall", m: leaf(look, "habaLeaf"), p: [0.05, 0.45, 0.03], s: [0.75, 1.1, 0.75] },
+        ...(stage === "flower" && look === "ok" ? ([{ g: "flower", m: "whiteFlower", p: [-0.1, 0.5, 0.06] }] as Part[]) : []),
+        ...(stage !== "grow"
+          ? ([
+              { g: "pod", m: late ? "podDark" : "pod", p: [-0.14, 0.3, 0.05], r: [0, 0, 0.6] },
+              { g: "pod", m: late ? "podDark" : "pod", p: [0.13, 0.36, -0.05], r: [0, 0, -0.6] },
+            ] as Part[])
+          : []),
+      ];
+    default: // frijol
+      return [
+        { g: "bushSmall", m: late ? leaf(look, "leafYellow") : leaf(look), p: [0, 0.2, 0] },
+        { g: "bushSmall", m: leaf(look, "leafDark"), p: [0.08, 0.34, 0.04], s: [0.8, 0.8, 0.8] },
+        ...(stage === "flower" && look === "ok" ? ([{ g: "flower", m: "redFlower", p: [-0.08, 0.42, 0.04] }] as Part[]) : []),
+        ...(stage !== "grow" ? ([{ g: "pod", m: "pod", p: [-0.14, 0.24, 0.05], r: [0, 0, 0.6] }] as Part[]) : []),
       ];
   }
 }
@@ -89,7 +135,7 @@ export function PlantField({
       if (!t.cropId) return;
       // solo se ven secas si el reservorio se vació; la alta demanda mensual es normal en Majes
       const look: Look = t.status === "dry" ? "dry" : t.status === "climate_risk" ? "frost" : "ok";
-      const ps = parts(t.cropId, look, t.growth);
+      const ps = parts(t.cropId, look, t.stage ?? "grow");
       const [cx, cz] = tileCenter(i);
       for (let a = 0; a < perSide; a++)
         for (let b = 0; b < perSide; b++) {
