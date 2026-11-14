@@ -45,6 +45,8 @@ export type TileState = {
   growth: number; // 0..1 dentro del ciclo
   stage: Stage | null;
   status: MonthStatus | "dry" | "disease" | "pest"; // dry = el reservorio se vació; disease/pest = eventos
+  /** asociación: los otros cultivos que comparten la casilla este mes */
+  mix?: { cropId: string; stage: Stage }[];
 };
 
 export function stageOf(growth: number): Stage {
@@ -84,7 +86,7 @@ function incomeShare(r: Rotation): number[] {
   const share = Array(12).fill(0);
   if (r.crops.length === 0) return share;
   const months = harvestMonths(r);
-  const per = 1 / r.crops.length;
+  const per = 1 / r.crops.length; // en una asociación cada cultivo aporta su parte del lote
   months.forEach((m) => {
     if (m === -1) for (let i = 0; i < 12; i++) share[i] += per / 12;
     else share[m] += per;
@@ -92,8 +94,16 @@ function incomeShare(r: Rotation): number[] {
   return share;
 }
 
-function cropAt(r: Rotation, month: number): { cropId: string | null; growth: number } {
+function cropAt(r: Rotation, month: number): { cropId: string | null; growth: number; mix?: TileState["mix"] } {
   const doy = MONTH_START[month] + 14;
+  if (r.mode === "association") {
+    const here = r.crops.flatMap((rc) => {
+      const d = cropOnDay(rc, doy);
+      return d ? [{ cropId: rc.cropId, growth: CROPS[rc.cropId].perennial ? 0.6 : d.dayInCycle / cycleDays(rc.cropId) }] : [];
+    });
+    if (!here.length) return { cropId: null, growth: 0 };
+    return { ...here[0], mix: here.slice(1).map((h) => ({ cropId: h.cropId, stage: stageOf(h.growth) })) };
+  }
   let best: { cropId: string | null; growth: number; kc: number } = { cropId: null, growth: 0, kc: 0 };
   for (const rc of r.crops) {
     const d = cropOnDay(rc, doy);
@@ -157,7 +167,7 @@ export function simulateYear(
     const tileStates: TileState[] = tiles.map((id, i) => {
       const r = rot.get(id);
       const y = yearOf(id);
-      const { cropId, growth } = active[i];
+      const { cropId, growth, mix } = active[i];
       let status: TileState["status"] = y?.months[m] ?? "bare";
       if (!cropId) status = "bare";
       else if (m >= dryFrom) status = "dry";
@@ -181,7 +191,7 @@ export function simulateYear(
           harvestMonths(r).forEach((hm, k) => hm === m && harvests.push({ tile: i, cropId: r.crops[k].cropId }));
         }
       }
-      return { rotationId: id, cropId, growth, stage: cropId ? stageOf(growth) : null, status };
+      return { rotationId: id, cropId, growth, stage: cropId ? stageOf(growth) : null, status, ...(mix?.length ? { mix } : {}) };
     });
 
     const count = (k: TileState["status"]) => tileStates.filter((t) => t.status === k).length;

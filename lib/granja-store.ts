@@ -78,6 +78,19 @@ export function resizeFarm(ha: number) {
   }));
 }
 
+/** Ajusta la granja al área real dibujada en el mapa: elige la cuadrícula más parecida y reparte el área exacta. */
+export function resizeFarmToArea(areaHa: number) {
+  if (!(areaHa > 0)) return;
+  const size = [...FARM_SIZES].sort((x, y) => Math.abs(Math.log(x.ha / areaHa)) - Math.abs(Math.log(y.ha / areaHa)))[0];
+  const n = size.cols * size.rows;
+  setGranja((s) => ({
+    cols: size.cols,
+    rows: size.rows,
+    haPerTile: areaHa / n,
+    tiles: Array.from({ length: n }, (_, i) => s.tiles[i] ?? "actual"),
+  }));
+}
+
 export function useGranja(): GranjaState {
   return useSyncExternalStore(
     (l) => {

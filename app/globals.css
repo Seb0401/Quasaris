@@ -286,6 +286,22 @@
 .gm-search-list button > svg { color: rgba(255, 255, 255, .5); }
 .gm-search-list span { display: flex; flex-direction: column; }
 .gm-search-list small { color: rgba(255, 255, 255, .45); font-size: 10.5px; }
+.gm-draw-btn { top: 50px; right: 12px; height: 34px; padding: 0 13px; border-color: rgba(185, 255, 99, .5); cursor: pointer; font-size: 11.5px; }
+.gm-draw-btn:hover { color: var(--brand-ink); background: var(--brand); }
+.gm-draw-btn svg { color: var(--brand); }
+.gm-draw-btn:hover svg { color: inherit; }
+.gm-drawbar { position: absolute; z-index: 750; top: 12px; left: 50%; display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 14px; border: 1px solid rgba(185, 255, 99, .5); border-radius: 999px; color: white; background: rgba(6, 22, 32, .94); box-shadow: 0 10px 28px rgba(0, 0, 0, .45); transform: translateX(-50%); animation: fadeUp .25s var(--ease) both; }
+.gm-drawbar > span { display: flex; flex-direction: column; margin-right: 6px; line-height: 1.15; white-space: nowrap; }
+.gm-drawbar b { font-size: 12.5px; }
+.gm-drawbar small { color: rgba(255, 255, 255, .55); font-size: 10px; }
+.gm-drawbar button { display: inline-flex; height: 34px; min-width: 34px; align-items: center; justify-content: center; gap: 5px; padding: 0 9px; border: 0; border-radius: 999px; color: white; background: rgba(255, 255, 255, .08); cursor: pointer; font-size: 12px; font-weight: 750; }
+.gm-drawbar button:disabled { opacity: .4; cursor: default; }
+.gm-drawbar button.ok { color: var(--brand-ink); background: var(--brand); }
+.gm-search-note { padding: 7px 16px; color: rgba(255, 255, 255, .5); font-size: 11.5px; }
+.gm-search-osm > svg { color: var(--cyan) !important; }
+.map-view .gm-drawbar { top: 66px; }
+@media (min-width: 1050px) { .map-view .gm-drawbar { top: 12px; left: calc(50% + 190px); } }
+@media (max-width: 600px) { .gm-drawbar { left: 8px; right: 8px; transform: none; } .gm-drawbar > span { flex: 1; min-width: 0; } }
 .parcel-map-shell.compact .gm-layers-btn { width: 54px; height: 54px; }
 .parcel-map-shell.compact .gm-layers-pop { left: 64px; bottom: 0; width: min(500px, calc(100vw - 150px)); }
 .parcel-map-shell.compact .gm-pop-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -331,6 +347,7 @@
   .map-view .gm-layers-anchor, .map-view .gm-controls { bottom: 128px; }
   .map-view .gm-coords { display: none; }
   .map-view .gm-date { top: 66px; }
+  .map-view .gm-draw-btn { top: 104px; }
 }
 @media (min-width: 1050px) {
   .map-view { height: calc(100dvh - 56px); margin: -4px 0 0; }

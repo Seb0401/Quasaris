@@ -45,7 +45,7 @@ export function AgrupacionesClient() {
   };
   const save = () => {
     if (farm.rotations.length >= MAX_ROTATIONS || crops.length === 0) return;
-    setFarm({ rotations: [...farm.rotations, { id: newRotationId(), name: crops.map((c) => names(c.cropId)).join(" · "), isCurrent: false, crops }] });
+    setFarm({ rotations: [...farm.rotations, { id: newRotationId(), name: crops.map((c) => names(c.cropId)).join(" · "), isCurrent: false, crops, mode }] });
     setSaved(true);
   };
 

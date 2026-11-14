@@ -50,6 +50,18 @@ class Crop:
 
 
 @lru_cache
+def companions() -> dict[frozenset, int]:
+    """Efecto de asociar dos cultivos (-2..+2), de data/crops.json. '*' = con cualquier otro."""
+    raw = json.loads((ROOT / "data" / "crops.json").read_text(encoding="utf-8")).get("companions", [])
+    return {frozenset((c["a"], c["b"])): int(c["effect"]) for c in raw}
+
+
+def companion_effect(a: str, b: str) -> int:
+    table = companions()
+    return table.get(frozenset((a, b)), table.get(frozenset((a, "*")), table.get(frozenset((b, "*")), 0)))
+
+
+@lru_cache
 def catalog() -> dict[str, Crop]:
     raw = json.loads((ROOT / "data" / "crops.json").read_text(encoding="utf-8"))["crops"]
     out = {}

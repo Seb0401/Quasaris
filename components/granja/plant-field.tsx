@@ -135,7 +135,8 @@ export function PlantField({
       if (!t.cropId) return;
       // solo se ven secas si el reservorio se vació; la alta demanda mensual es normal en Majes
       const look: Look = t.status === "dry" ? "dry" : t.status === "climate_risk" ? "frost" : "ok";
-      const ps = parts(t.cropId, look, t.stage ?? "grow");
+      // asociación: los cultivos se alternan en damero dentro de la casilla
+      const kinds = [parts(t.cropId, look, t.stage ?? "grow"), ...(t.mix ?? []).map((x) => parts(x.cropId, look, x.stage))];
       const [cx, cz] = tileCenter(i);
       for (let a = 0; a < perSide; a++)
         for (let b = 0; b < perSide; b++) {
@@ -143,7 +144,7 @@ export function PlantField({
           const x = cx - tileSize / 2 + cell * (a + 0.5) + (rand(s) - 0.5) * 0.25;
           const z = cz - tileSize / 2 + cell * (b + 0.5) + (rand(s + 3) - 0.5) * 0.25;
           const plant = new THREE.Matrix4().compose(tmpV.set(x, soilTop, z), tmpQ.setFromEuler(tmpE.set(0, rand(s + 9) * Math.PI * 2, 0)), tmpS.set(1, 1, 1));
-          for (const p of ps) {
+          for (const p of kinds[(a + b) % kinds.length]) {
             const key = `${p.g}|${p.m}`;
             if (!map.has(key)) map.set(key, { g: p.g, m: p.m, items: [] });
             map.get(key)!.items.push({ tile: i, plant, local: localMatrix(p) });

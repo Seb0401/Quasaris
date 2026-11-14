@@ -13,6 +13,9 @@ export type FarmState = {
   waterAvailableM3ha: number;
   priorities: Priorities;
   rotations: Rotation[];
+  /** contorno dibujado en el mapa [lat, lon][] y su área en hectáreas (opcional) */
+  boundary?: [number, number][];
+  areaHa?: number;
 };
 
 const KEY = "farmtwin.state.v2";
