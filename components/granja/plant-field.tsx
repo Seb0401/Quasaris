@@ -87,7 +87,8 @@ export function PlantField({
     const cell = tileSize / perSide;
     tiles.forEach((t, i) => {
       if (!t.cropId) return;
-      const look: Look = t.status === "dry" || t.status === "water_stress" ? "dry" : t.status === "climate_risk" ? "frost" : "ok";
+      // solo se ven secas si el reservorio se vació; la alta demanda mensual es normal en Majes
+      const look: Look = t.status === "dry" ? "dry" : t.status === "climate_risk" ? "frost" : "ok";
       const ps = parts(t.cropId, look, t.growth);
       const [cx, cz] = tileCenter(i);
       for (let a = 0; a < perSide; a++)

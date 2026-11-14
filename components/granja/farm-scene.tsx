@@ -123,8 +123,8 @@ function AutoZoom({ span, height }: { span: number; height: number }) {
   const size = useThree((s) => s.size);
   const get = useThree((s) => s.get);
   useEffect(() => {
-    const zx = size.width / (span * 1.05);
-    const zy = size.height / (span * 0.62 + height);
+    const zx = size.width / (span * 0.82);
+    const zy = size.height / (span * 0.5 + height);
     const cam = get().camera as THREE.OrthographicCamera;
     cam.zoom = Math.min(zx, zy);
     cam.updateProjectionMatrix();
@@ -162,7 +162,7 @@ export default function FarmScene({ cols, rows, tiles, reservoir, weather, harve
       gl={{ antialias: true, alpha: true, powerPreference: "low-power", preserveDrawingBuffer: typeof window !== "undefined" && window.location.search.includes("shot") }}
       className="touch-none"
     >
-      <AutoZoom span={span} height={7} />
+      <AutoZoom span={span} height={4} />
       <hemisphereLight args={["#ffffff", "#c9b28a", 1.15]} />
       <directionalLight
         position={[14, 22, 8]}

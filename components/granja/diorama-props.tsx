@@ -146,23 +146,27 @@ export function Pond({ x, z, level }: { x: number; z: number; level: number }) {
   useFrame(({ clock }, dt) => {
     const w = water.current;
     if (!w) return;
-    const target = -0.55 + Math.max(0.02, level) * 0.6;
+    const target = 0.04 + Math.max(0.02, level) * 0.3; // reservorio elevado: el nivel se ve
     w.position.y += (target - w.position.y) * Math.min(1, dt * 3);
     w.rotation.y = Math.sin(clock.elapsedTime * 0.5) * 0.05;
   });
-  const stones = useMemo(() => Array.from({ length: 12 }, (_, i) => (i / 12) * Math.PI * 2), []);
+  const stones = useMemo(() => Array.from({ length: 14 }, (_, i) => (i / 14) * Math.PI * 2), []);
   return (
     <group position={[x, 0, z]}>
-      {/* hueco */}
-      <mesh position={[0, -0.32, 0]}>
-        <cylinderGeometry args={[1.5, 1.3, 0.7, 12]} />
+      {/* fondo y muro del reservorio */}
+      <mesh position={[0, 0.02, 0]}>
+        <cylinderGeometry args={[1.45, 1.45, 0.04, 14]} />
         <meshStandardMaterial color="#7a6a55" flatShading />
       </mesh>
-      <mesh ref={water} position={[0, 0, 0]} material={MAT.water}>
-        <cylinderGeometry args={[1.42, 1.42, 0.08, 12]} />
+      <mesh position={[0, 0.2, 0]}>
+        <cylinderGeometry args={[1.5, 1.55, 0.4, 14, 1, true]} />
+        <meshStandardMaterial color="#b9b1a3" flatShading side={THREE.DoubleSide} />
+      </mesh>
+      <mesh ref={water} position={[0, 0.3, 0]} material={MAT.water}>
+        <cylinderGeometry args={[1.44, 1.44, 0.06, 14]} />
       </mesh>
       {stones.map((a, i) => (
-        <mesh key={i} position={[Math.cos(a) * 1.6, 0.05, Math.sin(a) * 1.6]} geometry={GEO.rock} material={DM.stone} scale={0.32 + rand(i) * 0.15} castShadow />
+        <mesh key={i} position={[Math.cos(a) * 1.62, 0.38, Math.sin(a) * 1.62]} geometry={GEO.rock} material={DM.stone} scale={0.28 + rand(i) * 0.12} castShadow />
       ))}
     </group>
   );
