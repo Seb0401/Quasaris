@@ -3,7 +3,7 @@
 import "./calendar.css";
 
 import { useEffect, useState } from "react";
-import { CalendarDays, Check, CloudSun, Leaf, MapPin, Satellite, Sprout } from "lucide-react";
+import { CalendarDays, Check, CloudSun, Leaf, MapPin, Sprout } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import type { ClimateResponse } from "@/lib/contract";
 import { CROPS, MONTH_START, cropName, cropOnDay, cropSegments, cycleDays, dayOfYear, weekOf, weekOutlook } from "@/lib/crop-calendar";
@@ -66,18 +66,18 @@ export function CalendarioClient() {
     subtitle: "Revisa el ciclo aproximado de los cultivos de tu rotación y el clima histórico de la parcela.",
     timing: "Las fechas son aproximadas: solo se conoce el mes de siembra y las duraciones deben validarse localmente.",
     sow: "Siembra", duration: "duración aproximada", days: "días", unknown: "Cultivo sin datos de duración", allYear: "Cultivo perenne: presente todo el año; los cortes no están programados.",
-    historical: "Clima histórico de esta semana", frost: "Años con mínima ≤ 2 °C", heat: "Años con máxima ≥ 30 °C", disclaimer: "NASA POWER, 2005–2025. Porcentaje de años con al menos un día que superó el umbral general en esta semana. No es pronóstico ni probabilidad de daño para un cultivo.",
+    historical: "Clima histórico de esta semana", frost: "Años con mínima ≤ 2 °C", heat: "Años con máxima ≥ 30 °C", disclaimer: "Datos históricos de 2005–2025. Porcentaje de años con al menos un día que superó el umbral general en esta semana. No es pronóstico ni probabilidad de daño para un cultivo.",
     unavailable: "No se pudieron cargar los datos climáticos. Los ciclos de cultivo siguen disponibles.", cached: "Usando datos climáticos guardados para esta ubicación.", loading: "Cargando datos climáticos…",
     water: "Demanda bruta aproximada de agua para siete días", waterNote: "Estimación histórica basada en ET0, etapa del cultivo y eficiencia de riego; no incluye lluvia ni indica el agua asignada. No es una instrucción de riego.",
-    notification: "Las notificaciones existentes usan patrones históricos, no pronósticos. Las fechas de cosecha son aproximadas.", noRotation: "No hay rotaciones disponibles.", active: "Cultivos según la rotación esta semana", noActive: "No hay cultivos programados esta semana.",
+    noRotation: "No hay rotaciones disponibles.", active: "Cultivos según la rotación esta semana", noActive: "No hay cultivos programados esta semana.",
   } : {
     subtitle: "Review approximate crop cycles in your rotation and historical climate for the parcel.",
     timing: "Dates are approximate: only the planting month is known and durations require local validation.",
     sow: "Planting", duration: "approximate duration", days: "days", unknown: "Crop duration unavailable", allYear: "Perennial crop: present year-round; cuttings are not scheduled.",
-    historical: "Historical climate this week", frost: "Years with low ≤ 2 °C", heat: "Years with high ≥ 30 °C", disclaimer: "NASA POWER, 2005–2025. Percentage of years with at least one day reaching the general threshold in this week. This is not a forecast or a crop-specific probability of damage.",
+    historical: "Historical climate this week", frost: "Years with low ≤ 2 °C", heat: "Years with high ≥ 30 °C", disclaimer: "Historical data from 2005–2025. Percentage of years with at least one day reaching the general threshold in this week. This is not a forecast or a crop-specific probability of damage.",
     unavailable: "Climate data could not be loaded. Crop cycles are still available.", cached: "Using saved climate data for this location.", loading: "Loading climate data…",
     water: "Approximate gross water demand for seven days", waterNote: "Historical estimate based on ET0, crop stage and irrigation efficiency; excludes rainfall and does not represent your water allocation. It is not an irrigation instruction.",
-    notification: "Existing notifications use historical patterns, not forecasts. Harvest dates are approximate.", noRotation: "No rotations available.", active: "Crops scheduled this week", noActive: "No crops are scheduled this week.",
+    noRotation: "No rotations available.", active: "Crops scheduled this week", noActive: "No crops are scheduled this week.",
   };
   const [rotationId, setRotationId] = useState<string | null>(null);
   const [view, setView] = useState<"cycle" | "months">("cycle");
@@ -107,7 +107,6 @@ export function CalendarioClient() {
           <h1 className="text-[2rem] font-bold leading-[1.08] tracking-[-.045em] text-[#173a30] sm:text-5xl">{locale === "es" ? "Mi calendario agrícola" : "My farm calendar"}</h1>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-[#496b60] sm:text-base">{copy.subtitle}</p>
         </div>
-        <span className="absolute right-5 top-5 hidden items-center gap-2 rounded-full border border-white/80 bg-white/90 px-4 py-2 text-xs font-semibold text-[#276345] shadow-[0_5px_18px_rgba(26,69,45,.1)] backdrop-blur-sm sm:flex"><Satellite size={15} /> NASA POWER</span>
       </header>
 
       <section aria-label={locale === "es" ? "Seleccionar rotación" : "Select rotation"} className="rounded-[22px] border border-[#e0ebe2] bg-white p-4 shadow-[0_8px_24px_rgba(31,73,48,.04)] sm:flex sm:items-center sm:gap-5 sm:px-6">
@@ -150,7 +149,7 @@ export function CalendarioClient() {
       <section className="flex flex-col gap-3 rounded-[24px] border border-[#e0ebe2] bg-white p-6 shadow-[0_12px_35px_rgba(31,73,48,.07)] sm:p-7">
         <h2 className="text-lg font-semibold">
           <span className="flex items-center gap-2 text-[#173a30]"><CloudSun className="text-[#4da879]" size={22} /> {copy.historical}</span>
-          <span className="mt-1 block text-xs font-normal text-muted">{now ? fmtDay.format(now) : ""} · NASA POWER</span>
+          <span className="mt-1 block text-xs font-normal text-muted">{now ? fmtDay.format(now) : ""}</span>
         </h2>
         {!climateResult ? <p className="text-sm text-muted">{copy.loading}</p> : !climate ? <p role="status" className="text-sm text-muted">{copy.unavailable}</p> : today !== null && (
           <div className="flex flex-col gap-1 text-sm">
@@ -230,7 +229,6 @@ export function CalendarioClient() {
           </div>
           )}
         </div></div>
-        <p className="text-[11px] text-muted">{t("calendario.source")}</p>
       </section>
       <div className="flex items-center gap-4 rounded-[24px] border border-[#dcebd7] bg-gradient-to-r from-[#e3f1d9] to-[#f6faf1] p-5"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#d3eabc] text-[#3d8c38]"><Sprout size={29} /></span><div><h2 className="text-lg font-bold text-[#173a30]">{locale === "es" ? "¿Qué sigue?" : "What's next?"}</h2><p className="text-sm text-[#4b6b51]">{nextText}{nextSowing ? ` · ${fmtMonth.format(new Date(2025, nextSowing.sowMonth - 1, 1))}` : ""}</p></div></div>
       </div></div>
