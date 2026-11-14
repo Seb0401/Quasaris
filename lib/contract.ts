@@ -47,6 +47,8 @@ export type YearResult = {
   frostDays: number;
   heatDays: number;
   months: MonthStatus[]; // 12 elementos, ene..dic
+  /** Riego bruto de cada mes en m³/ha (opcional; lo usa el modo granja) */
+  monthlyWaterM3ha?: number[];
 };
 
 export type Highlight = {

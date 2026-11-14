@@ -13,7 +13,8 @@
     "tiempo": "Máquina del tiempo",
     "asistente": "Asistente",
     "calendario": "Calendario",
-    "aprende": "¿Qué significa?"
+    "aprende": "¿Qué significa?",
+    "granja": "Granja"
   },
   "home": {
     "start": "Empezar con mi parcela",
@@ -23,7 +24,9 @@
     "presentText": "Pregúntale a FarmTwin con tu voz y recibe una explicación simple, con datos.",
     "futureTitle": "Futuro",
     "futureText": "Tu calendario de siembra con avisos de helada y calor para tus cultivos.",
-    "disclaimer": "FarmTwin apoya tu decisión; no reemplaza tu criterio ni el de tu técnico agrario."
+    "disclaimer": "FarmTwin apoya tu decisión; no reemplaza tu criterio ni el de tu técnico agrario.",
+    "farmMode": "🎮 Modo granja",
+    "farmModeText": "Tu chacra en 3D: siembra por casillas, juega un año real de la NASA y gana medallas."
   },
   "parcela": {
     "title": "Mi parcela",
@@ -118,22 +121,6 @@
       "smapRootZone": "Amarillo y naranja = suelo más seco; verde y azul = más húmedo, a la profundidad de las raíces. Cuadros de ~9 km: muestra la región, no tu parcela.",
       "trueColor": "La zona como la vería tu ojo desde el satélite MODIS, con cuadros de ~250 m."
     }
-  },
-  "tiempo": {
-    "title": "Máquina del tiempo",
-    "subtitle": "Así le habría ido a cada rotación con el clima real de cada año, medido por la NASA.",
-    "play": "Reproducir",
-    "pause": "Pausa",
-    "year": "Año",
-    "month": "Mes de la imagen",
-    "mapTitle": "Vegetación en {year}",
-    "cardsTitle": "Cada rotación en {year}",
-    "vsNormal": "vs. lo normal",
-    "frostDays": "Días de helada",
-    "heatDays": "Días de calor extremo",
-    "overWater": "No alcanzó el agua",
-    "stripTitle": "20 años de un vistazo",
-    "stripHint": "Cada fila es un año y cada cuadro, un mes. Toca un año para verlo."
   },
   "aprende": {
     "title": "¿Qué significa?",
@@ -232,5 +219,125 @@
     "highlight.driestYear": "{year}: el año más exigente; habría necesitado {extraM3ha} m³/ha más que lo normal.",
     "highlight.worstYear": "{year}: el peor año; habrías ganado S/ {lossPEN} menos por hectárea.",
     "highlight.problemYears": "{count} de {total} años con problemas (agua o clima). El último: {year}."
+  },
+  "tiempo": {
+    "title": "Máquina del tiempo",
+    "subtitle": "¿Qué habría pasado con cada rotación en los últimos 21 años de clima real medido por la NASA?",
+    "play": "Reproducir",
+    "pause": "Pausar",
+    "year": "Año",
+    "available": "Tu agua",
+    "overLimit": "m³/ha sobre tu agua",
+    "withinLimit": "Alcanza con tu agua",
+    "stressDays": "días de helada / calor",
+    "waterChart": "Agua necesaria por año",
+    "incomeChart": "Ingreso por año",
+    "stripTitle": "21 años de un vistazo",
+    "stripHint": "Cada fila es un año y cada cuadro un mes. Toca una fila para viajar a ese año.",
+    "ndviTitle": "Vegetación vista desde el espacio",
+    "ndviHint": "NDVI mensual de NASA MODIS: más verde significa más vegetación activa.",
+    "ndviLow": "Suelo desnudo",
+    "ndviHigh": "Vegetación densa"
+  },
+  "calendario": {
+    "title": "Mi calendario",
+    "subtitle": "Cuándo siembras, cuánta agua pide cada semana y qué riesgos trae el clima, según 21 años de datos de la NASA.",
+    "thisWeek": "Esta semana",
+    "bareNow": "Hoy no hay cultivo en esta rotación: el campo está desnudo.",
+    "harvestIn": "cosecha en {days} días",
+    "noClimateRisk": "sin riesgo climático",
+    "waterWeek": "Riego estimado para los próximos 7 días: {m3} m³/ha (ET0 promedio {et0} mm/día).",
+    "yearTitle": "Calendario del año",
+    "yearHint": "Barras: ciclo de cada cultivo (las líneas marcan sus etapas). Filas: riesgo por semana según 2005–2025.",
+    "frostRow": "Riesgo de helada (Tmin ≤ 2 °C)",
+    "heatRow": "Calor extremo (Tmax ≥ 30 °C)",
+    "et0Row": "Demanda de agua (ET0)",
+    "never": "no ocurrió en 21 años",
+    "today": "hoy",
+    "source": "Fuente: NASA POWER 2005–2025, ajustado a la altitud de tu parcela (SRTM). Riesgo = fracción de años con ese evento en esa semana.",
+    "stage": {
+      "ini": "Etapa inicial",
+      "dev": "Desarrollo",
+      "mid": "Etapa media",
+      "late": "Etapa final"
+    },
+    "alertsTitle": "Avísame",
+    "alertsText": "Recibe una notificación cuando tus cultivos entren a una semana de riesgo de helada o calor, o cuando se acerque la cosecha.",
+    "push": {
+      "enable": "Activar alertas",
+      "on": "Alertas activadas para esta rotación.",
+      "test": "Enviar alerta de prueba",
+      "disable": "Desactivar",
+      "unsupported": "Este navegador no permite notificaciones. En iPhone, primero instala FarmTwin en la pantalla de inicio.",
+      "no-sw": "Las alertas funcionan en la app instalada o en la versión publicada (no en modo desarrollo).",
+      "not-configured": "Las alertas aún no están configuradas en el servidor.",
+      "denied": "Bloqueaste las notificaciones. Actívalas en la configuración del navegador.",
+      "error": "No se pudo completar. Revisa tu conexión e inténtalo otra vez."
+    },
+    "perennial": "Cultivo perenne (cortes)"
+  },
+  "alerts": {
+    "frostTitle": "❄️ Riesgo de helada para tu {crop}",
+    "frostBody": "En {p} de los últimos años hubo helada en estas semanas. Tu cultivo está en {stage}: revisa cómo protegerlo.",
+    "heatTitle": "🔥 Calor extremo para tu {crop}",
+    "heatBody": "En {p} de los últimos años hubo calor extremo en estas semanas ({stage}). Ajusta el riego.",
+    "harvestTitle": "🌾 Se acerca la cosecha de tu {crop}",
+    "harvestBody": "Faltan unos {days} días. Planifica la cosecha y el siguiente cultivo de tu rotación.",
+    "waterTitle": "💧 Tu semana: {crops}",
+    "waterBody": "Riego estimado: {m3} m³/ha en 7 días (ET0 {et0} mm/día, NASA POWER). Sin riesgo de helada ni calor.",
+    "bareTitle": "⬜ Campo desnudo esta semana",
+    "bareBody": "Buen momento para preparar el suelo o sembrar un cultivo de cobertura."
+  },
+  "granja": {
+    "title": "Modo granja",
+    "zoneHint": "Toca tu zona en el mapa, elige el tamaño de tu chacra y construye tu granja.",
+    "size": "Tamaño de tu chacra",
+    "tiles": "casillas",
+    "build": "Construir mi granja",
+    "reservoir": "Reservorio",
+    "play": "Jugar el año",
+    "pause": "Pausa",
+    "replay": "Otra vez",
+    "reset": "Volver a enero",
+    "yearHint": "Elige un año real medido por la NASA (🌵 el más seco, ❄️ con heladas, 🔥 con calor):",
+    "tag": {
+      "driest": "El año más seco",
+      "frost": "Hubo heladas",
+      "heat": "Hubo calor extremo",
+      "wettest": "El año más fácil"
+    },
+    "palette": "Elige qué sembrar y toca las casillas",
+    "fillAll": "Pintar todo",
+    "fallow": "Descanso",
+    "paletteHint": "Valores por hectárea y por año (mediana 2005–2025). Todas las casillas comparten el mismo reservorio.",
+    "tile": "Casilla",
+    "status": {
+      "ok": "bien",
+      "water_stress": "estrés hídrico",
+      "climate_risk": "helada o calor",
+      "dry": "sin agua",
+      "bare": "descansando"
+    },
+    "event": {
+      "dry": "🌵 ¡Se acabó el agua del reservorio! {n} casillas se secan.",
+      "climate_risk": "❄️ Clima extremo este mes en {n} casillas (dato NASA POWER).",
+      "water_stress": "🌡️ Mes de alta demanda: {n} casillas piden más agua que tu cuota mensual."
+    },
+    "goals": "Metas del año",
+    "goalsHint": "Juega el año completo para ganar las medallas.",
+    "goal": {
+      "waterFits": "El agua alcanza todo el año",
+      "save20": "Ahorra 20 % de agua frente a solo alfalfa",
+      "healthySoil": "Suelo sano (70 % o más)",
+      "coveredSoil": "Suelo cubierto casi todo el año",
+      "beatIncome": "Gana más que con solo alfalfa",
+      "diversity": "Al menos 3 rotaciones distintas"
+    },
+    "resultTitle": "Resultado de {year}",
+    "vsBaseline": "vs. solo alfalfa:",
+    "resultHint": "Comparado con sembrar alfalfa en todas tus {ha} ha, con el mismo clima real.",
+    "changeZone": "Cambiar zona",
+    "expert": "Ver datos detallados",
+    "source": "Clima: NASA POWER + SRTM. Agua y dinero por casilla = resultado del motor FAO-56 × área. Referencia: {base}."
   }
 }

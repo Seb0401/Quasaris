@@ -1,30 +1,45 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "@/components/i18n-provider";
-import { useFarm } from "@/lib/farm-store";
+import type { Rotation, SimulateResponse } from "@/lib/contract";
 import { simulate } from "@/lib/engine-client";
-import type { SimulateResponse } from "@/lib/contract";
+import { useFarm } from "@/lib/farm-store";
+import { useLocale } from "@/components/i18n-provider";
 
-/**
- * Pide la simulación al motor con el estado actual de la parcela.
- * Espera 250 ms a que el agricultor deje de mover los controles. Nunca falla: el cliente cae al respaldo.
- */
-export function useSimulation(): SimulateResponse | null {
-  const locale = useLocale();
+const inflight = new Map<string, Promise<SimulateResponse>>();
+
+type Options = {
+  debounceMs?: number;
+  /** Rotaciones a simular en lugar de las del agricultor (p. ej. la paleta del modo granja). */
+  rotations?: Rotation[];
+  cacheKey?: string;
+  fallback?: () => Promise<SimulateResponse>;
+};
+
+/** Simula con el estado actual del agricultor. Comparte resultados entre pantallas. */
+export function useSimulation({ debounceMs = 250, rotations, cacheKey, fallback }: Options = {}): SimulateResponse | null {
   const farm = useFarm();
+  const locale = useLocale();
   const [data, setData] = useState<SimulateResponse | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+    const req = { ...farm, rotations: rotations ?? farm.rotations, locale };
+    const key = JSON.stringify(req);
     const timer = setTimeout(() => {
-      simulate({ ...farm, locale }).then((d) => !cancelled && setData(d));
-    }, 250);
+      let p = inflight.get(key);
+      if (!p) {
+        p = simulate(req, { cacheKey, fallback });
+        inflight.set(key, p);
+        if (inflight.size > 20) inflight.delete(inflight.keys().next().value!);
+      }
+      p.then((d) => !cancelled && setData(d));
+    }, debounceMs);
     return () => {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [farm, locale]);
+  }, [farm, locale, debounceMs, rotations, cacheKey, fallback]);
 
   return data;
 }

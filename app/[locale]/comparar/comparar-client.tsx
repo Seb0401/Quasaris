@@ -11,8 +11,8 @@ import { useSimulation } from "@/lib/use-simulation";
 
 export function CompararClient() {
   const t = useT();
-  const locale = useLocale();
   const farm = useFarm();
+  const locale = useLocale();
   const data = useSimulation();
   const [editing, setEditing] = useState(false);
 

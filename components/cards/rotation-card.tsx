@@ -3,7 +3,7 @@
 import { useT, useLocale } from "@/components/i18n-provider";
 import type { MonthStatus, Rotation, RotationResult } from "@/lib/contract";
 
-export const MONTH_COLOR: Record<MonthStatus, string> = {
+const MONTH_COLOR: Record<MonthStatus, string> = {
   ok: "bg-ok",
   water_stress: "bg-warn",
   climate_risk: "bg-danger",

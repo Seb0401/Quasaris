@@ -38,11 +38,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
 
   return (
     <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans overflow-x-clip">
         <I18nProvider locale={locale}>
           <AppNav />
           <OfflineBanner />
-          <main className="flex-1 w-full max-w-3xl mx-auto px-4 pt-4 pb-28">{children}</main>
+          <main className="flex-1 w-full min-w-0 max-w-3xl mx-auto px-4 pt-4 pb-28">{children}</main>
           <SwRegister />
         </I18nProvider>
       </body>

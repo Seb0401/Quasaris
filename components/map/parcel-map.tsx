@@ -40,18 +40,14 @@ function Recenter({ lat, lon }: { lat: number; lon: number }) {
   return null;
 }
 
-export default function ParcelMap({ lat, lon, onPick, layer, time, ndviTime = "2025-09-01", showNdvi = true, className }: Props) {
+/** className: solo la altura del mapa (p. ej. "h-64"); el ancho y los bordes los pone el componente. */
+export default function ParcelMap({ lat, lon, onPick, layer, time, ndviTime = "2025-09-01", showNdvi = true, className = "h-[55vh] min-h-72" }: Props) {
   const key: GibsLayerKey | null = layer === undefined ? (showNdvi ? "ndviMonthly" : null) : layer;
   const overlay = key ? GIBS_LAYERS[key] : null;
   const when = time ?? ndviTime;
 
   return (
-    <MapContainer
-      center={[lat, lon]}
-      zoom={11}
-      className={className ?? "h-[55vh] min-h-72 w-full rounded-2xl z-0"}
-      scrollWheelZoom
-    >
+    <MapContainer center={[lat, lon]} zoom={11} className={`${className} w-full rounded-2xl z-0`} scrollWheelZoom>
       <TileLayer
         attribution="Imagery © Esri"
         url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"

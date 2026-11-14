@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Deck del pitch (fuera de git, ver .git/info/exclude) y entorno Python
+    "pitch/**",
+    ".venv/**",
   ]),
 ]);
 

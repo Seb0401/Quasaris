@@ -58,6 +58,8 @@ class YearResult(BaseModel):
     frostDays: int
     heatDays: int
     months: list[MonthStatus] = Field(min_length=12, max_length=12)
+    # Opcional: riego bruto de cada mes (m³/ha), para animar el reservorio del modo granja
+    monthlyWaterM3ha: Optional[list[float]] = Field(default=None, min_length=12, max_length=12)
 
 
 class Highlight(BaseModel):

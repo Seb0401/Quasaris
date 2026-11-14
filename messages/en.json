@@ -13,7 +13,8 @@
     "tiempo": "Time machine",
     "asistente": "Assistant",
     "calendario": "Calendar",
-    "aprende": "What does it mean?"
+    "aprende": "What does it mean?",
+    "granja": "Farm"
   },
   "home": {
     "start": "Start with my field",
@@ -23,7 +24,9 @@
     "presentText": "Ask FarmTwin with your voice and get a simple, data-backed explanation.",
     "futureTitle": "Future",
     "futureText": "Your planting calendar with frost and heat alerts for your crops.",
-    "disclaimer": "FarmTwin supports your decision; it does not replace your judgment or your local agronomist."
+    "disclaimer": "FarmTwin supports your decision; it does not replace your judgment or your local agronomist.",
+    "farmMode": "🎮 Farm mode",
+    "farmModeText": "Your farm in 3D: plant plot by plot, play a real NASA year and earn medals."
   },
   "parcela": {
     "title": "My field",
@@ -118,22 +121,6 @@
       "smapRootZone": "Yellow and orange = drier soil; green and blue = wetter, at root depth. ~9 km squares: it shows the region, not your field.",
       "trueColor": "The area as your eye would see it from the MODIS satellite, in ~250 m squares."
     }
-  },
-  "tiempo": {
-    "title": "Time machine",
-    "subtitle": "How each rotation would have done with the real weather of each year, measured by NASA.",
-    "play": "Play",
-    "pause": "Pause",
-    "year": "Year",
-    "month": "Image month",
-    "mapTitle": "Vegetation in {year}",
-    "cardsTitle": "Each rotation in {year}",
-    "vsNormal": "vs. normal",
-    "frostDays": "Frost days",
-    "heatDays": "Extreme heat days",
-    "overWater": "Not enough water",
-    "stripTitle": "20 years at a glance",
-    "stripHint": "Each row is a year and each square a month. Tap a year to see it."
   },
   "aprende": {
     "title": "What does it mean?",
@@ -232,5 +219,125 @@
     "highlight.driestYear": "{year}: the toughest year; it would have needed {extraM3ha} m³/ha more than usual.",
     "highlight.worstYear": "{year}: the worst year; you would have earned S/ {lossPEN} less per hectare.",
     "highlight.problemYears": "{count} of {total} years with problems (water or climate). Latest: {year}."
+  },
+  "tiempo": {
+    "title": "Time machine",
+    "subtitle": "What would have happened to each rotation over the last 21 years of real climate measured by NASA?",
+    "play": "Play",
+    "pause": "Pause",
+    "year": "Year",
+    "available": "Your water",
+    "overLimit": "m³/ha over your water",
+    "withinLimit": "Your water is enough",
+    "stressDays": "frost / heat days",
+    "waterChart": "Water needed per year",
+    "incomeChart": "Income per year",
+    "stripTitle": "21 years at a glance",
+    "stripHint": "Each row is a year and each square a month. Tap a row to travel to that year.",
+    "ndviTitle": "Vegetation seen from space",
+    "ndviHint": "Monthly NASA MODIS NDVI: greener means more active vegetation.",
+    "ndviLow": "Bare soil",
+    "ndviHigh": "Dense vegetation"
+  },
+  "calendario": {
+    "title": "My calendar",
+    "subtitle": "When you plant, how much water each week needs and what climate risks to expect, based on 21 years of NASA data.",
+    "thisWeek": "This week",
+    "bareNow": "No crop in this rotation today: the field is bare.",
+    "harvestIn": "harvest in {days} days",
+    "noClimateRisk": "no climate risk",
+    "waterWeek": "Estimated irrigation for the next 7 days: {m3} m³/ha (average ET0 {et0} mm/day).",
+    "yearTitle": "Year calendar",
+    "yearHint": "Bars: each crop's cycle (lines mark its stages). Rows: weekly risk based on 2005–2025.",
+    "frostRow": "Frost risk (Tmin ≤ 2 °C)",
+    "heatRow": "Extreme heat (Tmax ≥ 30 °C)",
+    "et0Row": "Water demand (ET0)",
+    "never": "didn't happen in 21 years",
+    "today": "today",
+    "source": "Source: NASA POWER 2005–2025, adjusted to your field's altitude (SRTM). Risk = share of years with that event in that week.",
+    "stage": {
+      "ini": "Initial stage",
+      "dev": "Development",
+      "mid": "Mid-season",
+      "late": "Late season"
+    },
+    "alertsTitle": "Notify me",
+    "alertsText": "Get a notification when your crops enter a week with frost or heat risk, or when harvest is near.",
+    "push": {
+      "enable": "Turn on alerts",
+      "on": "Alerts are on for this rotation.",
+      "test": "Send a test alert",
+      "disable": "Turn off",
+      "unsupported": "This browser doesn't support notifications. On iPhone, add FarmTwin to your home screen first.",
+      "no-sw": "Alerts work in the installed app or the published version (not in development mode).",
+      "not-configured": "Alerts are not configured on the server yet.",
+      "denied": "You blocked notifications. Enable them in your browser settings.",
+      "error": "Something went wrong. Check your connection and try again."
+    },
+    "perennial": "Perennial crop (cuttings)"
+  },
+  "alerts": {
+    "frostTitle": "❄️ Frost risk for your {crop}",
+    "frostBody": "In {p} of recent years there was frost in these weeks. Your crop is in {stage}: check how to protect it.",
+    "heatTitle": "🔥 Extreme heat for your {crop}",
+    "heatBody": "In {p} of recent years there was extreme heat in these weeks ({stage}). Adjust irrigation.",
+    "harvestTitle": "🌾 Harvest is near for your {crop}",
+    "harvestBody": "About {days} days left. Plan the harvest and the next crop in your rotation.",
+    "waterTitle": "💧 Your week: {crops}",
+    "waterBody": "Estimated irrigation: {m3} m³/ha over 7 days (ET0 {et0} mm/day, NASA POWER). No frost or heat risk.",
+    "bareTitle": "⬜ Bare field this week",
+    "bareBody": "Good time to prepare the soil or plant a cover crop."
+  },
+  "granja": {
+    "title": "Farm mode",
+    "zoneHint": "Tap your area on the map, choose your farm size and build your farm.",
+    "size": "Farm size",
+    "tiles": "plots",
+    "build": "Build my farm",
+    "reservoir": "Reservoir",
+    "play": "Play the year",
+    "pause": "Pause",
+    "replay": "Again",
+    "reset": "Back to January",
+    "yearHint": "Pick a real year measured by NASA (🌵 driest, ❄️ frost, 🔥 heat):",
+    "tag": {
+      "driest": "The driest year",
+      "frost": "Frost happened",
+      "heat": "Extreme heat",
+      "wettest": "The easiest year"
+    },
+    "palette": "Choose what to plant and tap the plots",
+    "fillAll": "Paint all",
+    "fallow": "Fallow",
+    "paletteHint": "Values per hectare per year (2005–2025 median). All plots share the same reservoir.",
+    "tile": "Plot",
+    "status": {
+      "ok": "good",
+      "water_stress": "water stress",
+      "climate_risk": "frost or heat",
+      "dry": "out of water",
+      "bare": "resting"
+    },
+    "event": {
+      "dry": "🌵 The reservoir is empty! {n} plots are drying out.",
+      "climate_risk": "❄️ Extreme weather this month on {n} plots (NASA POWER data).",
+      "water_stress": "🌡️ High-demand month: {n} plots need more than your monthly share."
+    },
+    "goals": "Goals for the year",
+    "goalsHint": "Play the full year to earn the medals.",
+    "goal": {
+      "waterFits": "Water lasts all year",
+      "save20": "Save 20% water vs. alfalfa only",
+      "healthySoil": "Healthy soil (70% or more)",
+      "coveredSoil": "Soil covered almost all year",
+      "beatIncome": "Earn more than alfalfa only",
+      "diversity": "At least 3 different rotations"
+    },
+    "resultTitle": "{year} results",
+    "vsBaseline": "vs. alfalfa only:",
+    "resultHint": "Compared with planting alfalfa on all your {ha} ha, with the same real weather.",
+    "changeZone": "Change area",
+    "expert": "See detailed data",
+    "source": "Climate: NASA POWER + SRTM. Water and money per plot = FAO-56 engine result × area. Baseline: {base}."
   }
 }

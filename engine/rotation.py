@@ -137,6 +137,7 @@ def simulate_rotation(rotation: Rotation, clim: Climate, et0: np.ndarray, *, irr
                 "frostDays": frost_total,
                 "heatDays": heat_total,
                 "months": months,
+                "monthlyWaterM3ha": [round(float(x)) for x in gross_m3],
                 "_climateLoss": climate_loss,
                 "_grossMonthly": gross_m3,
             }
