@@ -480,5 +480,62 @@
     "editFarm": "Editar en la granja",
     "backCompare": "Volver a comparar",
     "source": "Calculado con 21 años de clima real (NASA POWER 2005–2025, ajustado con SRTM) y FAO-56. Precios y rendimientos son estimados: valídalos antes de decidir."
+  },
+  "wizard": {
+    "kicker": "Empieza aquí · 4 pasos",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "see": "Ver mi recomendación",
+    "field": {
+      "short": "Parcela",
+      "title": "¿Dónde está tu parcela?",
+      "hint": "Toca tu chacra en el mapa o usa el botón de ubicación. Con eso traemos 21 años de clima de la NASA para ese punto.",
+      "useMajes": "Usar el punto de ejemplo en Majes"
+    },
+    "resources": {
+      "short": "Recursos",
+      "title": "¿Con qué cuentas?",
+      "hint": "El agua, el riego y el suelo deciden qué rotaciones son posibles.",
+      "water": "Agua disponible por campaña (m³ por hectárea)",
+      "dontKnow": "No lo sé: usar un valor típico de Majes ({m3} m³/ha)",
+      "irrigation": "Sistema de riego",
+      "eff": "aprovecha {eff} del agua",
+      "soil": "Tipo de suelo",
+      "soilHint": {
+        "arenoso": "drena rápido, retiene poca agua",
+        "franco": "equilibrado",
+        "arcilloso": "retiene agua, drena lento"
+      },
+      "current": "¿Qué siembras hoy?",
+      "other": "Siembro otra cosa: crear mi rotación"
+    },
+    "priorities": {
+      "short": "Prioridades",
+      "title": "¿Qué es lo más importante para ti?",
+      "hint": "Elige un perfil. Puedes ajustarlo fino después en Mi parcela.",
+      "water": {
+        "title": "Ahorrar agua",
+        "text": "Prefiero rotaciones que gasten menos agua, aunque gane un poco menos."
+      },
+      "income": {
+        "title": "Ganar más",
+        "text": "Prefiero el mayor ingreso posible con el agua que tengo."
+      },
+      "soil": {
+        "title": "Cuidar el suelo",
+        "text": "Prefiero leguminosas y menos meses con el campo desnudo."
+      },
+      "balanced": {
+        "title": "Equilibrado",
+        "text": "Un poco de todo: agua, ingreso, suelo y riesgo por igual."
+      },
+      "fine": "Los perfiles solo cambian el orden de las opciones; los cálculos de agua y dinero no cambian."
+    },
+    "result": {
+      "short": "Resultado",
+      "title": "Tu recomendación",
+      "hint": "Calculada con tu parcela, tus recursos y tus prioridades.",
+      "compare": "Ver todas las rotaciones lado a lado"
+    }
   }
 }

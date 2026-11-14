@@ -480,5 +480,62 @@
     "editFarm": "Edit on the farm",
     "backCompare": "Back to compare",
     "source": "Computed with 21 years of real weather (NASA POWER 2005–2025, adjusted with SRTM) and FAO-56. Prices and yields are estimates: validate them before deciding."
+  },
+  "wizard": {
+    "kicker": "Start here · 4 steps",
+    "back": "Back",
+    "next": "Next",
+    "see": "See my recommendation",
+    "field": {
+      "short": "Field",
+      "title": "Where is your field?",
+      "hint": "Tap your farm on the map or use the location button. We'll load 21 years of NASA climate for that point.",
+      "useMajes": "Use the sample point in Majes"
+    },
+    "resources": {
+      "short": "Resources",
+      "title": "What do you have?",
+      "hint": "Water, irrigation and soil decide which rotations are possible.",
+      "water": "Water available per season (m³ per hectare)",
+      "dontKnow": "I don't know: use a typical Majes value ({m3} m³/ha)",
+      "irrigation": "Irrigation system",
+      "eff": "uses {eff} of the water",
+      "soil": "Soil type",
+      "soilHint": {
+        "arenoso": "drains fast, holds little water",
+        "franco": "balanced",
+        "arcilloso": "holds water, drains slowly"
+      },
+      "current": "What do you grow today?",
+      "other": "I grow something else: create my rotation"
+    },
+    "priorities": {
+      "short": "Priorities",
+      "title": "What matters most to you?",
+      "hint": "Pick a profile. You can fine-tune it later in My field.",
+      "water": {
+        "title": "Save water",
+        "text": "I prefer rotations that use less water, even if I earn a bit less."
+      },
+      "income": {
+        "title": "Earn more",
+        "text": "I want the highest income possible with the water I have."
+      },
+      "soil": {
+        "title": "Care for the soil",
+        "text": "I prefer legumes and fewer months with bare soil."
+      },
+      "balanced": {
+        "title": "Balanced",
+        "text": "A bit of everything: water, income, soil and risk equally."
+      },
+      "fine": "Profiles only change how options are ranked; water and money calculations stay the same."
+    },
+    "result": {
+      "short": "Result",
+      "title": "Your recommendation",
+      "hint": "Computed with your field, your resources and your priorities.",
+      "compare": "See all rotations side by side"
+    }
   }
 }
