@@ -136,5 +136,54 @@
     "ndviHint": "NDVI mensual de NASA MODIS: más verde significa más vegetación activa.",
     "ndviLow": "Suelo desnudo",
     "ndviHigh": "Vegetación densa"
+  },
+  "calendario": {
+    "title": "Mi calendario",
+    "subtitle": "Cuándo siembras, cuánta agua pide cada semana y qué riesgos trae el clima, según 21 años de datos de la NASA.",
+    "thisWeek": "Esta semana",
+    "bareNow": "Hoy no hay cultivo en esta rotación: el campo está desnudo.",
+    "harvestIn": "cosecha en {days} días",
+    "noClimateRisk": "sin riesgo climático",
+    "waterWeek": "Riego estimado para los próximos 7 días: {m3} m³/ha (ET0 promedio {et0} mm/día).",
+    "yearTitle": "Calendario del año",
+    "yearHint": "Barras: ciclo de cada cultivo (las líneas marcan sus etapas). Filas: riesgo por semana según 2005–2025.",
+    "frostRow": "Riesgo de helada (Tmin ≤ 2 °C)",
+    "heatRow": "Calor extremo (Tmax ≥ 30 °C)",
+    "et0Row": "Demanda de agua (ET0)",
+    "never": "no ocurrió en 21 años",
+    "today": "hoy",
+    "source": "Fuente: NASA POWER 2005–2025, ajustado a la altitud de tu parcela (SRTM). Riesgo = fracción de años con ese evento en esa semana.",
+    "stage": {
+      "ini": "Etapa inicial",
+      "dev": "Desarrollo",
+      "mid": "Etapa media",
+      "late": "Etapa final"
+    },
+    "alertsTitle": "Avísame",
+    "alertsText": "Recibe una notificación cuando tus cultivos entren a una semana de riesgo de helada o calor, o cuando se acerque la cosecha.",
+    "push": {
+      "enable": "Activar alertas",
+      "on": "Alertas activadas para esta rotación.",
+      "test": "Enviar alerta de prueba",
+      "disable": "Desactivar",
+      "unsupported": "Este navegador no permite notificaciones. En iPhone, primero instala FarmTwin en la pantalla de inicio.",
+      "no-sw": "Las alertas funcionan en la app instalada o en la versión publicada (no en modo desarrollo).",
+      "not-configured": "Las alertas aún no están configuradas en el servidor.",
+      "denied": "Bloqueaste las notificaciones. Actívalas en la configuración del navegador.",
+      "error": "No se pudo completar. Revisa tu conexión e inténtalo otra vez."
+    },
+    "perennial": "Cultivo perenne (cortes)"
+  },
+  "alerts": {
+    "frostTitle": "❄️ Riesgo de helada para tu {crop}",
+    "frostBody": "En {p} de los últimos años hubo helada en estas semanas. Tu cultivo está en {stage}: revisa cómo protegerlo.",
+    "heatTitle": "🔥 Calor extremo para tu {crop}",
+    "heatBody": "En {p} de los últimos años hubo calor extremo en estas semanas ({stage}). Ajusta el riego.",
+    "harvestTitle": "🌾 Se acerca la cosecha de tu {crop}",
+    "harvestBody": "Faltan unos {days} días. Planifica la cosecha y el siguiente cultivo de tu rotación.",
+    "waterTitle": "💧 Tu semana: {crops}",
+    "waterBody": "Riego estimado: {m3} m³/ha en 7 días (ET0 {et0} mm/día, NASA POWER). Sin riesgo de helada ni calor.",
+    "bareTitle": "⬜ Campo desnudo esta semana",
+    "bareBody": "Buen momento para preparar el suelo o sembrar un cultivo de cobertura."
   }
 }

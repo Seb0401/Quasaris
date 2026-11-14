@@ -136,5 +136,54 @@
     "ndviHint": "Monthly NASA MODIS NDVI: greener means more active vegetation.",
     "ndviLow": "Bare soil",
     "ndviHigh": "Dense vegetation"
+  },
+  "calendario": {
+    "title": "My calendar",
+    "subtitle": "When you plant, how much water each week needs and what climate risks to expect, based on 21 years of NASA data.",
+    "thisWeek": "This week",
+    "bareNow": "No crop in this rotation today: the field is bare.",
+    "harvestIn": "harvest in {days} days",
+    "noClimateRisk": "no climate risk",
+    "waterWeek": "Estimated irrigation for the next 7 days: {m3} m³/ha (average ET0 {et0} mm/day).",
+    "yearTitle": "Year calendar",
+    "yearHint": "Bars: each crop's cycle (lines mark its stages). Rows: weekly risk based on 2005–2025.",
+    "frostRow": "Frost risk (Tmin ≤ 2 °C)",
+    "heatRow": "Extreme heat (Tmax ≥ 30 °C)",
+    "et0Row": "Water demand (ET0)",
+    "never": "didn't happen in 21 years",
+    "today": "today",
+    "source": "Source: NASA POWER 2005–2025, adjusted to your field's altitude (SRTM). Risk = share of years with that event in that week.",
+    "stage": {
+      "ini": "Initial stage",
+      "dev": "Development",
+      "mid": "Mid-season",
+      "late": "Late season"
+    },
+    "alertsTitle": "Notify me",
+    "alertsText": "Get a notification when your crops enter a week with frost or heat risk, or when harvest is near.",
+    "push": {
+      "enable": "Turn on alerts",
+      "on": "Alerts are on for this rotation.",
+      "test": "Send a test alert",
+      "disable": "Turn off",
+      "unsupported": "This browser doesn't support notifications. On iPhone, add FarmTwin to your home screen first.",
+      "no-sw": "Alerts work in the installed app or the published version (not in development mode).",
+      "not-configured": "Alerts are not configured on the server yet.",
+      "denied": "You blocked notifications. Enable them in your browser settings.",
+      "error": "Something went wrong. Check your connection and try again."
+    },
+    "perennial": "Perennial crop (cuttings)"
+  },
+  "alerts": {
+    "frostTitle": "❄️ Frost risk for your {crop}",
+    "frostBody": "In {p} of recent years there was frost in these weeks. Your crop is in {stage}: check how to protect it.",
+    "heatTitle": "🔥 Extreme heat for your {crop}",
+    "heatBody": "In {p} of recent years there was extreme heat in these weeks ({stage}). Adjust irrigation.",
+    "harvestTitle": "🌾 Harvest is near for your {crop}",
+    "harvestBody": "About {days} days left. Plan the harvest and the next crop in your rotation.",
+    "waterTitle": "💧 Your week: {crops}",
+    "waterBody": "Estimated irrigation: {m3} m³/ha over 7 days (ET0 {et0} mm/day, NASA POWER). No frost or heat risk.",
+    "bareTitle": "⬜ Bare field this week",
+    "bareBody": "Good time to prepare the soil or plant a cover crop."
   }
 }
