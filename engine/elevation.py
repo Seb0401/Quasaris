@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import httpx
 
+from engine.quality import validate_elevation
+
 API = "https://api.opentopodata.org/v1/srtm90m"
 _cache: dict[tuple[float, float], float | None] = {
     (-16.36, -72.19): 1409.0,  # El Pedregal, Majes (consultado el 2026-11-14)
@@ -21,9 +23,8 @@ def srtm_elevation(lat: float, lon: float, timeout: float = 4.0) -> float | None
     try:
         r = httpx.get(API, params={"locations": f"{lat},{lon}"}, timeout=timeout)
         r.raise_for_status()
-        value = r.json()["results"][0]["elevation"]
-        z = float(value) if value is not None else None
-    except (httpx.HTTPError, KeyError, IndexError, ValueError):
+        z = validate_elevation(r.json()["results"][0]["elevation"])  # None si no es un número válido
+    except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError):
         z = None
     _cache[key] = z
     return z

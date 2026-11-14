@@ -8,7 +8,7 @@ import { Badge, PageHeader } from "@/components/ui/kit";
 import type { Rotation } from "@/lib/contract";
 import { CROPS, MONTH_START, cropName, cropSegments } from "@/lib/crop-calendar";
 import { setFarm, useFarm } from "@/lib/farm-store";
-import { CROP_EMOJI } from "@/lib/granja-sim";
+import { Pencil, Star, Trash2, TriangleAlert, X } from "lucide-react";
 import { MAX_CROPS, MAX_ROTATIONS, bareMonths, newRotationId, overlapDays } from "@/lib/rotation-utils";
 import { rotationColor } from "@/lib/ui";
 

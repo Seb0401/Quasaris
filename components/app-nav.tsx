@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BarChart3, BookOpen, CalendarDays, Clock3, Home, Tractor, Languages, MapPinned, Sparkles } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
-import { SpaceLeafMark } from "@/components/brand/space-leaf-mark";
+import { QuasarisMark } from "@/components/brand/quasaris-mark";
 
 const TABS = [
   { href: "", key: "home", icon: Home },
@@ -29,7 +29,7 @@ export function AppNav() {
     <>
       <aside className="desktop-sidebar">
         <Link href={`/${locale}`} className="brand-lockup" aria-label="Quasaris">
-          <SpaceLeafMark width={42} height={42} />
+          <QuasarisMark width={42} height={42} />
           <span><strong>QUASARIS</strong><small>Farm Intelligence</small></span>
         </Link>
         <p className="nav-section-label">{locale === "es" ? "MISIÓN" : "MISSION"}</p>
@@ -49,7 +49,7 @@ export function AppNav() {
       </aside>
 
       <header className="mobile-header">
-        <Link href={`/${locale}`} className="brand-lockup"><SpaceLeafMark width={34} height={34} /><span><strong>QUASARIS</strong><small>Farm Intelligence</small></span></Link>
+        <Link href={`/${locale}`} className="brand-lockup"><QuasarisMark width={34} height={34} /><span><strong>QUASARIS</strong><small>Farm Intelligence</small></span></Link>
         <Link href={`/${other}${rest ? `/${rest}` : ""}`} className="language-switch" aria-label={t("app.language")}>{other.toUpperCase()}</Link>
       </header>
 

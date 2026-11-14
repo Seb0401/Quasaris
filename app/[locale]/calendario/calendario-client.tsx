@@ -9,6 +9,8 @@ import { Badge, CountUp, HeroStat, PageHeader, Panel } from "@/components/ui/kit
 import type { ClimateResponse } from "@/lib/contract";
 import { CROPS, MONTH_START, cropName, cropSegments, dayOfYear, weekOutlook } from "@/lib/crop-calendar";
 import { useFarm } from "@/lib/farm-store";
+import { Check, LoaderCircle, Star } from "lucide-react";
+import { CalendarIcon, FallowIcon, FrostIcon, HeatIcon, SoilIcon, WaterIcon } from "@/components/icons/farm-icons";
 import { useToday } from "@/lib/use-today";
 import { rotationColor } from "@/lib/ui";
 

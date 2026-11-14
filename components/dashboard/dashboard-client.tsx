@@ -136,7 +136,7 @@ export function DashboardClient() {
             </h1>
             <p>{es ? "Veintiún años de señales satelitales convertidos en una decisión agrícola clara, trazable y local." : "Twenty-one years of satellite signals transformed into a clear, traceable and local farming decision."}</p>
             <div className="qx-hero-actions">
-              <Link href={`/${locale}/parcela`} className="qx-action-primary">
+              <Link href={`/${locale}/inicio`} className="qx-action-primary">
                 <span>{es ? "Explorar mi parcela" : "Explore my field"}</span><ArrowUpRight size={19} />
               </Link>
               <button className="qx-action-ghost" onClick={() => document.getElementById("qx-story")?.scrollIntoView({ behavior: "smooth" })}>
@@ -276,7 +276,7 @@ export function DashboardClient() {
           <span className="qx-kicker"><MapPin size={14} /> {es ? "TU PARCELA ES EL PUNTO DE PARTIDA" : "YOUR FIELD IS THE STARTING POINT"}</span>
           <h2>{es ? "Haz visible lo que viene." : "Make what comes next visible."}</h2>
           <p>{es ? "Ubica tu parcela, define tus prioridades y deja que 21 años de evidencia trabajen a tu favor." : "Locate your field, define your priorities and let 21 years of evidence work in your favor."}</p>
-          <Link href={`/${locale}/parcela`} className="qx-action-primary"><span>{es ? "Crear mi simulación" : "Create my simulation"}</span><ArrowUpRight size={19} /></Link>
+          <Link href={`/${locale}/inicio`} className="qx-action-primary"><span>{es ? "Crear mi simulación" : "Create my simulation"}</span><ArrowUpRight size={19} /></Link>
         </div>
         <div className="qx-final-orbit" aria-hidden><Orbit size={160} /></div>
       </section>

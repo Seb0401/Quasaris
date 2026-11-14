@@ -2,7 +2,8 @@
 
 import { useT } from "@/components/i18n-provider";
 
-const GOAL_ICON: Record<string, string> = { waterFits: "💧", save20: "🏅", healthySoil: "🌱", coveredSoil: "🛡️", beatIncome: "💰", diversity: "🔄" };
+import { GOAL_ICON, TrophyIcon } from "@/components/icons/farm-icons";
+import { Sprout } from "lucide-react";
 
 export function Tutorial({ onClose }: { onClose: () => void }) {
   const t = useT();

@@ -3,16 +3,16 @@ import { ArrowRight, BookOpen, Database, Lightbulb } from "lucide-react";
 import { getMessages } from "@/lib/i18n";
 
 const TOPICS = [
-  { id: "et", icon: "💧" },
-  { id: "kc", icon: "🌱" },
-  { id: "balance", icon: "🚿" },
-  { id: "ndvi", icon: "🛰️" },
-  { id: "soil", icon: "🟫" },
-  { id: "frost", icon: "❄️" },
-  { id: "fusion", icon: "⛰️" },
-  { id: "ground", icon: "📡" },
-  { id: "range", icon: "📊" },
-  { id: "rotation", icon: "🔄" },
+  { id: "et", Icon: EvapoIcon },
+  { id: "kc", Icon: GrowingIcon },
+  { id: "balance", Icon: WaterIcon },
+  { id: "ndvi", Icon: SatelliteIcon },
+  { id: "soil", Icon: SoilIcon },
+  { id: "frost", Icon: FrostIcon },
+  { id: "fusion", Icon: Mountain },
+  { id: "ground", Icon: RadioTower },
+  { id: "range", Icon: ChartColumn },
+  { id: "rotation", Icon: CycleIcon },
 ] as const;
 
 type Topic = { title: string; text: string; how: string; source: string };

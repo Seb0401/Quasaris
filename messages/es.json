@@ -25,7 +25,7 @@
     "futureTitle": "Futuro",
     "futureText": "Tu calendario de siembra con avisos de helada y calor para tus cultivos.",
     "disclaimer": "FarmTwin apoya tu decisión; no reemplaza tu criterio ni el de tu técnico agrario.",
-    "farmMode": "🎮 Modo granja",
+    "farmMode": "Modo granja",
     "farmModeText": "Tu chacra en 3D: siembra por casillas, juega un año real de la NASA y gana medallas."
   },
   "parcela": {
@@ -182,15 +182,15 @@
     "soilRow": "Humedad natural del suelo (NASA POWER)"
   },
   "alerts": {
-    "frostTitle": "❄️ Riesgo de helada para tu {crop}",
+    "frostTitle": "Riesgo de helada para tu {crop}",
     "frostBody": "En {p} de los últimos años hubo helada en estas semanas. Tu cultivo está en {stage}: revisa cómo protegerlo.",
-    "heatTitle": "🔥 Calor extremo para tu {crop}",
+    "heatTitle": "Calor extremo para tu {crop}",
     "heatBody": "En {p} de los últimos años hubo calor extremo en estas semanas ({stage}). Ajusta el riego.",
-    "harvestTitle": "🌾 Se acerca la cosecha de tu {crop}",
+    "harvestTitle": "Se acerca la cosecha de tu {crop}",
     "harvestBody": "Faltan unos {days} días. Planifica la cosecha y el siguiente cultivo de tu rotación.",
-    "waterTitle": "💧 Tu semana: {crops}",
+    "waterTitle": "Tu semana: {crops}",
     "waterBody": "Riego estimado: {m3} m³/ha en 7 días (ET0 {et0} mm/día, NASA POWER). Sin riesgo de helada ni calor.",
-    "bareTitle": "⬜ Campo desnudo esta semana",
+    "bareTitle": "Campo desnudo esta semana",
     "bareBody": "Buen momento para preparar el suelo o sembrar un cultivo de cobertura."
   },
   "granja": {
@@ -204,7 +204,7 @@
     "pause": "Pausa",
     "replay": "Otra vez",
     "reset": "Volver a enero",
-    "yearHint": "Elige un año real medido por la NASA (🌵 el más seco, ❄️ con heladas, 🔥 con calor):",
+    "yearHint": "Elige un año real medido por la NASA. Los años marcados fueron el más seco, con heladas o con calor:",
     "tag": {
       "driest": "El año más seco",
       "frost": "Hubo heladas",
@@ -224,9 +224,9 @@
       "bare": "descansando"
     },
     "event": {
-      "dry": "🌵 ¡Se acabó el agua del reservorio! {n} casillas se secan.",
-      "climate_risk": "❄️ Clima extremo este mes en {n} casillas (dato NASA POWER).",
-      "water_stress": "🌡️ Mes de alta demanda: {n} casillas piden más agua que tu cuota mensual."
+      "dry": "¡Se acabó el agua del reservorio! {n} casillas se secan.",
+      "climate_risk": "Clima extremo este mes en {n} casillas (dato NASA POWER).",
+      "water_stress": "Mes de alta demanda: {n} casillas piden más agua que tu cuota mensual."
     },
     "goals": "Metas del año",
     "goalsHint": "Juega el año completo para ganar las medallas.",
@@ -247,8 +247,8 @@
     "tutorial": {
       "title": "¡Bienvenido a tu granja!",
       "paint": "Elige una rotación en la paleta y toca las casillas para sembrarla. Todas comparten el agua del reservorio.",
-      "year": "Elige un año real medido por la NASA, por ejemplo 🌵 el más seco.",
-      "play": "Presiona ▶ Jugar el año: mira crecer tus cultivos, bajar el agua y ganar medallas.",
+      "year": "Elige un año real medido por la NASA, por ejemplo el más seco.",
+      "play": "Presiona Jugar el año: mira crecer tus cultivos, bajar el agua y ganar medallas.",
       "go": "¡A sembrar!"
     },
     "celebrate": {
@@ -281,10 +281,10 @@
       }
     },
     "tab": {
-      "sow": "🌱 Sembrar",
-      "climate": "🌦️ Clima",
-      "whatif": "🧪 ¿Y si…?",
-      "goals": "🎯 Metas"
+      "sow": "Sembrar",
+      "climate": "Clima",
+      "whatif": "¿Y si…?",
+      "goals": "Metas"
     },
     "mode": {
       "paint": "Pintar",
@@ -425,6 +425,117 @@
         "how": "El puntaje de \"salud del suelo\" premia leguminosas, variedad de familias y suelo cubierto, y castiga los meses desnudos.",
         "source": "Reglas agronómicas generales (a validar con un agrónomo)"
       }
+    }
+  },
+  "reco": {
+    "kicker": "Recomendación para tu parcela",
+    "switch": "Te conviene cambiar a",
+    "keep": "Tu rotación actual ya es la mejor opción",
+    "noneViable": "Con tu agua, ninguna rotación alcanza",
+    "noneText": "La mejor opción necesita {need} m³/ha y tienes {have} m³/ha. Estas son tus alternativas:",
+    "tryDrip": "Con riego por goteo esa rotación necesitaría unos {m3} m³/ha.",
+    "reduceArea": "Con el agua que tienes puedes regar bien el {pct} de tu chacra; el resto, en descanso o con cultivo de cobertura.",
+    "water": "Agua",
+    "income": "Ingreso",
+    "soil": "Suelo",
+    "why": "Por qué",
+    "reason": {
+      "water": "Ahorras {m3} m³/ha al año ({pct} menos que hoy).",
+      "income": "Ganas unos S/ {pen} más por hectárea al año.",
+      "soil": "Tu suelo mejora {pts} puntos (más nitrógeno y menos meses desnudo).",
+      "risk": "Baja el riesgo de pérdida en {pts} puntos en años difíciles."
+    },
+    "check": "Antes de decidir, revisa con tu técnico",
+    "toPlan": "Ver plan de mi chacra",
+    "toFarm": "Probar en la granja",
+    "source": "Mediana de 21 años reales (NASA POWER 2005–2025) frente a tu rotación actual. Precios y rendimientos son estimados."
+  },
+  "plan": {
+    "kicker": "Plan de mi chacra",
+    "title": "Tu plan para {ha} ha",
+    "meta": "Parcela {lat}, {lon} · riego por {irrigation} · suelo {soil} · {water} m³/ha disponibles",
+    "fromFarm": "Según mi granja",
+    "fromReco": "Según la recomendación",
+    "print": "Imprimir / PDF",
+    "water": "Agua del año",
+    "waterOf": "de {cap} m³ disponibles",
+    "income": "Ingreso estimado",
+    "perYear": "por año (mediana)",
+    "soil": "Salud del suelo",
+    "soilSub": "promedio de la chacra",
+    "lots": "Lotes",
+    "lotSize": "de {ha} ha cada uno",
+    "notFit": "Este plan necesita {extra} m³ más de lo que tienes. Prueba otra rotación en algunos lotes, deja lotes en descanso o mejora el riego.",
+    "lotsTitle": "Qué sembrar en cada lote",
+    "lotList": "Lotes {lots}",
+    "year": "año",
+    "perennial": "Perenne: se corta varias veces al año",
+    "sow": "Siembra:",
+    "harvest": "Cosecha:",
+    "monthlyTitle": "Agua mes a mes",
+    "monthlyHint": "Riego de toda la chacra en un año típico. La línea punteada es tu cuota mensual ({quota} m³).",
+    "monthlyLegend": "En rojo, los meses en que necesitas más agua que tu cuota: planifica turnos o almacena agua antes.",
+    "checks": "Lista para revisar con tu técnico",
+    "missing": "Datos que aún faltan",
+    "editFarm": "Editar en la granja",
+    "backCompare": "Volver a comparar",
+    "source": "Calculado con 21 años de clima real (NASA POWER 2005–2025, ajustado con SRTM) y FAO-56. Precios y rendimientos son estimados: valídalos antes de decidir."
+  },
+  "wizard": {
+    "kicker": "Empieza aquí · 4 pasos",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "see": "Ver mi recomendación",
+    "field": {
+      "short": "Parcela",
+      "title": "¿Dónde está tu parcela?",
+      "hint": "Toca tu chacra en el mapa o usa el botón de ubicación. Con eso traemos 21 años de clima de la NASA para ese punto.",
+      "useMajes": "Usar el punto de ejemplo en Majes"
+    },
+    "resources": {
+      "short": "Recursos",
+      "title": "¿Con qué cuentas?",
+      "hint": "El agua, el riego y el suelo deciden qué rotaciones son posibles.",
+      "water": "Agua disponible por campaña (m³ por hectárea)",
+      "dontKnow": "No lo sé: usar un valor típico de Majes ({m3} m³/ha)",
+      "irrigation": "Sistema de riego",
+      "eff": "aprovecha {eff} del agua",
+      "soil": "Tipo de suelo",
+      "soilHint": {
+        "arenoso": "drena rápido, retiene poca agua",
+        "franco": "equilibrado",
+        "arcilloso": "retiene agua, drena lento"
+      },
+      "current": "¿Qué siembras hoy?",
+      "other": "Siembro otra cosa: crear mi rotación"
+    },
+    "priorities": {
+      "short": "Prioridades",
+      "title": "¿Qué es lo más importante para ti?",
+      "hint": "Elige un perfil. Puedes ajustarlo fino después en Mi parcela.",
+      "water": {
+        "title": "Ahorrar agua",
+        "text": "Prefiero rotaciones que gasten menos agua, aunque gane un poco menos."
+      },
+      "income": {
+        "title": "Ganar más",
+        "text": "Prefiero el mayor ingreso posible con el agua que tengo."
+      },
+      "soil": {
+        "title": "Cuidar el suelo",
+        "text": "Prefiero leguminosas y menos meses con el campo desnudo."
+      },
+      "balanced": {
+        "title": "Equilibrado",
+        "text": "Un poco de todo: agua, ingreso, suelo y riesgo por igual."
+      },
+      "fine": "Los perfiles solo cambian el orden de las opciones; los cálculos de agua y dinero no cambian."
+    },
+    "result": {
+      "short": "Resultado",
+      "title": "Tu recomendación",
+      "hint": "Calculada con tu parcela, tus recursos y tus prioridades.",
+      "compare": "Ver todas las rotaciones lado a lado"
     }
   }
 }

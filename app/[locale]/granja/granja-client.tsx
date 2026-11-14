@@ -10,14 +10,12 @@ import { setFarm, useFarm } from "@/lib/farm-store";
 import { FARM_SIZES, resizeFarm, setGranja, useGranja } from "@/lib/granja-store";
 import {
   BASELINE_ID,
-  CROP_EMOJI,
   LENS_RAMP,
   buildPalette,
   evaluateGoals,
   lensColor,
   notableYears,
   rotationColor,
-  rotationEmoji,
   simulateYear,
   tileFactors,
   type Lens,
@@ -41,15 +39,14 @@ const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
 
 const fallbackGranja = () => import("@/data/mock_granja.json").then((m) => m.default as unknown as SimulateResponse);
 const STEP_MS = 1300;
-const TAG_ICON = { driest: "🌵", frost: "❄️", heat: "🔥", wettest: "💧" } as const;
-const LENSES: { id: Lens; icon: string }[] = [
-  { id: "crop", icon: "🌱" },
-  { id: "water", icon: "💧" },
-  { id: "temp", icon: "🌡️" },
-  { id: "soil", icon: "🟫" },
-  { id: "income", icon: "💰" },
+const TAG_ICON = { driest: DroughtIcon, frost: FrostIcon, heat: HeatIcon, wettest: WaterIcon } as const;
+const LENSES: { id: Lens; Icon: (p: { size?: number }) => React.JSX.Element }[] = [
+  { id: "crop", Icon: (p) => <CropIcon crop="maiz_chala" {...p} /> },
+  { id: "water", Icon: WaterIcon },
+  { id: "temp", Icon: ThermoIcon },
+  { id: "soil", Icon: SoilIcon },
+  { id: "income", Icon: ProfitIcon },
 ];
-const STAGE_ICON = { sprout: "🌱", grow: "🌿", flower: "🌸", harvest: "🧺" } as const;
 type Tab = "sow" | "climate" | "whatif" | "goals";
 
 function hasWebGL() {
@@ -300,7 +297,7 @@ function Farm() {
             aria-pressed={lens === l.id}
             className={`farm-lens ${lens === l.id ? "active" : ""}`}
           >
-            <span className="text-base">{l.icon}</span>
+            <l.Icon size={18} />
             {lens === l.id && <span>{t(`granja.lens.${l.id}`)}</span>}
           </button>
         ))}
@@ -321,7 +318,7 @@ function Farm() {
         aria-label={granja.sound ? "mute" : "sound"}
         className="hud-card hud-sound farm-sound"
       >
-        {granja.sound ? "🔊" : "🔇"}
+        {granja.sound ? <Volume2 size={16} /> : <VolumeX size={16} />}
       </button>
 
       {/* panel inferior */}
@@ -345,7 +342,10 @@ function Farm() {
             }}
             className="ui-btn flex-1 farm-play-btn"
           >
-            {playing ? `❚❚ ${t("granja.pause")}` : finished ? `↻ ${t("granja.replay")}` : `▶ ${t("granja.play")}`}
+            <span className="inline-flex items-center justify-center gap-1.5">
+              {playing ? <Pause size={16} /> : finished ? <RotateCcw size={16} /> : <Play size={16} />}
+              {playing ? t("granja.pause") : finished ? t("granja.replay") : t("granja.play")}
+            </span>
           </button>
           <button type="button" onClick={() => setMonth((m) => Math.min(11, m + 1))} aria-label="+1" className="time-btn farm-tbtn">
             ▶
@@ -374,8 +374,19 @@ function Farm() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="text-base font-bold">
-                        {sel.cropId ? `${CROP_EMOJI[sel.cropId] ?? "🌱"} ${cropName(sel.cropId, locale)}` : `⬜ ${t("granja.fallow")}`}
-                        {sel.stage && <span className="ml-2 text-sm font-medium">{STAGE_ICON[sel.stage]} {t(`granja.stage.${sel.stage}`)}</span>}
+                        <span className="inline-flex items-center gap-1.5">
+                          <CropIcon crop={sel.cropId} size={20} />
+                          {sel.cropId ? cropName(sel.cropId, locale) : t("granja.fallow")}
+                        </span>
+                        {sel.stage && (
+                          <span className="ml-2 inline-flex items-center gap-1 text-sm font-medium text-[#2f6b3a]">
+                            {(() => {
+                              const S = STAGE_ICON[sel.stage];
+                              return <S size={16} />;
+                            })()}
+                            {t(`granja.stage.${sel.stage}`)}
+                          </span>
+                        )}
                       </div>
                       <div className="text-xs text-[var(--muted)]">
                         {t("granja.tile")} {selected! + 1} · <span style={{ color: rotationColor(sel.rotationId) }}>●</span> {palette.find((p) => p.id === sel.rotationId)?.name}
@@ -389,7 +400,7 @@ function Farm() {
                     <b>{t(`granja.status.${sel.status}`)}:</b> {t(`granja.why.${sel.status}`)}
                   </p>
                   <Factor
-                    icon="🌡️"
+                    icon={<ThermoIcon size={18} />}
                     title={t("granja.sheet.temp")}
                     value={
                       selF.tminAbs !== null && selF.frostLimit !== null
@@ -400,20 +411,20 @@ function Farm() {
                     bad
                   />
                   <Factor
-                    icon="💧"
+                    icon={<WaterIcon size={18} />}
                     title={t("granja.sheet.water")}
                     value={t("granja.sheet.waterValue", { m3: n.format(selF.waterM3), m3ha: n.format(selF.waterM3ha), kc: selF.kc !== null ? n1.format(selF.kc) : "—" })}
                     bar={selF.waterM3ha / maxWater}
                   />
                   <Factor
-                    icon="🟫"
+                    icon={<SoilIcon size={18} />}
                     title={t("granja.sheet.soil")}
                     value={t("granja.sheet.soilValue", { soil: pct.format(selF.soilHealth), texture: t(`soil.${farm.soilTexture}`), eff: pct.format(efficiency(farm.irrigation, farm.soilTexture)) })}
                     bar={selF.soilHealth}
                   />
-                  <Factor icon="💰" title={t("granja.sheet.income")} value={`S/ ${n.format(selF.incomeYear)} ${t("granja.sheet.inYear")}`} />
+                  <Factor icon={<ProfitIcon size={18} />} title={t("granja.sheet.income")} value={`S/ ${n.format(selF.incomeYear)} ${t("granja.sheet.inYear")}`} />
                   <button type="button" onClick={() => paint(selected!, true)} className="rounded-full border-2 px-4 py-2 text-sm font-semibold" style={{ borderColor: rotationColor(brush) }}>
-                    🖌️ {t("granja.sheet.paintThis", { name: palette.find((p) => p.id === brush)?.name ?? "" })}
+                    <BrushIcon size={16} className="mr-1 inline" /> {t("granja.sheet.paintThis", { name: palette.find((p) => p.id === brush)?.name ?? "" })}
                   </button>
                 </section>
               )}
@@ -462,7 +473,7 @@ function Farm() {
                           className={`flex w-36 shrink-0 flex-col items-start gap-0.5 rounded-xl border-2 bg-[rgba(3,14,22,.45)] px-2.5 py-2 text-left ${active ? "shadow-md" : "border-[var(--border)]"}`}
                           style={{ borderColor: active ? rotationColor(r.id) : undefined }}
                         >
-                          <span className="text-lg leading-none">{rotationEmoji(r.id, palette)}</span>
+                          <RotationIcons rotation={r} size={20} className="text-[#2f6b3a]" />
                           <span className="line-clamp-2 text-xs font-semibold leading-tight">
                             <span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: rotationColor(r.id) }} />
                             {r.id === "descanso" ? t("granja.fallow") : r.name}
@@ -493,7 +504,10 @@ function Farm() {
                         className={`shrink-0 rounded-full border px-3 py-1 text-xs tabular-nums ${y.year === granja.year ? "border-[var(--brand)] bg-[var(--brand)] text-[var(--brand-ink)]" : "border-[var(--border)] bg-white/5"}`}
                         title={y.tag ? t(`granja.tag.${y.tag}`) : undefined}
                       >
-                        {y.tag ? `${TAG_ICON[y.tag]} ` : ""}
+                        {y.tag ? (() => {
+                          const I = TAG_ICON[y.tag];
+                          return <I size={13} className="mr-0.5 inline" />;
+                        })() : null}
                         {y.year}
                       </button>
                     ))}
@@ -501,10 +515,10 @@ function Farm() {
                   {clim ? (
                     <>
                       <div className="grid grid-cols-2 gap-2">
-                        <Stat icon="🌡️" label={t("granja.climate.temp")} value={`${n1.format(clim.tmin)} – ${n1.format(clim.tmax)} °C`} sub={t("granja.climate.extremes", { min: n1.format(clim.tminAbs), max: n1.format(clim.tmaxAbs) })} />
-                        <Stat icon="☀️" label={t("granja.climate.et0")} value={`${n1.format(clim.et0)} mm/día`} sub={t("granja.climate.et0Sub", { m3: n.format(clim.et0 * 10) })} />
-                        <Stat icon="🌧️" label={t("granja.climate.rain")} value={`${n1.format(clim.rain)} mm`} />
-                        <Stat icon="🟫" label={t("granja.climate.soil")} value={pct.format(clim.soil)} sub={t("granja.climate.soilSub")} />
+                        <Stat icon={<ThermoIcon size={18} />} label={t("granja.climate.temp")} value={`${n1.format(clim.tmin)} – ${n1.format(clim.tmax)} °C`} sub={t("granja.climate.extremes", { min: n1.format(clim.tminAbs), max: n1.format(clim.tmaxAbs) })} />
+                        <Stat icon={<EvapoIcon size={14} />} label={t("granja.climate.et0")} value={`${n1.format(clim.et0)} mm/día`} sub={t("granja.climate.et0Sub", { m3: n.format(clim.et0 * 10) })} />
+                        <Stat icon={<RainIcon size={14} />} label={t("granja.climate.rain")} value={`${n1.format(clim.rain)} mm`} />
+                        <Stat icon={<SoilIcon size={18} />} label={t("granja.climate.soil")} value={pct.format(clim.soil)} sub={t("granja.climate.soilSub")} />
                       </div>
                       {yearClimate && (
                         <div>
@@ -548,7 +562,9 @@ function Farm() {
                   </label>
                   <label className="flex flex-col gap-1">
                     <span className="flex justify-between font-semibold">
-                      <span>💧 {t("granja.whatif.water")}</span>
+                      <span className="inline-flex items-center gap-1">
+                        <WaterIcon size={16} /> {t("granja.whatif.water")}
+                      </span>
                       <span>
                         {pct.format(granja.waterFactor)} · {n.format(water)} m³/ha
                       </span>
@@ -556,11 +572,15 @@ function Farm() {
                     <RangeInput label={t("granja.whatif.water")} min={0.5} max={1.5} step={0.05} value={granja.waterFactor} color="#5cc8f5" onChange={(v) => setGranja({ waterFactor: v })} />
                   </label>
                   <div className="flex flex-col gap-1">
-                    <span className="font-semibold">🟫 {t("granja.whatif.soil")}</span>
+                    <span className="inline-flex items-center gap-1 font-semibold">
+                      <SoilIcon size={16} /> {t("granja.whatif.soil")}
+                    </span>
                     <Chips small value={farm.soilTexture} options={["arenoso", "franco", "arcilloso"] as SoilTexture[]} label={(v) => t(`soil.${v}`)} onChange={(soilTexture) => setFarm({ soilTexture })} />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="font-semibold">🚿 {t("granja.whatif.irrigation")}</span>
+                    <span className="inline-flex items-center gap-1 font-semibold">
+                      <WaterIcon size={16} /> {t("granja.whatif.irrigation")}
+                    </span>
                     <Chips small value={farm.irrigation} options={["gravedad", "aspersion", "goteo"] as Irrigation[]} label={(v) => t(`irrigation.${v}`)} onChange={(irrigation) => setFarm({ irrigation })} />
                   </div>
                   <p className="rounded-xl bg-[rgba(99,222,242,.07)] text-[#c8dde0] px-3 py-2 text-xs">
@@ -582,9 +602,13 @@ function Farm() {
                     <div key={g.id} className="flex flex-col gap-1">
                       <div className="flex items-center justify-between">
                         <span className={g.done && finished ? "font-semibold" : ""}>
-                          {g.icon} {t(`granja.goal.${g.id}`)}
+                          {(() => {
+                            const G = GOAL_ICON[g.id];
+                            return G ? <G size={16} className="mr-1 inline" /> : null;
+                          })()}
+                          {t(`granja.goal.${g.id}`)}
                         </span>
-                        <span>{finished ? (g.done ? "✅" : "—") : granja.badges.includes(g.id) ? "🏅" : ""}</span>
+                        <span>{finished ? g.done ? <Check size={16} className="text-[#3f8f4f]" /> : "—" : granja.badges.includes(g.id) ? <MedalIcon size={16} /> : null}</span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-white/[.06]">
                         <div className="h-full rounded-full bg-[var(--brand)] transition-all" style={{ width: `${g.progress * 100}%`, opacity: finished ? 1 : 0.45 }} />
@@ -622,13 +646,13 @@ function Farm() {
   );
 }
 
-function Factor({ icon, title, value, bar, bad }: { icon: string; title: string; value: string; bar?: number; bad?: boolean }) {
+function Factor({ icon, title, value, bar, bad }: { icon: React.ReactNode; title: string; value: string; bar?: number; bad?: boolean }) {
   const v = Math.max(0, Math.min(1, bar ?? 0));
   const color = bad ? (v > 0.66 ? "#ff6b6b" : v > 0.33 ? "#f6b94c" : "#4fd39a") : "var(--brand)";
   return (
     <div className="flex flex-col gap-1 rounded-xl border border-[var(--border)] px-3 py-2">
       <div className="flex items-baseline justify-between gap-2">
-        <span className="font-semibold">
+        <span className="flex items-center gap-1.5 font-semibold">
           {icon} {title}
         </span>
       </div>
@@ -642,7 +666,7 @@ function Factor({ icon, title, value, bar, bad }: { icon: string; title: string;
   );
 }
 
-function Stat({ icon, label, value, sub }: { icon: string; label: string; value: string; sub?: string }) {
+function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-xl border border-[var(--border)] px-3 py-2">
       <div className="text-[11px] text-[var(--muted)]">
@@ -688,7 +712,7 @@ function FlatFarm({ cols, tiles, selected, tints, onTap }: { cols: number; tiles
           className="flex aspect-square items-center justify-center rounded-lg border-4 text-2xl"
           style={{ background: tints?.[i] ?? BG[tl.status], borderColor: selected === i ? "#fff" : rotationColor(tl.rotationId) }}
         >
-          <span style={{ transform: `scale(${0.5 + tl.growth * 0.6})` }}>{tl.cropId ? (CROP_EMOJI[tl.cropId] ?? "🌱") : ""}</span>
+          <span className="text-white" style={{ transform: `scale(${0.6 + tl.growth * 0.6})` }}>{tl.cropId ? <CropIcon crop={tl.cropId} size={26} /> : null}</span>
         </button>
       ))}
     </div>

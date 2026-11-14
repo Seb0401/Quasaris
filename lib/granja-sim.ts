@@ -20,15 +20,6 @@ export const ROTATION_COLOR: Record<string, string> = {
   descanso: "#9b8f7a",
 };
 
-export const CROP_EMOJI: Record<string, string> = {
-  alfalfa: "🌿",
-  papa: "🥔",
-  cebolla: "🧅",
-  maiz_chala: "🌽",
-  haba: "🫘",
-  frijol: "🫘",
-};
-
 const CUSTOM_COLORS = ["#e0607e", "#3fb6a8", "#c9a227", "#7a6ad8", "#d77a3a"];
 
 /** Color de una rotación (las propias reciben un color estable según su id). */
@@ -43,12 +34,6 @@ export function rotationColor(id: string): string {
 export function buildPalette(farmRotations: Rotation[]): Rotation[] {
   const ids = new Set(PALETTE.map((r) => r.id));
   return [...PALETTE, ...farmRotations.filter((r) => !ids.has(r.id) && r.crops.length > 0)];
-}
-
-export function rotationEmoji(id: string, palette: Rotation[] = PALETTE) {
-  const r = palette.find((p) => p.id === id);
-  if (!r || r.crops.length === 0) return "⬜";
-  return r.crops.map((c) => CROP_EMOJI[c.cropId] ?? "🌱").join("");
 }
 
 export type Stage = "sprout" | "grow" | "flower" | "harvest";
@@ -194,18 +179,18 @@ export function simulateYear(
 
 // ---------- metas y medallas ----------
 
-export type Goal = { id: string; icon: string; done: boolean; progress: number };
+export type Goal = { id: string; done: boolean; progress: number };
 
 export function evaluateGoals(s: YearSummary, tilesCount: number): Goal[] {
   const saving = s.baseline.waterM3 > 0 ? 1 - s.waterM3 / s.baseline.waterM3 : 0;
   const bareShare = s.bareTileMonths / Math.max(tilesCount * 12, 1);
   return [
-    { id: "waterFits", icon: "💧", done: s.waterM3 <= s.capacityM3, progress: Math.min(1, s.capacityM3 / Math.max(s.waterM3, 1)) },
-    { id: "save20", icon: "🏅", done: saving >= 0.2, progress: Math.max(0, Math.min(1, saving / 0.2)) },
-    { id: "healthySoil", icon: "🌱", done: s.soil >= 0.7, progress: Math.min(1, s.soil / 0.7) },
-    { id: "coveredSoil", icon: "🛡️", done: bareShare <= 0.1, progress: Math.max(0, Math.min(1, 1 - (bareShare - 0.1) / 0.4)) },
-    { id: "beatIncome", icon: "💰", done: s.incomePEN >= s.baseline.incomePEN && s.baseline.incomePEN > 0, progress: s.baseline.incomePEN > 0 ? Math.max(0, Math.min(1, s.incomePEN / s.baseline.incomePEN)) : 0 },
-    { id: "diversity", icon: "🔄", done: s.distinctRotations >= 3, progress: Math.min(1, s.distinctRotations / 3) },
+    { id: "waterFits", done: s.waterM3 <= s.capacityM3, progress: Math.min(1, s.capacityM3 / Math.max(s.waterM3, 1)) },
+    { id: "save20", done: saving >= 0.2, progress: Math.max(0, Math.min(1, saving / 0.2)) },
+    { id: "healthySoil", done: s.soil >= 0.7, progress: Math.min(1, s.soil / 0.7) },
+    { id: "coveredSoil", done: bareShare <= 0.1, progress: Math.max(0, Math.min(1, 1 - (bareShare - 0.1) / 0.4)) },
+    { id: "beatIncome", done: s.incomePEN >= s.baseline.incomePEN && s.baseline.incomePEN > 0, progress: s.baseline.incomePEN > 0 ? Math.max(0, Math.min(1, s.incomePEN / s.baseline.incomePEN)) : 0 },
+    { id: "diversity", done: s.distinctRotations >= 3, progress: Math.min(1, s.distinctRotations / 3) },
   ];
 }
 
