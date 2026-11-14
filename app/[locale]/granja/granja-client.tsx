@@ -22,6 +22,7 @@ import {
   type TileState,
 } from "@/lib/granja-sim";
 import { useSimulation } from "@/lib/use-simulation";
+import { useIsMobile } from "@/lib/use-media";
 import { SKY_GRADIENT, type Weather } from "@/components/granja/farm-scene";
 import { Celebration, Tutorial, playCoin } from "@/components/granja/overlays";
 import { AlertIcon, RiskPanel } from "@/components/granja/risk-panel";
@@ -29,8 +30,8 @@ import { HazardControls } from "@/components/granja/hazard-controls";
 import { ENSO_YEARS } from "@/lib/granja-events";
 import { Reveal } from "@/components/motion/reveal";
 import { LoadingOrbit, PageHeader, Panel, RangeInput } from "@/components/ui/kit";
-import { Droplets, Gamepad2, Sprout, Waves } from "lucide-react";
-import { BarChart3, Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Eye, Flag, MapPin, Pause, Play, RotateCcw, SkipBack, Tractor, Undo2, Volume2, VolumeX, X } from "lucide-react";
+import { Droplets, Gamepad2, Layers, ShieldAlert, SlidersHorizontal, Sprout, Waves } from "lucide-react";
+import { BarChart3, Check, ChevronLeft, ChevronRight, Eye, Flag, MapPin, Pause, Play, RotateCcw, SkipBack, Tractor, Undo2, Volume2, VolumeX, X } from "lucide-react";
 import { BrushIcon, CropIcon, DroughtIcon, EvapoIcon, FrostIcon, GOAL_ICON, HeatIcon, MedalIcon, ProfitIcon, RainIcon, ReservoirIcon, SoilIcon, STAGE_ICON, ThermoIcon, WaterIcon } from "@/components/icons/farm-icons";
 import { RotationIcons } from "@/components/icons/rotation-icons";
 
@@ -54,6 +55,14 @@ const LENSES: { id: Lens; Icon: (p: { size?: number }) => React.JSX.Element }[] 
   { id: "income", Icon: ProfitIcon },
 ];
 type Tab = "sow" | "climate" | "risks" | "whatif" | "goals";
+const TABS: { id: Tab; Icon: (p: { size?: number }) => React.JSX.Element }[] = [
+  { id: "sow", Icon: BrushIcon },
+  { id: "climate", Icon: ThermoIcon },
+  { id: "risks", Icon: (p) => <ShieldAlert size={p.size} /> },
+  { id: "whatif", Icon: (p) => <SlidersHorizontal size={p.size} /> },
+  { id: "goals", Icon: (p) => <Flag size={p.size} /> },
+];
+const SEV = { low: 1, med: 2, high: 3 } as const;
 
 /**
  * Detecta WebGL UNA sola vez. Antes se llamaba en cada render y cada llamada creaba un contexto WebGL
@@ -171,9 +180,13 @@ function Farm() {
   const [playing, setPlaying] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [lens, setLens] = useState<Lens>("crop");
-  const [tab, setTab] = useState<Tab>("sow");
+  const mobile = useIsMobile();
+  // en celular el panel empieza plegado para ver la granja completa
+  const [panelState, setPanel] = useState<Tab | null | "auto">("auto");
+  const panel: Tab | null = panelState === "auto" ? (mobile ? null : "sow") : panelState;
+  const [lensOpen, setLensOpen] = useState(false);
+  const [dismissed, setDismissed] = useState("");
   const [paintMode, setPaintMode] = useState(true);
-  const [collapsed, setCollapsed] = useState(false);
   const history = useRef<string[][]>([]);
 
   const sim = useMemo(
@@ -254,10 +267,26 @@ function Farm() {
     setMonth(0);
   };
 
+  const effectivePaint = paintMode && panel === "sow" && selected === null;
+  const monthAlerts = sim.alerts.filter((a) => a.month === month);
+  const topAlert = [...monthAlerts].sort((a, b) => SEV[b.severity] - SEV[a.severity])[0];
+  const toastKey = `${granja.year}-${month}`;
+  const alertByMonth = Array.from({ length: 12 }, (_, m) => sim.alerts.filter((a) => a.month === m).reduce((mx, a) => Math.max(mx, SEV[a.severity]), 0));
+  const riskCount = sim.alerts.length;
+  const showPanel = panel !== null || sel !== null;
+  const togglePanel = (k: Tab) => {
+    setSelected(null);
+    setPanel(panel === k && selected === null ? null : k);
+  };
+  const closePanel = () => {
+    setSelected(null);
+    setPanel(null);
+  };
+
   return (
-    <div className="farm-twin" style={{ background: SKY_GRADIENT[weather] }}>
-      {/* escena */}
-      <div className="absolute inset-x-0 top-0 transition-[bottom] duration-300" style={{ bottom: collapsed ? 64 : "44%" }}>
+    <div className={`farm-twin ${showPanel ? "has-panel" : ""}`} style={{ background: SKY_GRADIENT[weather] }}>
+      {/* escena a pantalla completa */}
+      <div className="farm-stage">
         {webgl ? (
           <FarmScene
             cols={granja.cols}
@@ -268,134 +297,166 @@ function Farm() {
             harvestTiles={snap.harvests.map((h) => h.tile)}
             harvestKey={`${granja.year}-${month}`}
             selectedTile={selected}
-            alertTiles={sim.alerts.filter((a) => a.month === month).flatMap((a) => a.tiles)}
-            paintMode={paintMode}
+            alertTiles={monthAlerts.flatMap((a) => a.tiles)}
+            paintMode={effectivePaint}
             onPaint={paint}
-            onSelect={select}
+            onSelect={(i) => {
+              select(i);
+            }}
             tints={tints}
           />
         ) : (
-          <FlatFarm cols={granja.cols} tiles={snap.tiles} selected={selected} tints={tints} onTap={(i) => (paintMode ? paint(i, true) : select(i))} />
+          <FlatFarm cols={granja.cols} tiles={snap.tiles} selected={selected} tints={tints} onTap={(i) => (effectivePaint ? paint(i, true) : select(i))} />
         )}
       </div>
 
-      {/* HUD superior */}
-      <div className="farm-hud">
-        <div className="hud-card hud-reservoir">
-          <div className="flex justify-between gap-2">
-            <span className="flex items-center gap-1">
-              <ReservoirIcon size={16} /> {t("granja.reservoir")}
-            </span>
-            <span className={reservoir <= 0 ? "text-[#ff8f8f]" : ""}>{pct.format(reservoir)}</span>
-          </div>
-          <div className="h-2 overflow-hidden rounded-full bg-white/10">
-            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${reservoir * 100}%`, background: reservoir < 0.15 ? "var(--danger)" : "#5cc8f5", boxShadow: "0 0 10px rgba(92,200,245,.6)" }} />
-          </div>
-        </div>
-        <div className="hud-card">
-          <ProfitIcon size={16} /> S/ {n.format(snap.incomePEN)}
-        </div>
-        {clim && (
-          <div className="hud-card">
-            <ThermoIcon size={16} /> {n1.format(clim.tmin)}–{n1.format(clim.tmax)} °C
-          </div>
-        )}
-        <div className="hud-card hud-date capitalize">
-          {fmtMonth.format(new Date(granja.year, month, 1))} {granja.year}
-          {granja.tempDelta ? <span className="ml-1 text-[#ff8f8f]">({granja.tempDelta > 0 ? "+" : ""}{granja.tempDelta} °C)</span> : null}
-        </div>
-      </div>
-
-      {/* lentes */}
-      <div className="farm-lenses">
-        {LENSES.map((l) => (
-          <button
-            key={l.id}
-            type="button"
-            onClick={() => setLens(l.id)}
-            title={t(`granja.lens.${l.id}`)}
-            aria-pressed={lens === l.id}
-            className={`farm-lens ${lens === l.id ? "active" : ""}`}
-          >
-            <l.Icon size={18} />
-            {lens === l.id && <span>{t(`granja.lens.${l.id}`)}</span>}
+      {/* secciones como chips flotantes (estilo Google Maps) */}
+      <nav className="farm-chips" aria-label={t("granja.title")}>
+        {TABS.map(({ id, Icon }) => (
+          <button key={id} type="button" onClick={() => togglePanel(id)} aria-pressed={panel === id && !sel} className={`farm-chip ${panel === id && !sel ? "active" : ""}`}>
+            <Icon size={15} />
+            <span>{t(`granja.tab.${id}`)}</span>
+            {id === "risks" && riskCount > 0 && <em>{riskCount}</em>}
           </button>
         ))}
-        {lens !== "crop" && (
-          <div className="farm-lens-legend">
-            <div className="h-2 rounded-full" style={{ background: `linear-gradient(90deg,${LENS_RAMP[lens].join(",")})` }} />
-            <div className="mt-1 flex justify-between">
-              <span>{t(`granja.legend.${lens}.low`)}</span>
-              <span>{t(`granja.legend.${lens}.high`)}</span>
-            </div>
-          </div>
-        )}
-      </div>
+      </nav>
 
-      <button
-        type="button"
-        onClick={() => setGranja((s) => ({ sound: !s.sound }))}
-        aria-label={granja.sound ? "mute" : "sound"}
-        className="hud-card hud-sound farm-sound"
-      >
-        {granja.sound ? <Volume2 size={16} /> : <VolumeX size={16} />}
+      {/* estado del mes: discreto, arriba a la derecha */}
+      <button type="button" className="farm-status" onClick={() => togglePanel("climate")} title={t("granja.tab.climate")}>
+        <span className="farm-status-date capitalize">
+          {fmtMonth.format(new Date(granja.year, month, 1))} {granja.year}
+          {ENSO_YEARS[granja.year] && <i>{t(`granja.enso.${ENSO_YEARS[granja.year]}`)}</i>}
+          {granja.tempDelta ? <i className="hot">{granja.tempDelta > 0 ? "+" : ""}{granja.tempDelta} °C</i> : null}
+        </span>
+        <span className="farm-status-row">
+          <span className="farm-status-res" title={t("granja.reservoir")}>
+            <ReservoirIcon size={14} />
+            <span className="farm-status-bar">
+              <span style={{ width: `${reservoir * 100}%`, background: reservoir < 0.15 ? "var(--danger)" : "#5cc8f5" }} />
+            </span>
+            <b className={reservoir <= 0 ? "text-[#ff8f8f]" : ""}>{pct.format(reservoir)}</b>
+          </span>
+          <span>
+            <ProfitIcon size={14} /> S/ {n.format(snap.incomePEN)}
+          </span>
+          {clim && (
+            <span>
+              <ThermoIcon size={14} /> {n1.format(clim.tmin)}–{n1.format(clim.tmax)}°
+            </span>
+          )}
+        </span>
       </button>
 
-      {/* panel inferior */}
-      <div className="farm-sheet">
-        {!collapsed &&
-          (() => {
-            const top = sim.alerts.filter((a) => a.month === month).sort((a, b) => (a.severity === "high" ? -1 : 1) - (b.severity === "high" ? -1 : 1))[0];
-            if (top)
-              return (
-                <button type="button" onClick={() => setTab("risks")} className="farm-sheet-event flex items-center gap-1.5 text-left">
-                  <AlertIcon kind={top.kind} size={15} /> <b>{t(`granja.alert.${top.kind}.title`)}:</b> {t(`granja.alert.${top.kind}.what`)}
+      {/* herramientas: capas y sonido */}
+      <div className="farm-tools">
+        <div className="relative">
+          <button type="button" className={`farm-round ${lensOpen || lens !== "crop" ? "active" : ""}`} onClick={() => setLensOpen((o) => !o)} aria-expanded={lensOpen} aria-label={t("granja.ui.layers")} title={t("granja.ui.layers")}>
+            <Layers size={18} />
+          </button>
+          {lensOpen && (
+            <div className="gm-popover farm-lens-pop" role="dialog" aria-label={t("granja.ui.layers")}>
+              <div className="gm-pop-head">
+                <b>{t("granja.ui.layers")}</b>
+                <button type="button" onClick={() => setLensOpen(false)} aria-label={t("granja.ui.close")}>
+                  <X size={15} />
                 </button>
-              );
-            return snap.events.length > 0 ? <div className="farm-sheet-event">{t(`granja.event.${snap.events[0].kind}`, { n: snap.events[0].tiles })}</div> : null;
-          })()}
-        {/* tiempo */}
-        <div className="flex items-center gap-2 px-3 pt-2">
-          <button type="button" onClick={reset} aria-label={t("granja.reset")} className="time-btn farm-tbtn">
-            <SkipBack size={16} className="mx-auto" />
-          </button>
-          <button type="button" onClick={() => setMonth((m) => Math.max(0, m - 1))} aria-label="-1" className="time-btn farm-tbtn">
-            <ChevronLeft size={18} className="mx-auto" />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (finished) setMonth(0);
-              setPlaying((p) => !p);
-            }}
-            className="ui-btn flex-1 farm-play-btn"
-          >
-            <span className="inline-flex items-center justify-center gap-1.5">
-              {playing ? <Pause size={16} /> : finished ? <RotateCcw size={16} /> : <Play size={16} />}
-              {playing ? t("granja.pause") : finished ? t("granja.replay") : t("granja.play")}
-            </span>
-          </button>
-          <button type="button" onClick={() => setMonth((m) => Math.min(11, m + 1))} aria-label="+1" className="time-btn farm-tbtn">
-            <ChevronRight size={18} className="mx-auto" />
-          </button>
-          <button type="button" onClick={() => setCollapsed((c) => !c)} aria-label="panel" className="time-btn farm-tbtn">
-            {collapsed ? <ChevronUp size={18} className="mx-auto" /> : <ChevronDown size={18} className="mx-auto" />}
-          </button>
-        </div>
-
-        {!collapsed && (
-          <>
-            {!sel && (
-              <div className="mt-2 grid grid-cols-5 gap-1 px-3">
-                {(["sow", "climate", "risks", "whatif", "goals"] as Tab[]).map((k) => (
-                  <button key={k} type="button" onClick={() => setTab(k)} className={`rounded-xl py-1.5 text-xs font-semibold ${tab === k ? "farm-tab active" : "farm-tab"}`}>
-                    {t(`granja.tab.${k}`)}
+              </div>
+              <div className="farm-lens-grid">
+                {LENSES.map((l) => (
+                  <button key={l.id} type="button" onClick={() => setLens(l.id)} aria-pressed={lens === l.id} className={lens === l.id ? "active" : ""}>
+                    <span className="farm-lens-swatch" style={{ background: l.id === "crop" ? "rgba(185,255,99,.15)" : `linear-gradient(135deg,${LENS_RAMP[l.id].join(",")})` }}>
+                      <l.Icon size={18} />
+                    </span>
+                    {t(`granja.lens.${l.id}`)}
                   </button>
                 ))}
               </div>
-            )}
+            </div>
+          )}
+        </div>
+        <button type="button" onClick={() => setGranja((s) => ({ sound: !s.sound }))} aria-label={granja.sound ? "mute" : "sound"} className="farm-round">
+          {granja.sound ? <Volume2 size={17} /> : <VolumeX size={17} />}
+        </button>
+      </div>
+      {lens !== "crop" && !lensOpen && (
+        <div className="farm-legend">
+          <b>{t(`granja.lens.${lens}`)}</b>
+          <div className="h-1.5 rounded-full" style={{ background: `linear-gradient(90deg,${LENS_RAMP[lens].join(",")})` }} />
+          <div className="flex justify-between">
+            <span>{t(`granja.legend.${lens}.low`)}</span>
+            <span>{t(`granja.legend.${lens}.high`)}</span>
+          </div>
+        </div>
+      )}
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3 pt-2">
+      {/* aviso del mes */}
+      {topAlert && dismissed !== toastKey && (
+        <div className={`farm-toast sev-${topAlert.severity}`} role="status">
+          <button type="button" onClick={() => togglePanel("risks")} className="farm-toast-main">
+            <AlertIcon kind={topAlert.kind} size={16} />
+            <span>
+              <b>{t(`granja.alert.${topAlert.kind}.title`)}</b>
+              {monthAlerts.length > 1 && <small> +{monthAlerts.length - 1}</small>}
+            </span>
+          </button>
+          <button type="button" onClick={() => setDismissed(toastKey)} aria-label={t("granja.ui.close")} className="farm-toast-x">
+            <X size={13} />
+          </button>
+        </div>
+      )}
+
+      {/* línea de tiempo flotante */}
+      <div className="farm-timeline">
+        <button type="button" onClick={reset} aria-label={t("granja.reset")} className="farm-tl-btn">
+          <SkipBack size={15} />
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (finished) setMonth(0);
+            setPlaying((p) => !p);
+          }}
+          className="farm-tl-play"
+        >
+          {playing ? <Pause size={16} /> : finished ? <RotateCcw size={16} /> : <Play size={16} />}
+          <span>{playing ? t("granja.pause") : finished ? t("granja.replay") : t("granja.play")}</span>
+        </button>
+        <button type="button" onClick={() => setMonth((m) => Math.max(0, m - 1))} aria-label="-1" className="farm-tl-btn">
+          <ChevronLeft size={17} />
+        </button>
+        <div className="farm-tl-months">
+          {Array.from({ length: 12 }, (_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => {
+                setPlaying(false);
+                setMonth(i);
+              }}
+              aria-label={fmtMonth.format(new Date(granja.year, i, 1))}
+              aria-current={i === month}
+              className={`${i === month ? "now" : ""} ${i < month ? "past" : ""}`}
+            >
+              <span>{fmtMonthShort.format(new Date(2025, i, 1))}</span>
+              {alertByMonth[i] > 0 && <i className={`sev-${alertByMonth[i] === 3 ? "high" : alertByMonth[i] === 2 ? "med" : "low"}`} />}
+            </button>
+          ))}
+        </div>
+        <button type="button" onClick={() => setMonth((m) => Math.min(11, m + 1))} aria-label="+1" className="farm-tl-btn">
+          <ChevronRight size={17} />
+        </button>
+      </div>
+
+      {/* panel flotante: izquierda en escritorio, hoja inferior en móvil */}
+      {showPanel && (
+        <aside className="farm-panel" aria-label={sel ? t("granja.tile") : t(`granja.tab.${panel}`)}>
+          <div className="farm-panel-head">
+            <b>{sel ? `${t("granja.tile")} ${selected! + 1}` : t(`granja.tab.${panel}`)}</b>
+            <button type="button" onClick={sel ? () => setSelected(null) : closePanel} aria-label={t("granja.ui.close")}>
+              <X size={16} />
+            </button>
+          </div>
+            <div className="farm-panel-body">
               {/* ficha de casilla */}
               {sel && selF && (
                 <section className="flex flex-col gap-2 text-sm">
@@ -420,9 +481,6 @@ function Farm() {
                         {t("granja.tile")} {selected! + 1} · <span style={{ color: rotationColor(sel.rotationId) }}>●</span> {palette.find((p) => p.id === sel.rotationId)?.name}
                       </div>
                     </div>
-                    <button type="button" onClick={() => setSelected(null)} className="h-8 w-8 rounded-full bg-white/[.06]">
-                      <X size={16} className="mx-auto" />
-                    </button>
                   </div>
                   <p className="rounded-xl bg-[rgba(99,222,242,.07)] text-[#c8dde0] px-3 py-2">
                     <b>{t(`granja.status.${sel.status}`)}:</b> {t(`granja.why.${sel.status}`)}
@@ -457,7 +515,7 @@ function Farm() {
                 </section>
               )}
 
-              {!sel && tab === "sow" && (
+              {!sel && panel === "sow" && (
                 <section className="flex flex-col gap-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="flex rounded-full bg-white/[.06] p-0.5 text-xs font-semibold">
@@ -486,7 +544,7 @@ function Farm() {
                     </Link>
                   </div>
                   <p className="text-[11px] text-[var(--muted)]">{paintMode ? t("granja.mode.paintHint") : t("granja.mode.viewHint")}</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1">
+                  <div className="farm-palette">
                     {palette.map((r) => {
                       const res = byId.get(r.id);
                       const active = brush === r.id;
@@ -498,7 +556,7 @@ function Farm() {
                             setBrush(r.id);
                             setPaintMode(true);
                           }}
-                          className={`flex w-36 shrink-0 flex-col items-start gap-0.5 rounded-xl border-2 bg-[rgba(3,14,22,.45)] px-2.5 py-2 text-left ${active ? "shadow-md" : "border-[var(--border)]"}`}
+                          className={`flex flex-col items-start gap-0.5 rounded-xl border-2 bg-[rgba(3,14,22,.45)] px-2.5 py-2 text-left ${active ? "shadow-md" : "border-[var(--border)]"}`}
                           style={{ borderColor: active ? rotationColor(r.id) : undefined }}
                         >
                           <RotationIcons rotation={r} size={20} className="text-[var(--brand)]" />
@@ -524,7 +582,7 @@ function Farm() {
                 </section>
               )}
 
-              {!sel && tab === "climate" && (
+              {!sel && panel === "climate" && (
                 <section className="flex flex-col gap-2 text-sm">
                   <div className="flex gap-1.5 overflow-x-auto pb-1">
                     {years.map((y) => (
@@ -582,7 +640,7 @@ function Farm() {
                 </section>
               )}
 
-              {!sel && tab === "whatif" && (
+              {!sel && panel === "whatif" && (
                 <section className="flex flex-col gap-3 text-sm">
                   <p className="text-xs text-[var(--muted)]">{t("granja.whatif.text")}</p>
                   <label className="flex flex-col gap-1">
@@ -634,9 +692,9 @@ function Farm() {
                 </section>
               )}
 
-              {!sel && tab === "risks" && <RiskPanel alerts={sim.alerts} month={month} onPickMonth={(m) => setMonth(m)} />}
+              {!sel && panel === "risks" && <RiskPanel alerts={sim.alerts} month={month} onPickMonth={(m) => setMonth(m)} />}
 
-              {!sel && tab === "goals" && (
+              {!sel && panel === "goals" && (
                 <section className="flex flex-col gap-2 text-sm">
                   {goals.map((g) => (
                     <div key={g.id} className="flex flex-col gap-1">
@@ -677,10 +735,9 @@ function Farm() {
                   <p className="text-[10px] text-[var(--muted)]">{t("granja.source", { base: palette.find((p) => p.id === BASELINE_ID)?.name ?? "" })}</p>
                 </section>
               )}
-            </div>
-          </>
-        )}
-      </div>
+          </div>
+        </aside>
+      )}
 
       {!granja.tutorialDone && !shot && <Tutorial onClose={() => setGranja({ tutorialDone: true })} />}
       {granja.lastWon.length > 0 && <Celebration medals={granja.lastWon} onClose={() => setGranja({ lastWon: [] })} />}
@@ -745,7 +802,7 @@ function ResultRow({ label, mine, base, lowerIsBetter }: { label: string; mine: 
 function FlatFarm({ cols, tiles, selected, tints, onTap }: { cols: number; tiles: TileState[]; selected: number | null; tints?: (string | null)[]; onTap: (i: number) => void }) {
   const BG: Record<string, string> = { ok: "#6e4a2f", water_stress: "#7d5638", climate_risk: "#6f7f93", dry: "#cdb487", bare: "#8d6a48" , disease: "#5d4a63", pest: "#6f6232" };
   return (
-    <div className="grid h-full w-full content-center gap-1.5 bg-[#d9c49b] p-6 pb-[45%]" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+    <div className="grid h-full w-full content-center gap-1.5 bg-[#d9c49b] p-6 pt-24 pb-20" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
       {tiles.map((tl, i) => (
         <button
           key={i}

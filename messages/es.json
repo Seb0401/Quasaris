@@ -467,6 +467,10 @@
         "what": "Con lluvia fuerte, el suelo sin cultivo se lava y pierde materia orgánica.",
         "action": "Siembra un cultivo de cobertura o deja rastrojo en esos lotes."
       }
+    },
+    "ui": {
+      "layers": "Capas",
+      "close": "Cerrar"
     }
   },
   "rotaciones": {

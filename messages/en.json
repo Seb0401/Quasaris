@@ -467,6 +467,10 @@
         "what": "With heavy rain, uncovered soil washes away and loses organic matter.",
         "action": "Plant a cover crop or leave stubble on those plots."
       }
+    },
+    "ui": {
+      "layers": "Layers",
+      "close": "Close"
     }
   },
   "rotaciones": {
