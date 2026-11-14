@@ -3,7 +3,7 @@
 import "leaflet/dist/leaflet.css";
 import L, { type Map as LeafletMap } from "leaflet";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Check,
   Layers,
@@ -85,7 +85,7 @@ function ClickHandler({ onPick }: { onPick: Props["onPick"] }) {
   return null;
 }
 
-export default function ParcelMap({
+function ParcelMapInner({
   lat,
   lon,
   onPick,
@@ -524,5 +524,43 @@ function SearchBox({
         </ul>
       )}
     </div>
+  );
+}
+
+/** Si el mapa falla al dibujarse, avisa hacia arriba para montarlo de nuevo en vez de romper la página. */
+class MapBoundary extends Component<{ onError: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    this.props.onError();
+  }
+  render() {
+    return this.state.failed ? <div className="map-skeleton ui-skeleton" /> : this.props.children;
+  }
+}
+
+/**
+ * Next conserva las páginas visitadas ocultas en memoria. Al ocultarlas, Leaflet destruye el mapa,
+ * pero sus capas quedan montadas y al volver intentan dibujarse sobre un mapa que ya no existe.
+ * Por eso el mapa solo vive mientras la página está visible: se monta de nuevo en cada visita.
+ */
+export default function ParcelMap(props: Props) {
+  const [generation, setGeneration] = useState<number | null>(null);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setGeneration((g) => (g ?? 0) + 1));
+    return () => {
+      cancelAnimationFrame(frame);
+      setGeneration(null);
+    };
+  }, []);
+
+  if (generation === null) return <div className={`map-skeleton ui-skeleton ${props.className ?? ""}`} />;
+  return (
+    <MapBoundary key={generation} onError={() => setGeneration((g) => (g ?? 0) + 1)}>
+      <ParcelMapInner {...props} />
+    </MapBoundary>
   );
 }

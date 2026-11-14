@@ -45,6 +45,14 @@ export function InicioClient() {
   const rec = data && step === 3 ? recommend(data, farm.rotations, farm) : null;
   const current = farm.rotations.find((r) => r.isCurrent);
 
+  // marca el body mientras esta pantalla está visible (sube el botón del asistente sobre la barra de pasos)
+  useEffect(() => {
+    document.body.dataset.wizard = "";
+    return () => {
+      delete document.body.dataset.wizard;
+    };
+  }, []);
+
   // al cambiar de paso, volver al inicio del contenido (importante en el celular)
   const first = useRef(true);
   useEffect(() => {

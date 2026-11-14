@@ -617,6 +617,43 @@
 .push-perks svg { color: var(--cyan); }
 .push-on { display: grid; gap: 10px; }
 
+/* calendario: tarjetas de la semana, rueda anual y detalle por cultivo */
+.cal-cards { display: grid; gap: 18px; align-items: stretch; }
+.cal-cards > .reveal { display: flex; }
+.cal-card { display: flex; flex: 1; flex-direction: column; gap: 14px; }
+.cal-card .ui-panel-head { margin-bottom: 0; }
+.crop-now { display: flex; align-items: center; gap: 14px; }
+.crop-now-icon { display: grid; flex-shrink: 0; width: 64px; height: 64px; place-items: center; border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 20px; color: var(--accent); background: color-mix(in srgb, var(--accent) 11%, transparent); animation: floatY 5s ease-in-out infinite; }
+.crop-now h3 { margin: 0 0 4px; font-size: 21px; font-weight: 650; letter-spacing: -.03em; line-height: 1.2; }
+.crop-now p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.crop-progress { display: grid; gap: 8px; margin-top: auto; }
+.crop-progress > div:first-child { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; font-weight: 650; }
+.crop-progress b { color: var(--foreground); }
+.cal-next .ui-btn { margin-top: auto; }
+.week-stats.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 0; }
+.cal-card .water-insight { margin-top: 0; }
+.cal-card .ui-source { margin-top: 0; }
+.cal-main { display: grid; gap: 18px; align-items: start; }
+.cal-scroll { overflow-x: auto; padding-bottom: 4px; }
+.cal-scroll .year-calendar { min-width: 560px; }
+.cal-label-col { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.cal-label svg { flex-shrink: 0; }
+.cal-detail { overflow: hidden; color: var(--faint); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.wheel { position: relative; width: 100%; max-width: 300px; margin: 4px auto 16px; }
+.wheel svg { display: block; width: 100%; height: auto; }
+.wheel-sector { transform-origin: 140px 140px; animation: wheelIn .6s var(--ease) both; }
+.wheel-sector text { text-transform: capitalize; }
+.wheel-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; pointer-events: none; }
+.wheel-center small { color: var(--muted); font-size: 11px; font-weight: 650; }
+.wheel-center strong { font-size: 22px; font-weight: 650; letter-spacing: -.03em; line-height: 1.1; }
+.wheel-legend { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.wheel-legend li { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 12px; background: rgba(255, 255, 255, .035); font-size: 13px; font-weight: 650; }
+.wheel-legend i { flex-shrink: 0; width: 9px; height: 9px; border-radius: 50%; }
+.wheel-legend svg { color: var(--muted); }
+@keyframes wheelIn { from { opacity: 0; transform: scale(.82) rotate(-14deg); } to { opacity: 1; transform: none; } }
+@media (min-width: 900px) { .cal-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1200px) { .cal-main { grid-template-columns: 330px minmax(0, 1fr); } }
+
 /* -------------------------------------------------------------------- modo granja */
 
 .farm-twin { position: relative; height: calc(100dvh - 150px); min-height: 560px; overflow: hidden; border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--shadow); transition: background .7s ease; animation: pageIn .7s var(--ease) both; }
@@ -794,7 +831,7 @@
 .wizard-nav .ui-btn { min-height: 48px; }
 .wizard-nav .ui-btn:last-child { flex: 1; max-width: 320px; margin-left: auto; }
 .wizard-nav .ui-btn:disabled { opacity: .35; cursor: not-allowed; }
-body:has(.wizard) .assistant-orb { bottom: 168px; }
+body[data-wizard] .assistant-orb { bottom: 168px; }
 
 @keyframes stepIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
 
@@ -823,7 +860,7 @@ body:has(.wizard) .assistant-orb { bottom: 168px; }
   .wizard-rail-note svg { color: var(--cyan); }
   .wizard-panel { padding: 28px 30px 0; }
   .wizard-nav { position: static; margin: 26px -30px 0; padding: 16px 30px; }
-  body:has(.wizard) .assistant-orb { bottom: 26px; }
+  body[data-wizard] .assistant-orb { bottom: 26px; }
   .wizard { padding-bottom: 76px; }
 }
 
@@ -975,7 +1012,11 @@ body:has(.wizard) .assistant-orb { bottom: 168px; }
 }
 
 /* QUASARIS immersive homepage concept */
-.app-main:has(.qx-home) { padding:0 0 94px; background:#071722; }
+/* La portada ocupa todo el ancho anulando el margen de .app-main con márgenes negativos.
+   No se usa :has(): Next conserva la portada oculta en memoria y la regla seguía activa en otras páginas. */
+.qx-home { margin: -18px -14px -14px; }
+@media (min-width:760px) { .qx-home { margin: -24px -24px -14px; } }
+@media (min-width:1050px) { .qx-home { margin: -28px -30px -48px; } }
 .qx-home { --qx-lime:#b9ff63; --qx-cyan:#63def2; --qx-ink:#071722; --qx-cream:#f3f0e7; overflow:hidden; background:var(--qx-cream); color:#102c36; }
 .qx-home button,.qx-home a { outline-offset:4px; }
 .qx-home button:focus-visible,.qx-home a:focus-visible { outline:2px solid var(--qx-cyan); }
@@ -1050,7 +1091,6 @@ body:has(.wizard) .assistant-orb { bottom: 168px; }
   .qx-decision-grid { grid-template-columns:minmax(430px,1.1fr) minmax(360px,.9fr); }.qx-decision-cta { flex-direction:row; align-items:center; justify-content:space-between; }.qx-metric { flex-direction:row; }
 }
 @media (min-width:1050px) {
-  .app-main:has(.qx-home) { padding:0 0 0 224px; }
   .qx-hero { min-height:100svh; }.qx-hero-layout { grid-template-columns:minmax(0,1.15fr) minmax(390px,.85fr); }.qx-hero-copy h1 { font-size:clamp(64px,6.3vw,102px); }
   .desktop-sidebar { border-right:1px solid rgba(160,231,229,.08); background:linear-gradient(180deg,#061621,#08242c); box-shadow:none; }.desktop-sidebar .side-nav-list a.active { color:#c8ff87; background:rgba(184,255,105,.08); box-shadow:inset 2px 0 #b9ff63; }.desktop-sidebar .mission-badge { border-color:rgba(185,255,99,.13); color:#b9e882; }
 }
