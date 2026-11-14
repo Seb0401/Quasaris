@@ -27,6 +27,16 @@ export function CompararClient() {
         <Link href={`/${locale}/rotaciones`} className="mb-2 inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-sm font-medium">
           ✏️ {t("rotaciones.edit")}
         </Link>
+        {data.source.rootZoneWetness && (
+          <p>
+            🟫{" "}
+            {t("comparar.soilWetness", {
+              pct: `${Math.round((data.source.rootZoneWetness.reduce((a, b) => a + b, 0) / 12) * 100)}%`,
+              min: `${Math.round(Math.min(...data.source.rootZoneWetness) * 100)}%`,
+              max: `${Math.round(Math.max(...data.source.rootZoneWetness) * 100)}%`,
+            })}
+          </p>
+        )}
         {data.source.elevationM !== undefined && (
           <p>
             <Satellite size={14} className="mr-1 inline" /> {t("comparar.fusion", { elev: Math.round(data.source.elevationM), n: data.source.cells?.length ?? 1 })}

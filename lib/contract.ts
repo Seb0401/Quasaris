@@ -89,6 +89,8 @@ export type SimulateResponse = {
     elevationM?: number;
     method?: "blend" | "single";
     cells?: PowerCell[];
+    /** Humedad del suelo en raíces (NASA POWER GWETROOT, 0..1) por mes ene..dic (opcional) */
+    rootZoneWetness?: number[];
   };
   rotations: RotationResult[];
 };
@@ -99,5 +101,7 @@ export type ClimateWeek = {
   pFrost: number; // 0..1
   pHeat: number; // 0..1
   et0MeanMm: number;
+  /** GWETROOT promedio de la semana, 0..1 (opcional) */
+  soilWetness?: number;
 };
 export type ClimateResponse = { weeks: ClimateWeek[] };

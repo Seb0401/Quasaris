@@ -76,7 +76,8 @@
     "missing": "What we don't know yet",
     "review": "Check with an expert",
     "months": "Typical year",
-    "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells"
+    "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells",
+    "soilWetness": "Natural soil moisture (NASA POWER GWETROOT): {pct} on average, {min}–{max} by month."
   },
   "month": {
     "ok": "Good",
@@ -119,7 +120,9 @@
     "review.sowingDates": "Planting dates recommended by INIA for Majes.",
     "highlight.driestYear": "{year}: the toughest year; it would have needed {extraM3ha} m³/ha more than usual.",
     "highlight.worstYear": "{year}: the worst year; you would have earned S/ {lossPEN} less per hectare.",
-    "highlight.problemYears": "{count} of {total} years with problems (water or climate). Latest: {year}."
+    "highlight.problemYears": "{count} of {total} years with problems (water or climate). Latest: {year}.",
+    "evidence.soilDry": "Without irrigation the soil stays dry almost all year (NASA POWER root-zone wetness near 33%): everything depends on irrigation water.",
+    "evidence.soilSeasonal": "Natural soil moisture rises in the rainy season (NASA POWER): use it for planting."
   },
   "tiempo": {
     "title": "Time machine",
@@ -175,7 +178,8 @@
       "denied": "You blocked notifications. Enable them in your browser settings.",
       "error": "Something went wrong. Check your connection and try again."
     },
-    "perennial": "Perennial crop (cuttings)"
+    "perennial": "Perennial crop (cuttings)",
+    "soilRow": "Natural soil moisture (NASA POWER)"
   },
   "alerts": {
     "frostTitle": "❄️ Frost risk for your {crop}",

@@ -161,6 +161,12 @@ export function CalendarioClient() {
               <Row label={`❄️ ${t("calendario.frostRow")}`} values={climate.weeks.map((w) => heat(w.pFrost, "var(--sky)"))} empty={!anyFrost ? t("calendario.never") : undefined} />
               <Row label={`🔥 ${t("calendario.heatRow")}`} values={climate.weeks.map((w) => heat(w.pHeat, "var(--danger)"))} empty={!anyHeat ? t("calendario.never") : undefined} />
               <Row label={`💧 ${t("calendario.et0Row")}`} values={climate.weeks.map((w) => heat(w.et0MeanMm / maxEt0, "var(--sky)"))} />
+              {climate.weeks[0]?.soilWetness !== undefined && (
+                <Row
+                  label={`🟫 ${t("calendario.soilRow")}`}
+                  values={climate.weeks.map((w) => heat(Math.max(0, Math.min(1, ((w.soilWetness ?? 0.3) - 0.3) / 0.4)), "var(--brand)"))}
+                />
+              )}
             </>
           )}
 

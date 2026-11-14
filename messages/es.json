@@ -76,7 +76,8 @@
     "missing": "Qué falta saber",
     "review": "Qué revisar con un experto",
     "months": "Año típico",
-    "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER"
+    "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER",
+    "soilWetness": "Humedad natural del suelo (NASA POWER GWETROOT): {pct} en promedio, {min}–{max} según el mes."
   },
   "month": {
     "ok": "Bien",
@@ -119,7 +120,9 @@
     "review.sowingDates": "Fechas de siembra recomendadas por INIA para Majes.",
     "highlight.driestYear": "{year}: el año más exigente; habría necesitado {extraM3ha} m³/ha más que lo normal.",
     "highlight.worstYear": "{year}: el peor año; habrías ganado S/ {lossPEN} menos por hectárea.",
-    "highlight.problemYears": "{count} de {total} años con problemas (agua o clima). El último: {year}."
+    "highlight.problemYears": "{count} de {total} años con problemas (agua o clima). El último: {year}.",
+    "evidence.soilDry": "Sin riego, el suelo se queda seco casi todo el año (humedad en raíces de NASA POWER cerca de 33 %): todo depende del agua de riego.",
+    "evidence.soilSeasonal": "La humedad natural del suelo sube en la temporada de lluvias (NASA POWER): aprovéchala para sembrar."
   },
   "tiempo": {
     "title": "Máquina del tiempo",
@@ -175,7 +178,8 @@
       "denied": "Bloqueaste las notificaciones. Actívalas en la configuración del navegador.",
       "error": "No se pudo completar. Revisa tu conexión e inténtalo otra vez."
     },
-    "perennial": "Cultivo perenne (cortes)"
+    "perennial": "Cultivo perenne (cortes)",
+    "soilRow": "Humedad natural del suelo (NASA POWER)"
   },
   "alerts": {
     "frostTitle": "❄️ Riesgo de helada para tu {crop}",
