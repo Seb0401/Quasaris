@@ -36,7 +36,14 @@ export type SimulateRequest = {
   rotations: Rotation[]; // [actual, ...alternativas]
   years?: [number, number]; // por defecto [2005, 2025]
   locale: Locale;
+  /** Escenario "qué pasaría si" del gemelo digital (opcional) */
+  scenario?: { tempDeltaC: number };
+  /** Pedir el clima mes a mes de cada año (opcional; lo usa el modo granja) */
+  includeClimate?: boolean;
 };
+
+export type MonthClimate = { tmax: number; tmin: number; tminAbs: number; tmaxAbs: number; et0: number; rain: number; soil: number };
+export type YearClimate = { year: number; months: MonthClimate[] };
 
 export type Stat = { median: number; p10: number; p90: number; unit: string };
 
@@ -91,6 +98,8 @@ export type SimulateResponse = {
     cells?: PowerCell[];
     /** Humedad del suelo en raíces (NASA POWER GWETROOT, 0..1) por mes ene..dic (opcional) */
     rootZoneWetness?: number[];
+    tempDeltaC?: number;
+    climateByYear?: YearClimate[];
   };
   rotations: RotationResult[];
 };

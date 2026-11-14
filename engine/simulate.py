@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from dataclasses import replace
 
 import numpy as np
 
@@ -54,6 +55,10 @@ def run(req: SimulateRequest) -> SimulateResponse:
         raise ValueError(f"cultivos desconocidos: {sorted(unknown)}")
 
     clim = load_climate(req.lat, req.lon, years)
+    delta = req.scenario.tempDeltaC if req.scenario else 0.0
+    if delta:
+        # gemelo digital: el mismo clima real, con todas las temperaturas desplazadas
+        clim = replace(clim, tmax=clim.tmax + delta, tmin=clim.tmin + delta)
     et0 = compute_et0(clim)
 
     raw = []
@@ -130,6 +135,8 @@ def run(req: SimulateRequest) -> SimulateResponse:
                 "method": clim.method,
                 "cells": clim.cells,
                 "rootZoneWetness": [round(float(clim.gwetroot[clim.month == m].mean()), 3) for m in range(1, 13)],
+                "tempDeltaC": delta or None,
+                "climateByYear": climate_by_year(clim, et0) if req.includeClimate else None,
             },
             "rotations": rotations,
         }
@@ -234,3 +241,28 @@ def climate_weeks(lat: float, lon: float, years: tuple[int, int] = (2005, 2025))
             }
         )
     return ClimateResponse.model_validate({"weeks": weeks})
+
+
+def climate_by_year(clim: Climate, et0: np.ndarray) -> list[dict]:
+    """Clima real de cada mes de cada año (para animar el gemelo digital mes a mes)."""
+    out = []
+    for y in clim.years:
+        months = []
+        for m in range(1, 13):
+            sel = (clim.year == y) & (clim.month == m)
+            if not sel.any():
+                break
+            months.append(
+                {
+                    "tmax": round(float(clim.tmax[sel].mean()), 1),
+                    "tmin": round(float(clim.tmin[sel].mean()), 1),
+                    "tminAbs": round(float(clim.tmin[sel].min()), 1),
+                    "tmaxAbs": round(float(clim.tmax[sel].max()), 1),
+                    "et0": round(float(et0[sel].mean()), 2),
+                    "rain": round(float(clim.rain[sel].sum()), 1),
+                    "soil": round(float(clim.gwetroot[sel].mean()), 3),
+                }
+            )
+        if len(months) == 12:
+            out.append({"year": int(y), "months": months})
+    return out
