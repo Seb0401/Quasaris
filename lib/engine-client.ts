@@ -6,6 +6,18 @@ const DEFAULT_CACHE_KEY = "farmtwin.lastSimulation.v1";
 
 type Options = { cacheKey?: string; fallback?: () => Promise<SimulateResponse> };
 
+export function simulateMock(req: SimulateRequest): SimulateResponse {
+  const data = mock as unknown as SimulateResponse;
+  const ids = new Set(req.rotations.map(({ id }) => id));
+  return {
+    source: data.source,
+    rotations: data.rotations.filter(({ id }) => ids.has(id)).map((rotation) => ({
+      ...rotation,
+      viable: rotation.water.median <= req.waterAvailableM3ha,
+    })),
+  };
+}
+
 /**
  * Llama al motor Python. Si falla (sin red o motor caído) usa el último resultado guardado
  * y, en último caso, una foto del motor real (mock).
