@@ -10,11 +10,11 @@ import { setFarm, useFarm } from "@/lib/farm-store";
 import { FARM_SIZES, resizeFarm, setGranja, useGranja } from "@/lib/granja-store";
 import { BASELINE_ID, PALETTE, ROTATION_COLOR, evaluateGoals, notableYears, rotationEmoji, simulateYear, type TileState } from "@/lib/granja-sim";
 import { useSimulation } from "@/lib/use-simulation";
-import type { Weather } from "@/components/granja/farm-scene";
+import { SKY_GRADIENT, type Weather } from "@/components/granja/farm-scene";
 
 const FarmScene = dynamic(() => import("@/components/granja/farm-scene"), {
   ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse bg-[#bfe3f5]" />,
+  loading: () => <div className="flex h-full w-full items-center justify-center text-4xl">🚜</div>,
 });
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
   ssr: false,
@@ -187,7 +187,7 @@ function Farm() {
   return (
     <div className="-mx-4 flex flex-col">
       {/* escena + HUD */}
-      <div className="relative h-[58vh] min-h-80 w-full overflow-hidden">
+      <div className="relative h-[58vh] min-h-80 w-full overflow-hidden transition-[background] duration-700" style={{ background: SKY_GRADIENT[weather] }}>
         {webgl ? (
           <FarmScene
             cols={granja.cols}
