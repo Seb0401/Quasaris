@@ -35,6 +35,14 @@ Si el motor no está corriendo, la PWA usa el último resultado guardado y, si n
 
 El service worker solo se registra en producción (`npm run build && npm start`).
 
+### Probar el asistente
+
+Configura `AI_GATEWAY_API_KEY` en `.env.local` o usa OIDC en un proyecto vinculado a Vercel. El modelo predeterminado es `anthropic/claude-sonnet-5.5`. Puedes cambiarlo con `AI_GATEWAY_MODEL` a otro Claude del Gateway que admita imágenes y herramientas.
+
+Abre `/es/asistente` o `/en/asistente`. Prueba la pregunta del 20 % menos de agua y abre **Ver comparación** para comprobar el ajuste. Si el motor Python no está disponible, el chat utiliza el mock y lo identifica como datos de demostración. Si el motor corre en otro proyecto o puerto, configura `ENGINE_URL` en el servidor.
+
+El micrófono depende del reconocimiento de voz del navegador. Prueba voz en Chrome Android y una foto JPEG, PNG o WebP desde **Adjuntar foto**.
+
 ## Estructura
 
 ```

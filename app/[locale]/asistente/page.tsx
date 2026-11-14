@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/coming-soon";
+import { Assistant } from "@/components/assistant/assistant";
 
-export default function Page({ params }: PageProps<"/[locale]/asistente">) {
-  return <ComingSoon params={params} section="asistente" icon="🎙️" owner="Flujo C · agente C1" />;
+export default function Page() {
+  return <Assistant />;
 }
