@@ -24,6 +24,15 @@ export const MAT = {
   water: new THREE.MeshStandardMaterial({ color: "#3d8fd6", roughness: 0.2, metalness: 0.1, transparent: true, opacity: 0.85, flatShading: true }),
   tank: flat("#8c8f94"),
   coin: flat("#f2c037", { metalness: 0.4, roughness: 0.4, emissive: "#6b4e00", emissiveIntensity: 0.3 }),
+  leafLight: flat("#8fd36a"),
+  leafYellow: flat("#d8b84a"),
+  onionLeaf: flat("#5fae9a"),
+  habaLeaf: flat("#7a9f86"),
+  tassel: flat("#e8cf6a"),
+  tuber: flat("#b8875a"),
+  redFlower: flat("#e0503f"),
+  whiteFlower: flat("#ffffff"),
+  podDark: flat("#3c5b2c"),
   snow: new THREE.PointsMaterial({ color: "#ffffff", size: 0.12, transparent: true, opacity: 0.9 }),
   dust: new THREE.PointsMaterial({ color: "#e0b770", size: 0.1, transparent: true, opacity: 0.6 }),
 };
@@ -53,6 +62,10 @@ export const GEO = {
   rock: new THREE.DodecahedronGeometry(0.4, 0),
   roof: new THREE.ConeGeometry(1.6, 1, 4),
   coin: new THREE.CylinderGeometry(0.22, 0.22, 0.06, 10),
+  sproutLeaf: new THREE.ConeGeometry(0.07, 0.22, 3),
+  tassel: new THREE.ConeGeometry(0.06, 0.3, 4),
+  tuber: new THREE.DodecahedronGeometry(0.09, 0),
+  bulbBig: new THREE.IcosahedronGeometry(0.17, 0),
 };
 
 /** Pseudoaleatorio determinista (misma granja = mismas posiciones). */

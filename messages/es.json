@@ -254,6 +254,89 @@
     "celebrate": {
       "title": "¡Ganaste medallas!",
       "ok": "Seguir jugando"
+    },
+    "lens": {
+      "crop": "Cultivos",
+      "water": "Agua",
+      "temp": "Temperatura",
+      "soil": "Suelo",
+      "income": "Ganancia"
+    },
+    "legend": {
+      "water": {
+        "low": "pide poca",
+        "high": "pide mucha"
+      },
+      "temp": {
+        "low": "cómodo",
+        "high": "al límite"
+      },
+      "soil": {
+        "low": "suelo sano",
+        "high": "se desgasta"
+      },
+      "income": {
+        "low": "gana más",
+        "high": "gana menos"
+      }
+    },
+    "tab": {
+      "sow": "🌱 Sembrar",
+      "climate": "🌦️ Clima",
+      "whatif": "🧪 ¿Y si…?",
+      "goals": "🎯 Metas"
+    },
+    "mode": {
+      "paint": "Pintar",
+      "view": "Ver",
+      "paintHint": "Elige una rotación y arrastra el dedo sobre las casillas. La cámara queda fija mientras pintas.",
+      "viewHint": "Toca una casilla para ver su ficha. Arrastra para girar la granja."
+    },
+    "undo": "Deshacer",
+    "stage": {
+      "sprout": "Brote",
+      "grow": "Creciendo",
+      "flower": "Floración",
+      "harvest": "Cosecha"
+    },
+    "sheet": {
+      "temp": "Temperatura del mes",
+      "tempValue": "Mínima {tmin} °C (helada bajo {frost} °C) · máxima {tmax} °C (calor sobre {heat} °C)",
+      "water": "Agua este mes",
+      "waterValue": "{m3} m³ en esta casilla ({m3ha} m³/ha, Kc {kc})",
+      "soil": "Suelo",
+      "soilValue": "Salud {soil} · suelo {texture} · eficiencia de riego {eff}",
+      "income": "Ganancia",
+      "inYear": "en el año",
+      "paintThis": "Sembrar aquí: {name}"
+    },
+    "why": {
+      "ok": "el clima está dentro de lo que el cultivo tolera y el riego alcanza.",
+      "water_stress": "es un mes de mucha demanda: el cultivo pide más agua que tu cuota mensual.",
+      "climate_risk": "hubo días más fríos o más calientes de lo que este cultivo tolera.",
+      "dry": "el reservorio se vació: sin riego la planta se seca y rinde menos.",
+      "bare": "no hay cultivo este mes; el suelo descansa pero queda expuesto a la erosión."
+    },
+    "climate": {
+      "temp": "Temperatura media",
+      "extremes": "extremos {min} / {max} °C",
+      "et0": "Evapotranspiración",
+      "et0Sub": "≈ {m3} m³/ha por día de referencia",
+      "rain": "Lluvia del mes",
+      "soil": "Humedad natural del suelo",
+      "soilSub": "sin riego (NASA POWER)",
+      "et0Year": "Demanda de agua (ET0) mes a mes · toca un mes",
+      "real": "Datos reales de NASA POWER para {year}, ajustados a la altura de tu parcela.",
+      "scenario": "Escenario: clima real con {d} °C de diferencia en todas las temperaturas."
+    },
+    "whatif": {
+      "text": "Cambia las condiciones y el gemelo digital recalcula con el motor (FAO-56 + NASA POWER): agua, ingresos y riesgos de cada casilla.",
+      "temp": "Temperatura",
+      "water": "Agua disponible",
+      "soil": "Tipo de suelo",
+      "irrigation": "Sistema de riego",
+      "effect": "Con este riego y suelo, la eficiencia es {eff}. Tu chacra necesita {water} m³ en el año y tienes {cap} m³.",
+      "reset": "Volver a la realidad"
     }
   },
   "rotaciones": {

@@ -14,6 +14,8 @@ export type GranjaState = {
   lastWon: string[]; // medallas nuevas por celebrar
   tutorialDone: boolean;
   sound: boolean;
+  tempDelta: number; // escenario: °C sumados a todas las temperaturas
+  waterFactor: number; // escenario: fracción del agua disponible (1 = normal)
 };
 
 const KEY = "farmtwin.granja.v1";
@@ -36,6 +38,8 @@ const DEFAULT: GranjaState = {
   lastWon: [],
   tutorialDone: false,
   sound: true,
+  tempDelta: 0,
+  waterFactor: 1,
 };
 
 let state: GranjaState = DEFAULT;

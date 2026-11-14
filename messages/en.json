@@ -254,6 +254,89 @@
     "celebrate": {
       "title": "You earned medals!",
       "ok": "Keep playing"
+    },
+    "lens": {
+      "crop": "Crops",
+      "water": "Water",
+      "temp": "Temperature",
+      "soil": "Soil",
+      "income": "Profit"
+    },
+    "legend": {
+      "water": {
+        "low": "needs little",
+        "high": "needs a lot"
+      },
+      "temp": {
+        "low": "comfortable",
+        "high": "at the limit"
+      },
+      "soil": {
+        "low": "healthy soil",
+        "high": "wears out"
+      },
+      "income": {
+        "low": "earns more",
+        "high": "earns less"
+      }
+    },
+    "tab": {
+      "sow": "🌱 Plant",
+      "climate": "🌦️ Weather",
+      "whatif": "🧪 What if…",
+      "goals": "🎯 Goals"
+    },
+    "mode": {
+      "paint": "Paint",
+      "view": "View",
+      "paintHint": "Pick a rotation and drag your finger over the plots. The camera stays still while you paint.",
+      "viewHint": "Tap a plot to see its card. Drag to rotate the farm."
+    },
+    "undo": "Undo",
+    "stage": {
+      "sprout": "Sprout",
+      "grow": "Growing",
+      "flower": "Flowering",
+      "harvest": "Harvest"
+    },
+    "sheet": {
+      "temp": "This month's temperature",
+      "tempValue": "Min {tmin} °C (frost below {frost} °C) · max {tmax} °C (heat above {heat} °C)",
+      "water": "Water this month",
+      "waterValue": "{m3} m³ on this plot ({m3ha} m³/ha, Kc {kc})",
+      "soil": "Soil",
+      "soilValue": "Health {soil} · {texture} soil · irrigation efficiency {eff}",
+      "income": "Profit",
+      "inYear": "in the year",
+      "paintThis": "Plant here: {name}"
+    },
+    "why": {
+      "ok": "the weather is within what the crop tolerates and irrigation is enough.",
+      "water_stress": "a high-demand month: the crop needs more water than your monthly share.",
+      "climate_risk": "there were days colder or hotter than this crop tolerates.",
+      "dry": "the reservoir is empty: without irrigation the plant dries out and yields less.",
+      "bare": "no crop this month; the soil rests but is exposed to erosion."
+    },
+    "climate": {
+      "temp": "Average temperature",
+      "extremes": "extremes {min} / {max} °C",
+      "et0": "Evapotranspiration",
+      "et0Sub": "≈ {m3} m³/ha per reference day",
+      "rain": "Rain this month",
+      "soil": "Natural soil moisture",
+      "soilSub": "without irrigation (NASA POWER)",
+      "et0Year": "Water demand (ET0) month by month · tap a month",
+      "real": "Real NASA POWER data for {year}, adjusted to your field's altitude.",
+      "scenario": "Scenario: real weather with a {d} °C change in every temperature."
+    },
+    "whatif": {
+      "text": "Change the conditions and the digital twin recalculates with the engine (FAO-56 + NASA POWER): water, income and risks for every plot.",
+      "temp": "Temperature",
+      "water": "Available water",
+      "soil": "Soil type",
+      "irrigation": "Irrigation system",
+      "effect": "With this irrigation and soil, efficiency is {eff}. Your farm needs {water} m³ this year and you have {cap} m³.",
+      "reset": "Back to reality"
     }
   },
   "rotaciones": {

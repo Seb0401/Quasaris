@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     # Respaldo del modo granja: toda la paleta de rotaciones
     palette = json.loads((ROOT / "data" / "rotations_palette.json").read_text(encoding="utf-8"))["rotations"]
-    res = run(SimulateRequest(**DEFAULTS, rotations=palette)).model_dump(mode="json", exclude_none=True)
+    res = run(SimulateRequest(**DEFAULTS, rotations=palette, includeClimate=True)).model_dump(mode="json", exclude_none=True)
     out = ROOT / "data" / "mock_granja.json"
     out.write_text(json.dumps(res, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"OK -> {out.name} ({len(res['rotations'])} rotaciones)")
