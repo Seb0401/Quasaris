@@ -2,119 +2,156 @@
 
 import { useT, useLocale } from "@/components/i18n-provider";
 import type { MonthStatus, Rotation, RotationResult } from "@/lib/contract";
-import { BadgeDollarSign, Clock3, Droplets, Leaf, ShieldAlert, XCircle } from "lucide-react";
+import { BadgeDollarSign, CheckCircle2, ChevronDown, Clock3, Crown, Droplets, Leaf, ShieldAlert, XCircle } from "lucide-react";
+import { Badge, CountUp, Meter, ScoreRing } from "@/components/ui/kit";
 
-const MONTH_COLOR: Record<MonthStatus, string> = {
-  ok: "bg-ok",
-  water_stress: "bg-warn",
-  climate_risk: "bg-danger",
-  bare: "bg-bare",
+export const MONTH_COLOR: Record<MonthStatus, string> = {
+  ok: "var(--ok)",
+  water_stress: "var(--warn)",
+  climate_risk: "var(--danger)",
+  bare: "var(--bare)",
 };
 
+/** 12 meses coloreados por estado; aparecen uno tras otro. */
 export function MonthStrip({ months, labels }: { months: MonthStatus[]; labels?: boolean }) {
   const t = useT();
   const locale = useLocale();
   const fmt = new Intl.DateTimeFormat(locale, { month: "narrow" });
   return (
-    <div className="grid grid-cols-12 gap-0.5">
+    <div className="month-strip">
       {months.map((m, i) => (
-        <div key={i} className="flex flex-col items-center gap-0.5">
-          <div className={`h-4 w-full rounded-sm ${MONTH_COLOR[m]}`} title={t(`month.${m}`)} />
-          {labels && <span className="text-[10px] text-muted">{fmt.format(new Date(2025, i, 1))}</span>}
+        <div key={i} className="month-cell">
+          <span className="month-bar" style={{ background: MONTH_COLOR[m], animationDelay: `${i * 45}ms` }} title={`${fmt.format(new Date(2025, i, 1))} · ${t(`month.${m}`)}`} />
+          {labels && <small>{fmt.format(new Date(2025, i, 1))}</small>}
         </div>
       ))}
     </div>
   );
 }
 
-function Metric({ label, icon: Icon, value, sub }: { label: string; icon: typeof Droplets; value: string; sub?: string }) {
+export function MonthLegend() {
+  const t = useT();
   return (
-    <div className="metric-tile transition hover:-translate-y-1 hover:shadow-md">
-      <div className="flex items-center gap-1.5 text-xs text-muted"><Icon size={14} />{label}</div>
-      <strong className="block tabular-nums">{value}</strong>
-      {sub && <small className="tabular-nums">{sub}</small>}
+    <div className="month-legend">
+      {(Object.keys(MONTH_COLOR) as MonthStatus[]).map((s) => (
+        <span key={s}><i style={{ background: MONTH_COLOR[s] }} />{t(`month.${s}`)}</span>
+      ))}
     </div>
   );
 }
 
-export function RotationCard({ rotation, result }: { rotation: Rotation; result: RotationResult }) {
+export type MetricScale = { water: number; income: number; waterLimit: number };
+
+export function RotationCard({ rotation, result, color, recommended, scale }: { rotation: Rotation; result: RotationResult; color: string; recommended?: boolean; scale: MetricScale }) {
   const t = useT();
   const locale = useLocale();
+  const es = locale === "es";
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
-  const pct = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 0 });
 
   const sections = [
     { title: t("comparar.evidence"), items: result.explain.evidence },
     { title: t("comparar.benefits"), items: result.explain.benefits },
     { title: t("comparar.missing"), items: result.explain.missing },
     { title: t("comparar.review"), items: result.explain.reviewWithExpert },
+  ].filter((s) => s.items.length > 0);
+
+  const overWater = result.water.median - scale.waterLimit;
+  const rows = [
+    {
+      icon: Droplets,
+      label: t("comparar.water"),
+      value: <CountUp value={result.water.median} format={(v) => `${n.format(v)} m³/ha`} />,
+      meter: result.water.median / scale.water,
+      marker: scale.waterLimit / scale.water,
+      color: "#5cc8f5",
+      note: overWater > 0 ? (es ? `${n.format(overWater)} m³/ha más de lo que tienes` : `${n.format(overWater)} m³/ha over your supply`) : (es ? "Alcanza con tu agua" : "Fits your water"),
+      bad: overWater > 0,
+    },
+    {
+      icon: BadgeDollarSign,
+      label: t("comparar.income"),
+      value: <CountUp value={result.income.median} format={(v) => `S/ ${n.format(v)}`} />,
+      meter: result.income.median / scale.income,
+      color: "#f6b94c",
+      note: es ? `entre S/ ${n.format(result.income.p10)} y S/ ${n.format(result.income.p90)} por ha` : `between S/ ${n.format(result.income.p10)} and S/ ${n.format(result.income.p90)} per ha`,
+    },
+    {
+      icon: Leaf,
+      label: t("comparar.soilHealth"),
+      value: <CountUp value={result.soil * 100} format={(v) => `${Math.round(v)}/100`} />,
+      meter: result.soil,
+      color: "#b9ff63",
+      note: result.soil >= 0.7 ? (es ? "Suelo bien cuidado" : "Well cared soil") : result.soil >= 0.5 ? (es ? "Cuidado moderado" : "Moderate care") : (es ? "Desgasta el suelo" : "Wears the soil"),
+    },
+    {
+      icon: ShieldAlert,
+      label: es ? "Riesgo climático" : "Climate risk",
+      value: <CountUp value={result.risk.median * 100} format={(v) => `${Math.round(v)}%`} />,
+      meter: result.risk.median,
+      color: "#ff8a7a",
+      note: es ? "pérdida típica por helada o calor" : "typical loss from frost or heat",
+    },
   ];
 
   return (
-    <article className={`panel-card compare-card flex flex-col gap-3 p-5 ${result.viable ? "border-border" : "border-danger"}`} style={{ "--card-accent": rotation.isCurrent ? "#36a9ed" : result.viable ? "#42c987" : "#f0ad4b" } as React.CSSProperties}>
-      <header className="flex items-start justify-between gap-3">
-        <div>
-          {rotation.isCurrent && (
-            <span className="inline-block rounded-full bg-soil/15 text-soil text-xs font-semibold px-2 py-0.5 mb-1">{t("comparar.current")}</span>
-          )}
-          <h2 className="text-lg font-semibold leading-tight">{rotation.name}</h2>
+    <article className={`rotation-card ${recommended ? "is-recommended" : ""}`} style={{ "--accent": color } as React.CSSProperties}>
+      <div className="rotation-card-glow" aria-hidden />
+      <header className="rotation-card-head">
+        <div className="min-w-0">
+          <div className="rotation-badges">
+            {rotation.isCurrent && <Badge tone="sky">{t("comparar.current")}</Badge>}
+            {recommended && <Badge tone="brand" icon={Crown}>{es ? "Recomendada" : "Recommended"}</Badge>}
+            {result.viable ? <Badge tone="ok" icon={CheckCircle2}>{es ? "Viable" : "Viable"}</Badge> : <Badge tone="danger" icon={XCircle}>{t("comparar.notViable")}</Badge>}
+          </div>
+          <h3><i style={{ background: color }} />{rotation.name}</h3>
         </div>
-        <div className="text-right shrink-0">
-          <div className="text-xs text-muted">{t("comparar.score")}</div>
-          <div className="text-2xl font-bold text-brand tabular-nums">{Math.round(result.score * 100)}</div>
-        </div>
+        <ScoreRing value={Math.round(result.score * 100)} size={74} stroke={7} color={color} label={t("comparar.score")} />
       </header>
 
-      {!result.viable && <p className="flex items-center gap-2 rounded-lg bg-danger/10 text-danger text-sm font-semibold px-3 py-2"><XCircle size={17} />{t("comparar.notViable")}</p>}
-
-      <div className="metric-grid">
-        <Metric
-          icon={Droplets}
-          label={`${t("comparar.water")} (m³/ha)`}
-          value={n.format(result.water.median)}
-          sub={t("comparar.range", { p10: n.format(result.water.p10), p90: n.format(result.water.p90) })}
-        />
-        <Metric
-          icon={BadgeDollarSign}
-          label={`${t("comparar.income")} (S/ /ha)`}
-          value={n.format(result.income.median)}
-          sub={t("comparar.range", { p10: n.format(result.income.p10), p90: n.format(result.income.p90) })}
-        />
-        <Metric icon={Leaf} label={t("comparar.soilHealth")} value={pct.format(result.soil)} />
-        <Metric icon={ShieldAlert} label={t("comparar.risk")} value={pct.format(result.risk.median)} />
+      <div className="rotation-metrics">
+        {rows.map(({ icon: Icon, label, value, meter, marker, color: c, note, bad }) => (
+          <div key={label} className="rotation-metric">
+            <div className="rotation-metric-top">
+              <span><Icon size={14} style={{ color: c }} />{label}</span>
+              <strong>{value}</strong>
+            </div>
+            <Meter value={meter} color={c} height={6} marker={marker} />
+            <small className={bad ? "is-bad" : ""}>{note}</small>
+          </div>
+        ))}
       </div>
 
-      <div className="flex flex-col gap-1">
-        <span className="text-xs text-muted">{t("comparar.months")}</span>
+      <div className="rotation-months">
+        <span className="ui-mini-title">{t("comparar.months")}</span>
         <MonthStrip months={result.months} labels />
       </div>
 
-      <p className="text-sm">
-        <span className="font-semibold">{t("comparar.why")}: </span>
-        {t(`explain.${result.explain.whyKey}`)}
-      </p>
+      <p className="rotation-why"><b>{t("comparar.why")}:</b> {t(`explain.${result.explain.whyKey}`)}</p>
 
-      {result.highlights.map((h) => (
-        <p key={h.key + h.year} className="flex items-start gap-2 text-sm rounded-lg bg-warn/15 px-3 py-2">
-          <Clock3 size={16} className="mt-0.5 shrink-0" />{t(`explain.${h.key}`, { year: h.year, ...Object.fromEntries(Object.entries(h.params).map(([k, v]) => [k, n.format(v)])) })}
-        </p>
-      ))}
-
-      <details className="text-sm">
-        <summary className="cursor-pointer font-medium text-brand">+ {t("comparar.evidence")} · {t("comparar.review")}</summary>
-        <div className="mt-2 grid gap-3">
-          {sections.map((s) => (
-            <div key={s.title}>
-              <div className="font-semibold">{s.title}</div>
-              <ul className="list-disc pl-5 text-muted">
-                {s.items.map((k) => (
-                  <li key={k}>{t(`explain.${k}`)}</li>
-                ))}
-              </ul>
-            </div>
+      {result.highlights.length > 0 && (
+        <ul className="rotation-highlights">
+          {result.highlights.map((h) => (
+            <li key={h.key + h.year}>
+              <Clock3 size={14} />
+              <span>{t(`explain.${h.key}`, { year: h.year, ...Object.fromEntries(Object.entries(h.params).map(([k, v]) => [k, n.format(v)])) })}</span>
+            </li>
           ))}
-        </div>
-      </details>
+        </ul>
+      )}
+
+      {sections.length > 0 && (
+        <details className="rotation-details">
+          <summary>{t("comparar.evidence")} · {t("comparar.review")}<ChevronDown size={16} /></summary>
+          <div className="rotation-details-body">
+            {sections.map((s) => (
+              <div key={s.title}>
+                <b>{s.title}</b>
+                <ul>{s.items.map((k) => <li key={k}>{t(`explain.${k}`)}</li>)}</ul>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
     </article>
   );
 }

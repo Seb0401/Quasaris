@@ -9,20 +9,18 @@ export function Tutorial({ onClose }: { onClose: () => void }) {
   const t = useT();
   const steps = ["paint", "year", "play"] as const;
   return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]">
-      <div className="flex max-w-sm flex-col gap-3 rounded-3xl bg-white p-5 text-[#1f2a1f] shadow-xl">
-        <h2 className="flex items-center gap-2 text-xl font-bold">
-          <Sprout size={22} className="text-[#2f6b3a]" /> {t("granja.tutorial.title")}
-        </h2>
+    <div className="absolute inset-0 z-10 flex items-center justify-center bg-[rgba(3,14,22,.55)] p-4 backdrop-blur-sm">
+      <div className="farm-modal">
+        <h2 className="flex items-center gap-2 text-xl font-bold"><Sprout size={22} className="text-[var(--brand)]" /> {t("granja.tutorial.title")}</h2>
         <ol className="flex flex-col gap-2 text-sm">
           {steps.map((s, i) => (
             <li key={s} className="flex gap-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2f6b3a] font-bold text-white">{i + 1}</span>
+              <span className="farm-step">{i + 1}</span>
               <span>{t(`granja.tutorial.${s}`)}</span>
             </li>
           ))}
         </ol>
-        <button type="button" onClick={onClose} className="rounded-full bg-[#2f6b3a] px-5 py-3 font-semibold text-white">
+        <button type="button" onClick={onClose} className="ui-btn ui-btn-block">
           {t("granja.tutorial.go")}
         </button>
       </div>
@@ -39,7 +37,7 @@ const CONFETTI = Array.from({ length: 36 }, (_, i) => ({
 export function Celebration({ medals, onClose }: { medals: string[]; onClose: () => void }) {
   const t = useT();
   return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden bg-black/35 p-4">
+    <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden bg-[rgba(3,14,22,.55)] p-4 backdrop-blur-sm">
       <style>{`@keyframes ft-fall{0%{top:-4%;transform:rotate(0)}100%{top:104%;transform:rotate(540deg)}}`}</style>
       {CONFETTI.map((c, i) => (
         <span
@@ -48,12 +46,12 @@ export function Celebration({ medals, onClose }: { medals: string[]; onClose: ()
           style={{ left: `${c.left}%`, top: "-4%", background: c.color, animation: `ft-fall 2.2s ${c.delay}s ease-in forwards` }}
         />
       ))}
-      <div className="relative flex max-w-sm flex-col items-center gap-3 rounded-3xl bg-white p-6 text-center text-[#1f2a1f] shadow-xl">
-        <TrophyIcon size={56} className="text-[#7a5a10]" />
+      <div className="farm-modal is-center">
+        <TrophyIcon size={56} className="text-[var(--warn)] drop-shadow-[0_0_18px_rgba(246,185,76,.5)]" />
         <h2 className="text-xl font-bold">{t("granja.celebrate.title")}</h2>
         <div className="flex flex-wrap justify-center gap-2">
           {medals.map((m) => (
-            <span key={m} className="rounded-full bg-[#fff4d6] px-3 py-1 text-sm font-semibold">
+            <span key={m} className="ui-badge tone-brand">
               {(() => {
                 const G = GOAL_ICON[m];
                 return G ? <G size={15} className="mr-1 inline" /> : null;
@@ -62,7 +60,7 @@ export function Celebration({ medals, onClose }: { medals: string[]; onClose: ()
             </span>
           ))}
         </div>
-        <button type="button" onClick={onClose} className="rounded-full bg-[#2f6b3a] px-5 py-3 font-semibold text-white">
+        <button type="button" onClick={onClose} className="ui-btn ui-btn-block">
           {t("granja.celebrate.ok")}
         </button>
       </div>
