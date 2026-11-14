@@ -1,28 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useLocale, useT } from "@/components/i18n-provider";
+import { useT } from "@/components/i18n-provider";
 import { RotationCard } from "@/components/cards/rotation-card";
 import { useFarm } from "@/lib/farm-store";
-import { simulate } from "@/lib/engine-client";
-import type { SimulateResponse } from "@/lib/contract";
+import { useSimulation } from "@/lib/use-simulation";
 
 export function CompararClient() {
   const t = useT();
-  const locale = useLocale();
   const farm = useFarm();
-  const [data, setData] = useState<SimulateResponse | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      simulate({ ...farm, locale }).then((d) => !cancelled && setData(d));
-    }, 250); // espera a que el agricultor deje de mover los controles
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [farm, locale]);
+  const data = useSimulation();
 
   if (!data) {
     return <p className="py-12 text-center text-muted animate-pulse">🛰️ {t("comparar.loading")}</p>;

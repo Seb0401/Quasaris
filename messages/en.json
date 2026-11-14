@@ -117,5 +117,24 @@
     "highlight.driestYear": "{year}: the toughest year; it would have needed {extraM3ha} m³/ha more than usual.",
     "highlight.worstYear": "{year}: the worst year; you would have earned S/ {lossPEN} less per hectare.",
     "highlight.problemYears": "{count} of {total} years with problems (water or climate). Latest: {year}."
+  },
+  "tiempo": {
+    "title": "Time machine",
+    "subtitle": "What would have happened to each rotation over the last 21 years of real climate measured by NASA?",
+    "play": "Play",
+    "pause": "Pause",
+    "year": "Year",
+    "available": "Your water",
+    "overLimit": "m³/ha over your water",
+    "withinLimit": "Your water is enough",
+    "stressDays": "frost / heat days",
+    "waterChart": "Water needed per year",
+    "incomeChart": "Income per year",
+    "stripTitle": "21 years at a glance",
+    "stripHint": "Each row is a year and each square a month. Tap a row to travel to that year.",
+    "ndviTitle": "Vegetation seen from space",
+    "ndviHint": "Monthly NASA MODIS NDVI: greener means more active vegetation.",
+    "ndviLow": "Bare soil",
+    "ndviHigh": "Dense vegetation"
   }
 }

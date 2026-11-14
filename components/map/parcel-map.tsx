@@ -13,6 +13,7 @@ type Props = {
   /** Fecha de la capa NDVI (AAAA-MM-01). La Máquina del tiempo la mueve. */
   ndviTime?: string;
   showNdvi?: boolean;
+  className?: string;
 };
 
 function ClickHandler({ onPick }: { onPick: Props["onPick"] }) {
@@ -28,10 +29,10 @@ function Recenter({ lat, lon }: { lat: number; lon: number }) {
   return null;
 }
 
-export default function ParcelMap({ lat, lon, onPick, ndviTime = "2025-09-01", showNdvi = true }: Props) {
+export default function ParcelMap({ lat, lon, onPick, ndviTime = "2025-09-01", showNdvi = true, className = "h-[55vh] min-h-72" }: Props) {
   const ndvi = GIBS_LAYERS.ndviMonthly;
   return (
-    <MapContainer center={[lat, lon]} zoom={11} className="h-[55vh] min-h-72 w-full rounded-2xl z-0" scrollWheelZoom>
+    <MapContainer center={[lat, lon]} zoom={11} className={`${className} w-full rounded-2xl z-0`} scrollWheelZoom>
       <TileLayer
         attribution="Imagery © Esri"
         url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
