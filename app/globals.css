@@ -45,8 +45,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .language-switch { display: flex; align-items: center; justify-content: center; gap: 7px; min-width: 42px; height: 34px; padding: 0 11px; border: 1px solid var(--border); border-radius: 999px; color: var(--foreground); background: rgba(255,255,255,.66); font-size: 12px; font-weight: 750; transition: .25s ease; }
 .language-switch:hover { border-color: #59bdf3; transform: translateY(-2px); }
 .mobile-bottom-nav { position: fixed; z-index: 950; inset: auto 10px 10px; padding-bottom: env(safe-area-inset-bottom); border: 1px solid rgba(206,221,227,.88); border-radius: 19px; background: rgba(255,255,255,.91); box-shadow: 0 16px 42px rgba(17,48,70,.2); backdrop-filter: blur(20px); }
-.mobile-bottom-nav ul { display: grid; grid-template-columns: repeat(5,1fr); margin: 0; padding: 5px; list-style: none; }
-.mobile-bottom-nav a { position: relative; display: flex; min-height: 50px; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border-radius: 14px; color: #718397; font-size: 9px; font-weight: 650; transition: .25s ease; }
+.mobile-bottom-nav ul { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); margin: 0; padding: 5px; list-style: none; }
+.mobile-bottom-nav a { position: relative; display: flex; min-height: 50px; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border-radius: 14px; color: #718397; font-size: 9px; font-weight: 650; transition: .25s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mobile-bottom-nav a.active { color: #118d63; background: #e9f8f1; }
 .mobile-bottom-nav a.active::after { content: ""; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: #16a870; }
 
