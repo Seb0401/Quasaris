@@ -1,0 +1,1534 @@
+{
+ "source": {
+  "power": "mock",
+  "period": [
+   2005,
+   2025
+  ]
+ },
+ "rotations": [
+  {
+   "id": "actual",
+   "viable": false,
+   "score": 0.606,
+   "water": {
+    "median": 16327.0,
+    "p10": 15355.0,
+    "p90": 17033.0,
+    "unit": "m3/ha"
+   },
+   "income": {
+    "median": 9005.0,
+    "p10": 8035.0,
+    "p90": 9557.0,
+    "unit": "PEN/ha"
+   },
+   "soil": 0.62,
+   "risk": {
+    "median": 0.09523809523809523,
+    "p10": 0.0,
+    "p90": 1.0,
+    "unit": "fraction"
+   },
+   "byYear": [
+    {
+     "year": 2005,
+     "waterM3ha": 15240.0,
+     "incomePEN": 8269.0,
+     "frostDays": 0,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2006,
+     "waterM3ha": 16378.0,
+     "incomePEN": 9173.0,
+     "frostDays": 1,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2007,
+     "waterM3ha": 16145.0,
+     "incomePEN": 7722.0,
+     "frostDays": 9,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2008,
+     "waterM3ha": 15572.0,
+     "incomePEN": 9005.0,
+     "frostDays": 1,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2009,
+     "waterM3ha": 16346.0,
+     "incomePEN": 9228.0,
+     "frostDays": 1,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2010,
+     "waterM3ha": 17033.0,
+     "incomePEN": 8276.0,
+     "frostDays": 1,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2011,
+     "waterM3ha": 16317.0,
+     "incomePEN": 8416.0,
+     "frostDays": 1,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2012,
+     "waterM3ha": 16732.0,
+     "incomePEN": 8407.0,
+     "frostDays": 1,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2013,
+     "waterM3ha": 15355.0,
+     "incomePEN": 9557.0,
+     "frostDays": 7,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2014,
+     "waterM3ha": 16491.0,
+     "incomePEN": 9292.0,
+     "frostDays": 2,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2015,
+     "waterM3ha": 16757.0,
+     "incomePEN": 8502.0,
+     "frostDays": 0,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2016,
+     "waterM3ha": 19502.0,
+     "incomePEN": 9042.0,
+     "frostDays": 2,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "water_stress",
+      "water_stress",
+      "water_stress",
+      "ok"
+     ]
+    },
+    {
+     "year": 2017,
+     "waterM3ha": 16327.0,
+     "incomePEN": 7753.0,
+     "frostDays": 1,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2018,
+     "waterM3ha": 16776.0,
+     "incomePEN": 9574.0,
+     "frostDays": 2,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2019,
+     "waterM3ha": 15645.0,
+     "incomePEN": 9080.0,
+     "frostDays": 3,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2020,
+     "waterM3ha": 15792.0,
+     "incomePEN": 8121.0,
+     "frostDays": 1,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2021,
+     "waterM3ha": 16175.0,
+     "incomePEN": 8035.0,
+     "frostDays": 6,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2022,
+     "waterM3ha": 15940.0,
+     "incomePEN": 8257.0,
+     "frostDays": 1,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2023,
+     "waterM3ha": 18251.0,
+     "incomePEN": 9546.0,
+     "frostDays": 1,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "water_stress",
+      "water_stress",
+      "water_stress",
+      "ok"
+     ]
+    },
+    {
+     "year": 2024,
+     "waterM3ha": 16515.0,
+     "incomePEN": 9461.0,
+     "frostDays": 1,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2025,
+     "waterM3ha": 15306.0,
+     "incomePEN": 9705.0,
+     "frostDays": 2,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    }
+   ],
+   "months": [
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "highlights": [
+    {
+     "year": 2016,
+     "key": "highlight.driestYear",
+     "params": {
+      "extraM3ha": 3175.0
+     }
+    }
+   ],
+   "explain": {
+    "whyKey": "why.current",
+    "evidence": [
+     "evidence.power20y",
+     "evidence.et0High"
+    ],
+    "benefits": [
+     "benefit.forage",
+     "benefit.nitrogen"
+    ],
+    "missing": [
+     "missing.waterAllocation"
+    ],
+    "reviewWithExpert": [
+     "review.alfalfaAge"
+    ]
+   }
+  },
+  {
+   "id": "ingreso",
+   "viable": true,
+   "score": 0.652,
+   "water": {
+    "median": 13634.0,
+    "p10": 12976.0,
+    "p90": 14629.0,
+    "unit": "m3/ha"
+   },
+   "income": {
+    "median": 15068.0,
+    "p10": 11558.0,
+    "p90": 15956.0,
+    "unit": "PEN/ha"
+   },
+   "soil": 0.38,
+   "risk": {
+    "median": 0.23809523809523808,
+    "p10": 0.0,
+    "p90": 1.0,
+    "unit": "fraction"
+   },
+   "byYear": [
+    {
+     "year": 2005,
+     "waterM3ha": 13112.0,
+     "incomePEN": 13910.0,
+     "frostDays": 2,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2006,
+     "waterM3ha": 13183.0,
+     "incomePEN": 13531.0,
+     "frostDays": 1,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2007,
+     "waterM3ha": 13833.0,
+     "incomePEN": 9435.0,
+     "frostDays": 9,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "climate_risk",
+      "bare",
+      "climate_risk",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2008,
+     "waterM3ha": 13314.0,
+     "incomePEN": 15240.0,
+     "frostDays": 3,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2009,
+     "waterM3ha": 12948.0,
+     "incomePEN": 11558.0,
+     "frostDays": 3,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2010,
+     "waterM3ha": 14629.0,
+     "incomePEN": 15644.0,
+     "frostDays": 1,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2011,
+     "waterM3ha": 13344.0,
+     "incomePEN": 15484.0,
+     "frostDays": 0,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2012,
+     "waterM3ha": 14136.0,
+     "incomePEN": 15311.0,
+     "frostDays": 2,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2013,
+     "waterM3ha": 13745.0,
+     "incomePEN": 11056.0,
+     "frostDays": 7,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "climate_risk",
+      "bare",
+      "climate_risk",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2014,
+     "waterM3ha": 12976.0,
+     "incomePEN": 13660.0,
+     "frostDays": 2,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2015,
+     "waterM3ha": 14113.0,
+     "incomePEN": 16569.0,
+     "frostDays": 0,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2016,
+     "waterM3ha": 15942.0,
+     "incomePEN": 12987.0,
+     "frostDays": 1,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "water_stress",
+      "water_stress",
+      "water_stress",
+      "ok"
+     ]
+    },
+    {
+     "year": 2017,
+     "waterM3ha": 13031.0,
+     "incomePEN": 15530.0,
+     "frostDays": 1,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2018,
+     "waterM3ha": 13634.0,
+     "incomePEN": 15068.0,
+     "frostDays": 0,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2019,
+     "waterM3ha": 14011.0,
+     "incomePEN": 15198.0,
+     "frostDays": 2,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2020,
+     "waterM3ha": 12903.0,
+     "incomePEN": 15977.0,
+     "frostDays": 1,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2021,
+     "waterM3ha": 13813.0,
+     "incomePEN": 12737.0,
+     "frostDays": 6,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "climate_risk",
+      "bare",
+      "climate_risk",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2022,
+     "waterM3ha": 12998.0,
+     "incomePEN": 14417.0,
+     "frostDays": 1,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2023,
+     "waterM3ha": 14765.0,
+     "incomePEN": 15956.0,
+     "frostDays": 1,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "water_stress",
+      "water_stress",
+      "water_stress",
+      "ok"
+     ]
+    },
+    {
+     "year": 2024,
+     "waterM3ha": 14079.0,
+     "incomePEN": 15502.0,
+     "frostDays": 1,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2025,
+     "waterM3ha": 13364.0,
+     "incomePEN": 14578.0,
+     "frostDays": 2,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    }
+   ],
+   "months": [
+    "ok",
+    "bare",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "bare",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "highlights": [
+    {
+     "year": 2016,
+     "key": "highlight.driestYear",
+     "params": {
+      "extraM3ha": 2308.0
+     }
+    }
+   ],
+   "explain": {
+    "whyKey": "why.income",
+    "evidence": [
+     "evidence.power20y",
+     "evidence.frostWinter"
+    ],
+    "benefits": [
+     "benefit.income",
+     "benefit.pestCycle"
+    ],
+    "missing": [
+     "missing.prices"
+    ],
+    "reviewWithExpert": [
+     "review.potatoFrost",
+     "review.market"
+    ]
+   }
+  },
+  {
+   "id": "suelo_agua",
+   "viable": true,
+   "score": 0.699,
+   "water": {
+    "median": 11817.0,
+    "p10": 11290.0,
+    "p90": 12676.0,
+    "unit": "m3/ha"
+   },
+   "income": {
+    "median": 10804.0,
+    "p10": 9124.0,
+    "p90": 12314.0,
+    "unit": "PEN/ha"
+   },
+   "soil": 0.74,
+   "risk": {
+    "median": 0.23809523809523808,
+    "p10": 0.0,
+    "p90": 1.0,
+    "unit": "fraction"
+   },
+   "byYear": [
+    {
+     "year": 2005,
+     "waterM3ha": 12272.0,
+     "incomePEN": 10236.0,
+     "frostDays": 3,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2006,
+     "waterM3ha": 11286.0,
+     "incomePEN": 10091.0,
+     "frostDays": 1,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2007,
+     "waterM3ha": 11904.0,
+     "incomePEN": 5247.0,
+     "frostDays": 9,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "climate_risk",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2008,
+     "waterM3ha": 11290.0,
+     "incomePEN": 10123.0,
+     "frostDays": 1,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2009,
+     "waterM3ha": 11817.0,
+     "incomePEN": 11495.0,
+     "frostDays": 0,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2010,
+     "waterM3ha": 12676.0,
+     "incomePEN": 12285.0,
+     "frostDays": 1,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2011,
+     "waterM3ha": 11497.0,
+     "incomePEN": 10303.0,
+     "frostDays": 3,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2012,
+     "waterM3ha": 11321.0,
+     "incomePEN": 12084.0,
+     "frostDays": 1,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2013,
+     "waterM3ha": 11695.0,
+     "incomePEN": 9124.0,
+     "frostDays": 7,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "climate_risk",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2014,
+     "waterM3ha": 11282.0,
+     "incomePEN": 12901.0,
+     "frostDays": 0,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2015,
+     "waterM3ha": 11436.0,
+     "incomePEN": 11701.0,
+     "frostDays": 1,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2016,
+     "waterM3ha": 13483.0,
+     "incomePEN": 10271.0,
+     "frostDays": 3,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "water_stress",
+      "water_stress",
+      "water_stress",
+      "ok"
+     ]
+    },
+    {
+     "year": 2017,
+     "waterM3ha": 12163.0,
+     "incomePEN": 11500.0,
+     "frostDays": 3,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2018,
+     "waterM3ha": 11980.0,
+     "incomePEN": 12314.0,
+     "frostDays": 0,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2019,
+     "waterM3ha": 12303.0,
+     "incomePEN": 13277.0,
+     "frostDays": 0,
+     "heatDays": 1,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2020,
+     "waterM3ha": 11783.0,
+     "incomePEN": 9493.0,
+     "frostDays": 3,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2021,
+     "waterM3ha": 11404.0,
+     "incomePEN": 7032.0,
+     "frostDays": 6,
+     "heatDays": 3,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "climate_risk",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2022,
+     "waterM3ha": 12303.0,
+     "incomePEN": 11879.0,
+     "frostDays": 2,
+     "heatDays": 2,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2023,
+     "waterM3ha": 13476.0,
+     "incomePEN": 11108.0,
+     "frostDays": 3,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "water_stress",
+      "water_stress",
+      "water_stress",
+      "ok"
+     ]
+    },
+    {
+     "year": 2024,
+     "waterM3ha": 11393.0,
+     "incomePEN": 9752.0,
+     "frostDays": 3,
+     "heatDays": 0,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    },
+    {
+     "year": 2025,
+     "waterM3ha": 12093.0,
+     "incomePEN": 10804.0,
+     "frostDays": 0,
+     "heatDays": 4,
+     "months": [
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "bare",
+      "ok",
+      "ok",
+      "ok",
+      "ok",
+      "ok"
+     ]
+    }
+   ],
+   "months": [
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "bare",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok"
+   ],
+   "highlights": [
+    {
+     "year": 2016,
+     "key": "highlight.driestYear",
+     "params": {
+      "extraM3ha": 1666.0
+     }
+    }
+   ],
+   "explain": {
+    "whyKey": "why.soilWater",
+    "evidence": [
+     "evidence.power20y",
+     "evidence.legumeN"
+    ],
+    "benefits": [
+     "benefit.water",
+     "benefit.nitrogen",
+     "benefit.organicMatter"
+    ],
+    "missing": [
+     "missing.fabaYield"
+    ],
+    "reviewWithExpert": [
+     "review.legumeVariety"
+    ]
+   }
+  }
+ ]
+}

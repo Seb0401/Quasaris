@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "FarmTwin",
+    "tagline": "From Space to Soil",
+    "subtitle": "Before you plant, see what would have happened, what makes sense today and what's coming.",
+    "language": "Language",
+    "offline": "Offline: showing your last saved results"
+  },
+  "nav": {
+    "home": "Home",
+    "parcela": "My field",
+    "comparar": "Compare",
+    "tiempo": "Time machine",
+    "asistente": "Assistant",
+    "calendario": "Calendar",
+    "aprende": "What does it mean?"
+  },
+  "home": {
+    "start": "Start with my field",
+    "pastTitle": "Past",
+    "pastText": "See how each rotation would have done over the last 20 years of real climate measured by NASA.",
+    "presentTitle": "Present",
+    "presentText": "Ask FarmTwin with your voice and get a simple, data-backed explanation.",
+    "futureTitle": "Future",
+    "futureText": "Your planting calendar with frost and heat alerts for your crops.",
+    "disclaimer": "FarmTwin supports your decision; it does not replace your judgment or your local agronomist."
+  },
+  "parcela": {
+    "title": "My field",
+    "hint": "Tap your field on the map or use your location.",
+    "locate": "I'm here",
+    "ndvi": "Vegetation (NDVI, NASA MODIS)",
+    "selected": "Selected field",
+    "resources": "My resources",
+    "water": "Water available per season (m³/ha)",
+    "irrigation": "Irrigation system",
+    "soil": "Soil texture",
+    "priorities": "What matters most to you?",
+    "continue": "Compare rotations"
+  },
+  "irrigation": { "gravedad": "Furrow", "aspersion": "Sprinkler", "goteo": "Drip" },
+  "soil": { "arenoso": "Sandy", "franco": "Loam", "arcilloso": "Clay" },
+  "priority": { "water": "Save water", "income": "Earn more", "soil": "Care for the soil", "risk": "Avoid risk" },
+  "comparar": {
+    "title": "Compare rotations",
+    "loading": "Calculating with NASA data…",
+    "current": "Current",
+    "notViable": "Not viable with your water",
+    "score": "Score",
+    "water": "Water",
+    "income": "Income",
+    "soilHealth": "Soil health",
+    "risk": "Years with problems",
+    "range": "range {p10} – {p90}",
+    "source": "Source: NASA POWER {from}–{to}",
+    "mockWarning": "Test data: the real engine is not connected yet.",
+    "why": "Why it's suggested",
+    "evidence": "Evidence",
+    "benefits": "Benefits",
+    "missing": "What we don't know yet",
+    "review": "Check with an expert",
+    "months": "Typical year"
+  },
+  "month": { "ok": "Good", "water_stress": "Water stress", "climate_risk": "Frost or heat", "bare": "Bare field" },
+  "soon": {
+    "title": "Under construction",
+    "text": "The team is building this section. Check back soon."
+  },
+  "explain": {
+    "why.current": "This is what you grow today: it's the baseline.",
+    "why.income": "Combines cash crops with good local prices.",
+    "why.soilWater": "Includes a legume that adds nitrogen and uses less water.",
+    "evidence.power20y": "20 years of daily NASA POWER climate at your field.",
+    "evidence.et0High": "Evapotranspiration in Majes is high all year.",
+    "evidence.frostWinter": "Frost risk between June and August.",
+    "evidence.legumeN": "Legumes fix nitrogen from the air into the soil.",
+    "benefit.forage": "Forage for dairy cattle.",
+    "benefit.nitrogen": "Adds nitrogen to the soil.",
+    "benefit.income": "Higher expected income.",
+    "benefit.pestCycle": "Switching plant families breaks pest cycles.",
+    "benefit.water": "Less water per hectare.",
+    "benefit.organicMatter": "More organic matter.",
+    "missing.waterAllocation": "Your actual water allocation from AUTODEMA.",
+    "missing.prices": "Up-to-date farm-gate prices.",
+    "missing.fabaYield": "Local faba bean yield in Majes.",
+    "review.alfalfaAge": "Age and condition of your alfalfa stand.",
+    "review.potatoFrost": "Potato planting date vs. frost.",
+    "review.market": "Buyers for onion and potato.",
+    "review.legumeVariety": "Faba bean variety suited to the area.",
+    "highlight.driestYear": "{year}: the toughest year; it would have needed {extraM3ha} m³/ha more than usual."
+  }
+}

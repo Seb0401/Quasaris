@@ -1,0 +1,31 @@
+{
+  "_note": "Rotaciones de ejemplo para la demo en Majes. A validar con un agrónomo (CONTEXTO_RETO.md §2).",
+  "rotations": [
+    {
+      "id": "actual",
+      "name": "Alfalfa permanente",
+      "isCurrent": true,
+      "crops": [{ "cropId": "alfalfa", "sowMonth": 4 }]
+    },
+    {
+      "id": "ingreso",
+      "name": "Cebolla · Papa · Maíz chala",
+      "isCurrent": false,
+      "crops": [
+        { "cropId": "cebolla", "sowMonth": 3 },
+        { "cropId": "papa", "sowMonth": 8 },
+        { "cropId": "maiz_chala", "sowMonth": 12 }
+      ]
+    },
+    {
+      "id": "suelo_agua",
+      "name": "Cebolla · Haba · Maíz chala",
+      "isCurrent": false,
+      "crops": [
+        { "cropId": "cebolla", "sowMonth": 3 },
+        { "cropId": "haba", "sowMonth": 8 },
+        { "cropId": "maiz_chala", "sowMonth": 12 }
+      ]
+    }
+  ]
+}

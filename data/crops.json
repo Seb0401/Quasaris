@@ -1,0 +1,75 @@
+{
+  "_note": "Valores aproximados. Kc de FAO-56 tabla 12 (verificar). Los campos null los completa el flujo D con fuente (MIDAGRI, INIA).",
+  "crops": {
+    "alfalfa": {
+      "name": { "es": "Alfalfa", "en": "Alfalfa" },
+      "family": "leguminosa",
+      "fixesNitrogen": true,
+      "kc": { "ini": 0.4, "mid": 0.95, "end": 0.9 },
+      "cycleDays": null,
+      "rootDepthM": null,
+      "tMinC": null,
+      "tMaxC": null,
+      "yieldTha": null,
+      "pricePENt": null,
+      "costPENha": null,
+      "sources": { "kc": "FAO-56 tabla 12" }
+    },
+    "papa": {
+      "name": { "es": "Papa", "en": "Potato" },
+      "family": "solanacea",
+      "fixesNitrogen": false,
+      "kc": { "ini": 0.5, "mid": 1.15, "end": 0.75 },
+      "cycleDays": null,
+      "rootDepthM": null,
+      "tMinC": null,
+      "tMaxC": null,
+      "yieldTha": null,
+      "pricePENt": null,
+      "costPENha": null,
+      "sources": { "kc": "FAO-56 tabla 12" }
+    },
+    "cebolla": {
+      "name": { "es": "Cebolla", "en": "Onion" },
+      "family": "aliacea",
+      "fixesNitrogen": false,
+      "kc": { "ini": 0.7, "mid": 1.05, "end": 0.75 },
+      "cycleDays": null,
+      "rootDepthM": null,
+      "tMinC": null,
+      "tMaxC": null,
+      "yieldTha": null,
+      "pricePENt": null,
+      "costPENha": null,
+      "sources": { "kc": "FAO-56 tabla 12" }
+    },
+    "maiz_chala": {
+      "name": { "es": "Maíz chala", "en": "Forage maize" },
+      "family": "graminea",
+      "fixesNitrogen": false,
+      "kc": { "ini": 0.3, "mid": 1.2, "end": 0.5 },
+      "cycleDays": null,
+      "rootDepthM": null,
+      "tMinC": null,
+      "tMaxC": null,
+      "yieldTha": null,
+      "pricePENt": null,
+      "costPENha": null,
+      "sources": { "kc": "FAO-56 tabla 12 (Kc final 0.35–0.60)" }
+    },
+    "haba": {
+      "name": { "es": "Haba", "en": "Faba bean" },
+      "family": "leguminosa",
+      "fixesNitrogen": true,
+      "kc": { "ini": 0.4, "mid": 1.15, "end": 0.35 },
+      "cycleDays": null,
+      "rootDepthM": null,
+      "tMinC": null,
+      "tMaxC": null,
+      "yieldTha": null,
+      "pricePENt": null,
+      "costPENha": null,
+      "sources": { "kc": "FAO-56 tabla 12" }
+    }
+  }
+}

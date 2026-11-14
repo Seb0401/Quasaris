@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "FarmTwin",
+    "tagline": "Del espacio al suelo",
+    "subtitle": "Antes de sembrar, mira lo que habría pasado, lo que conviene hoy y lo que viene.",
+    "language": "Idioma",
+    "offline": "Sin conexión: mostrando lo último guardado"
+  },
+  "nav": {
+    "home": "Inicio",
+    "parcela": "Mi parcela",
+    "comparar": "Comparar",
+    "tiempo": "Máquina del tiempo",
+    "asistente": "Asistente",
+    "calendario": "Calendario",
+    "aprende": "¿Qué significa?"
+  },
+  "home": {
+    "start": "Empezar con mi parcela",
+    "pastTitle": "Pasado",
+    "pastText": "Mira cómo le habría ido a cada rotación en los últimos 20 años de clima real medido por la NASA.",
+    "presentTitle": "Presente",
+    "presentText": "Pregúntale a FarmTwin con tu voz y recibe una explicación simple, con datos.",
+    "futureTitle": "Futuro",
+    "futureText": "Tu calendario de siembra con avisos de helada y calor para tus cultivos.",
+    "disclaimer": "FarmTwin apoya tu decisión; no reemplaza tu criterio ni el de tu técnico agrario."
+  },
+  "parcela": {
+    "title": "Mi parcela",
+    "hint": "Toca tu parcela en el mapa o usa tu ubicación.",
+    "locate": "Estoy aquí",
+    "ndvi": "Vegetación (NDVI, NASA MODIS)",
+    "selected": "Parcela seleccionada",
+    "resources": "Mis recursos",
+    "water": "Agua disponible por campaña (m³/ha)",
+    "irrigation": "Sistema de riego",
+    "soil": "Textura del suelo",
+    "priorities": "¿Qué es más importante para ti?",
+    "continue": "Comparar rotaciones"
+  },
+  "irrigation": { "gravedad": "Gravedad", "aspersion": "Aspersión", "goteo": "Goteo" },
+  "soil": { "arenoso": "Arenoso", "franco": "Franco", "arcilloso": "Arcilloso" },
+  "priority": { "water": "Ahorrar agua", "income": "Ganar más", "soil": "Cuidar el suelo", "risk": "Evitar riesgos" },
+  "comparar": {
+    "title": "Comparar rotaciones",
+    "loading": "Calculando con datos de la NASA…",
+    "current": "Actual",
+    "notViable": "No viable con tu agua",
+    "score": "Puntaje",
+    "water": "Agua",
+    "income": "Ingreso",
+    "soilHealth": "Salud del suelo",
+    "risk": "Años con problemas",
+    "range": "rango {p10} – {p90}",
+    "source": "Fuente: NASA POWER {from}–{to}",
+    "mockWarning": "Datos de prueba: el motor real aún no está conectado.",
+    "why": "Por qué se sugiere",
+    "evidence": "Evidencia",
+    "benefits": "Beneficios",
+    "missing": "Qué falta saber",
+    "review": "Qué revisar con un experto",
+    "months": "Año típico"
+  },
+  "month": { "ok": "Bien", "water_stress": "Estrés hídrico", "climate_risk": "Helada o calor", "bare": "Campo desnudo" },
+  "soon": {
+    "title": "En construcción",
+    "text": "Esta sección la está construyendo el equipo. Vuelve pronto."
+  },
+  "explain": {
+    "why.current": "Es lo que siembras hoy: sirve de punto de comparación.",
+    "why.income": "Combina cultivos comerciales de buen precio en la zona.",
+    "why.soilWater": "Incluye una leguminosa que aporta nitrógeno y usa menos agua.",
+    "evidence.power20y": "20 años de clima diario de NASA POWER en tu parcela.",
+    "evidence.et0High": "La evapotranspiración en Majes es alta todo el año.",
+    "evidence.frostWinter": "Riesgo de helada entre junio y agosto.",
+    "evidence.legumeN": "Las leguminosas fijan nitrógeno del aire en el suelo.",
+    "benefit.forage": "Forraje para ganado lechero.",
+    "benefit.nitrogen": "Aporta nitrógeno al suelo.",
+    "benefit.income": "Mayor ingreso esperado.",
+    "benefit.pestCycle": "Cambiar de familia corta ciclos de plagas.",
+    "benefit.water": "Menos agua por hectárea.",
+    "benefit.organicMatter": "Más materia orgánica.",
+    "missing.waterAllocation": "Tu asignación real de agua de AUTODEMA.",
+    "missing.prices": "Precios actualizados en chacra.",
+    "missing.fabaYield": "Rendimiento local del haba en Majes.",
+    "review.alfalfaAge": "Edad y estado de tu alfalfar.",
+    "review.potatoFrost": "Fecha de siembra de papa frente a heladas.",
+    "review.market": "Compradores para la cebolla y la papa.",
+    "review.legumeVariety": "Variedad de haba adecuada para la zona.",
+    "highlight.driestYear": "{year}: el año más exigente; habría necesitado {extraM3ha} m³/ha más que lo normal."
+  }
+}
