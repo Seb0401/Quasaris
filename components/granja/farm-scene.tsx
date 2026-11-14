@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber"
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { TileState } from "@/lib/granja-sim";
-import { ROTATION_COLOR } from "@/lib/granja-sim";
+import { rotationColor } from "@/lib/granja-sim";
 import { Clouds, Cow, Farmer, Fence, House, Island, Pond, Tree, Volcano, Windmill } from "./diorama-props";
 import { GEO, MAT, SOIL, rand } from "./low-poly";
 import { PlantField } from "./plant-field";
@@ -51,7 +51,7 @@ function Plot({ i, x, z, state, selected, onTap }: { i: number; x: number; z: nu
     if (e.delta > 6) return; // fue un arrastre de cámara
     onTap(i);
   };
-  const frame = selected ? "#ffffff" : (ROTATION_COLOR[state.rotationId] ?? "#999");
+  const frame = selected ? "#ffffff" : rotationColor(state.rotationId);
   return (
     <group>
       <mesh position={[x, 0.06, z]} scale={[TILE + 0.16, 0.12, TILE + 0.16]} geometry={GEO.soil} receiveShadow>

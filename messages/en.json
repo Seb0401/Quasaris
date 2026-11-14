@@ -251,5 +251,24 @@
       "title": "You earned medals!",
       "ok": "Keep playing"
     }
+  },
+  "rotaciones": {
+    "title": "My rotations",
+    "subtitle": "Build your own rotations: pick crops and planting month. FarmTwin compares them with NASA data on every screen.",
+    "newName": "My rotation",
+    "name": "Rotation name",
+    "makeCurrent": "Set as current",
+    "crop": "Crop",
+    "sowMonth": "Planting month",
+    "sow": "Plant:",
+    "removeCrop": "Remove crop",
+    "addCrop": "Add crop",
+    "overlap": "Two crops overlap for {days} days: check the planting months.",
+    "bare": "{n} months with bare soil (in red above).",
+    "delete": "Delete rotation",
+    "add": "New rotation",
+    "hint": "Up to 5 rotations and 4 crops per rotation. Crop cycles come from FAO-56 (to validate with an agronomist).",
+    "edit": "Edit rotations",
+    "create": "＋ Create rotation"
   }
 }

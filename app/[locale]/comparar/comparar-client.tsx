@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { RotationCard } from "@/components/cards/rotation-card";
 import { useFarm } from "@/lib/farm-store";
@@ -23,6 +24,9 @@ export function CompararClient() {
     <div className="dashboard-shell">
       <header className="section-hero"><div><span className="panel-kicker"><BarChart3 size={16} /> QUASARIS / {locale === "es" ? "ESCENARIOS" : "SCENARIOS"}</span><h1>{t("comparar.title")}</h1><p>{t("comparar.source", { from: data.source.period[0], to: data.source.period[1] })}</p></div></header>
       <div className="compare-intro mt-4">
+        <Link href={`/${locale}/rotaciones`} className="mb-2 inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-sm font-medium">
+          ✏️ {t("rotaciones.edit")}
+        </Link>
         {data.source.elevationM !== undefined && (
           <p>
             <Satellite size={14} className="mr-1 inline" /> {t("comparar.fusion", { elev: Math.round(data.source.elevationM), n: data.source.cells?.length ?? 1 })}

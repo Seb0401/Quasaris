@@ -251,5 +251,24 @@
       "title": "¡Ganaste medallas!",
       "ok": "Seguir jugando"
     }
+  },
+  "rotaciones": {
+    "title": "Mis rotaciones",
+    "subtitle": "Arma tus propias rotaciones: elige cultivos y mes de siembra. FarmTwin las compara con datos de la NASA en todas las pantallas.",
+    "newName": "Mi rotación",
+    "name": "Nombre de la rotación",
+    "makeCurrent": "Es la actual",
+    "crop": "Cultivo",
+    "sowMonth": "Mes de siembra",
+    "sow": "Siembra:",
+    "removeCrop": "Quitar cultivo",
+    "addCrop": "Agregar cultivo",
+    "overlap": "Dos cultivos se cruzan {days} días: revisa los meses de siembra.",
+    "bare": "{n} meses con el campo desnudo (en rojo arriba).",
+    "delete": "Borrar rotación",
+    "add": "Nueva rotación",
+    "hint": "Máximo 5 rotaciones y 4 cultivos por rotación. Los ciclos vienen de FAO-56 (a validar con un agrónomo).",
+    "edit": "Editar rotaciones",
+    "create": "＋ Crear rotación"
   }
 }
