@@ -274,5 +274,74 @@
     "hint": "Up to 5 rotations and 4 crops per rotation. Crop cycles come from FAO-56 (to validate with an agronomist).",
     "edit": "Edit rotations",
     "create": "＋ Create rotation"
+  },
+  "aprende": {
+    "title": "What does it mean?",
+    "subtitle": "The ideas behind FarmTwin, explained simply.",
+    "how": "In FarmTwin",
+    "source": "Data",
+    "disclaimer": "Explanations are simplified. For important decisions, talk to your local agronomist or INIA.",
+    "topics": {
+      "et": {
+        "title": "Evapotranspiration (ET)",
+        "text": "It's the water that leaves the field into the air: what evaporates from the soil and what the plant \"sweats\" through its leaves. More sun, heat, wind and dry air mean more water lost.",
+        "how": "We compute reference ET (ET0) for every day of the last 21 years with the FAO Penman-Monteith equation.",
+        "source": "NASA POWER (temperature, radiation, humidity and wind)"
+      },
+      "kc": {
+        "title": "Crop coefficient (Kc)",
+        "text": "Each crop uses a different share of ET0 depending on its size. Just planted it needs little (low Kc); at full bloom it needs more than the reference grass (Kc above 1).",
+        "how": "Your crop's water is Kc × ET0, day by day, following its stages: initial, development, mid and late.",
+        "source": "FAO-56, tables 11 and 12"
+      },
+      "balance": {
+        "title": "Water balance and irrigation",
+        "text": "What the crop needs minus the rain it can use is your net irrigation. No system is perfect: furrow irrigation loses almost half the water, drip very little. That total is gross irrigation.",
+        "how": "We compare each rotation's gross irrigation with your available water. If it isn't enough, it's marked \"not viable\". 1 mm of water = 10 m³ per hectare.",
+        "source": "Efficiencies: furrow 45%, sprinkler 75%, drip 90%"
+      },
+      "ndvi": {
+        "title": "NDVI (vegetation vigor)",
+        "text": "A number satellites compute from the light plants reflect. A healthy green plant reflects a lot of infrared: high NDVI. Bare or dry soil: low NDVI.",
+        "how": "You see it on the map and in the Time machine, month by month since 2000.",
+        "source": "NASA MODIS Terra, via NASA GIBS"
+      },
+      "soil": {
+        "title": "Soil moisture",
+        "text": "How much water the soil holds where the roots are. In the Majes desert, without irrigation, the soil is dry almost all year; in the highlands it rises in the rainy season.",
+        "how": "We show natural soil moisture by month and week, plus the SMAP root-zone moisture map.",
+        "source": "NASA POWER (GWETROOT) and NASA SMAP L4"
+      },
+      "frost": {
+        "title": "Frost and heat risk",
+        "text": "Frost burns leaves and flowers when the air drops below a certain temperature; extreme heat closes the plant's pores and lowers yield. Each crop has its own limit.",
+        "how": "We count in how many of the last 21 years each week had frost (minimum of 2 °C or less) or heat.",
+        "source": "NASA POWER (daily minimum and maximum temperature)"
+      },
+      "fusion": {
+        "title": "Altitude adjustment",
+        "text": "Satellite climate data comes in squares of about 50 km with an average altitude. Majes is at 1,400 m, but its neighboring squares are at 835 m (coast) and 1,941 m.",
+        "how": "We measure your field's real altitude with NASA terrain data and blend the two climate squares around it.",
+        "source": "NASA SRTM + NASA POWER"
+      },
+      "ground": {
+        "title": "Satellite vs. ground station",
+        "text": "A station measures one point very well. Satellites cover the whole planet every day, with less detail. Together they complement each other: the station checks and corrects the satellite.",
+        "how": "We prepared the comparison with the SENAMHI Pampa de Majes station to measure the satellite error.",
+        "source": "SENAMHI (station 116006) and NASA POWER"
+      },
+      "range": {
+        "title": "Ranges instead of one number",
+        "text": "Weather changes every year: dry years, normal years and El Niño. So we don't give one number but a range: the typical value and what happens in good and bad years.",
+        "how": "Every figure comes from simulating the 21 real years: we show the median and the 10%–90% range.",
+        "source": "NASA POWER 2005–2025"
+      },
+      "rotation": {
+        "title": "Crop rotation",
+        "text": "Alternating crops from different families breaks pest cycles. Legumes (faba, beans, alfalfa) fix nitrogen from the air and feed the soil. Leaving the field bare makes erosion easier.",
+        "how": "The \"soil health\" score rewards legumes, family variety and covered soil, and penalizes bare months.",
+        "source": "General agronomic rules (to validate with an agronomist)"
+      }
+    }
   }
 }

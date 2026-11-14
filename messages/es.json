@@ -274,5 +274,74 @@
     "hint": "Máximo 5 rotaciones y 4 cultivos por rotación. Los ciclos vienen de FAO-56 (a validar con un agrónomo).",
     "edit": "Editar rotaciones",
     "create": "＋ Crear rotación"
+  },
+  "aprende": {
+    "title": "¿Qué significa?",
+    "subtitle": "Las ideas detrás de FarmTwin, explicadas en simple.",
+    "how": "En FarmTwin",
+    "source": "Dato",
+    "disclaimer": "Las explicaciones son simplificadas. Para decisiones importantes consulta a tu técnico agrario o a INIA.",
+    "topics": {
+      "et": {
+        "title": "Evapotranspiración (ET)",
+        "text": "Es el agua que sale del campo hacia el aire: la que se evapora del suelo y la que \"suda\" la planta por sus hojas. Con más sol, calor, viento y aire seco, el campo pierde más agua.",
+        "how": "Calculamos la ET de referencia (ET0) de cada día de los últimos 21 años con la fórmula Penman-Monteith de la FAO.",
+        "source": "NASA POWER (temperatura, radiación, humedad y viento)"
+      },
+      "kc": {
+        "title": "Coeficiente de cultivo (Kc)",
+        "text": "Cada cultivo toma una parte distinta de esa ET0 según su tamaño. Recién sembrado pide poco (Kc bajo); en plena floración pide más que el pasto de referencia (Kc mayor a 1).",
+        "how": "El agua de tu cultivo es Kc × ET0, día a día, siguiendo sus etapas: inicial, desarrollo, media y final.",
+        "source": "FAO-56, tablas 11 y 12"
+      },
+      "balance": {
+        "title": "Balance hídrico y riego",
+        "text": "Lo que pide el cultivo menos la lluvia que aprovecha es tu riego neto. Pero ningún sistema es perfecto: con gravedad se pierde casi la mitad del agua y con goteo muy poca. Ese total es el riego bruto.",
+        "how": "Comparamos el riego bruto de cada rotación con tu agua disponible. Si no alcanza, la marcamos como \"no viable\". 1 mm de agua = 10 m³ por hectárea.",
+        "source": "Eficiencias: gravedad 45 %, aspersión 75 %, goteo 90 %"
+      },
+      "ndvi": {
+        "title": "NDVI (vigor de la vegetación)",
+        "text": "Es un número que los satélites calculan con la luz que reflejan las plantas. Una planta sana y verde refleja mucho infrarrojo: NDVI alto. Suelo desnudo o seco: NDVI bajo.",
+        "how": "Lo ves en el mapa y en la Máquina del tiempo, mes a mes desde el año 2000.",
+        "source": "NASA MODIS Terra, vía NASA GIBS"
+      },
+      "soil": {
+        "title": "Humedad del suelo",
+        "text": "Cuánta agua guarda la tierra donde están las raíces. En el desierto de Majes, sin riego, el suelo está seco casi todo el año; en la sierra sube en la temporada de lluvias.",
+        "how": "Mostramos la humedad natural del suelo por mes y por semana, y el mapa SMAP de humedad en raíces.",
+        "source": "NASA POWER (GWETROOT) y NASA SMAP L4"
+      },
+      "frost": {
+        "title": "Riesgo de helada y de calor",
+        "text": "Una helada quema hojas y flores cuando el aire baja de cierta temperatura; el calor extremo cierra los poros de la planta y baja el rendimiento. Cada cultivo tiene su propio límite.",
+        "how": "Contamos en cuántos de los últimos 21 años hubo helada (mínima de 2 °C o menos) o calor en cada semana.",
+        "source": "NASA POWER (temperatura mínima y máxima diaria)"
+      },
+      "fusion": {
+        "title": "Ajuste por altura",
+        "text": "Los datos de clima del satélite vienen en cuadros de unos 50 km, con una altura promedio. Majes está a 1.400 m, pero sus cuadros vecinos están a 835 m (costa) y 1.941 m.",
+        "how": "Medimos la altura real de tu parcela con el relieve de la NASA y combinamos los dos cuadros de clima que la rodean.",
+        "source": "NASA SRTM + NASA POWER"
+      },
+      "ground": {
+        "title": "Satélite frente a estación en tierra",
+        "text": "Una estación mide muy bien un solo punto. El satélite cubre todo el planeta, todos los días, pero con menos detalle. Juntos se complementan: la estación sirve para revisar y corregir al satélite.",
+        "how": "Preparamos la comparación con la estación SENAMHI Pampa de Majes para medir cuánto se equivoca el dato satelital.",
+        "source": "SENAMHI (estación 116006) y NASA POWER"
+      },
+      "range": {
+        "title": "Rangos en vez de un solo número",
+        "text": "El clima cambia cada año: hay años secos, normales y con El Niño. Por eso no te damos un solo número sino un rango: lo típico y lo que pasa en años buenos y malos.",
+        "how": "Cada cifra viene de simular los 21 años reales: mostramos la mediana y el rango del 10 % al 90 %.",
+        "source": "NASA POWER 2005–2025"
+      },
+      "rotation": {
+        "title": "Rotación de cultivos",
+        "text": "Alternar cultivos de familias distintas corta el ciclo de plagas. Las leguminosas (haba, frijol, alfalfa) fijan nitrógeno del aire y abonan el suelo. Dejar el campo desnudo facilita la erosión.",
+        "how": "El puntaje de \"salud del suelo\" premia leguminosas, variedad de familias y suelo cubierto, y castiga los meses desnudos.",
+        "source": "Reglas agronómicas generales (a validar con un agrónomo)"
+      }
+    }
   }
 }
