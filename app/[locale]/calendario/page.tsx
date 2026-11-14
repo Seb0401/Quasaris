@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/coming-soon";
+import { CalendarioClient } from "./calendario-client";
 
-export default function Page({ params }: PageProps<"/[locale]/calendario">) {
-  return <ComingSoon params={params} section="calendario" icon="📅" owner="Flujo C · agente C2" />;
+export default function CalendarioPage() {
+  return <CalendarioClient />;
 }

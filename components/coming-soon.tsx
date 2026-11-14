@@ -1,20 +1,36 @@
+import Link from "next/link";
 import { getMessages } from "@/lib/i18n";
+import { ArrowRight, BookOpen, CalendarDays, Clock3, MessageCircleMore, Orbit } from "lucide-react";
 
 /** Marcador para secciones que aún construye otro flujo de trabajo (ver PLAN.md §7–8). */
-export async function ComingSoon({ params, section, icon, owner }: { params: Promise<{ locale: string }>; section: string; icon: string; owner: string }) {
+export async function ComingSoon({ params, section, owner }: { params: Promise<{ locale: string }>; section: string; owner: string }) {
   const { locale } = await params;
   const m = getMessages(locale);
+  const es = locale === "es";
   const title = (m.nav as Record<string, string>)[section] ?? section;
+  const Icon = section === "tiempo" ? Clock3 : section === "calendario" ? CalendarDays : section === "asistente" ? MessageCircleMore : BookOpen;
   return (
-    <div className="flex flex-col items-center gap-3 py-16 text-center">
-      <span className="text-6xl" aria-hidden>
-        {icon}
-      </span>
-      <h1 className="text-2xl font-bold">{title}</h1>
-      <p className="text-muted">
-        {m.soon.title} · {m.soon.text}
-      </p>
-      <p className="text-xs text-muted">({owner})</p>
+    <div className="ui-page">
+      <header className="ui-hero">
+        <div className="ui-hero-photo" aria-hidden />
+        <div className="ui-hero-grid" aria-hidden />
+        <div className="ui-hero-scan" aria-hidden />
+        <div className="ui-hero-copy">
+          <span className="ui-kicker"><Icon size={14} /> QUASARIS / {es ? "PRÓXIMAMENTE" : "COMING SOON"}</span>
+          <h1>{title}</h1>
+          <p>{m.soon.text}</p>
+        </div>
+      </header>
+      <section className="ui-panel soon-panel">
+        <div className="soon-orbit" aria-hidden>
+          <Orbit size={120} strokeWidth={0.8} />
+          <span><Icon size={30} /></span>
+        </div>
+        <h2>{m.soon.title}</h2>
+        <p>{m.soon.text}</p>
+        <small>{owner}</small>
+        <Link href={`/${locale}/parcela`} className="ui-btn">{es ? "Mientras tanto, configura tu parcela" : "Meanwhile, set up your field"}<ArrowRight size={16} /></Link>
+      </section>
     </div>
   );
 }

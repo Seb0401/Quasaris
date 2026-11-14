@@ -42,6 +42,14 @@ class SimulateRequest(BaseModel):
     rotations: list[Rotation] = Field(min_length=1)
     years: Optional[tuple[int, int]] = (2005, 2025)
     locale: Locale = "es"
+    # Opcional: escenario "qué pasaría si" (gemelo digital). tempDeltaC suma grados a Tmax y Tmin diarias.
+    scenario: Optional["Scenario"] = None
+    # Opcional: devolver el clima mes a mes de cada año (lo usa el modo granja)
+    includeClimate: bool = False
+
+
+class Scenario(BaseModel):
+    tempDeltaC: float = Field(default=0, ge=-5, le=5)
 
 
 class Stat(BaseModel):
@@ -58,6 +66,8 @@ class YearResult(BaseModel):
     frostDays: int
     heatDays: int
     months: list[MonthStatus] = Field(min_length=12, max_length=12)
+    # Opcional: riego bruto de cada mes (m³/ha), para animar el reservorio del modo granja
+    monthlyWaterM3ha: Optional[list[float]] = Field(default=None, min_length=12, max_length=12)
 
 
 class Highlight(BaseModel):
@@ -95,6 +105,21 @@ class PowerCell(BaseModel):
     weight: float
 
 
+class MonthClimate(BaseModel):
+    tmax: float  # media de Tmax diaria (°C)
+    tmin: float  # media de Tmin diaria (°C)
+    tminAbs: float  # Tmin más baja del mes (°C)
+    tmaxAbs: float  # Tmax más alta del mes (°C)
+    et0: float  # ET0 media diaria (mm/día)
+    rain: float  # lluvia total del mes (mm)
+    soil: float  # GWETROOT medio (0..1)
+
+
+class YearClimate(BaseModel):
+    year: int
+    months: list[MonthClimate] = Field(min_length=12, max_length=12)
+
+
 class Source(BaseModel):
     power: Literal["live", "cache", "mock"]
     period: tuple[int, int]
@@ -102,6 +127,11 @@ class Source(BaseModel):
     elevationM: Optional[float] = None
     method: Optional[Literal["blend", "single"]] = None
     cells: Optional[list[PowerCell]] = None
+    # Opcional: humedad del suelo en la zona de raíces (NASA POWER GWETROOT, 0..1), promedio por mes ene..dic
+    rootZoneWetness: Optional[list[float]] = Field(default=None, min_length=12, max_length=12)
+    # Opcional: escenario aplicado y clima mes a mes por año (si includeClimate)
+    tempDeltaC: Optional[float] = None
+    climateByYear: Optional[list[YearClimate]] = None
 
 
 class SimulateResponse(BaseModel):
@@ -114,7 +144,11 @@ class ClimateWeek(BaseModel):
     pFrost: float = Field(ge=0, le=1)
     pHeat: float = Field(ge=0, le=1)
     et0MeanMm: float
+    soilWetness: Optional[float] = None  # GWETROOT promedio de la semana (0..1)
 
 
 class ClimateResponse(BaseModel):
     weeks: list[ClimateWeek]
+
+
+SimulateRequest.model_rebuild()

@@ -2,7 +2,9 @@ import type { SimulateRequest, SimulateResponse } from "@/lib/contract";
 import mock from "@/data/mock_simulate.json";
 
 const ENGINE_URL = process.env.NEXT_PUBLIC_ENGINE_URL ?? "";
-const CACHE_KEY = "farmtwin.lastSimulation.v1";
+const DEFAULT_CACHE_KEY = "farmtwin.lastSimulation.v1";
+
+type Options = { cacheKey?: string; fallback?: () => Promise<SimulateResponse> };
 
 export function simulateMock(req: SimulateRequest): SimulateResponse {
   const data = mock as unknown as SimulateResponse;
@@ -18,9 +20,9 @@ export function simulateMock(req: SimulateRequest): SimulateResponse {
 
 /**
  * Llama al motor Python. Si falla (sin red o motor caído) usa el último resultado guardado
- * y, en último caso, el mock del contrato.
+ * y, en último caso, una foto del motor real (mock).
  */
-export async function simulate(req: SimulateRequest): Promise<SimulateResponse> {
+export async function simulate(req: SimulateRequest, { cacheKey = DEFAULT_CACHE_KEY, fallback }: Options = {}): Promise<SimulateResponse> {
   try {
     const res = await fetch(`${ENGINE_URL}/api/py/simulate`, {
       method: "POST",
@@ -30,18 +32,15 @@ export async function simulate(req: SimulateRequest): Promise<SimulateResponse> 
     if (!res.ok) throw new Error(`engine ${res.status}`);
     const data = (await res.json()) as SimulateResponse;
     try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      localStorage.setItem(cacheKey, JSON.stringify(data));
     } catch {}
     return data;
   } catch (err) {
     console.warn("[FarmTwin] motor no disponible, usando respaldo", err);
     try {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const data = JSON.parse(cached) as SimulateResponse;
-        if (data.source.power !== "mock") return data;
-      }
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) return JSON.parse(cached) as SimulateResponse;
     } catch {}
-    return simulateMock(req);
+    return fallback ? fallback() : (mock as unknown as SimulateResponse);
   }
 }

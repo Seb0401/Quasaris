@@ -123,3 +123,14 @@ def test_climatologia_semanal():
     assert len(weeks) == 52
     et0 = np.array([w.et0MeanMm for w in weeks])
     assert 2 < et0.min() < et0.max() < 7
+
+
+def test_escenario_mas_calor_pide_mas_agua_y_trae_clima():
+    base = run(req(includeClimate=True))
+    hot = run(req(includeClimate=True, scenario={"tempDeltaC": 2}))
+    assert all(h.water.median > b.water.median for h, b in zip(hot.rotations, base.rotations))
+    assert hot.source.tempDeltaC == 2
+    jul_base = base.source.climateByYear[0].months[6]
+    jul_hot = hot.source.climateByYear[0].months[6]
+    assert jul_hot.tmax == pytest.approx(jul_base.tmax + 2, abs=0.11)
+    assert len(base.source.climateByYear) == 21

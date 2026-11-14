@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from dataclasses import replace
 
 import numpy as np
 
@@ -18,6 +19,7 @@ CASH = {"papa", "cebolla"}
 NON_VIABLE_PENALTY = 0.6
 AGRO_FROST_C = 2.0  # Tmin a 2 m ≤ 2 °C → posible helada a nivel del cultivo
 HEAT_C = 30.0
+SOIL_DRY = 0.4  # GWETROOT medio por debajo de esto: suelo naturalmente seco, todo depende del riego
 
 
 def _stat(values: list[float], unit: str) -> dict:
@@ -53,6 +55,10 @@ def run(req: SimulateRequest) -> SimulateResponse:
         raise ValueError(f"cultivos desconocidos: {sorted(unknown)}")
 
     clim = load_climate(req.lat, req.lon, years)
+    delta = req.scenario.tempDeltaC if req.scenario else 0.0
+    if delta:
+        # gemelo digital: el mismo clima real, con todas las temperaturas desplazadas
+        clim = replace(clim, tmax=clim.tmax + delta, tmin=clim.tmin + delta)
     et0 = compute_et0(clim)
 
     raw = []
@@ -128,6 +134,10 @@ def run(req: SimulateRequest) -> SimulateResponse:
                 "elevationM": round(clim.elevation_m),
                 "method": clim.method,
                 "cells": clim.cells,
+                "rootZoneWetness": None if clim.gwetroot is None else [round(float(clim.gwetroot[clim.month == m].mean()), 3) for m in range(1, 13)],
+                "tempDeltaC": delta or None,
+                # MonthClimate.soil es obligatorio en el contrato: sin GWETROOT no se envía en vez de inventarlo
+                "climateByYear": climate_by_year(clim, et0) if req.includeClimate and clim.gwetroot is not None else None,
             },
             "rotations": rotations,
         }
@@ -174,6 +184,8 @@ def _explain(rot: Rotation, r: dict, flags: dict, clim: Climate) -> dict:
     if clim.method == "blend":
         evidence.append("evidence.fusion")
     evidence.append("evidence.frostYears" if frost else "evidence.noFrost")
+    if clim.gwetroot is not None:  # sin GWETROOT no se afirma nada sobre el suelo
+        evidence.append("evidence.soilDry" if float(clim.gwetroot.mean()) < SOIL_DRY else "evidence.soilSeasonal")
     if legume:
         evidence.append("evidence.legumeN")
 
@@ -221,5 +233,38 @@ def climate_weeks(lat: float, lon: float, years: tuple[int, int] = (2005, 2025))
         sel = week == w
         frost_years = len(set(clim.year[sel & (clim.tmin <= AGRO_FROST_C)].tolist()))
         heat_years = len(set(clim.year[sel & (clim.tmax >= HEAT_C)].tolist()))
-        weeks.append({"week": w + 1, "pFrost": round(frost_years / n_years, 3), "pHeat": round(heat_years / n_years, 3), "et0MeanMm": round(float(et0[sel].mean()), 2)})
+        weeks.append(
+            {
+                "week": w + 1,
+                "pFrost": round(frost_years / n_years, 3),
+                "pHeat": round(heat_years / n_years, 3),
+                "et0MeanMm": round(float(et0[sel].mean()), 2),
+                "soilWetness": None if clim.gwetroot is None else round(float(clim.gwetroot[sel].mean()), 3),
+            }
+        )
     return ClimateResponse.model_validate({"weeks": weeks})
+
+
+def climate_by_year(clim: Climate, et0: np.ndarray) -> list[dict]:
+    """Clima real de cada mes de cada año (para animar el gemelo digital mes a mes)."""
+    out = []
+    for y in clim.years:
+        months = []
+        for m in range(1, 13):
+            sel = (clim.year == y) & (clim.month == m)
+            if not sel.any():
+                break
+            months.append(
+                {
+                    "tmax": round(float(clim.tmax[sel].mean()), 1),
+                    "tmin": round(float(clim.tmin[sel].mean()), 1),
+                    "tminAbs": round(float(clim.tmin[sel].min()), 1),
+                    "tmaxAbs": round(float(clim.tmax[sel].max()), 1),
+                    "et0": round(float(et0[sel].mean()), 2),
+                    "rain": round(float(clim.rain[sel].sum()), 1),
+                    "soil": round(float(clim.gwetroot[sel].mean()), 3),
+                }
+            )
+        if len(months) == 12:
+            out.append({"year": int(y), "months": months})
+    return out
