@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import type { AlertProfileClient } from "@/components/calendar/types";
+import { BellOff, BellRing, CheckCircle2, Flame, Send, Snowflake, TriangleAlert, Wheat } from "lucide-react";
+import { Panel } from "@/components/ui/kit";
 
 const VAPID = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
 
@@ -81,38 +83,41 @@ export function PushCard({ profile }: { profile: AlertProfileClient }) {
   };
 
   const subscribed = status === "subscribed" || status === "sent";
+  const es = locale === "es";
 
   return (
-    <section className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4">
-      <div>
-        <h2 className="text-lg font-semibold">🔔 {t("calendario.alertsTitle")}</h2>
-        <p className="text-sm text-muted">{t("calendario.alertsText")}</p>
+    <Panel kicker={es ? "NOTIFICACIONES" : "NOTIFICATIONS"} icon={BellRing} title={t("calendario.alertsTitle")} className="push-panel">
+      <div className="push-visual" aria-hidden>
+        <span className={subscribed ? "is-on" : ""}><BellRing size={26} /></span>
+        <i /><i /><i />
       </div>
+      <p className="ui-hint">{t("calendario.alertsText")}</p>
+      <ul className="push-perks">
+        <li><Snowflake size={14} />{es ? "Semanas con riesgo de helada" : "Weeks with frost risk"}</li>
+        <li><Flame size={14} />{es ? "Olas de calor extremo" : "Extreme heat waves"}</li>
+        <li><Wheat size={14} />{es ? "Cosecha cercana" : "Upcoming harvest"}</li>
+      </ul>
 
       {["unsupported", "no-sw", "not-configured", "denied", "error"].includes(status) && (
-        <p className="rounded-lg bg-warn/15 px-3 py-2 text-sm">{t(`calendario.push.${status}`)}</p>
+        <p className="ui-alert tone-warn"><TriangleAlert size={16} />{t(`calendario.push.${status}`)}</p>
       )}
 
       {!subscribed && ["idle", "working"].includes(status) && (
-        <button type="button" onClick={subscribe} disabled={status === "working"} className="rounded-full bg-brand px-5 py-3 font-semibold text-brand-ink disabled:opacity-60">
-          {t("calendario.push.enable")}
+        <button type="button" onClick={subscribe} disabled={status === "working"} className="ui-btn ui-btn-block">
+          <BellRing size={17} />{t("calendario.push.enable")}
         </button>
       )}
 
       {subscribed && (
-        <div className="flex flex-col gap-2">
-          <p className="text-sm text-ok">✅ {t("calendario.push.on")}</p>
+        <div className="push-on">
+          <p className="ui-alert tone-ok"><CheckCircle2 size={16} />{t("calendario.push.on")}</p>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={test} className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-brand-ink">
-              {t("calendario.push.test")}
-            </button>
-            <button type="button" onClick={unsubscribe} className="rounded-full border border-border px-4 py-2 text-sm">
-              {t("calendario.push.disable")}
-            </button>
+            <button type="button" onClick={test} className="ui-btn"><Send size={15} />{t("calendario.push.test")}</button>
+            <button type="button" onClick={unsubscribe} className="ui-btn ui-btn-ghost"><BellOff size={15} />{t("calendario.push.disable")}</button>
           </div>
         </div>
       )}
-      {status === "sent" && last && <p className="text-xs text-muted">📨 {last}</p>}
-    </section>
+      {status === "sent" && last && <p className="ui-hint"><Send size={13} />{last}</p>}
+    </Panel>
   );
 }

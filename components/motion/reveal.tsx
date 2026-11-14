@@ -12,6 +12,11 @@ export function Reveal({ children, className = "", delay = 0 }: { children: Reac
       element.dataset.visible = "true";
       return;
     }
+    // lo que ya está en pantalla aparece en el siguiente cuadro, sin esperar al observador
+    if (element.getBoundingClientRect().top < window.innerHeight * 0.92) {
+      const frame = requestAnimationFrame(() => (element.dataset.visible = "true"));
+      return () => cancelAnimationFrame(frame);
+    }
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

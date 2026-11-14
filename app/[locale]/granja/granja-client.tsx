@@ -12,14 +12,17 @@ import { BASELINE_ID, PALETTE, ROTATION_COLOR, evaluateGoals, notableYears, rota
 import { useSimulation } from "@/lib/use-simulation";
 import { SKY_GRADIENT, type Weather } from "@/components/granja/farm-scene";
 import { Celebration, Tutorial, playCoin } from "@/components/granja/overlays";
+import { Reveal } from "@/components/motion/reveal";
+import { CountUp, LoadingOrbit, Meter, PageHeader, Panel } from "@/components/ui/kit";
+import { BarChart3, Brush, Coins, Droplets, Flag, Gamepad2, MapPin, Pause, Play, RotateCcw, SkipBack, Sprout, StepBack, StepForward, Target, Tractor, Volume2, VolumeX, Waves } from "lucide-react";
 
 const FarmScene = dynamic(() => import("@/components/granja/farm-scene"), {
   ssr: false,
-  loading: () => <div className="flex h-full w-full items-center justify-center text-4xl">🚜</div>,
+  loading: () => <div className="farm-scene-loading"><Tractor size={42} /></div>,
 });
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
   ssr: false,
-  loading: () => <div className="h-72 w-full animate-pulse rounded-2xl bg-border" />,
+  loading: () => <div className="map-skeleton ui-skeleton" />,
 });
 
 const fallbackGranja = () => import("@/data/mock_granja.json").then((m) => m.default as unknown as SimulateResponse);
@@ -53,64 +56,49 @@ function ZoneStep() {
   const granja = useGranja();
   const ha = granja.tiles.length * granja.haPerTile;
 
+  const es = useLocale() === "es";
   return (
-    <div className="flex flex-col gap-5">
-      <header>
-        <h1 className="text-2xl font-bold">🎮 {t("granja.title")}</h1>
-        <p className="text-sm text-muted">{t("granja.zoneHint")}</p>
-      </header>
-      <ParcelMap lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} className="h-72" />
-      <p className="text-xs text-muted">
-        📍 {farm.lat.toFixed(4)}, {farm.lon.toFixed(4)}
-      </p>
-
-      <section className="flex flex-col gap-2">
-        <h2 className="font-semibold">{t("granja.size")}</h2>
-        <div className="grid grid-cols-4 gap-2">
-          {FARM_SIZES.map((s) => (
-            <button
-              key={s.ha}
-              type="button"
-              onClick={() => resizeFarm(s.ha)}
-              className={`rounded-xl border px-2 py-3 text-sm font-semibold ${Math.abs(ha - s.ha) < 0.01 ? "border-brand bg-brand text-brand-ink" : "border-border bg-surface"}`}
-            >
-              {s.ha} ha
-              <span className="block text-[11px] font-normal opacity-80">
-                {s.cols * s.rows} {t("granja.tiles")}
-              </span>
+    <div className="ui-page">
+      <PageHeader icon={Gamepad2} kicker={es ? "MODO GRANJA" : "FARM MODE"} title={t("granja.title")} subtitle={t("granja.zoneHint")} />
+      <div className="parcel-layout">
+        <Reveal className="parcel-map-col">
+          <Panel kicker={es ? "PASO 1" : "STEP 1"} icon={MapPin} title={es ? "Elige tu zona" : "Pick your zone"}>
+            <ParcelMap lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} compact />
+          </Panel>
+        </Reveal>
+        <Reveal delay={90}>
+          <Panel kicker={es ? "PASO 2" : "STEP 2"} icon={Tractor} title={t("granja.size")}>
+            <div className="option-cards cols-4">
+              {FARM_SIZES.map((s) => (
+                <button key={s.ha} type="button" onClick={() => resizeFarm(s.ha)} className={`option-card ${Math.abs(ha - s.ha) < 0.01 ? "active" : ""}`}>
+                  <b>{s.ha} ha</b>
+                  <small>{s.cols * s.rows} {t("granja.tiles")}</small>
+                </button>
+              ))}
+            </div>
+            <div className="field-block mt-5">
+              <span className="ui-label"><Droplets size={15} />{t("parcela.water")}</span>
+              <div className="ui-input-wrap">
+                <input type="number" inputMode="numeric" min={0} step={500} value={farm.waterAvailableM3ha} onChange={(e) => setFarm({ waterAvailableM3ha: Number(e.target.value) || 0 })} className="ui-input" />
+                <span>m³/ha</span>
+              </div>
+            </div>
+            <div className="field-block">
+              <span className="ui-label"><Waves size={15} />{t("parcela.irrigation")}</span>
+              <div className="option-cards">
+                {(["gravedad", "aspersion", "goteo"] as const).map((v) => (
+                  <button key={v} type="button" onClick={() => setFarm({ irrigation: v })} className={`option-card ${farm.irrigation === v ? "active" : ""}`}>
+                    <b>{t(`irrigation.${v}`)}</b>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button type="button" onClick={() => setGranja({ zoneSet: true })} className="ui-btn ui-btn-block ui-btn-lg">
+              <Tractor size={20} />{t("granja.build")}
             </button>
-          ))}
-        </div>
-      </section>
-
-      <label className="flex flex-col gap-2">
-        <span className="font-semibold">💧 {t("parcela.water")}</span>
-        <input
-          type="number"
-          inputMode="numeric"
-          min={0}
-          step={500}
-          value={farm.waterAvailableM3ha}
-          onChange={(e) => setFarm({ waterAvailableM3ha: Number(e.target.value) || 0 })}
-          className="rounded-xl border border-border bg-surface px-4 py-3 text-lg"
-        />
-      </label>
-      <div className="grid grid-cols-3 gap-2">
-        {(["gravedad", "aspersion", "goteo"] as const).map((v) => (
-          <button
-            key={v}
-            type="button"
-            onClick={() => setFarm({ irrigation: v })}
-            className={`rounded-xl border px-2 py-3 text-sm font-medium ${farm.irrigation === v ? "border-brand bg-brand text-brand-ink" : "border-border bg-surface"}`}
-          >
-            {t(`irrigation.${v}`)}
-          </button>
-        ))}
+          </Panel>
+        </Reveal>
       </div>
-
-      <button type="button" onClick={() => setGranja({ zoneSet: true })} className="rounded-full bg-brand px-5 py-4 text-lg font-semibold text-brand-ink">
-        🚜 {t("granja.build")}
-      </button>
     </div>
   );
 }
@@ -175,17 +163,20 @@ function Farm() {
     [brush],
   );
 
-  if (!data || !sim) return <p className="animate-pulse py-12 text-center text-muted">🛰️ {t("comparar.loading")}</p>;
+  if (!data || !sim) return <div className="ui-page"><LoadingOrbit label={t("comparar.loading")} /></div>;
 
+  const es = locale === "es";
   const snap = sim.months[month];
   const reservoir = Math.max(0, 1 - snap.waterUsedM3 / Math.max(snap.waterCapacityM3, 1));
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const pct = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 0 });
   const fmtMonth = new Intl.DateTimeFormat(locale, { month: "long" });
+  const fmtShort = new Intl.DateTimeFormat(locale, { month: "narrow" });
   const kinds = snap.events.map((e) => e.kind);
   const weather: Weather = kinds.includes("dry") ? "dry" : kinds.includes("climate_risk") ? "frost" : kinds.includes("water_stress") ? "heat" : "clear";
   const byId = new Map(data.rotations.map((r) => [r.id, r]));
   const sel = selected !== null ? snap.tiles[selected] : null;
+  const won = goals.filter((g) => g.done).length;
 
   const reset = () => {
     setPlaying(false);
@@ -193,9 +184,9 @@ function Farm() {
   };
 
   return (
-    <div className="-mx-4 flex flex-col">
+    <div className="ui-page farm-page">
       {/* escena + HUD */}
-      <div className="relative h-[58vh] min-h-80 w-full overflow-hidden transition-[background] duration-700" style={{ background: SKY_GRADIENT[weather] }}>
+      <div className="farm-stage" style={{ background: SKY_GRADIENT[weather] }}>
         {webgl ? (
           <FarmScene
             cols={granja.cols}
@@ -212,175 +203,133 @@ function Farm() {
           <FlatFarm cols={granja.cols} tiles={snap.tiles} selected={selected} onTap={paint} />
         )}
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start gap-2 p-3 text-sm font-semibold text-[#1f2a1f]">
-          <div className="min-w-36 rounded-2xl bg-white/85 px-3 py-2 shadow-sm backdrop-blur">
-            <div className="flex justify-between gap-2">
-              <span>💧 {t("granja.reservoir")}</span>
-              <span className={reservoir <= 0 ? "text-[#c0392b]" : ""}>{pct.format(reservoir)}</span>
-            </div>
-            <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#d8e6ef]">
-              <div className="h-full rounded-full transition-all duration-700" style={{ width: `${reservoir * 100}%`, background: reservoir < 0.15 ? "#c0392b" : "#2b6cb0" }} />
-            </div>
+        <div className="farm-hud">
+          <div className="hud-card hud-reservoir">
+            <span><Droplets size={14} />{t("granja.reservoir")}<b className={reservoir <= 0.15 ? "is-bad" : ""}>{pct.format(reservoir)}</b></span>
+            <Meter value={reservoir} color={reservoir < 0.15 ? "var(--danger)" : "#5cc8f5"} height={7} />
           </div>
-          <div className="rounded-2xl bg-white/85 px-3 py-2 shadow-sm backdrop-blur">💰 S/ {n.format(snap.incomePEN)}</div>
-          <div className="rounded-2xl bg-white/85 px-3 py-2 shadow-sm backdrop-blur">🌱 {pct.format(sim.summary.soil)}</div>
-          <div className="ml-auto rounded-2xl bg-white/85 px-3 py-2 capitalize shadow-sm backdrop-blur">
-            📅 {fmtMonth.format(new Date(granja.year, month, 1))} {granja.year}
-          </div>
+          <div className="hud-card"><Coins size={14} /><CountUp value={snap.incomePEN} format={(v) => `S/ ${n.format(v)}`} duration={700} /></div>
+          <div className="hud-card"><Sprout size={14} />{pct.format(sim.summary.soil)}</div>
+          <div className="hud-card hud-date"><span className="capitalize">{fmtMonth.format(new Date(granja.year, month, 1))}</span> {granja.year}</div>
+          <button type="button" className="hud-card hud-sound" onClick={() => setGranja((s) => ({ sound: !s.sound }))} aria-label={granja.sound ? (es ? "Silenciar" : "Mute") : (es ? "Activar sonido" : "Sound on")}>
+            {granja.sound ? <Volume2 size={16} /> : <VolumeX size={16} />}
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setGranja((s) => ({ sound: !s.sound }))}
-          aria-label={granja.sound ? "mute" : "sound"}
-          className="absolute right-3 top-16 rounded-full bg-white/85 px-2.5 py-1.5 text-sm shadow-sm"
-        >
-          {granja.sound ? "🔊" : "🔇"}
-        </button>
         {!granja.tutorialDone && <Tutorial onClose={() => setGranja({ tutorialDone: true })} />}
         {granja.lastWon.length > 0 && <Celebration medals={granja.lastWon} onClose={() => setGranja({ lastWon: [] })} />}
 
         {snap.events.length > 0 && (
-          <div className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-col gap-1">
-            {snap.events.map((e) => (
-              <div key={e.kind} className="rounded-xl bg-[#1f2a1f]/85 px-3 py-2 text-sm text-white shadow">
-                {t(`granja.event.${e.kind}`, { n: e.tiles })}
-              </div>
-            ))}
+          <div className="farm-events">
+            {snap.events.map((e) => <div key={`${month}-${e.kind}`} className="farm-event">{t(`granja.event.${e.kind}`, { n: e.tiles })}</div>)}
           </div>
         )}
+
+        {/* línea de meses */}
+        <div className="farm-months">
+          {Array.from({ length: 12 }, (_, m) => (
+            <button key={m} type="button" className={`${m === month ? "active" : ""} ${m < month ? "past" : ""}`} onClick={() => { setPlaying(false); setMonth(m); }} aria-label={fmtMonth.format(new Date(granja.year, m, 1))}>
+              {fmtShort.format(new Date(granja.year, m, 1))}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="flex flex-col gap-4 px-4 pt-4">
-        {/* controles de tiempo */}
-        <section className="flex items-center gap-2">
-          <button type="button" onClick={reset} aria-label={t("granja.reset")} className="h-11 w-11 shrink-0 rounded-full border border-border bg-surface text-lg">
-            ⏮
-          </button>
-          <button type="button" onClick={() => setMonth((m) => Math.max(0, m - 1))} aria-label="-1" className="h-11 w-11 shrink-0 rounded-full border border-border bg-surface text-lg">
-            ◀
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (finished) setMonth(0);
-              setPlaying((p) => !p);
-            }}
-            className="h-11 flex-1 rounded-full bg-brand font-semibold text-brand-ink"
-          >
-            {playing ? `❚❚ ${t("granja.pause")}` : finished ? `↻ ${t("granja.replay")}` : `▶ ${t("granja.play")}`}
-          </button>
-          <button type="button" onClick={() => setMonth((m) => Math.min(11, m + 1))} aria-label="+1" className="h-11 w-11 shrink-0 rounded-full border border-border bg-surface text-lg">
-            ▶
-          </button>
-        </section>
+      {/* controles de tiempo */}
+      <section className="farm-controls">
+        <button type="button" onClick={reset} aria-label={t("granja.reset")} className="time-btn"><SkipBack size={17} /></button>
+        <button type="button" onClick={() => setMonth((m) => Math.max(0, m - 1))} aria-label={es ? "Mes anterior" : "Previous month"} className="time-btn"><StepBack size={17} /></button>
+        <button
+          type="button"
+          onClick={() => {
+            if (finished) setMonth(0);
+            setPlaying((p) => !p);
+          }}
+          className={`ui-btn ui-btn-lg farm-play ${playing ? "is-playing" : ""}`}
+        >
+          {playing ? <><Pause size={18} fill="currentColor" />{t("granja.pause")}</> : finished ? <><RotateCcw size={18} />{t("granja.replay")}</> : <><Play size={18} fill="currentColor" />{t("granja.play")}</>}
+        </button>
+        <button type="button" onClick={() => setMonth((m) => Math.min(11, m + 1))} aria-label={es ? "Mes siguiente" : "Next month"} className="time-btn"><StepForward size={17} /></button>
+      </section>
 
-        {/* año real de NASA */}
-        <section className="flex flex-col gap-1">
-          <span className="text-xs text-muted">{t("granja.yearHint")}</span>
-          <div className="flex gap-1.5 overflow-x-auto pb-1">
-            {years.map((y) => (
-              <button
-                key={y.year}
-                type="button"
-                onClick={() => {
-                  setGranja({ year: y.year });
-                  reset();
-                }}
-                className={`shrink-0 rounded-full border px-3 py-1.5 text-sm tabular-nums ${y.year === granja.year ? "border-brand bg-brand text-brand-ink" : "border-border bg-surface"}`}
-                title={y.tag ? t(`granja.tag.${y.tag}`) : undefined}
-              >
-                {y.tag ? `${TAG_ICON[y.tag]} ` : ""}
-                {y.year}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* paleta */}
-        <section className="flex flex-col gap-2">
-          <div className="flex items-baseline justify-between">
-            <h2 className="font-semibold">🖌️ {t("granja.palette")}</h2>
-            <button type="button" onClick={() => setGranja((s) => ({ tiles: s.tiles.map(() => brush) }))} className="text-xs font-medium text-brand">
-              {t("granja.fillAll")}
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {PALETTE.map((r) => {
-              const res = byId.get(r.id);
-              const active = brush === r.id;
-              return (
+      <div className="farm-grid">
+        <div className="farm-col">
+          <Panel kicker={es ? "AÑO REAL · NASA" : "REAL YEAR · NASA"} icon={Flag} title={es ? "¿Qué año quieres jugar?" : "Which year do you want to play?"}>
+            <p className="ui-hint">{t("granja.yearHint")}</p>
+            <div className="month-chips">
+              {years.map((y) => (
                 <button
-                  key={r.id}
+                  key={y.year}
                   type="button"
-                  onClick={() => setBrush(r.id)}
-                  className={`flex flex-col items-start gap-0.5 rounded-xl border-2 bg-surface px-3 py-2 text-left ${active ? "shadow-md" : "border-transparent"}`}
-                  style={{ borderColor: active ? ROTATION_COLOR[r.id] : undefined }}
+                  onClick={() => {
+                    setGranja({ year: y.year });
+                    reset();
+                  }}
+                  className={y.year === granja.year ? "active" : ""}
+                  title={y.tag ? t(`granja.tag.${y.tag}`) : undefined}
                 >
-                  <span className="text-lg leading-none">{rotationEmoji(r.id)}</span>
-                  <span className="text-xs font-semibold leading-tight">
-                    <span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: ROTATION_COLOR[r.id] }} />
-                    {r.id === "descanso" ? t("granja.fallow") : r.name}
-                  </span>
-                  {res && (
-                    <span className="text-[10px] text-muted">
-                      💧 {n.format(res.water.median)} · 💰 {n.format(res.income.median)}
-                    </span>
-                  )}
+                  {y.tag ? `${TAG_ICON[y.tag]} ` : ""}{y.year}
                 </button>
-              );
-            })}
-          </div>
-          <p className="text-[11px] text-muted">{t("granja.paletteHint")}</p>
-        </section>
-
-        {sel && (
-          <section className="rounded-xl border border-border bg-surface p-3 text-sm">
-            <b>
-              {t("granja.tile")} {selected! + 1}
-            </b>{" "}
-            · {rotationEmoji(sel.rotationId)} {PALETTE.find((p) => p.id === sel.rotationId)?.name} ·{" "}
-            {sel.cropId ? `${cropName(sel.cropId, locale)} (${pct.format(sel.growth)})` : t("granja.fallow")} · {t(`granja.status.${sel.status}`)}
-          </section>
-        )}
-
-        {/* metas */}
-        <section className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
-          <h2 className="font-semibold">🎯 {t("granja.goals")}</h2>
-          {goals.map((g) => (
-            <div key={g.id} className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-sm">
-                <span className={g.done && finished ? "font-semibold" : ""}>
-                  {g.icon} {t(`granja.goal.${g.id}`)}
-                </span>
-                <span>{finished ? (g.done ? "✅" : "—") : granja.badges.includes(g.id) ? "🏅" : ""}</span>
-              </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-background">
-                <div className="h-full rounded-full bg-brand transition-all" style={{ width: `${g.progress * 100}%`, opacity: finished ? 1 : 0.45 }} />
-              </div>
+              ))}
             </div>
-          ))}
-          {!finished && <p className="text-[11px] text-muted">{t("granja.goalsHint")}</p>}
-        </section>
+          </Panel>
 
-        {finished && (
-          <section className="flex flex-col gap-2 rounded-2xl border-2 border-brand bg-surface p-4">
-            <h2 className="text-lg font-bold">🏁 {t("granja.resultTitle", { year: granja.year })}</h2>
-            <ResultRow label={`💧 ${t("comparar.water")} (m³)`} mine={sim.summary.waterM3} base={sim.summary.baseline.waterM3} lowerIsBetter />
-            <ResultRow label={`💰 ${t("comparar.income")} (S/)`} mine={sim.summary.incomePEN} base={sim.summary.baseline.incomePEN} />
-            <p className="text-xs text-muted">{t("granja.resultHint", { ha: n.format(granja.tiles.length * granja.haPerTile) })}</p>
-          </section>
-        )}
-
-        <div className="flex flex-wrap gap-3 pb-2 text-sm">
-          <button type="button" onClick={() => setGranja({ zoneSet: false })} className="rounded-full border border-border px-4 py-2">
-            📍 {t("granja.changeZone")}
-          </button>
-          <Link href={`/${locale}/comparar`} className="rounded-full border border-border px-4 py-2">
-            📊 {t("granja.expert")}
-          </Link>
+          <Panel kicker={es ? "PALETA" : "PALETTE"} icon={Brush} title={t("granja.palette")} actions={<button type="button" onClick={() => setGranja((s) => ({ tiles: s.tiles.map(() => brush) }))} className="ui-btn ui-btn-ghost ui-btn-sm">{t("granja.fillAll")}</button>}>
+            <div className="palette-grid">
+              {PALETTE.map((r) => {
+                const res = byId.get(r.id);
+                const active = brush === r.id;
+                return (
+                  <button key={r.id} type="button" onClick={() => setBrush(r.id)} className={`palette-item ${active ? "active" : ""}`} style={{ "--accent": ROTATION_COLOR[r.id] } as React.CSSProperties}>
+                    <span className="palette-emoji">{rotationEmoji(r.id)}</span>
+                    <b>{r.id === "descanso" ? t("granja.fallow") : r.name}</b>
+                    {res && <small><Droplets size={11} />{n.format(res.water.median)} · <Coins size={11} />{n.format(res.income.median)}</small>}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="ui-hint">{t("granja.paletteHint")}</p>
+            {sel && (
+              <p className="tile-info">
+                <b>{t("granja.tile")} {selected! + 1}</b> · {rotationEmoji(sel.rotationId)} {PALETTE.find((p) => p.id === sel.rotationId)?.name} · {sel.cropId ? `${cropName(sel.cropId, locale)} (${pct.format(sel.growth)})` : t("granja.fallow")} · {t(`granja.status.${sel.status}`)}
+              </p>
+            )}
+          </Panel>
         </div>
-        <p className="pb-2 text-[11px] text-muted">{t("granja.source", { base: PALETTE.find((p) => p.id === BASELINE_ID)?.name ?? "" })}</p>
+
+        <div className="farm-col">
+          <Panel kicker={finished ? `${won}/${goals.length} ${es ? "LOGRADAS" : "ACHIEVED"}` : es ? "JUEGA EL AÑO PARA GANAR" : "PLAY THE YEAR TO WIN"} icon={Target} title={t("granja.goals")}>
+            <ul className="goal-list">
+              {goals.map((g) => {
+                const done = g.done && finished;
+                return (
+                  <li key={g.id} className={done ? "is-done" : ""}>
+                    <span className="goal-icon">{g.icon}</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="goal-top"><span>{t(`granja.goal.${g.id}`)}</span><b>{finished ? (g.done ? "✓" : "—") : granja.badges.includes(g.id) ? "🏅" : `${Math.round(g.progress * 100)}%`}</b></div>
+                      <Meter value={g.progress} color={done ? "var(--brand)" : "rgba(185,255,99,.45)"} height={5} />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            {!finished && <p className="ui-hint">{t("granja.goalsHint")}</p>}
+          </Panel>
+
+          {finished && (
+            <Panel kicker={es ? "FIN DEL AÑO" : "END OF YEAR"} icon={Flag} title={t("granja.resultTitle", { year: granja.year })} className="farm-result">
+              <ResultRow label={`${t("comparar.water")} (m³)`} mine={sim.summary.waterM3} base={sim.summary.baseline.waterM3} lowerIsBetter />
+              <ResultRow label={`${t("comparar.income")} (S/)`} mine={sim.summary.incomePEN} base={sim.summary.baseline.incomePEN} />
+              <p className="ui-hint">{t("granja.resultHint", { ha: n.format(granja.tiles.length * granja.haPerTile) })}</p>
+            </Panel>
+          )}
+
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => setGranja({ zoneSet: false })} className="ui-btn ui-btn-ghost"><MapPin size={15} />{t("granja.changeZone")}</button>
+            <Link href={`/${locale}/comparar`} className="ui-btn ui-btn-ghost"><BarChart3 size={15} />{t("granja.expert")}</Link>
+          </div>
+          <p className="ui-source">{t("granja.source", { base: PALETTE.find((p) => p.id === BASELINE_ID)?.name ?? "" })}</p>
+        </div>
       </div>
     </div>
   );
@@ -393,16 +342,11 @@ function ResultRow({ label, mine, base, lowerIsBetter }: { label: string; mine: 
   const diff = base !== 0 ? (mine - base) / Math.abs(base) : 0;
   const good = lowerIsBetter ? diff < 0 : diff > 0;
   return (
-    <div className="grid grid-cols-[1fr_auto] items-baseline gap-x-3 text-sm">
+    <div className="result-row">
       <span>{label}</span>
-      <span className="font-semibold tabular-nums">{n.format(mine)}</span>
-      <span className="text-xs text-muted">
-        {t("granja.vsBaseline")} {n.format(base)}
-      </span>
-      <span className={`text-xs font-semibold tabular-nums ${good ? "text-ok" : "text-danger"}`}>
-        {diff > 0 ? "+" : ""}
-        {Math.round(diff * 100)}%
-      </span>
+      <strong><CountUp value={mine} format={(v) => n.format(v)} /></strong>
+      <small>{t("granja.vsBaseline")} {n.format(base)}</small>
+      <em className={good ? "is-good" : "is-bad"}>{diff > 0 ? "+" : ""}{Math.round(diff * 100)}%</em>
     </div>
   );
 }
