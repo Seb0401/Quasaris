@@ -11,6 +11,7 @@ import { FARM_SIZES, resizeFarm, setGranja, useGranja } from "@/lib/granja-store
 import { BASELINE_ID, PALETTE, ROTATION_COLOR, evaluateGoals, notableYears, rotationEmoji, simulateYear, type TileState } from "@/lib/granja-sim";
 import { useSimulation } from "@/lib/use-simulation";
 import { SKY_GRADIENT, type Weather } from "@/components/granja/farm-scene";
+import { Celebration, Tutorial, playCoin } from "@/components/granja/overlays";
 
 const FarmScene = dynamic(() => import("@/components/granja/farm-scene"), {
   ssr: false,
@@ -151,8 +152,15 @@ function Farm() {
   useEffect(() => {
     if (!finished || playing) return;
     const won = goals.filter((g) => g.done).map((g) => g.id);
-    if (won.some((g) => !granja.badges.includes(g))) setGranja((s) => ({ badges: Array.from(new Set([...s.badges, ...won])) }));
+    const fresh = won.filter((g) => !granja.badges.includes(g));
+    if (fresh.length) setGranja((s) => ({ badges: Array.from(new Set([...s.badges, ...won])), lastWon: fresh }));
   }, [finished, playing, goals, granja.badges]);
+
+  // sonido de moneda cuando hay cosecha en el mes
+  const harvestCount = sim?.months[month]?.harvests.length ?? 0;
+  useEffect(() => {
+    if (granja.sound && harvestCount > 0 && month > 0) playCoin();
+  }, [month, harvestCount, granja.sound]);
 
   const paint = useCallback(
     (i: number) => {
@@ -220,6 +228,17 @@ function Farm() {
             📅 {fmtMonth.format(new Date(granja.year, month, 1))} {granja.year}
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setGranja((s) => ({ sound: !s.sound }))}
+          aria-label={granja.sound ? "mute" : "sound"}
+          className="absolute right-3 top-16 rounded-full bg-white/85 px-2.5 py-1.5 text-sm shadow-sm"
+        >
+          {granja.sound ? "🔊" : "🔇"}
+        </button>
+        {!granja.tutorialDone && <Tutorial onClose={() => setGranja({ tutorialDone: true })} />}
+        {granja.lastWon.length > 0 && <Celebration medals={granja.lastWon} onClose={() => setGranja({ lastWon: [] })} />}
 
         {snap.events.length > 0 && (
           <div className="pointer-events-none absolute inset-x-3 bottom-3 flex flex-col gap-1">

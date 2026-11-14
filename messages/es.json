@@ -239,6 +239,17 @@
     "resultHint": "Comparado con sembrar alfalfa en todas tus {ha} ha, con el mismo clima real.",
     "changeZone": "Cambiar zona",
     "expert": "Ver datos detallados",
-    "source": "Clima: NASA POWER + SRTM. Agua y dinero por casilla = resultado del motor FAO-56 × área. Referencia: {base}."
+    "source": "Clima: NASA POWER + SRTM. Agua y dinero por casilla = resultado del motor FAO-56 × área. Referencia: {base}.",
+    "tutorial": {
+      "title": "¡Bienvenido a tu granja!",
+      "paint": "Elige una rotación en la paleta y toca las casillas para sembrarla. Todas comparten el agua del reservorio.",
+      "year": "Elige un año real medido por la NASA, por ejemplo 🌵 el más seco.",
+      "play": "Presiona ▶ Jugar el año: mira crecer tus cultivos, bajar el agua y ganar medallas.",
+      "go": "¡A sembrar!"
+    },
+    "celebrate": {
+      "title": "¡Ganaste medallas!",
+      "ok": "Seguir jugando"
+    }
   }
 }

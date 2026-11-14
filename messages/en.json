@@ -239,6 +239,17 @@
     "resultHint": "Compared with planting alfalfa on all your {ha} ha, with the same real weather.",
     "changeZone": "Change area",
     "expert": "See detailed data",
-    "source": "Climate: NASA POWER + SRTM. Water and money per plot = FAO-56 engine result × area. Baseline: {base}."
+    "source": "Climate: NASA POWER + SRTM. Water and money per plot = FAO-56 engine result × area. Baseline: {base}.",
+    "tutorial": {
+      "title": "Welcome to your farm!",
+      "paint": "Pick a rotation in the palette and tap plots to plant it. All plots share the reservoir's water.",
+      "year": "Choose a real year measured by NASA, e.g. 🌵 the driest.",
+      "play": "Press ▶ Play the year: watch crops grow, water drop and earn medals.",
+      "go": "Let's plant!"
+    },
+    "celebrate": {
+      "title": "You earned medals!",
+      "ok": "Keep playing"
+    }
   }
 }
