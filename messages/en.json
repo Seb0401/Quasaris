@@ -73,7 +73,122 @@
     "missing": "What we don't know yet",
     "review": "Check with an expert",
     "months": "Typical year",
-    "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells"
+    "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells",
+    "bestLabel": "With your priorities and your water, the best option is",
+    "pending": "This rotation has no result yet: the FarmTwin engine will calculate it.",
+    "toTimeMachine": "See how they would have done over 20 years"
+  },
+  "charts": {
+    "title": "Quick comparison",
+    "water": "Water",
+    "income": "Income",
+    "score": "Score",
+    "yourWater": "Your water",
+    "note": "The bar is the typical year (median of 20 years) and the black line is the range between good and bad years.",
+    "scoreNote": "Score from 0 to 100 based on your priorities."
+  },
+  "editor": {
+    "open": "Edit",
+    "title": "My rotations",
+    "done": "Done",
+    "name": "Rotation name",
+    "remove": "Remove rotation",
+    "crop": "Crop",
+    "sowMonth": "Sowing month",
+    "removeCrop": "Remove crop",
+    "addCrop": "Add crop",
+    "addRotation": "Add rotation",
+    "reset": "Back to the examples",
+    "note": "Crops are planted in the order of the list. Changes are saved on your phone."
+  },
+  "map": {
+    "layers": "NASA layer",
+    "date": "Date",
+    "legendAlt": "{layer} legend",
+    "layer": {
+      "ndviMonthly": "Vegetation (NDVI)",
+      "ndvi16Day": "Vegetation (16 days)",
+      "smapRootZone": "Soil moisture",
+      "trueColor": "True color",
+      "none": "No layer"
+    },
+    "read": {
+      "ndviMonthly": "Green = active vegetation; brown = bare soil or desert. Monthly average, ~1 km squares.",
+      "ndvi16Day": "Green = active vegetation; brown = bare soil. 16-day average, ~250 m squares.",
+      "smapRootZone": "Yellow and orange = drier soil; green and blue = wetter, at root depth. ~9 km squares: it shows the region, not your field.",
+      "trueColor": "The area as your eye would see it from the MODIS satellite, in ~250 m squares."
+    }
+  },
+  "tiempo": {
+    "title": "Time machine",
+    "subtitle": "How each rotation would have done with the real weather of each year, measured by NASA.",
+    "play": "Play",
+    "pause": "Pause",
+    "year": "Year",
+    "month": "Image month",
+    "mapTitle": "Vegetation in {year}",
+    "cardsTitle": "Each rotation in {year}",
+    "vsNormal": "vs. normal",
+    "frostDays": "Frost days",
+    "heatDays": "Extreme heat days",
+    "overWater": "Not enough water",
+    "stripTitle": "20 years at a glance",
+    "stripHint": "Each row is a year and each square a month. Tap a year to see it."
+  },
+  "aprende": {
+    "title": "What does it mean?",
+    "intro": "The words FarmTwin uses, explained simply.",
+    "exampleLabel": "In Majes",
+    "sourceLabel": "Source",
+    "back": "Back to compare",
+    "et": {
+      "title": "Evapotranspiration (ET)",
+      "text": "The water that soil and plants give back to the air: what evaporates plus what the leaves transpire. More sun, wind and dry air mean more water lost.",
+      "example": "Reference ET is around 5 to 6 mm per day: each hectare loses about 50 to 60 m³ of water daily (approximate value).",
+      "source": "NASA POWER + FAO-56 (Penman-Monteith)"
+    },
+    "kc": {
+      "title": "Crop coefficient (Kc)",
+      "text": "How much water a crop uses compared with a reference grass. It changes with the stage: low at sowing, high at full leaf and lower at maturity.",
+      "example": "Potato at full leaf has a Kc of 1.15: it uses 15% more water than the reference grass.",
+      "source": "FAO-56, table 12"
+    },
+    "ndvi": {
+      "title": "NDVI (greenness)",
+      "text": "An index from 0 to 1 that measures how green and active vegetation is, comparing the red and infrared light it reflects. Near 0 is bare soil; near 1, a dense crop.",
+      "example": "On the map, irrigated fields look green against the brown desert around them.",
+      "source": "NASA MODIS (Terra), via GIBS"
+    },
+    "soilMoisture": {
+      "title": "Soil moisture",
+      "text": "How much water there is in the ground, where roots take it up. The SMAP satellite estimates it from space in squares of about 9 km.",
+      "example": "Since it hardly rains, moisture depends on irrigation: SMAP shows the regional trend, not your exact field.",
+      "source": "NASA SMAP L4"
+    },
+    "waterBalance": {
+      "title": "Water balance",
+      "text": "The water account: what the crop needs minus the rain it can use. Irrigation covers the rest, and part of it is lost depending on the system.",
+      "example": "With furrow irrigation about 45% of the water reaches the plant; with drip, about 90%.",
+      "source": "FAO-56; approximate efficiencies"
+    },
+    "frost": {
+      "title": "Frost risk",
+      "text": "How often the temperature dropped below 0 °C in a given week, counting 20 years of daily minimums. Frost during flowering can ruin a harvest.",
+      "example": "The coldest nights usually come between June and August.",
+      "source": "NASA POWER (minimum temperature at 2 m)"
+    },
+    "range": {
+      "title": "Range: good and bad years",
+      "text": "Instead of a single number, FarmTwin shows what happened in real years: the middle value and the range where 8 out of 10 years fell.",
+      "example": "\"14,000 m³/ha, range 12,500 – 15,800\" means that in 8 out of 10 years the rotation needed between those amounts.",
+      "source": "FarmTwin calculation with NASA POWER 2005–2025"
+    },
+    "satGround": {
+      "title": "Satellite and ground measurements",
+      "text": "Satellites see the whole territory every day but average large areas. A ground station measures precisely, but only at its spot. Together they give coverage and confidence.",
+      "example": "That is why NASA POWER weather is checked against a nearby SENAMHI station.",
+      "source": "NASA POWER and SENAMHI"
+    }
   },
   "month": {
     "ok": "Good",

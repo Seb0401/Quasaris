@@ -5,6 +5,7 @@ import "../globals.css";
 import { I18nProvider } from "@/components/i18n-provider";
 import { AppNav } from "@/components/app-nav";
 import { SwRegister } from "@/components/sw-register";
+import { OfflineBanner } from "@/components/offline-banner";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -40,6 +41,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <body className="min-h-full flex flex-col font-sans">
         <I18nProvider locale={locale}>
           <AppNav />
+          <OfflineBanner />
           <main className="flex-1 w-full max-w-3xl mx-auto px-4 pt-4 pb-28">{children}</main>
           <SwRegister />
         </I18nProvider>

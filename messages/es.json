@@ -73,7 +73,122 @@
     "missing": "Qué falta saber",
     "review": "Qué revisar con un experto",
     "months": "Año típico",
-    "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER"
+    "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER",
+    "bestLabel": "Con tus prioridades y tu agua, la mejor opción es",
+    "pending": "Esta rotación aún no tiene resultado: la calculará el motor de FarmTwin.",
+    "toTimeMachine": "Ver cómo les habría ido en 20 años"
+  },
+  "charts": {
+    "title": "Comparación rápida",
+    "water": "Agua",
+    "income": "Ingreso",
+    "score": "Puntaje",
+    "yourWater": "Tu agua",
+    "note": "La barra es el año típico (mediana de 20 años) y la línea negra, el rango entre años buenos y malos.",
+    "scoreNote": "Puntaje de 0 a 100 según tus prioridades."
+  },
+  "editor": {
+    "open": "Editar",
+    "title": "Mis rotaciones",
+    "done": "Listo",
+    "name": "Nombre de la rotación",
+    "remove": "Quitar rotación",
+    "crop": "Cultivo",
+    "sowMonth": "Mes de siembra",
+    "removeCrop": "Quitar cultivo",
+    "addCrop": "Agregar cultivo",
+    "addRotation": "Agregar rotación",
+    "reset": "Volver a las de ejemplo",
+    "note": "Los cultivos se siembran en el orden de la lista. Los cambios se guardan en tu teléfono."
+  },
+  "map": {
+    "layers": "Capa de la NASA",
+    "date": "Fecha",
+    "legendAlt": "Leyenda de {layer}",
+    "layer": {
+      "ndviMonthly": "Vegetación (NDVI)",
+      "ndvi16Day": "Vegetación (16 días)",
+      "smapRootZone": "Humedad del suelo",
+      "trueColor": "Color real",
+      "none": "Sin capa"
+    },
+    "read": {
+      "ndviMonthly": "Verde = vegetación activa; marrón = suelo desnudo o desierto. Promedio del mes, cuadros de ~1 km.",
+      "ndvi16Day": "Verde = vegetación activa; marrón = suelo desnudo. Promedio de 16 días, cuadros de ~250 m.",
+      "smapRootZone": "Amarillo y naranja = suelo más seco; verde y azul = más húmedo, a la profundidad de las raíces. Cuadros de ~9 km: muestra la región, no tu parcela.",
+      "trueColor": "La zona como la vería tu ojo desde el satélite MODIS, con cuadros de ~250 m."
+    }
+  },
+  "tiempo": {
+    "title": "Máquina del tiempo",
+    "subtitle": "Así le habría ido a cada rotación con el clima real de cada año, medido por la NASA.",
+    "play": "Reproducir",
+    "pause": "Pausa",
+    "year": "Año",
+    "month": "Mes de la imagen",
+    "mapTitle": "Vegetación en {year}",
+    "cardsTitle": "Cada rotación en {year}",
+    "vsNormal": "vs. lo normal",
+    "frostDays": "Días de helada",
+    "heatDays": "Días de calor extremo",
+    "overWater": "No alcanzó el agua",
+    "stripTitle": "20 años de un vistazo",
+    "stripHint": "Cada fila es un año y cada cuadro, un mes. Toca un año para verlo."
+  },
+  "aprende": {
+    "title": "¿Qué significa?",
+    "intro": "Las palabras que usa FarmTwin, explicadas en simple.",
+    "exampleLabel": "En Majes",
+    "sourceLabel": "Fuente",
+    "back": "Volver a comparar",
+    "et": {
+      "title": "Evapotranspiración (ET)",
+      "text": "Es el agua que el suelo y las plantas devuelven al aire: lo que se evapora más lo que transpiran las hojas. Más sol, viento y aire seco significan más agua perdida.",
+      "example": "La ET de referencia ronda los 5 a 6 mm por día: cada hectárea pierde unos 50 a 60 m³ de agua diarios (valor aproximado).",
+      "source": "NASA POWER + FAO-56 (Penman-Monteith)"
+    },
+    "kc": {
+      "title": "Coeficiente de cultivo (Kc)",
+      "text": "Dice cuánta agua usa un cultivo comparado con un pasto de referencia. Cambia con la etapa: bajo al sembrar, alto en plena hoja y menor al madurar.",
+      "example": "La papa en plena hoja tiene un Kc de 1,15: usa 15 % más agua que el pasto de referencia.",
+      "source": "FAO-56, tabla 12"
+    },
+    "ndvi": {
+      "title": "NDVI (verdor)",
+      "text": "Un índice de 0 a 1 que mide qué tan verde y activa está la vegetación, comparando la luz roja y la infrarroja que refleja. Cerca de 0 es suelo desnudo; cerca de 1, cultivo denso.",
+      "example": "En el mapa, las parcelas regadas se ven verdes frente al desierto marrón que las rodea.",
+      "source": "NASA MODIS (Terra), vía GIBS"
+    },
+    "soilMoisture": {
+      "title": "Humedad del suelo",
+      "text": "Cuánta agua hay en la tierra, donde la toman las raíces. El satélite SMAP la estima desde el espacio en cuadros de unos 9 km.",
+      "example": "Como casi no llueve, la humedad depende del riego: SMAP sirve para ver la tendencia de la región, no tu parcela exacta.",
+      "source": "NASA SMAP L4"
+    },
+    "waterBalance": {
+      "title": "Balance hídrico",
+      "text": "La cuenta del agua: lo que el cultivo necesita menos la lluvia que aprovecha. Lo que falta se cubre con riego, y una parte se pierde según el sistema.",
+      "example": "Con riego por gravedad llega a la planta cerca del 45 % del agua; con goteo, cerca del 90 %.",
+      "source": "FAO-56; eficiencias aproximadas"
+    },
+    "frost": {
+      "title": "Riesgo de helada",
+      "text": "Qué tan seguido la temperatura bajó de 0 °C en una semana, contando 20 años de mínimas diarias. Una helada en floración puede arruinar la cosecha.",
+      "example": "Las noches más frías suelen darse entre junio y agosto.",
+      "source": "NASA POWER (temperatura mínima a 2 m)"
+    },
+    "range": {
+      "title": "Rango: años buenos y malos",
+      "text": "En vez de un solo número, FarmTwin muestra lo que pasó en los años reales: el valor del medio y el rango donde cayeron 8 de cada 10 años.",
+      "example": "\"14 000 m³/ha, rango 12 500 – 15 800\" quiere decir que 8 de cada 10 años la rotación necesitó entre esas cifras.",
+      "source": "Cálculo de FarmTwin con NASA POWER 2005–2025"
+    },
+    "satGround": {
+      "title": "Satélite y medición en tierra",
+      "text": "El satélite ve todo el territorio cada día, pero promedia áreas grandes. Una estación en tierra mide con precisión, pero solo en su punto. Juntos dan cobertura y confianza.",
+      "example": "Por eso el clima de NASA POWER se valida con una estación del SENAMHI de la zona.",
+      "source": "NASA POWER y SENAMHI"
+    }
   },
   "month": {
     "ok": "Bien",

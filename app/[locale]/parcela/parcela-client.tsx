@@ -6,6 +6,8 @@ import { useState } from "react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { setFarm, useFarm } from "@/lib/farm-store";
 import type { Irrigation, Priorities, SoilTexture } from "@/lib/contract";
+import { LayerSwitcher, MapLegend } from "@/components/map/layer-controls";
+import { GIBS_LAYERS, layerTime, type GibsLayerKey } from "@/lib/gibs";
 
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
   ssr: false,
@@ -43,6 +45,10 @@ export function ParcelaClient() {
   const locale = useLocale();
   const farm = useFarm();
   const [locating, setLocating] = useState(false);
+  const [layer, setLayer] = useState<GibsLayerKey | null>("ndviMonthly");
+  const [month, setMonth] = useState("2025-09"); // septiembre: mayor contraste entre parcelas regadas y desierto
+  const [y, mo] = month.split("-").map(Number);
+  const time = layer ? layerTime(GIBS_LAYERS[layer], y, mo) : "";
 
   const locate = () => {
     if (!navigator.geolocation) return;
@@ -69,10 +75,27 @@ export function ParcelaClient() {
             📍 {t("parcela.locate")}
           </button>
         </div>
-        <ParcelMap lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} />
-        <p className="text-xs text-muted">
-          {t("parcela.selected")}: {farm.lat.toFixed(4)}, {farm.lon.toFixed(4)} · {t("parcela.ndvi")}
-        </p>
+        <LayerSwitcher value={layer} onChange={setLayer} />
+        <ParcelMap lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} layer={layer} time={time} />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-xs text-muted">
+            {t("parcela.selected")}: {farm.lat.toFixed(4)}, {farm.lon.toFixed(4)}
+          </p>
+          {layer && (
+            <label className="flex items-center gap-2 text-sm">
+              <span className="text-muted">{t("map.date")}</span>
+              <input
+                type="month"
+                min="2000-03"
+                max="2026-10"
+                value={month}
+                onChange={(e) => e.target.value && setMonth(e.target.value)}
+                className="rounded-lg border border-border bg-surface px-2 py-1"
+              />
+            </label>
+          )}
+        </div>
+        <MapLegend layer={layer} time={time} />
       </section>
 
       <section className="flex flex-col gap-5 rounded-2xl bg-surface border border-border p-4">

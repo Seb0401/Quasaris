@@ -1,5 +1,5 @@
-import { ComingSoon } from "@/components/coming-soon";
+import { TiempoClient } from "./tiempo-client";
 
-export default function Page({ params }: PageProps<"/[locale]/tiempo">) {
-  return <ComingSoon params={params} section="tiempo" icon="🕰️" owner="Flujo B · agente B4" />;
+export default function TiempoPage() {
+  return <TiempoClient />;
 }

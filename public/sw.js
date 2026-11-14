@@ -3,8 +3,9 @@
  * - Estáticos (_next/static, íconos, teselas GIBS): caché primero.
  * - /api/*: siempre red (el cliente guarda su propio respaldo en localStorage).
  */
-const VERSION = "farmtwin-v1";
-const SHELL = ["/es", "/en", "/es/parcela", "/es/comparar", "/en/parcela", "/en/comparar", "/manifest.webmanifest"];
+const VERSION = "farmtwin-v2";
+const PAGES = ["", "/parcela", "/comparar", "/tiempo", "/aprende"];
+const SHELL = [...["es", "en"].flatMap((l) => PAGES.map((p) => `/${l}${p}`)), "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
