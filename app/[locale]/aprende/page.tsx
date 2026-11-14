@@ -1,18 +1,19 @@
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { BookOpen, ChartColumn, Mountain, RadioTower } from "lucide-react";
+import { CycleIcon, EvapoIcon, FrostIcon, GrowingIcon, SatelliteIcon, SoilIcon, WaterIcon } from "@/components/icons/farm-icons";
 import { getMessages } from "@/lib/i18n";
 
 const TOPICS = [
-  { id: "et", icon: "💧" },
-  { id: "kc", icon: "🌱" },
-  { id: "balance", icon: "🚿" },
-  { id: "ndvi", icon: "🛰️" },
-  { id: "soil", icon: "🟫" },
-  { id: "frost", icon: "❄️" },
-  { id: "fusion", icon: "⛰️" },
-  { id: "ground", icon: "📡" },
-  { id: "range", icon: "📊" },
-  { id: "rotation", icon: "🔄" },
+  { id: "et", Icon: EvapoIcon },
+  { id: "kc", Icon: GrowingIcon },
+  { id: "balance", Icon: WaterIcon },
+  { id: "ndvi", Icon: SatelliteIcon },
+  { id: "soil", Icon: SoilIcon },
+  { id: "frost", Icon: FrostIcon },
+  { id: "fusion", Icon: Mountain },
+  { id: "ground", Icon: RadioTower },
+  { id: "range", Icon: ChartColumn },
+  { id: "rotation", Icon: CycleIcon },
 ] as const;
 
 type Topic = { title: string; text: string; how: string; source: string };
@@ -37,7 +38,7 @@ export default async function AprendePage({ params }: PageProps<"/[locale]/apren
       <nav className="flex flex-wrap gap-2" aria-label={a.title}>
         {TOPICS.map((tp) => (
           <a key={tp.id} href={`#${tp.id}`} className="rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
-            {tp.icon} {a.topics[tp.id].title}
+            <tp.Icon size={15} className="mr-1 inline" /> {a.topics[tp.id].title}
           </a>
         ))}
       </nav>
@@ -48,8 +49,8 @@ export default async function AprendePage({ params }: PageProps<"/[locale]/apren
           return (
             <article key={tp.id} id={tp.id} className="flex scroll-mt-24 flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
               <h2 className="flex items-center gap-2 text-lg font-semibold">
-                <span className="text-2xl" aria-hidden>
-                  {tp.icon}
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-background text-brand">
+                  <tp.Icon size={22} />
                 </span>
                 {topic.title}
               </h2>

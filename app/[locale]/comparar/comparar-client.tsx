@@ -5,7 +5,8 @@ import { useLocale, useT } from "@/components/i18n-provider";
 import { RotationCard } from "@/components/cards/rotation-card";
 import { useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
-import { BarChart3, FlaskConical, LoaderCircle, Satellite } from "lucide-react";
+import { BarChart3, FlaskConical, LoaderCircle, Pencil, Satellite } from "lucide-react";
+import { SoilIcon } from "@/components/icons/farm-icons";
 import { Reveal } from "@/components/motion/reveal";
 
 export function CompararClient() {
@@ -25,11 +26,11 @@ export function CompararClient() {
       <header className="section-hero"><div><span className="panel-kicker"><BarChart3 size={16} /> QUASARIS / {locale === "es" ? "ESCENARIOS" : "SCENARIOS"}</span><h1>{t("comparar.title")}</h1><p>{t("comparar.source", { from: data.source.period[0], to: data.source.period[1] })}</p></div></header>
       <div className="compare-intro mt-4">
         <Link href={`/${locale}/rotaciones`} className="mb-2 inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-sm font-medium">
-          ✏️ {t("rotaciones.edit")}
+          <Pencil size={14} /> {t("rotaciones.edit")}
         </Link>
         {data.source.rootZoneWetness && (
           <p>
-            🟫{" "}
+            <SoilIcon size={14} className="mr-1 inline" />
             {t("comparar.soilWetness", {
               pct: `${Math.round((data.source.rootZoneWetness.reduce((a, b) => a + b, 0) / 12) * 100)}%`,
               min: `${Math.round(Math.min(...data.source.rootZoneWetness) * 100)}%`,

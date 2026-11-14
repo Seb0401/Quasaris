@@ -2,7 +2,8 @@
 
 import { useT } from "@/components/i18n-provider";
 
-const GOAL_ICON: Record<string, string> = { waterFits: "💧", save20: "🏅", healthySoil: "🌱", coveredSoil: "🛡️", beatIncome: "💰", diversity: "🔄" };
+import { GOAL_ICON, TrophyIcon } from "@/components/icons/farm-icons";
+import { Sprout } from "lucide-react";
 
 export function Tutorial({ onClose }: { onClose: () => void }) {
   const t = useT();
@@ -10,7 +11,9 @@ export function Tutorial({ onClose }: { onClose: () => void }) {
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]">
       <div className="flex max-w-sm flex-col gap-3 rounded-3xl bg-white p-5 text-[#1f2a1f] shadow-xl">
-        <h2 className="text-xl font-bold">👋 {t("granja.tutorial.title")}</h2>
+        <h2 className="flex items-center gap-2 text-xl font-bold">
+          <Sprout size={22} className="text-[#2f6b3a]" /> {t("granja.tutorial.title")}
+        </h2>
         <ol className="flex flex-col gap-2 text-sm">
           {steps.map((s, i) => (
             <li key={s} className="flex gap-3">
@@ -46,12 +49,16 @@ export function Celebration({ medals, onClose }: { medals: string[]; onClose: ()
         />
       ))}
       <div className="relative flex max-w-sm flex-col items-center gap-3 rounded-3xl bg-white p-6 text-center text-[#1f2a1f] shadow-xl">
-        <div className="text-5xl">🏆</div>
+        <TrophyIcon size={56} className="text-[#7a5a10]" />
         <h2 className="text-xl font-bold">{t("granja.celebrate.title")}</h2>
         <div className="flex flex-wrap justify-center gap-2">
           {medals.map((m) => (
             <span key={m} className="rounded-full bg-[#fff4d6] px-3 py-1 text-sm font-semibold">
-              {GOAL_ICON[m]} {t(`granja.goal.${m}`)}
+              {(() => {
+                const G = GOAL_ICON[m];
+                return G ? <G size={15} className="mr-1 inline" /> : null;
+              })()}
+              {t(`granja.goal.${m}`)}
             </span>
           ))}
         </div>

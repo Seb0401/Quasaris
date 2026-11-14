@@ -25,7 +25,7 @@
     "futureTitle": "Futuro",
     "futureText": "Tu calendario de siembra con avisos de helada y calor para tus cultivos.",
     "disclaimer": "FarmTwin apoya tu decisión; no reemplaza tu criterio ni el de tu técnico agrario.",
-    "farmMode": "🎮 Modo granja",
+    "farmMode": "Modo granja",
     "farmModeText": "Tu chacra en 3D: siembra por casillas, juega un año real de la NASA y gana medallas."
   },
   "parcela": {
@@ -182,15 +182,15 @@
     "soilRow": "Humedad natural del suelo (NASA POWER)"
   },
   "alerts": {
-    "frostTitle": "❄️ Riesgo de helada para tu {crop}",
+    "frostTitle": "Riesgo de helada para tu {crop}",
     "frostBody": "En {p} de los últimos años hubo helada en estas semanas. Tu cultivo está en {stage}: revisa cómo protegerlo.",
-    "heatTitle": "🔥 Calor extremo para tu {crop}",
+    "heatTitle": "Calor extremo para tu {crop}",
     "heatBody": "En {p} de los últimos años hubo calor extremo en estas semanas ({stage}). Ajusta el riego.",
-    "harvestTitle": "🌾 Se acerca la cosecha de tu {crop}",
+    "harvestTitle": "Se acerca la cosecha de tu {crop}",
     "harvestBody": "Faltan unos {days} días. Planifica la cosecha y el siguiente cultivo de tu rotación.",
-    "waterTitle": "💧 Tu semana: {crops}",
+    "waterTitle": "Tu semana: {crops}",
     "waterBody": "Riego estimado: {m3} m³/ha en 7 días (ET0 {et0} mm/día, NASA POWER). Sin riesgo de helada ni calor.",
-    "bareTitle": "⬜ Campo desnudo esta semana",
+    "bareTitle": "Campo desnudo esta semana",
     "bareBody": "Buen momento para preparar el suelo o sembrar un cultivo de cobertura."
   },
   "granja": {
@@ -204,7 +204,7 @@
     "pause": "Pausa",
     "replay": "Otra vez",
     "reset": "Volver a enero",
-    "yearHint": "Elige un año real medido por la NASA (🌵 el más seco, ❄️ con heladas, 🔥 con calor):",
+    "yearHint": "Elige un año real medido por la NASA. Los años marcados fueron el más seco, con heladas o con calor:",
     "tag": {
       "driest": "El año más seco",
       "frost": "Hubo heladas",
@@ -224,9 +224,9 @@
       "bare": "descansando"
     },
     "event": {
-      "dry": "🌵 ¡Se acabó el agua del reservorio! {n} casillas se secan.",
-      "climate_risk": "❄️ Clima extremo este mes en {n} casillas (dato NASA POWER).",
-      "water_stress": "🌡️ Mes de alta demanda: {n} casillas piden más agua que tu cuota mensual."
+      "dry": "¡Se acabó el agua del reservorio! {n} casillas se secan.",
+      "climate_risk": "Clima extremo este mes en {n} casillas (dato NASA POWER).",
+      "water_stress": "Mes de alta demanda: {n} casillas piden más agua que tu cuota mensual."
     },
     "goals": "Metas del año",
     "goalsHint": "Juega el año completo para ganar las medallas.",
@@ -247,8 +247,8 @@
     "tutorial": {
       "title": "¡Bienvenido a tu granja!",
       "paint": "Elige una rotación en la paleta y toca las casillas para sembrarla. Todas comparten el agua del reservorio.",
-      "year": "Elige un año real medido por la NASA, por ejemplo 🌵 el más seco.",
-      "play": "Presiona ▶ Jugar el año: mira crecer tus cultivos, bajar el agua y ganar medallas.",
+      "year": "Elige un año real medido por la NASA, por ejemplo el más seco.",
+      "play": "Presiona Jugar el año: mira crecer tus cultivos, bajar el agua y ganar medallas.",
       "go": "¡A sembrar!"
     },
     "celebrate": {
@@ -281,10 +281,10 @@
       }
     },
     "tab": {
-      "sow": "🌱 Sembrar",
-      "climate": "🌦️ Clima",
-      "whatif": "🧪 ¿Y si…?",
-      "goals": "🎯 Metas"
+      "sow": "Sembrar",
+      "climate": "Clima",
+      "whatif": "¿Y si…?",
+      "goals": "Metas"
     },
     "mode": {
       "paint": "Pintar",

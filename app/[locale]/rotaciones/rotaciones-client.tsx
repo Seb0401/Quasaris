@@ -5,7 +5,7 @@ import { useLocale, useT } from "@/components/i18n-provider";
 import type { Rotation } from "@/lib/contract";
 import { CROPS, MONTH_START, cropName, cropSegments } from "@/lib/crop-calendar";
 import { setFarm, useFarm } from "@/lib/farm-store";
-import { CROP_EMOJI } from "@/lib/granja-sim";
+import { Pencil, Star, Trash2, TriangleAlert, X } from "lucide-react";
 import { MAX_CROPS, MAX_ROTATIONS, bareMonths, newRotationId, overlapDays } from "@/lib/rotation-utils";
 
 const FAMILY_COLOR: Record<string, string> = { leguminosa: "var(--brand)", solanacea: "var(--soil)", aliacea: "#9b6bc4", graminea: "var(--warn)" };
@@ -28,7 +28,9 @@ export function RotacionesClient() {
   return (
     <div className="flex flex-col gap-5">
       <header>
-        <h1 className="text-2xl font-bold">✏️ {t("rotaciones.title")}</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold">
+          <Pencil size={22} className="text-brand" /> {t("rotaciones.title")}
+        </h1>
         <p className="text-sm text-muted">{t("rotaciones.subtitle")}</p>
       </header>
 
@@ -45,10 +47,10 @@ export function RotacionesClient() {
                 className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2 font-semibold"
               />
               {r.isCurrent ? (
-                <span className="shrink-0 rounded-full bg-soil/15 px-2 py-1 text-xs font-semibold text-soil">★ {t("comparar.current")}</span>
+                <span className="shrink-0 rounded-full bg-soil/15 px-2 py-1 text-xs font-semibold text-soil"><Star size={12} className="mr-0.5 inline fill-current" /> {t("comparar.current")}</span>
               ) : (
                 <button type="button" onClick={() => setCurrent(r.id)} className="shrink-0 rounded-full border border-border px-2 py-1 text-xs">
-                  ★ {t("rotaciones.makeCurrent")}
+                  <Star size={12} className="mr-0.5 inline" /> {t("rotaciones.makeCurrent")}
                 </button>
               )}
             </div>
@@ -84,7 +86,7 @@ export function RotacionesClient() {
                   >
                     {Object.keys(CROPS).map((id) => (
                       <option key={id} value={id}>
-                        {CROP_EMOJI[id] ?? "🌱"} {cropName(id, locale)}
+                        {cropName(id, locale)}
                       </option>
                     ))}
                   </select>
@@ -107,7 +109,7 @@ export function RotacionesClient() {
                     aria-label={t("rotaciones.removeCrop")}
                     className="h-9 w-9 rounded-full border border-border text-sm"
                   >
-                    ✕
+                    <X size={15} className="mx-auto" />
                   </button>
                 </div>
               ))}
@@ -122,12 +124,14 @@ export function RotacionesClient() {
               )}
             </div>
 
-            {overlap > 0 && <p className="rounded-lg bg-warn/15 px-3 py-2 text-xs">⚠️ {t("rotaciones.overlap", { days: overlap })}</p>}
-            {bare.length > 0 && r.crops.length > 0 && <p className="text-xs text-muted">⬜ {t("rotaciones.bare", { n: bare.length })}</p>}
+            {overlap > 0 && <p className="flex items-center gap-1.5 rounded-lg bg-warn/15 px-3 py-2 text-xs">
+                <TriangleAlert size={14} /> {t("rotaciones.overlap", { days: overlap })}
+              </p>}
+            {bare.length > 0 && r.crops.length > 0 && <p className="text-xs text-muted">{t("rotaciones.bare", { n: bare.length })}</p>}
 
             {!r.isCurrent && farm.rotations.length > 1 && (
               <button type="button" onClick={() => remove(r.id)} className="self-end text-xs text-danger">
-                🗑 {t("rotaciones.delete")}
+                <Trash2 size={13} className="mr-1 inline" /> {t("rotaciones.delete")}
               </button>
             )}
           </article>

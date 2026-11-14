@@ -6,6 +6,8 @@ import { PushCard } from "@/components/calendar/push-card";
 import type { ClimateResponse } from "@/lib/contract";
 import { CROPS, MONTH_START, cropName, cropSegments, dayOfYear, weekOutlook } from "@/lib/crop-calendar";
 import { useFarm } from "@/lib/farm-store";
+import { Check, LoaderCircle, Star } from "lucide-react";
+import { CalendarIcon, FallowIcon, FrostIcon, HeatIcon, SoilIcon, WaterIcon } from "@/components/icons/farm-icons";
 import { useToday } from "@/lib/use-today";
 
 const ENGINE_URL = process.env.NEXT_PUBLIC_ENGINE_URL ?? "";
@@ -69,7 +71,9 @@ export function CalendarioClient() {
   return (
     <div className="flex flex-col gap-5">
       <header>
-        <h1 className="text-2xl font-bold">📅 {t("calendario.title")}</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold">
+          <CalendarIcon size={24} /> {t("calendario.title")}
+        </h1>
         <p className="text-sm text-muted">{t("calendario.subtitle")}</p>
       </header>
 
@@ -81,7 +85,8 @@ export function CalendarioClient() {
             onClick={() => setRotationId(r.id)}
             className={`shrink-0 rounded-full border px-3 py-1.5 text-sm ${r.id === rotation?.id ? "border-brand bg-brand text-brand-ink" : "border-border bg-surface"}`}
           >
-            {r.isCurrent ? `★ ${r.name}` : r.name}
+            {r.isCurrent && <Star size={12} className="mr-1 inline fill-current" />}
+            {r.name}
           </button>
         ))}
       </div>
@@ -92,9 +97,13 @@ export function CalendarioClient() {
           {t("calendario.thisWeek")} · <span className="font-normal text-muted">{now ? fmtDay.format(now) : ""}</span>
         </h2>
         {!outlook ? (
-          <p className="animate-pulse text-sm text-muted">🛰️ {t("comparar.loading")}</p>
+          <p className="flex items-center gap-2 text-sm text-muted">
+            <LoaderCircle size={15} className="animate-spin" /> {t("comparar.loading")}
+          </p>
         ) : outlook.active.length === 0 ? (
-          <p className="text-sm">⬜ {t("calendario.bareNow")}</p>
+          <p className="flex items-center gap-2 text-sm">
+            <FallowIcon /> {t("calendario.bareNow")}
+          </p>
         ) : (
           <>
             {outlook.active.map((c) => (
@@ -107,14 +116,24 @@ export function CalendarioClient() {
                   </div>
                 </div>
                 <div className="text-right text-xs">
-                  {c.pFrost > 0 && <div className="text-sky">❄️ {pct.format(c.pFrost)}</div>}
-                  {c.pHeat > 0 && <div className="text-danger">🔥 {pct.format(c.pHeat)}</div>}
-                  {c.pFrost === 0 && c.pHeat === 0 && <div className="text-ok">✓ {t("calendario.noClimateRisk")}</div>}
+                  {c.pFrost > 0 && (
+                    <div className="flex items-center gap-1 text-sky">
+                      <FrostIcon size={14} /> {pct.format(c.pFrost)}
+                    </div>
+                  )}
+                  {c.pHeat > 0 && (
+                    <div className="flex items-center gap-1 text-danger">
+                      <HeatIcon size={14} /> {pct.format(c.pHeat)}
+                    </div>
+                  )}
+                  {c.pFrost === 0 && c.pHeat === 0 && <div className="flex items-center gap-1 text-ok">
+                      <Check size={13} /> {t("calendario.noClimateRisk")}
+                    </div>}
                 </div>
               </div>
             ))}
             <p className="text-sm">
-              💧 {t("calendario.waterWeek", { m3: n.format(outlook.waterM3ha), et0: outlook.et0Mm.toFixed(1) })}
+              <WaterIcon size={16} className="mr-1 inline" /> {t("calendario.waterWeek", { m3: n.format(outlook.waterM3ha), et0: outlook.et0Mm.toFixed(1) })}
             </p>
           </>
         )}
@@ -158,12 +177,16 @@ export function CalendarioClient() {
 
           {climate && (
             <>
-              <Row label={`❄️ ${t("calendario.frostRow")}`} values={climate.weeks.map((w) => heat(w.pFrost, "var(--sky)"))} empty={!anyFrost ? t("calendario.never") : undefined} />
-              <Row label={`🔥 ${t("calendario.heatRow")}`} values={climate.weeks.map((w) => heat(w.pHeat, "var(--danger)"))} empty={!anyHeat ? t("calendario.never") : undefined} />
-              <Row label={`💧 ${t("calendario.et0Row")}`} values={climate.weeks.map((w) => heat(w.et0MeanMm / maxEt0, "var(--sky)"))} />
+              <Row label={t("calendario.frostRow")}
+                icon={<FrostIcon size={14} />} values={climate.weeks.map((w) => heat(w.pFrost, "var(--sky)"))} empty={!anyFrost ? t("calendario.never") : undefined} />
+              <Row label={t("calendario.heatRow")}
+                icon={<HeatIcon size={14} />} values={climate.weeks.map((w) => heat(w.pHeat, "var(--danger)"))} empty={!anyHeat ? t("calendario.never") : undefined} />
+              <Row label={t("calendario.et0Row")}
+                icon={<WaterIcon size={14} />} values={climate.weeks.map((w) => heat(w.et0MeanMm / maxEt0, "var(--sky)"))} />
               {climate.weeks[0]?.soilWetness !== undefined && (
                 <Row
-                  label={`🟫 ${t("calendario.soilRow")}`}
+                  label={t("calendario.soilRow")}
+                  icon={<SoilIcon size={14} />}
                   values={climate.weeks.map((w) => heat(Math.max(0, Math.min(1, ((w.soilWetness ?? 0.3) - 0.3) / 0.4)), "var(--brand)"))}
                 />
               )}
@@ -185,10 +208,11 @@ export function CalendarioClient() {
   );
 }
 
-function Row({ label, values, empty }: { label: string; values: string[]; empty?: string }) {
+function Row({ label, values, empty, icon }: { label: string; values: string[]; empty?: string; icon?: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-xs text-muted">
+      <span className="flex items-center gap-1 text-xs text-muted">
+        {icon}
         {label}
         {empty && <span className="ml-1 text-ok">· {empty}</span>}
       </span>

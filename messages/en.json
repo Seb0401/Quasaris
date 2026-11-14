@@ -25,7 +25,7 @@
     "futureTitle": "Future",
     "futureText": "Your planting calendar with frost and heat alerts for your crops.",
     "disclaimer": "FarmTwin supports your decision; it does not replace your judgment or your local agronomist.",
-    "farmMode": "🎮 Farm mode",
+    "farmMode": "Farm mode",
     "farmModeText": "Your farm in 3D: plant plot by plot, play a real NASA year and earn medals."
   },
   "parcela": {
@@ -182,15 +182,15 @@
     "soilRow": "Natural soil moisture (NASA POWER)"
   },
   "alerts": {
-    "frostTitle": "❄️ Frost risk for your {crop}",
+    "frostTitle": "Frost risk for your {crop}",
     "frostBody": "In {p} of recent years there was frost in these weeks. Your crop is in {stage}: check how to protect it.",
-    "heatTitle": "🔥 Extreme heat for your {crop}",
+    "heatTitle": "Extreme heat for your {crop}",
     "heatBody": "In {p} of recent years there was extreme heat in these weeks ({stage}). Adjust irrigation.",
-    "harvestTitle": "🌾 Harvest is near for your {crop}",
+    "harvestTitle": "Harvest is near for your {crop}",
     "harvestBody": "About {days} days left. Plan the harvest and the next crop in your rotation.",
-    "waterTitle": "💧 Your week: {crops}",
+    "waterTitle": "Your week: {crops}",
     "waterBody": "Estimated irrigation: {m3} m³/ha over 7 days (ET0 {et0} mm/day, NASA POWER). No frost or heat risk.",
-    "bareTitle": "⬜ Bare field this week",
+    "bareTitle": "Bare field this week",
     "bareBody": "Good time to prepare the soil or plant a cover crop."
   },
   "granja": {
@@ -204,7 +204,7 @@
     "pause": "Pause",
     "replay": "Again",
     "reset": "Back to January",
-    "yearHint": "Pick a real year measured by NASA (🌵 driest, ❄️ frost, 🔥 heat):",
+    "yearHint": "Pick a real year measured by NASA. Marked years were the driest, had frost or heat:",
     "tag": {
       "driest": "The driest year",
       "frost": "Frost happened",
@@ -224,9 +224,9 @@
       "bare": "resting"
     },
     "event": {
-      "dry": "🌵 The reservoir is empty! {n} plots are drying out.",
-      "climate_risk": "❄️ Extreme weather this month on {n} plots (NASA POWER data).",
-      "water_stress": "🌡️ High-demand month: {n} plots need more than your monthly share."
+      "dry": "The reservoir is empty! {n} plots are drying out.",
+      "climate_risk": "Extreme weather this month on {n} plots (NASA POWER data).",
+      "water_stress": "High-demand month: {n} plots need more than your monthly share."
     },
     "goals": "Goals for the year",
     "goalsHint": "Play the full year to earn the medals.",
@@ -247,8 +247,8 @@
     "tutorial": {
       "title": "Welcome to your farm!",
       "paint": "Pick a rotation in the palette and tap plots to plant it. All plots share the reservoir's water.",
-      "year": "Choose a real year measured by NASA, e.g. 🌵 the driest.",
-      "play": "Press ▶ Play the year: watch crops grow, water drop and earn medals.",
+      "year": "Choose a real year measured by NASA, for example the driest one.",
+      "play": "Press Play the year: watch crops grow, water drop and earn medals.",
       "go": "Let's plant!"
     },
     "celebrate": {
@@ -281,10 +281,10 @@
       }
     },
     "tab": {
-      "sow": "🌱 Plant",
-      "climate": "🌦️ Weather",
-      "whatif": "🧪 What if…",
-      "goals": "🎯 Goals"
+      "sow": "Plant",
+      "climate": "Weather",
+      "whatif": "What if…",
+      "goals": "Goals"
     },
     "mode": {
       "paint": "Paint",

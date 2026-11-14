@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Bell, CheckCircle2, Send } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import type { AlertProfileClient } from "@/components/calendar/types";
 
@@ -85,7 +86,9 @@ export function PushCard({ profile }: { profile: AlertProfileClient }) {
   return (
     <section className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4">
       <div>
-        <h2 className="text-lg font-semibold">🔔 {t("calendario.alertsTitle")}</h2>
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <Bell size={18} /> {t("calendario.alertsTitle")}
+        </h2>
         <p className="text-sm text-muted">{t("calendario.alertsText")}</p>
       </div>
 
@@ -101,7 +104,9 @@ export function PushCard({ profile }: { profile: AlertProfileClient }) {
 
       {subscribed && (
         <div className="flex flex-col gap-2">
-          <p className="text-sm text-ok">✅ {t("calendario.push.on")}</p>
+          <p className="flex items-center gap-1.5 text-sm text-ok">
+            <CheckCircle2 size={16} /> {t("calendario.push.on")}
+          </p>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={test} className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-brand-ink">
               {t("calendario.push.test")}
@@ -112,7 +117,9 @@ export function PushCard({ profile }: { profile: AlertProfileClient }) {
           </div>
         </div>
       )}
-      {status === "sent" && last && <p className="text-xs text-muted">📨 {last}</p>}
+      {status === "sent" && last && <p className="flex items-center gap-1.5 text-xs text-muted">
+          <Send size={13} /> {last}
+        </p>}
     </section>
   );
 }

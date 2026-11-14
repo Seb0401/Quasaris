@@ -117,8 +117,8 @@ export const CROP_ICON: Record<string, (p: IconProps) => React.JSX.Element> = {
   frijol: BeanIcon,
 };
 
-export function CropIcon({ id, ...p }: IconProps & { id: string | null }) {
-  const C = (id && CROP_ICON[id]) || FallowIcon;
+export function CropIcon({ crop, ...p }: IconProps & { crop: string | null }) {
+  const C = (crop && CROP_ICON[crop]) || FallowIcon;
   return <C {...p} />;
 }
 
