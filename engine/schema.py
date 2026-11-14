@@ -104,6 +104,8 @@ class Source(BaseModel):
     elevationM: Optional[float] = None
     method: Optional[Literal["blend", "single"]] = None
     cells: Optional[list[PowerCell]] = None
+    # Opcional: humedad del suelo en la zona de raíces (NASA POWER GWETROOT, 0..1), promedio por mes ene..dic
+    rootZoneWetness: Optional[list[float]] = Field(default=None, min_length=12, max_length=12)
 
 
 class SimulateResponse(BaseModel):
@@ -116,6 +118,7 @@ class ClimateWeek(BaseModel):
     pFrost: float = Field(ge=0, le=1)
     pHeat: float = Field(ge=0, le=1)
     et0MeanMm: float
+    soilWetness: Optional[float] = None  # GWETROOT promedio de la semana (0..1)
 
 
 class ClimateResponse(BaseModel):
