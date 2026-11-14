@@ -50,7 +50,7 @@ export function dayOfYear(date = new Date(), timeZone = "America/Lima") {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
   const m = Number(parts.find((p) => p.type === "month")!.value);
   const d = Number(parts.find((p) => p.type === "day")!.value);
-  return Math.min(364, MONTH_START[m - 1] + d - 1);
+  return Math.min(364, MONTH_START[m - 1] + (m === 2 && d === 29 ? 27 : d - 1));
 }
 
 /** daysToHarvest es null en cultivos perennes (alfalfa: se corta varias veces al año). */
@@ -85,6 +85,7 @@ export function cropOnDay(rc: RotationCrop, doy: number): CropDay | null {
 
 /** Segmentos [inicio, fin) dentro del año 0..365 que ocupa un cultivo (se parte si cruza diciembre). */
 export function cropSegments(rc: RotationCrop): { start: number; end: number; stageBreaks: number[] }[] {
+  if (!CROPS[rc.cropId] || rc.sowMonth < 1 || rc.sowMonth > 12) return [];
   const start = sowDay(rc);
   const total = cycleDays(rc.cropId);
   const c = CROPS[rc.cropId];
@@ -113,10 +114,9 @@ export function weekOutlook(crops: RotationCrop[], weeks: ClimateWeek[], irrigat
   const eff = efficiency(irrigation, soil);
   const next = (d: number) => weeks[weekOf((doy + d) % 365)];
   const active = crops
-    .map((rc) => cropOnDay(rc, doy))
-    .filter((x): x is CropDay => x !== null)
-    .map((cd) => {
-      const rc = crops.find((c) => c.cropId === cd.cropId)!;
+    .map((rc) => ({ rc, cd: cropOnDay(rc, doy) }))
+    .filter((item): item is { rc: RotationCrop; cd: CropDay } => item.cd !== null)
+    .map(({ rc, cd }) => {
       let mm = 0;
       for (let d = 0; d < 7; d++) {
         const day = cropOnDay(rc, (doy + d) % 365);
