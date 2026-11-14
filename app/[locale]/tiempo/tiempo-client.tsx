@@ -8,6 +8,7 @@ import { HistoryGrid, StatusLegend } from "@/components/timemachine/history-grid
 import { YearChart, type Series } from "@/components/timemachine/water-chart";
 import { setFarm, useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
+import { BadgeDollarSign, Clock3, Droplets, Flame, LoaderCircle, Pause, Play, Satellite, Snowflake } from "lucide-react";
 
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
   ssr: false,
@@ -54,7 +55,7 @@ export function TiempoClient() {
     return () => clearInterval(id);
   }, [playing, years]);
 
-  if (!data) return <p className="py-12 text-center text-muted animate-pulse">🛰️ {t("comparar.loading")}</p>;
+  if (!data) return <p className="flex items-center justify-center gap-2 py-12 text-center text-muted"><LoaderCircle className="animate-spin" size={19} />{t("comparar.loading")}</p>;
 
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const rotations = farm.rotations
@@ -77,21 +78,21 @@ export function TiempoClient() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      <header>
-        <h1 className="text-2xl font-bold">🕰️ {t("tiempo.title")}</h1>
-        <p className="text-sm text-muted">{t("tiempo.subtitle")}</p>
+    <div className="time-workspace flex flex-col gap-5">
+      <header className="section-hero"><div>
+        <span className="panel-kicker"><Clock3 size={16} /> QUASARIS / 2005—2025</span><h1>{t("tiempo.title")}</h1>
+        <p>{t("tiempo.subtitle")}</p></div>
       </header>
 
       {/* Control de año */}
-      <section className="sticky top-14 z-[900] -mx-4 flex items-center gap-3 border-b border-border bg-background/95 px-4 py-3 backdrop-blur">
+      <section className="time-controls flex items-center gap-3 px-4 py-3">
         <button
           type="button"
           onClick={play}
           aria-label={playing ? t("tiempo.pause") : t("tiempo.play")}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand text-xl text-brand-ink"
         >
-          {playing ? "❚❚" : "▶"}
+          {playing ? <Pause size={20} /> : <Play size={20} />}
         </button>
         <div className="flex flex-1 flex-col">
           <input
@@ -140,11 +141,11 @@ export function TiempoClient() {
                 <h2 className="truncate font-semibold" style={{ color }}>
                   {rot.name}
                 </h2>
-                <span className="shrink-0 text-sm tabular-nums">💰 S/ {n.format(y.incomePEN)}</span>
+                <span className="flex shrink-0 items-center gap-1 text-sm tabular-nums"><BadgeDollarSign size={15} /> S/ {n.format(y.incomePEN)}</span>
               </div>
               <div className="flex flex-col gap-1">
                 <div className="flex justify-between text-xs">
-                  <span>💧 {n.format(y.waterM3ha)} m³/ha</span>
+                  <span className="flex items-center gap-1"><Droplets size={14} /> {n.format(y.waterM3ha)} m³/ha</span>
                   <span className={over ? "font-semibold text-danger" : "text-muted"}>
                     {over ? `+${n.format(y.waterM3ha - farm.waterAvailableM3ha)} ${t("tiempo.overLimit")}` : t("tiempo.withinLimit")}
                   </span>
@@ -156,7 +157,7 @@ export function TiempoClient() {
               <MonthStrip months={y.months} labels />
               {(y.frostDays > 0 || y.heatDays > 0) && (
                 <p className="text-xs text-muted">
-                  ❄️ {y.frostDays} · 🔥 {y.heatDays} {t("tiempo.stressDays")}
+                  <Snowflake size={14} className="inline" /> {y.frostDays} · <Flame size={14} className="inline" /> {y.heatDays} {t("tiempo.stressDays")}
                 </p>
               )}
             </article>
@@ -171,7 +172,7 @@ export function TiempoClient() {
           <div className="flex rounded-full border border-border p-0.5 text-xs">
             {(["water", "income"] as const).map((m) => (
               <button key={m} type="button" onClick={() => setMetric(m)} className={`rounded-full px-3 py-1 ${metric === m ? "bg-brand text-brand-ink" : ""}`}>
-                {m === "water" ? "💧" : "💰"} {t(`comparar.${m}`)}
+                {m === "water" ? <Droplets size={14} className="inline" /> : <BadgeDollarSign size={14} className="inline" />} {t(`comparar.${m}`)}
               </button>
             ))}
           </div>
@@ -224,7 +225,7 @@ export function TiempoClient() {
       <section className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-3">
         <div>
           <h2 className="font-semibold">
-            🛰️ {t("tiempo.ndviTitle")} · {fmtMonth.format(new Date(current, month - 1, 1))} {current}
+            <Satellite size={17} className="inline" /> {t("tiempo.ndviTitle")} · {fmtMonth.format(new Date(current, month - 1, 1))} {current}
           </h2>
           <p className="text-xs text-muted">{t("tiempo.ndviHint")}</p>
         </div>
