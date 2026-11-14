@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarDays, CalendarRange, CheckCircle2, CloudOff, Droplets, Flame, Leaf, Snowflake, Sprout, Sun, Wheat } from "lucide-react";
+import { CalendarDays, CalendarRange, CheckCircle2, CloudOff, Droplets, Flame, Leaf, Snowflake, Sprout, Sun } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { PushCard } from "@/components/calendar/push-card";
 import { Reveal } from "@/components/motion/reveal";
@@ -9,8 +9,7 @@ import { Badge, CountUp, HeroStat, PageHeader, Panel } from "@/components/ui/kit
 import type { ClimateResponse } from "@/lib/contract";
 import { CROPS, MONTH_START, cropName, cropSegments, dayOfYear, weekOutlook } from "@/lib/crop-calendar";
 import { useFarm } from "@/lib/farm-store";
-import { Check, LoaderCircle, Star } from "lucide-react";
-import { CalendarIcon, FallowIcon, FrostIcon, HeatIcon, SoilIcon, WaterIcon } from "@/components/icons/farm-icons";
+import { CropIcon } from "@/components/icons/farm-icons";
 import { useToday } from "@/lib/use-today";
 import { rotationColor } from "@/lib/ui";
 
@@ -118,7 +117,7 @@ export function CalendarioClient() {
                   <ul className="crop-list">
                     {outlook.active.map((c) => (
                       <li key={c.cropId} style={{ "--accent": FAMILY_COLOR[CROPS[c.cropId]?.family] ?? "var(--cyan)" } as React.CSSProperties}>
-                        <span className="crop-icon"><Wheat size={18} /></span>
+                        <span className="crop-icon"><CropIcon crop={c.cropId} size={20} /></span>
                         <div className="min-w-0 flex-1">
                           <b>{cropName(c.cropId, locale)}</b>
                           <small>{CROPS[c.cropId]?.perennial ? t("calendario.perennial") : t(`calendario.stage.${c.stage}`)} · Kc {c.kc.toFixed(2)}{c.daysToHarvest !== null && ` · ${t("calendario.harvestIn", { days: c.daysToHarvest })}`}</small>

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, Database, Lightbulb } from "lucide-react";
+import { ArrowRight, BookOpen, ChartColumn, Database, Lightbulb, Mountain, RadioTower } from "lucide-react";
+import { CycleIcon, EvapoIcon, FrostIcon, GrowingIcon, SatelliteIcon, SoilIcon, WaterIcon } from "@/components/icons/farm-icons";
 import { getMessages } from "@/lib/i18n";
 
 const TOPICS = [
@@ -38,7 +39,7 @@ export default async function AprendePage({ params }: PageProps<"/[locale]/apren
 
       <nav className="topic-chips" aria-label={a.title}>
         {TOPICS.map((tp) => (
-          <a key={tp.id} href={`#${tp.id}`}><span aria-hidden>{tp.icon}</span>{a.topics[tp.id].title}</a>
+          <a key={tp.id} href={`#${tp.id}`}><tp.Icon size={15} aria-hidden />{a.topics[tp.id].title}</a>
         ))}
       </nav>
 
@@ -47,7 +48,7 @@ export default async function AprendePage({ params }: PageProps<"/[locale]/apren
           const topic = a.topics[tp.id];
           return (
             <article key={tp.id} id={tp.id} className="topic-card" style={{ animationDelay: `${i * 60}ms` }}>
-              <h2><span className="topic-icon" aria-hidden>{tp.icon}</span>{topic.title}</h2>
+              <h2><span className="topic-icon" aria-hidden><tp.Icon size={21} /></span>{topic.title}</h2>
               <p>{topic.text}</p>
               <p className="topic-how"><Lightbulb size={15} /><span><b>{a.how}:</b> {topic.how}</span></p>
               <p className="topic-source"><Database size={12} />{a.source}: {topic.source}</p>

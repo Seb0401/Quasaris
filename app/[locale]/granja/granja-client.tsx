@@ -26,7 +26,10 @@ import { SKY_GRADIENT, type Weather } from "@/components/granja/farm-scene";
 import { Celebration, Tutorial, playCoin } from "@/components/granja/overlays";
 import { Reveal } from "@/components/motion/reveal";
 import { LoadingOrbit, PageHeader, Panel, RangeInput } from "@/components/ui/kit";
-import { Droplets, Gamepad2, MapPin, Sprout, Tractor, Waves } from "lucide-react";
+import { Droplets, Gamepad2, Sprout, Waves } from "lucide-react";
+import { BarChart3, Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Eye, Flag, MapPin, Pause, Play, RotateCcw, SkipBack, Tractor, Undo2, Volume2, VolumeX, X } from "lucide-react";
+import { BrushIcon, CropIcon, DroughtIcon, EvapoIcon, FrostIcon, GOAL_ICON, HeatIcon, MedalIcon, ProfitIcon, RainIcon, ReservoirIcon, SoilIcon, STAGE_ICON, ThermoIcon, WaterIcon } from "@/components/icons/farm-icons";
+import { RotationIcons } from "@/components/icons/rotation-icons";
 
 const FarmScene = dynamic(() => import("@/components/granja/farm-scene"), {
   ssr: false,
@@ -267,21 +270,25 @@ function Farm() {
       <div className="farm-hud">
         <div className="hud-card hud-reservoir">
           <div className="flex justify-between gap-2">
-            <span>💧 {t("granja.reservoir")}</span>
+            <span className="flex items-center gap-1">
+              <ReservoirIcon size={16} /> {t("granja.reservoir")}
+            </span>
             <span className={reservoir <= 0 ? "text-[#ff8f8f]" : ""}>{pct.format(reservoir)}</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-white/10">
             <div className="h-full rounded-full transition-all duration-700" style={{ width: `${reservoir * 100}%`, background: reservoir < 0.15 ? "var(--danger)" : "#5cc8f5", boxShadow: "0 0 10px rgba(92,200,245,.6)" }} />
           </div>
         </div>
-        <div className="hud-card">💰 S/ {n.format(snap.incomePEN)}</div>
+        <div className="hud-card">
+          <ProfitIcon size={16} /> S/ {n.format(snap.incomePEN)}
+        </div>
         {clim && (
           <div className="hud-card">
-            🌡️ {n1.format(clim.tmin)}–{n1.format(clim.tmax)} °C
+            <ThermoIcon size={16} /> {n1.format(clim.tmin)}–{n1.format(clim.tmax)} °C
           </div>
         )}
         <div className="hud-card hud-date capitalize">
-          📅 {fmtMonth.format(new Date(granja.year, month, 1))} {granja.year}
+          {fmtMonth.format(new Date(granja.year, month, 1))} {granja.year}
           {granja.tempDelta ? <span className="ml-1 text-[#ff8f8f]">({granja.tempDelta > 0 ? "+" : ""}{granja.tempDelta} °C)</span> : null}
         </div>
       </div>
@@ -329,10 +336,10 @@ function Farm() {
         {/* tiempo */}
         <div className="flex items-center gap-2 px-3 pt-2">
           <button type="button" onClick={reset} aria-label={t("granja.reset")} className="time-btn farm-tbtn">
-            ⏮
+            <SkipBack size={16} className="mx-auto" />
           </button>
           <button type="button" onClick={() => setMonth((m) => Math.max(0, m - 1))} aria-label="-1" className="time-btn farm-tbtn">
-            ◀
+            <ChevronLeft size={18} className="mx-auto" />
           </button>
           <button
             type="button"
@@ -348,10 +355,10 @@ function Farm() {
             </span>
           </button>
           <button type="button" onClick={() => setMonth((m) => Math.min(11, m + 1))} aria-label="+1" className="time-btn farm-tbtn">
-            ▶
+            <ChevronRight size={18} className="mx-auto" />
           </button>
           <button type="button" onClick={() => setCollapsed((c) => !c)} aria-label="panel" className="time-btn farm-tbtn">
-            {collapsed ? "▴" : "▾"}
+            {collapsed ? <ChevronUp size={18} className="mx-auto" /> : <ChevronDown size={18} className="mx-auto" />}
           </button>
         </div>
 
@@ -379,7 +386,7 @@ function Farm() {
                           {sel.cropId ? cropName(sel.cropId, locale) : t("granja.fallow")}
                         </span>
                         {sel.stage && (
-                          <span className="ml-2 inline-flex items-center gap-1 text-sm font-medium text-[#2f6b3a]">
+                          <span className="ml-2 inline-flex items-center gap-1 text-sm font-medium text-[var(--brand)]">
                             {(() => {
                               const S = STAGE_ICON[sel.stage];
                               return <S size={16} />;
@@ -393,7 +400,7 @@ function Farm() {
                       </div>
                     </div>
                     <button type="button" onClick={() => setSelected(null)} className="h-8 w-8 rounded-full bg-white/[.06]">
-                      ✕
+                      <X size={16} className="mx-auto" />
                     </button>
                   </div>
                   <p className="rounded-xl bg-[rgba(99,222,242,.07)] text-[#c8dde0] px-3 py-2">
@@ -434,14 +441,14 @@ function Farm() {
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="flex rounded-full bg-white/[.06] p-0.5 text-xs font-semibold">
                       <button type="button" onClick={() => setPaintMode(true)} className={`rounded-full px-3 py-1.5 ${paintMode ? "bg-[var(--brand)] text-[var(--brand-ink)]" : ""}`}>
-                        🖌️ {t("granja.mode.paint")}
+                        <BrushIcon size={14} className="mr-1 inline" /> {t("granja.mode.paint")}
                       </button>
                       <button type="button" onClick={() => setPaintMode(false)} className={`rounded-full px-3 py-1.5 ${!paintMode ? "bg-[var(--brand)] text-[var(--brand-ink)]" : ""}`}>
-                        🔍 {t("granja.mode.view")}
+                        <Eye size={14} className="mr-1 inline" /> {t("granja.mode.view")}
                       </button>
                     </div>
                     <button type="button" onClick={undo} className="rounded-full bg-white/[.06] px-3 py-1.5 text-xs font-semibold">
-                      ↶ {t("granja.undo")}
+                      <Undo2 size={14} className="mr-1 inline" /> {t("granja.undo")}
                     </button>
                     <button
                       type="button"
@@ -473,14 +480,20 @@ function Farm() {
                           className={`flex w-36 shrink-0 flex-col items-start gap-0.5 rounded-xl border-2 bg-[rgba(3,14,22,.45)] px-2.5 py-2 text-left ${active ? "shadow-md" : "border-[var(--border)]"}`}
                           style={{ borderColor: active ? rotationColor(r.id) : undefined }}
                         >
-                          <RotationIcons rotation={r} size={20} className="text-[#2f6b3a]" />
+                          <RotationIcons rotation={r} size={20} className="text-[var(--brand)]" />
                           <span className="line-clamp-2 text-xs font-semibold leading-tight">
                             <span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: rotationColor(r.id) }} />
                             {r.id === "descanso" ? t("granja.fallow") : r.name}
                           </span>
                           {res && (
                             <span className="text-[10px] text-[var(--muted)]">
-                              💧 {n.format(res.water.median)} · 💰 {n.format(res.income.median)}
+                              <span className="inline-flex items-center gap-0.5">
+                                <WaterIcon size={11} /> {n.format(res.water.median)}
+                              </span>{" "}
+                              ·{" "}
+                              <span className="inline-flex items-center gap-0.5">
+                                <ProfitIcon size={11} /> {n.format(res.income.median)}
+                              </span>
                             </span>
                           )}
                         </button>
@@ -552,7 +565,9 @@ function Farm() {
                   <p className="text-xs text-[var(--muted)]">{t("granja.whatif.text")}</p>
                   <label className="flex flex-col gap-1">
                     <span className="flex justify-between font-semibold">
-                      <span>🌡️ {t("granja.whatif.temp")}</span>
+                      <span className="inline-flex items-center gap-1">
+                        <ThermoIcon size={16} /> {t("granja.whatif.temp")}
+                      </span>
                       <span className={granja.tempDelta > 0 ? "text-[#ff8f8f]" : granja.tempDelta < 0 ? "text-[var(--sky)]" : ""}>
                         {granja.tempDelta > 0 ? "+" : ""}
                         {granja.tempDelta} °C
@@ -591,7 +606,7 @@ function Farm() {
                     })}
                   </p>
                   <button type="button" onClick={() => setGranja({ tempDelta: 0, waterFactor: 1 })} className="self-start rounded-full bg-white/[.06] px-4 py-2 text-xs font-semibold">
-                    ↺ {t("granja.whatif.reset")}
+                    <RotateCcw size={13} className="mr-1 inline" /> {t("granja.whatif.reset")}
                   </button>
                 </section>
               )}
@@ -608,7 +623,7 @@ function Farm() {
                           })()}
                           {t(`granja.goal.${g.id}`)}
                         </span>
-                        <span>{finished ? g.done ? <Check size={16} className="text-[#3f8f4f]" /> : "—" : granja.badges.includes(g.id) ? <MedalIcon size={16} /> : null}</span>
+                        <span>{finished ? g.done ? <Check size={16} className="text-[var(--ok)]" /> : "—" : granja.badges.includes(g.id) ? <MedalIcon size={16} /> : null}</span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-white/[.06]">
                         <div className="h-full rounded-full bg-[var(--brand)] transition-all" style={{ width: `${g.progress * 100}%`, opacity: finished ? 1 : 0.45 }} />
@@ -618,18 +633,20 @@ function Farm() {
                   {!finished && <p className="text-[11px] text-[var(--muted)]">{t("granja.goalsHint")}</p>}
                   {finished && (
                     <div className="mt-1 flex flex-col gap-1 rounded-xl border-2 border-[var(--brand)] bg-[rgba(185,255,99,.05)] p-3">
-                      <b>🏁 {t("granja.resultTitle", { year: granja.year })}</b>
-                      <ResultRow label={`💧 ${t("comparar.water")} (m³)`} mine={sim.summary.waterM3} base={sim.summary.baseline.waterM3} lowerIsBetter />
-                      <ResultRow label={`💰 ${t("comparar.income")} (S/)`} mine={sim.summary.incomePEN} base={sim.summary.baseline.incomePEN} />
+                      <b className="flex items-center gap-1">
+                        <Flag size={15} /> {t("granja.resultTitle", { year: granja.year })}
+                      </b>
+                      <ResultRow label={`${t("comparar.water")} (m³)`} mine={sim.summary.waterM3} base={sim.summary.baseline.waterM3} lowerIsBetter />
+                      <ResultRow label={`${t("comparar.income")} (S/)`} mine={sim.summary.incomePEN} base={sim.summary.baseline.incomePEN} />
                       <p className="text-[11px] text-[var(--muted)]">{t("granja.resultHint", { ha: n.format(granja.tiles.length * granja.haPerTile) })}</p>
                     </div>
                   )}
                   <div className="flex flex-wrap gap-2 pt-1 text-xs">
                     <button type="button" onClick={() => setGranja({ zoneSet: false })} className="rounded-full bg-white/[.06] px-3 py-1.5">
-                      📍 {t("granja.changeZone")}
+                      <MapPin size={13} className="mr-1 inline" /> {t("granja.changeZone")}
                     </button>
                     <Link href={`/${locale}/comparar`} className="rounded-full bg-white/[.06] px-3 py-1.5">
-                      📊 {t("granja.expert")}
+                      <BarChart3 size={13} className="mr-1 inline" /> {t("granja.expert")}
                     </Link>
                   </div>
                   <p className="text-[10px] text-[var(--muted)]">{t("granja.source", { base: palette.find((p) => p.id === BASELINE_ID)?.name ?? "" })}</p>
@@ -669,7 +686,7 @@ function Factor({ icon, title, value, bar, bad }: { icon: React.ReactNode; title
 function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-xl border border-[var(--border)] px-3 py-2">
-      <div className="text-[11px] text-[var(--muted)]">
+      <div className="flex items-center gap-1 text-[11px] text-[var(--muted)]">
         {icon} {label}
       </div>
       <div className="font-semibold tabular-nums">{value}</div>

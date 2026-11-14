@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, CheckCircle2, Send } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import type { AlertProfileClient } from "@/components/calendar/types";
 import { BellOff, BellRing, CheckCircle2, Flame, Send, Snowflake, TriangleAlert, Wheat } from "lucide-react";

@@ -11,7 +11,7 @@ export function Tutorial({ onClose }: { onClose: () => void }) {
   return (
     <div className="absolute inset-0 z-10 flex items-center justify-center bg-[rgba(3,14,22,.55)] p-4 backdrop-blur-sm">
       <div className="farm-modal">
-        <h2 className="text-xl font-bold">👋 {t("granja.tutorial.title")}</h2>
+        <h2 className="flex items-center gap-2 text-xl font-bold"><Sprout size={22} className="text-[var(--brand)]" /> {t("granja.tutorial.title")}</h2>
         <ol className="flex flex-col gap-2 text-sm">
           {steps.map((s, i) => (
             <li key={s} className="flex gap-3">
@@ -47,12 +47,16 @@ export function Celebration({ medals, onClose }: { medals: string[]; onClose: ()
         />
       ))}
       <div className="farm-modal is-center">
-        <div className="text-5xl">🏆</div>
+        <TrophyIcon size={56} className="text-[var(--warn)] drop-shadow-[0_0_18px_rgba(246,185,76,.5)]" />
         <h2 className="text-xl font-bold">{t("granja.celebrate.title")}</h2>
         <div className="flex flex-wrap justify-center gap-2">
           {medals.map((m) => (
             <span key={m} className="ui-badge tone-brand">
-              {GOAL_ICON[m]} {t(`granja.goal.${m}`)}
+              {(() => {
+                const G = GOAL_ICON[m];
+                return G ? <G size={15} className="mr-1 inline" /> : null;
+              })()}
+              {t(`granja.goal.${m}`)}
             </span>
           ))}
         </div>

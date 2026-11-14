@@ -8,7 +8,6 @@ import { Badge, PageHeader } from "@/components/ui/kit";
 import type { Rotation } from "@/lib/contract";
 import { CROPS, MONTH_START, cropName, cropSegments } from "@/lib/crop-calendar";
 import { setFarm, useFarm } from "@/lib/farm-store";
-import { Pencil, Star, Trash2, TriangleAlert, X } from "lucide-react";
 import { MAX_CROPS, MAX_ROTATIONS, bareMonths, newRotationId, overlapDays } from "@/lib/rotation-utils";
 import { rotationColor } from "@/lib/ui";
 
@@ -75,7 +74,7 @@ export function RotacionesClient() {
                   {r.crops.map((rc, i) => (
                     <div key={i} className="crop-editor-row">
                       <select value={rc.cropId} onChange={(e) => update(r.id, (x) => ({ ...x, crops: x.crops.map((c, k) => (k === i ? { ...c, cropId: e.target.value } : c)) }))} aria-label={t("rotaciones.crop")} className="ui-select">
-                        {Object.keys(CROPS).map((id) => <option key={id} value={id}>{CROP_EMOJI[id] ?? "🌱"} {cropName(id, locale)}</option>)}
+                        {Object.keys(CROPS).map((id) => <option key={id} value={id}>{cropName(id, locale)}</option>)}
                       </select>
                       <select value={rc.sowMonth} disabled={Boolean(CROPS[rc.cropId]?.perennial)} onChange={(e) => update(r.id, (x) => ({ ...x, crops: x.crops.map((c, k) => (k === i ? { ...c, sowMonth: Number(e.target.value) } : c)) }))} aria-label={t("rotaciones.sowMonth")} className="ui-select capitalize">
                         {months.map((m, k) => <option key={k} value={k + 1}>{t("rotaciones.sow")} {m}</option>)}
