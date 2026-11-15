@@ -296,15 +296,15 @@
     },
     "resultTitle": "{year} results",
     "vsBaseline": "vs. alfalfa only:",
-    "resultHint": "Compared with planting alfalfa on all your {ha} ha, with the same real weather.",
+    "resultHint": "Compared with planting alfalfa on all your {ha} ha, with the same weather.",
     "changeZone": "Change area",
     "expert": "See detailed data",
     "source": "Climate: NASA POWER + SRTM. Water and money per plot = FAO-56 engine result × area. Baseline: {base}.",
     "tutorial": {
       "title": "Welcome to your farm!",
       "paint": "Pick a rotation in the palette and tap plots to plant it. All plots share the reservoir's water.",
-      "year": "Choose a real year measured by NASA, for example the driest one.",
-      "play": "Press Simulate the year: watch crops grow, the reservoir drop and earn medals.",
+      "year": "Pick a scenario for next season: a typical year, a dry year, El Niño or a hotter future.",
+      "play": "Press Simulate the year: watch crops grow, the reservoir drop and follow the alerts on screen.",
       "go": "Let's plant!"
     },
     "celebrate": {
@@ -347,7 +347,9 @@
       "paint": "Paint",
       "view": "View",
       "paintHint": "Pick a rotation and drag your finger over the plots. The camera stays still while you paint.",
-      "viewHint": "Tap a plot to see its card. Drag to rotate the farm."
+      "viewHint": "Tap a plot to see its card. Drag to rotate the farm.",
+      "shape": "Shape",
+      "shapeHint": "Tap a green square to add a plot next to your farm, or tap a plot on the edge to remove it. Your farm: {n} plots, {ha} ha."
     },
     "undo": "Undo",
     "stage": {
@@ -406,7 +408,14 @@
       "summary": "{n} alerts this year ({high} severe). Tap one to jump to that month.",
       "allYear": "all year",
       "lots": "Plots {lots}",
-      "simulated": "Simulated event"
+      "simulated": "Simulated event",
+      "title": "Alerts",
+      "possible": "possible",
+      "odds": "{hits} of {total} years ({pct})",
+      "oddsWhy": "With this layout it happened in {hits} of the {total} years NASA recorded (2005 to 2025).",
+      "manyLots": "{n} plots",
+      "nLots": "{n} plots",
+      "inLots": "plots {lots}"
     },
     "hazard": {
       "title": "Weather events",
@@ -474,7 +483,42 @@
     },
     "drawn": "My drawn field · {ha} ha",
     "drawnHint": "The farm uses the real area you marked on the map.",
-    "drawTip": "Tip: use “Draw my field” on the map so the farm has your field's real size."
+    "drawTip": "Tip: use “Draw my field” on the map so the farm has your field's real size.",
+    "scenario": {
+      "intro": "Plan your {season} season. Pick a scenario: each one uses a real year from 21 years of NASA data as its model.",
+      "basis": "Model year: NASA POWER {year}, adjusted to your field's altitude. Temperature change: {delta}.",
+      "typical": {
+        "short": "Typical year",
+        "title": "Typical year",
+        "text": "The most likely weather: middle of the last 21 years."
+      },
+      "dry": {
+        "short": "Dry year",
+        "title": "Dry year",
+        "text": "The year your crops needed the most water."
+      },
+      "nino": {
+        "short": "El Niño",
+        "title": "El Niño year",
+        "text": "Warmer, with less water in the upper basin."
+      },
+      "warm": {
+        "short": "+1.5 °C",
+        "title": "Hotter future",
+        "text": "A typical year with 1.5 °C more, as expected in the coming decades."
+      }
+    },
+    "fix": {
+      "apply": "Apply change",
+      "why": "Why?",
+      "applied": "Change applied",
+      "swap": "Change {lots} from {from} to {to}: it is not at risk in {month}.",
+      "cover": "Plant {to} on {lots} so the soil is not bare.",
+      "mix": "Plant {to} on {lots} to mix crop families and slow pests down.",
+      "drip": "Switch to drip irrigation: the same crops use much less water.",
+      "saveWater": "Change {lots} to {to}, which needs less water, so the reservoir lasts all season.",
+      "peak": "Water the most demanding plots early in the morning and avoid planting them all in the same month."
+    }
   },
   "rotaciones": {
     "title": "My rotations",

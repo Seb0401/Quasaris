@@ -1,6 +1,7 @@
 /** Plan de la chacra: agrupa lotes por rotación y resume agua, ingresos y calendario. */
 import type { Rotation, RotationResult, SimulateResponse } from "@/lib/contract";
 import { CROPS, MONTH_START, cycleDays, sowDay } from "@/lib/crop-calendar";
+import { isOn } from "@/lib/farm-shape";
 
 export type PlanGroup = {
   rotation: Rotation;
@@ -53,7 +54,7 @@ export function buildPlan(data: SimulateResponse, palette: Rotation[], tiles: st
   }
 
   const list = [...groups.values()].sort((a, b) => b.ha - a.ha);
-  const totalHa = tiles.length * haPerTile;
+  const totalHa = tiles.filter(isOn).length * haPerTile;
   const monthlyM3 = Array.from({ length: 12 }, (_, m) => list.reduce((a, g) => a + g.monthlyM3[m], 0));
   const checks = Array.from(new Set(list.flatMap((g) => g.result?.explain.reviewWithExpert ?? [])));
   const missing = Array.from(new Set(list.flatMap((g) => g.result?.explain.missing ?? [])));

@@ -296,15 +296,15 @@
     },
     "resultTitle": "Resultado de {year}",
     "vsBaseline": "vs. solo alfalfa:",
-    "resultHint": "Comparado con sembrar alfalfa en todas tus {ha} ha, con el mismo clima real.",
+    "resultHint": "Comparado con sembrar solo alfalfa en tus {ha} ha, con el mismo clima.",
     "changeZone": "Cambiar zona",
     "expert": "Ver datos detallados",
     "source": "Clima: NASA POWER + SRTM. Agua y dinero por casilla = resultado del motor FAO-56 × área. Referencia: {base}.",
     "tutorial": {
       "title": "¡Bienvenido a tu granja!",
       "paint": "Elige una rotación en la paleta y toca las casillas para sembrarla. Todas comparten el agua del reservorio.",
-      "year": "Elige un año real medido por la NASA, por ejemplo el más seco.",
-      "play": "Presiona Simular el año: mira crecer tus cultivos, bajar el agua del reservorio y ganar medallas.",
+      "year": "Elige un escenario para la próxima campaña: año típico, año seco, El Niño o un futuro más caluroso.",
+      "play": "Pulsa Simular el año: mira crecer los cultivos, bajar el reservorio y sigue las alertas en pantalla.",
       "go": "¡A sembrar!"
     },
     "celebrate": {
@@ -347,7 +347,9 @@
       "paint": "Pintar",
       "view": "Ver",
       "paintHint": "Elige una rotación y arrastra el dedo sobre las casillas. La cámara queda fija mientras pintas.",
-      "viewHint": "Toca una casilla para ver su ficha. Arrastra para girar la granja."
+      "viewHint": "Toca una casilla para ver su ficha. Arrastra para girar la granja.",
+      "shape": "Forma",
+      "shapeHint": "Toca un cuadro verde para sumar un lote junto a tu chacra, o toca un lote del borde para quitarlo. Tu chacra: {n} lotes, {ha} ha."
     },
     "undo": "Deshacer",
     "stage": {
@@ -406,7 +408,14 @@
       "summary": "{n} alertas en el año ({high} graves). Toca una para ir a ese mes.",
       "allYear": "todo el año",
       "lots": "Lotes {lots}",
-      "simulated": "Fenómeno simulado"
+      "simulated": "Fenómeno simulado",
+      "title": "Alertas",
+      "possible": "posible",
+      "odds": "{hits} de {total} años ({pct})",
+      "oddsWhy": "Con esta distribución pasó en {hits} de los {total} años que registró la NASA (2005 a 2025).",
+      "manyLots": "{n} lotes",
+      "nLots": "{n} lotes",
+      "inLots": "los lotes {lots}"
     },
     "hazard": {
       "title": "Fenómenos",
@@ -474,7 +483,42 @@
     },
     "drawn": "Mi terreno dibujado · {ha} ha",
     "drawnHint": "La granja usa el área real que marcaste en el mapa.",
-    "drawTip": "Consejo: usa «Dibujar mi terreno» en el mapa para que la granja tenga el tamaño real de tu chacra."
+    "drawTip": "Consejo: usa «Dibujar mi terreno» en el mapa para que la granja tenga el tamaño real de tu chacra.",
+    "scenario": {
+      "intro": "Planifica tu campaña {season}. Elige un escenario: cada uno toma como modelo un año real de los 21 años de datos NASA.",
+      "basis": "Año modelo: NASA POWER {year}, ajustado a la altitud de tu parcela. Cambio de temperatura: {delta}.",
+      "typical": {
+        "short": "Año típico",
+        "title": "Año típico",
+        "text": "El clima más probable: el del medio de los últimos 21 años."
+      },
+      "dry": {
+        "short": "Año seco",
+        "title": "Año seco",
+        "text": "El año en que tus cultivos pidieron más agua."
+      },
+      "nino": {
+        "short": "El Niño",
+        "title": "Año El Niño",
+        "text": "Más calor y menos agua en la cuenca alta."
+      },
+      "warm": {
+        "short": "+1,5 °C",
+        "title": "Futuro más caluroso",
+        "text": "Un año típico con 1,5 °C más, como se espera en las próximas décadas."
+      }
+    },
+    "fix": {
+      "apply": "Aplicar cambio",
+      "why": "¿Por qué?",
+      "applied": "Cambio aplicado",
+      "swap": "Cambia {lots} de {from} a {to}: no corre riesgo en {month}.",
+      "cover": "Siembra {to} en {lots} para que el suelo no quede desnudo.",
+      "mix": "Siembra {to} en {lots} para mezclar familias y frenar las plagas.",
+      "drip": "Pasa a riego por goteo: los mismos cultivos gastan mucha menos agua.",
+      "saveWater": "Cambia {lots} a {to}, que pide menos agua, para que el reservorio alcance toda la campaña.",
+      "peak": "Riega temprano los lotes que más piden y evita sembrarlos todos en el mismo mes."
+    }
   },
   "rotaciones": {
     "title": "Mis rotaciones",

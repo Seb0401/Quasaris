@@ -6,7 +6,8 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { TileState } from "@/lib/granja-sim";
 import { rotationColor } from "@/lib/granja-sim";
-import { Clouds, Cow, Farmer, Fence, House, Island, Pond, Tree, Volcano, Windmill } from "./diorama-props";
+import { OFF, addableCells, groundCells, isOn } from "@/lib/farm-shape";
+import { Clouds, Cow, Farmer, House, Pond, ShapeFence, ShapedIsland, Tree, Volcano, Windmill } from "./diorama-props";
 import { GEO, MAT, SOIL, rand } from "./low-poly";
 import { PlantField } from "./plant-field";
 
@@ -14,8 +15,6 @@ const TILE = 2;
 const GAP = 0.22;
 const STEP = TILE + GAP;
 const SOIL_H = 0.3;
-const MARGIN_X = 3.4;
-const MARGIN_Z = 2.8;
 
 export type Weather = "clear" | "frost" | "heat" | "dry";
 
@@ -44,6 +43,9 @@ type Props = {
   onSelect: (i: number) => void;
   /** Color de capa por casilla (null = suelo normal). */
   tints?: (string | null)[];
+  /** Modo forma: tocar una casilla del borde la quita y tocar una vecina vacía la suma. */
+  editShape?: boolean;
+  onEditCell?: (r: number, c: number) => void;
 };
 
 const tintCache = new Map<string, THREE.MeshStandardMaterial>();
@@ -56,10 +58,38 @@ function tintMat(color: string) {
   return m;
 }
 
-function tilePos(i: number, cols: number, rows: number): [number, number] {
-  const c = i % cols;
-  const r = Math.floor(i / cols);
+function cellPos(r: number, c: number, cols: number, rows: number): [number, number] {
   return [(c - (cols - 1) / 2) * STEP, (r - (rows - 1) / 2) * STEP];
+}
+
+function tilePos(i: number, cols: number, rows: number): [number, number] {
+  return cellPos(Math.floor(i / cols), i % cols, cols, rows);
+}
+
+/** Casilla vacía que se puede sumar a la chacra (modo forma). */
+function Ghost({ x, z, onTap }: { x: number; z: number; onTap: () => void }) {
+  return (
+    <group position={[x, 0, z]} rotation={[0, Math.PI / 4, 0]}>
+      <mesh
+        position={[0, 0.06, 0]}
+        rotation={[0, -Math.PI / 4, 0]}
+        scale={[TILE * 0.92, 0.12, TILE * 0.92]}
+        geometry={GEO.soil}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (e.delta <= 6) onTap();
+        }}
+      >
+        <meshStandardMaterial color="#f4ffe6" transparent opacity={0.7} emissive="#b9ff63" emissiveIntensity={0.15} />
+      </mesh>
+      <mesh position={[0, 0.15, 0]} scale={[0.9, 0.05, 0.2]} geometry={GEO.soil}>
+        <meshStandardMaterial color="#2f6b3a" />
+      </mesh>
+      <mesh position={[0, 0.15, 0]} scale={[0.2, 0.05, 0.9]} geometry={GEO.soil}>
+        <meshStandardMaterial color="#2f6b3a" />
+      </mesh>
+    </group>
+  );
 }
 
 function Plot({
@@ -195,7 +225,7 @@ function AutoZoom({ span, height }: { span: number; height: number }) {
   return null;
 }
 
-export default function FarmScene({ cols, rows, tiles, reservoir, weather, harvestTiles, harvestKey, selectedTile, alertTiles, paintMode, onPaint, onSelect, tints }: Props) {
+export default function FarmScene({ cols, rows, tiles, reservoir, weather, harvestTiles, harvestKey, selectedTile, alertTiles, paintMode, onPaint, onSelect, tints, editShape, onEditCell }: Props) {
   const paintingRef = useRef(false);
   useEffect(() => {
     const stop = () => {
@@ -208,10 +238,49 @@ export default function FarmScene({ cols, rows, tiles, reservoir, weather, harve
       window.removeEventListener("pointercancel", stop);
     };
   }, []);
-  const w = cols * STEP;
-  const d = rows * STEP;
-  const W = w + MARGIN_X * 2;
-  const D = d + MARGIN_Z * 2;
+  const ids = useMemo(() => tiles.map((t) => t.rotationId), [tiles]);
+  const shapeKey = ids.map((id) => (isOn(id) ? 1 : 0)).join("") + `${cols}x${rows}`;
+  // terreno: las casillas de la chacra más un borde de pasto de una casilla
+  const layout = useMemo(() => {
+    const on = (r: number, c: number) => r >= 0 && c >= 0 && r < rows && c < cols && isOn(ids[r * cols + c]);
+    const ground = groundCells({ cols, rows, tiles: ids }, 1).map((g) => {
+      const [x, z] = cellPos(g.r, g.c, cols, rows);
+      return { ...g, x, z };
+    });
+    // cerca: un tramo por cada lado de casilla que da al exterior
+    const h = STEP / 2 + 0.05;
+    const segments: { x1: number; z1: number; x2: number; z2: number }[] = [];
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++) {
+        if (!on(r, c)) continue;
+        const [x, z] = cellPos(r, c, cols, rows);
+        if (!on(r - 1, c)) segments.push({ x1: x - h, z1: z - h, x2: x + h, z2: z - h });
+        if (!on(r + 1, c)) segments.push({ x1: x - h, z1: z + h, x2: x + h, z2: z + h });
+        if (!on(r, c - 1)) segments.push({ x1: x - h, z1: z - h, x2: x - h, z2: z + h });
+        if (!on(r, c + 1)) segments.push({ x1: x + h, z1: z - h, x2: x + h, z2: z + h });
+      }
+    // decoración sobre el borde de pasto, en lugares distintos y separados entre sí
+    const free = ground.filter((g) => !on(g.r, g.c));
+    const used: { x: number; z: number }[] = [];
+    const pick = (score: (g: { x: number; z: number }) => number) => {
+      const g = free.filter((f) => used.every((u) => Math.hypot(u.x - f.x, u.z - f.z) > STEP * 1.4)).sort((a, b) => score(a) - score(b))[0];
+      if (g) used.push(g);
+      return g ?? null;
+    };
+    const house = pick((g) => g.x + g.z);
+    const pond = pick((g) => -g.x + g.z);
+    const mill = pick((g) => g.x - g.z);
+    const volcano = pick((g) => -g.x - g.z);
+    const trees = [pick((g) => -g.x), pick((g) => g.z), pick((g) => -g.z)].filter((g): g is NonNullable<typeof g> => g !== null);
+    const xs = ground.map((g) => g.x);
+    const zs = ground.map((g) => g.z);
+    const W = Math.max(...xs) - Math.min(...xs) + STEP;
+    const D = Math.max(...zs) - Math.min(...zs) + STEP;
+    return { ground, segments, house, pond, mill, volcano, trees, W, D };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shapeKey]);
+  const ghosts = useMemo(() => (editShape ? addableCells({ cols, rows, tiles: ids }) : []), [editShape, cols, rows, ids]);
+  const { W, D } = layout;
   const span = (W + D) * 0.72;
   const center = useCallback((i: number) => tilePos(i, cols, rows), [cols, rows]);
   const coinPos = harvestTiles.map((i) => tilePos(i, cols, rows));
@@ -252,10 +321,11 @@ export default function FarmScene({ cols, rows, tiles, reservoir, weather, harve
         shadow-bias={-0.0005}
       />
 
-      <Island w={W} d={D} />
-      <Fence w={W - 0.5} d={D - 0.5} />
+      <ShapedIsland cells={layout.ground} step={STEP} />
+      <ShapeFence segments={layout.segments} />
 
       {tiles.map((t, i) => {
+        if (t.rotationId === OFF) return null;
         const [x, z] = tilePos(i, cols, rows);
         return (
           <Plot
@@ -267,28 +337,29 @@ export default function FarmScene({ cols, rows, tiles, reservoir, weather, harve
             selected={selectedTile === i}
             alert={alertTiles?.includes(i) ?? false}
             tint={tints?.[i] ?? null}
-            paintMode={paintMode}
+            paintMode={paintMode && !editShape}
             paintingRef={paintingRef}
             onPaint={onPaint}
-            onSelect={onSelect}
+            onSelect={editShape && onEditCell ? () => onEditCell(Math.floor(i / cols), i % cols) : onSelect}
           />
         );
+      })}
+      {ghosts.map((g) => {
+        const [x, z] = cellPos(g.r, g.c, cols, rows);
+        return <Ghost key={`${g.r}:${g.c}`} x={x} z={z} onTap={() => onEditCell?.(g.r, g.c)} />;
       })}
       <PlantField tiles={tiles} tileCenter={center} tileSize={TILE} soilTop={SOIL_H + 0.06} />
       {cows.map((c) => (
         <Cow key={c.i} x={c.x} z={c.z} rot={c.rot} seed={c.i} />
       ))}
 
-      {/* decoración alrededor de la chacra */}
-      <House x={-w / 2 - 1.9} z={-d / 2 + 0.6} rot={0.4} />
-      <Windmill x={-w / 2 - 2} z={d / 2 - 0.4} />
-      <Farmer x={-w / 2 - 0.55} z={0.4} rot={Math.PI / 2} />
-      <Pond x={w / 2 + 1.85} z={-d / 2 + 0.9} level={reservoir} />
-      <mesh position={[w / 2 + 0.45, 0.02, -d / 2 + 0.9]} scale={[1.2, 0.05, 0.4]} geometry={GEO.soil} material={MAT.water} />
-      <Tree x={w / 2 + 1.9} z={d / 2 - 0.6} s={0.9} />
-      <Tree x={w / 2 + 2.3} z={0.6} s={0.7} variant={1} />
-      <Tree x={-w / 2 - 2.6} z={0.9} s={0.65} variant={1} />
-      <Volcano x={-W / 2 + 1.2} z={-D / 2 + 0.9} s={0.55} />
+      {/* decoración sobre el borde de pasto */}
+      {layout.house && <House x={layout.house.x} z={layout.house.z} rot={0.4} />}
+      {layout.house && <Farmer x={layout.house.x + 1.1} z={layout.house.z + 0.6} rot={Math.PI / 2} />}
+      {layout.mill && <Windmill x={layout.mill.x} z={layout.mill.z} />}
+      {layout.pond && <Pond x={layout.pond.x} z={layout.pond.z} level={reservoir} s={0.68} />}
+      {layout.trees.map((tr, k) => <Tree key={k} x={tr.x} z={tr.z} s={0.75 - k * 0.05} variant={k} />)}
+      {layout.volcano && <Volcano x={layout.volcano.x} z={layout.volcano.z} s={0.45} />}
 
       {coinPos.length > 0 && <Coins key={harvestKey} positions={coinPos} />}
       <Clouds radius={Math.max(W, D) * 0.62} />
