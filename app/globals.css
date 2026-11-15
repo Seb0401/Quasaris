@@ -1508,3 +1508,17 @@
 .score-parts li > b { grid-column: -2; }
 .score-explain.is-compact .score-parts li { grid-template-columns: minmax(0, 1.2fr) minmax(36px, 1fr) 36px auto 30px; }
 @media (max-width: 560px) { .score-parts li { grid-template-columns: 1fr 40px auto 34px; } .score-part-bar { grid-column: 1 / -1; grid-row: 2; } }
+
+/* Inicio: la granja 3D flota sin fondo ni recuadro, y se ve el modelo completo */
+.qx-signal-card.qx-farm-card,
+:root[data-theme="light"] .qx-signal-card.qx-farm-card { width: min(100%, 640px); padding: 0; overflow: visible; border: 0; background: none; box-shadow: none; backdrop-filter: none; transform: none; }
+.qx-signal-card.qx-farm-card::before,
+:root[data-theme="light"] .qx-signal-card.qx-farm-card::before { display: none; }
+.qx-farm-card .qx-farm-frame,
+.qx-farm-card .qx-satellite-frame { height: auto; aspect-ratio: 1200 / 808; overflow: visible; border: 0; border-radius: 0; background: none; }
+.qx-farm-card .qx-farm-frame::after { display: none; }
+.qx-farm-card .qx-farm-frame img { object-fit: contain; filter: drop-shadow(0 28px 34px rgba(0, 0, 0, .28)); animation: qxFarmFloat 7s ease-in-out infinite alternate; }
+.qx-farm-card:hover .qx-farm-frame img { transform: translateY(-6px) scale(1.02); }
+@keyframes qxFarmFloat { from { translate: 0 0; } to { translate: 0 -10px; } }
+.qx-farm-card header, .qx-farm-card footer { padding-left: 12%; padding-right: 12%; }
+@media (prefers-reduced-motion: reduce) { .qx-farm-card .qx-farm-frame img { animation: none; } }
