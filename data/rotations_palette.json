@@ -1,12 +1,15 @@
 {
-  "_note": "Paleta de rotaciones del modo granja. Las 3 primeras son las de la demo (rotations_majes.json). A validar con un agrónomo.",
+  "_note": "Paleta de rotaciones del modo granja. Las 3 primeras son las de la demo (rotations_majes.json). A validar con un agrónomo. Quinua · Haba, las tres hermanas y Páprika · Avena · Arveja usan los cultivos añadidos para Arequipa.",
   "rotations": [
-    { "id": "actual", "name": "Alfalfa permanente", "isCurrent": true, "crops": [{ "cropId": "alfalfa", "sowMonth": 4 }] },
-    { "id": "ingreso", "name": "Cebolla · Papa · Maíz chala", "isCurrent": false, "crops": [{ "cropId": "cebolla", "sowMonth": 3 }, { "cropId": "papa", "sowMonth": 8 }, { "cropId": "maiz_chala", "sowMonth": 12 }] },
-    { "id": "suelo_agua", "name": "Cebolla · Haba · Maíz chala", "isCurrent": false, "crops": [{ "cropId": "cebolla", "sowMonth": 3 }, { "cropId": "haba", "sowMonth": 8 }, { "cropId": "maiz_chala", "sowMonth": 12 }] },
-    { "id": "papa_haba", "name": "Papa · Haba", "isCurrent": false, "crops": [{ "cropId": "papa", "sowMonth": 4 }, { "cropId": "haba", "sowMonth": 9 }] },
-    { "id": "cebolla_frijol", "name": "Cebolla · Frijol", "isCurrent": false, "crops": [{ "cropId": "cebolla", "sowMonth": 3 }, { "cropId": "frijol", "sowMonth": 8 }] },
-    { "id": "maiz_haba", "name": "Maíz chala · Haba · Maíz chala", "isCurrent": false, "crops": [{ "cropId": "maiz_chala", "sowMonth": 1 }, { "cropId": "haba", "sowMonth": 5 }, { "cropId": "maiz_chala", "sowMonth": 9 }] },
+    { "id": "actual", "name": "Alfalfa permanente", "isCurrent": true, "crops": [{"cropId": "alfalfa", "sowMonth": 4}] },
+    { "id": "ingreso", "name": "Cebolla · Papa · Maíz chala", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "papa", "sowMonth": 8}, {"cropId": "maiz_chala", "sowMonth": 12}] },
+    { "id": "suelo_agua", "name": "Cebolla · Haba · Maíz chala", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "haba", "sowMonth": 8}, {"cropId": "maiz_chala", "sowMonth": 12}] },
+    { "id": "papa_haba", "name": "Papa · Haba", "isCurrent": false, "crops": [{"cropId": "papa", "sowMonth": 4}, {"cropId": "haba", "sowMonth": 9}] },
+    { "id": "cebolla_frijol", "name": "Cebolla · Frijol", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "frijol", "sowMonth": 8}] },
+    { "id": "maiz_haba", "name": "Maíz chala · Haba · Maíz chala", "isCurrent": false, "crops": [{"cropId": "maiz_chala", "sowMonth": 1}, {"cropId": "haba", "sowMonth": 5}, {"cropId": "maiz_chala", "sowMonth": 9}] },
+    { "id": "quinua_haba", "name": "Quinua · Haba", "isCurrent": false, "crops": [{"cropId": "quinua", "sowMonth": 4}, {"cropId": "haba", "sowMonth": 10}] },
+    { "id": "tres_hermanas", "name": "Maíz chala + Frijol + Zapallo", "isCurrent": false, "mode": "association", "crops": [{"cropId": "maiz_chala", "sowMonth": 9}, {"cropId": "frijol", "sowMonth": 9}, {"cropId": "zapallo", "sowMonth": 9}] },
+    { "id": "paprika_avena", "name": "Páprika · Avena forrajera · Arveja", "isCurrent": false, "crops": [{"cropId": "paprika", "sowMonth": 8}, {"cropId": "avena", "sowMonth": 12}, {"cropId": "arveja", "sowMonth": 4}] },
     { "id": "descanso", "name": "Descanso", "isCurrent": false, "crops": [] }
   ]
 }

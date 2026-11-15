@@ -7,19 +7,13 @@ import { CropIcon, FrostIcon, HeatIcon, SoilIcon, WaterIcon } from "@/components
 import { Reveal } from "@/components/motion/reveal";
 import { CountUp, HeroStat, Meter, PageHeader, Panel, Segmented } from "@/components/ui/kit";
 import type { ClimateResponse } from "@/lib/contract";
-import { CROPS, MONTH_START, cropName, cropOnDay, cropSegments, cycleDays, dayOfYear, weekOf, weekOutlook } from "@/lib/crop-calendar";
+import { cropName, cropOnDay, CROPS, cropSegments, cycleDays, dayOfYear, FAMILY_COLOR, MONTH_START, weekOf, weekOutlook } from "@/lib/crop-calendar";
 import { useFarm } from "@/lib/farm-store";
 import { rotationColor } from "@/lib/ui";
 import { useToday } from "@/lib/use-today";
 
 const ENGINE_URL = process.env.NEXT_PUBLIC_ENGINE_URL ?? "";
 const CACHE_KEY = "farmtwin.climate.v1";
-const FAMILY_COLOR: Record<string, string> = {
-  leguminosa: "#b9ff63",
-  solanacea: "#e39a5d",
-  aliacea: "#b69cff",
-  graminea: "#f6b94c",
-};
 const cropColor = (cropId: string) => FAMILY_COLOR[CROPS[cropId]?.family] ?? "#63def2";
 
 function useClimate(lat: number, lon: number) {

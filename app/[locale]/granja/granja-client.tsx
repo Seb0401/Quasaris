@@ -182,13 +182,13 @@ function Farm() {
   const granja = useGranja();
   const webgl = useSyncExternalStore(webglStore.sub, webglStore.get, webglStore.server);
   const shot = useSyncExternalStore(shotStore.sub, shotStore.get, shotStore.server);
-  const palette = useMemo(() => buildPalette(farm.rotations), [farm.rotations]);
+  const palette = useMemo(() => buildPalette(farm.rotations, locale), [farm.rotations, locale]);
   const water = Math.round(farm.waterAvailableM3ha * granja.waterFactor);
   const extra = useMemo<Partial<SimulateRequest>>(
     () => ({ includeClimate: true, waterAvailableM3ha: water, scenario: granja.tempDelta ? { tempDeltaC: granja.tempDelta } : undefined }),
     [water, granja.tempDelta],
   );
-  const data = useSimulation({ rotations: palette, cacheKey: "farmtwin.granja.sim.v2", fallback: fallbackGranja, extra });
+  const data = useSimulation({ rotations: palette, cacheKey: "farmtwin.granja.sim.v3", fallback: fallbackGranja, extra });
 
   const [brush, setBrush] = useState<string>("suelo_agua");
   const [month, setMonth] = useState(0);

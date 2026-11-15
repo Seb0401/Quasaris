@@ -4,8 +4,9 @@
  * el motor ya hizo la ciencia (NASA POWER + FAO-56).
  */
 import paletteJson from "@/data/rotations_palette.json";
-import type { MonthStatus, Rotation, SimulateResponse } from "@/lib/contract";
+import type { Locale, MonthStatus, Rotation, SimulateResponse } from "@/lib/contract";
 import { CROPS, MONTH_START, cropOnDay, cycleDays, sowDay } from "@/lib/crop-calendar";
+import { localizeRotations } from "@/lib/rotation-utils";
 import { HEAT_WATER_FACTOR, hazardDamage, type FarmAlert, type FarmEvent } from "@/lib/granja-events";
 
 export const PALETTE = paletteJson.rotations as Rotation[];
@@ -19,6 +20,9 @@ export const ROTATION_COLOR: Record<string, string> = {
   cebolla_frijol: "#b07cc6",
   maiz_haba: "#e07b39",
   descanso: "#9b8f7a",
+  quinua_haba: "#c2477a",
+  tres_hermanas: "#e8a33d",
+  paprika_avena: "#d9503f",
 };
 
 const CUSTOM_COLORS = ["#e0607e", "#3fb6a8", "#c9a227", "#7a6ad8", "#d77a3a"];
@@ -31,10 +35,10 @@ export function rotationColor(id: string): string {
   return CUSTOM_COLORS[h % CUSTOM_COLORS.length];
 }
 
-/** Paleta del modo granja: las 7 de base más las rotaciones propias del agricultor. */
-export function buildPalette(farmRotations: Rotation[]): Rotation[] {
+/** Paleta del modo granja: las de base (con su nombre en el idioma de la página) más las rotaciones propias del agricultor. */
+export function buildPalette(farmRotations: Rotation[], locale: Locale = "en"): Rotation[] {
   const ids = new Set(PALETTE.map((r) => r.id));
-  return [...PALETTE, ...farmRotations.filter((r) => !ids.has(r.id) && r.crops.length > 0)];
+  return [...localizeRotations(PALETTE, locale), ...farmRotations.filter((r) => !ids.has(r.id) && r.crops.length > 0)];
 }
 
 export type Stage = "sprout" | "grow" | "flower" | "harvest";

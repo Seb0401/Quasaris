@@ -497,72 +497,98 @@
   },
   "aprende": {
     "title": "What does it mean?",
-    "subtitle": "The ideas behind FarmTwin, explained simply.",
+    "subtitle": "Ten ideas behind FarmTwin, in plain words. Tap one to read more.",
     "how": "In FarmTwin",
     "source": "Data",
     "disclaimer": "Explanations are simplified. For important decisions, talk to your local agronomist or INIA.",
     "topics": {
       "et": {
-        "title": "Evapotranspiration (ET)",
+        "title": "Water the field loses (ET)",
+        "short": "Sun, heat and wind pull water out of the soil and the leaves.",
         "text": "It's the water that leaves the field into the air: what evaporates from the soil and what the plant \"sweats\" through its leaves. More sun, heat, wind and dry air mean more water lost.",
         "how": "We compute reference ET (ET0) for every day of the last 21 years with the FAO Penman-Monteith equation.",
         "source": "NASA POWER (temperature, radiation, humidity and wind)"
       },
       "kc": {
-        "title": "Crop coefficient (Kc)",
+        "title": "How thirsty each crop is (Kc)",
+        "short": "Each crop drinks more or less water depending on its age.",
         "text": "Each crop uses a different share of ET0 depending on its size. Just planted it needs little (low Kc); at full bloom it needs more than the reference grass (Kc above 1).",
         "how": "Your crop's water is Kc × ET0, day by day, following its stages: initial, development, mid and late.",
         "source": "FAO-56, tables 11 and 12"
       },
       "balance": {
-        "title": "Water balance and irrigation",
+        "title": "How much to irrigate",
+        "short": "What the crop needs, minus rain, plus what the irrigation system loses.",
         "text": "What the crop needs minus the rain it can use is your net irrigation. No system is perfect: furrow irrigation loses almost half the water, drip very little. That total is gross irrigation.",
         "how": "We compare each rotation's gross irrigation with your available water. If it isn't enough, it's marked \"not viable\". 1 mm of water = 10 m³ per hectare.",
         "source": "Efficiencies: furrow 45%, sprinkler 75%, drip 90%"
       },
       "ndvi": {
-        "title": "NDVI (vegetation vigor)",
+        "title": "Plant greenness (NDVI)",
+        "short": "Satellites see how green and healthy the plants are.",
         "text": "A number satellites compute from the light plants reflect. A healthy green plant reflects a lot of infrared: high NDVI. Bare or dry soil: low NDVI.",
         "how": "You see it on the map and in the Time machine, month by month since 2000.",
         "source": "NASA MODIS Terra, via NASA GIBS"
       },
       "soil": {
         "title": "Soil moisture",
+        "short": "How much water is left in the soil where the roots are.",
         "text": "How much water the soil holds where the roots are. In the Majes desert, without irrigation, the soil is dry almost all year; in the highlands it rises in the rainy season.",
         "how": "We show natural soil moisture by month and week, plus the SMAP root-zone moisture map.",
         "source": "NASA POWER (GWETROOT) and NASA SMAP L4"
       },
       "frost": {
-        "title": "Frost and heat risk",
+        "title": "Frost and heat",
+        "short": "How often each week of the year got too cold or too hot.",
         "text": "Frost burns leaves and flowers when the air drops below a certain temperature; extreme heat closes the plant's pores and lowers yield. Each crop has its own limit.",
         "how": "We count in how many of the last 21 years each week had frost (minimum of 2 °C or less) or heat.",
         "source": "NASA POWER (daily minimum and maximum temperature)"
       },
       "fusion": {
         "title": "Altitude adjustment",
+        "short": "We correct satellite climate data for your field's real altitude.",
         "text": "Satellite climate data comes in squares of about 50 km with an average altitude. Majes is at 1,400 m, but its neighboring squares are at 835 m (coast) and 1,941 m.",
         "how": "We measure your field's real altitude with NASA terrain data and blend the two climate squares around it.",
         "source": "NASA SRTM + NASA POWER"
       },
       "ground": {
         "title": "Satellite vs. ground station",
+        "short": "A station measures one spot well; satellites cover everything.",
         "text": "A station measures one point very well. Satellites cover the whole planet every day, with less detail. Together they complement each other: the station checks and corrects the satellite.",
         "how": "We prepared the comparison with the SENAMHI Pampa de Majes station to measure the satellite error.",
         "source": "SENAMHI (station 116006) and NASA POWER"
       },
       "range": {
-        "title": "Ranges instead of one number",
+        "title": "Ranges, not one number",
+        "short": "Every year is different, so we show the typical value and the extremes.",
         "text": "Weather changes every year: dry years, normal years and El Niño. So we don't give one number but a range: the typical value and what happens in good and bad years.",
         "how": "Every figure comes from simulating the 21 real years: we show the median and the 10%–90% range.",
         "source": "NASA POWER 2005–2025"
       },
       "rotation": {
         "title": "Crop rotation",
+        "short": "Changing crops each season breaks pests and feeds the soil.",
         "text": "Alternating crops from different families breaks pest cycles. Legumes (faba, beans, alfalfa) fix nitrogen from the air and feed the soil. Leaving the field bare makes erosion easier.",
         "how": "The \"soil health\" score rewards legumes, family variety and covered soil, and penalizes bare months.",
         "source": "General agronomic rules (to validate with an agronomist)"
       }
-    }
+    },
+    "kicker": "GLOSSARY",
+    "groups": {
+      "water": {
+        "title": "Water",
+        "text": "How much water your crops use and how much you need to irrigate."
+      },
+      "space": {
+        "title": "Seen from space",
+        "text": "What NASA satellites measure and how we adapt it to your field."
+      },
+      "decide": {
+        "title": "Risk and decisions",
+        "text": "How FarmTwin turns 21 years of data into advice you can trust."
+      }
+    },
+    "more": "Read more"
   },
   "reco": {
     "kicker": "Recommendation for your field",
@@ -677,38 +703,29 @@
   },
   "group": {
     "title": "Crop groupings",
-    "subtitle": "Build a group of crops and see whether it works, based on nutrients, pests, roots, water and care.",
+    "subtitle": "Pick a few crops and see at a glance whether they work well together.",
     "mode": {
       "rotation": "Rotation",
       "rotationHint": "One after another on the same plot.",
       "association": "Intercropping",
       "associationHint": "Together on the same plot at the same time."
     },
-    "presets": "Examples:",
+    "presets": "Or start from a classic:",
     "preset": {
-      "milpa": "Milpa: maize + bean",
-      "andean": "Potato + faba",
-      "careful": "Onion + faba",
+      "threeSisters": "Maize + bean + squash",
+      "carrotOnion": "Carrot + onion",
+      "oatPea": "Oats + pea",
       "soilWater": "Onion → faba → maize",
+      "quinoaFaba": "Quinoa → faba",
       "hungry": "Potato → maize"
     },
-    "pick": "Tap a crop to add it",
-    "fixes": "fixes {kg} kg N",
-    "needsN": "needs {kg} kg N",
-    "orderRotation": "Rotation order",
-    "together": "Planted together",
     "emptyHint": "Add at least one crop.",
-    "result": "Evaluation",
+    "result": "Result",
     "verdict": {
       "good": "Good combination",
       "fair": "Works with care",
       "poor": "Not recommended"
     },
-    "pros": "Why yes",
-    "cons": "Why not",
-    "nutrients": "Group nutrients",
-    "nDemand": "Nitrogen they need",
-    "nFixed": "Nitrogen fixed by legumes",
     "nSurplus": "Legumes cover the nitrogen: about {kg} kg/ha to spare.",
     "nNeed": "You'll need to add about {kg} kg/ha of nitrogen (fertilizer or guano).",
     "level": {
@@ -717,7 +734,6 @@
       "high": "high"
     },
     "labor": "Labor",
-    "cares": "Key care",
     "sharedPests": "Shared pests and diseases",
     "save": "Save as rotation",
     "saved": "Saved",
@@ -738,7 +754,7 @@
       "twoFamilies": "Alternates two families: helps somewhat against pests.",
       "legumeBeforeHungry": "{a} leaves nitrogen in the soil for {b}, which is very demanding.",
       "hungryAfterHungry": "{b} comes right after {a}: two very demanding crops in a row deplete the soil.",
-      "potatoRepeat": "Repeated potato: much higher risk of Andean weevil and late blight. Leave 3 years without potato.",
+      "potatoRepeat": "Several nightshades (potato, tomato, paprika) in the same cycle: more late blight and pests. Space them out.",
       "overlap": "Two crops overlap for {days} days: check the planting months.",
       "bareMonths": "The soil stays bare for {n} months: more erosion and organic matter loss.",
       "alwaysCovered": "The soil is covered all year.",
@@ -752,11 +768,16 @@
       "sharedPestsTogether": "They share {n} pest(s) or disease(s): one outbreak hits both at once.",
       "companion": {
         "milpa": "{a} and {b} are the classic milpa: beans fix nitrogen and climb the maize.",
-        "legumeTall": "{b} provides nitrogen to {a} and they have different heights.",
-        "andeanPair": "{a} and {b} are a traditional Andean pairing: faba provides nitrogen.",
-        "alliumLegume": "{a} inhibits the growth of {b} (alliums hold back legumes).",
-        "shadeHungry": "{b} shades {a} and both need a lot of nitrogen.",
-        "perennialDense": "Alfalfa is perennial and very dense: it competes hard. Better use it in rotation."
+        "legumeTall": "{a} and {b}: the legume provides nitrogen and they grow to different heights.",
+        "andeanPair": "{a} and {b} are a traditional Andean pairing: the legume provides nitrogen.",
+        "alliumLegume": "{a} and {b} don't mix: garlic and onion hold back the growth of legumes.",
+        "shadeHungry": "{a} and {b}: one shades the other and both need a lot of nitrogen.",
+        "perennialDense": "Alfalfa is perennial and very dense: it competes hard. Better use it in rotation.",
+        "threeSisters": "{a} and {b} are part of the \"three sisters\": the squash covers the ground and keeps moisture in.",
+        "cerealLegume": "{a} and {b} are a classic cereal and legume mix: more forage, and richer.",
+        "carrotOnion": "{a} and {b} grow well together: different roots, and the smell keeps carrot pests away.",
+        "alliumRepels": "{a} and {b} get along: garlic and onion help keep some pests away.",
+        "nightshadeBlight": "{a} and {b} share late blight: an outbreak on one quickly reaches the other."
       }
     },
     "care": {
@@ -778,7 +799,25 @@
       "coldTolerant": "Tolerates cold better than other crops (down to about −3 °C).",
       "frostSensitive": "Very frost-sensitive: don't plant if there is frost risk in the cycle.",
       "rust": "Rust: orange spots on leaves; use tolerant varieties.",
-      "whitefly": "Whitefly: more common in heat; control early."
+      "whitefly": "Whitefly: more common in heat; control early.",
+      "birds": "Protect the seed heads from birds near harvest.",
+      "downyMildewQuinoa": "Downy mildew: appears with humidity; don't overwater.",
+      "saponin": "Wash the grain to remove saponin (bitter taste) before selling or eating it.",
+      "coldStart": "Plant it in the cool months: it needs cold to form good bulbs.",
+      "looseSoil": "Needs loose, stone-free soil so the roots grow straight.",
+      "thinning": "Thin the seedlings 3 to 4 weeks after sowing.",
+      "evenWater": "Water evenly: irregular irrigation cracks fruits and roots.",
+      "trellis": "Give it stakes or a trellis to climb.",
+      "coolSeason": "Prefers cool weather: avoid the hottest months.",
+      "powderyMildew": "Powdery mildew: white powder on the leaves, more common in dry, warm weather.",
+      "dryHarvest": "Harvest when the grain is dry and hard.",
+      "droughtTolerant": "Handles dry spells better than other cereals.",
+      "cutAtMilk": "Cut it for forage when the grain is still milky.",
+      "withVetch": "Mixed with pea or vetch it gives richer forage.",
+      "groundCover": "Its big leaves cover the soil and keep moisture in.",
+      "pollinators": "Needs bees to pollinate the flowers.",
+      "staking": "Stake and prune it so the fruit stays off the ground.",
+      "sunDrying": "Dry the pods in the sun on clean ground after harvest."
     },
     "pest": {
       "aphid": "aphid",
@@ -792,7 +831,38 @@
       "lateBlight": "late blight",
       "downyMildew": "downy mildew",
       "rust": "rust",
-      "chocolateSpot": "chocolate spot"
-    }
+      "chocolateSpot": "chocolate spot",
+      "quinoaMoth": "quinoa moth",
+      "mites": "mites",
+      "whiteRot": "white rot",
+      "leafBlight": "leaf blight",
+      "leafminer": "leafminer",
+      "powderyMildew": "powdery mildew",
+      "tomatoMoth": "tomato moth"
+    },
+    "kicker": "GROUPINGS",
+    "step1": "How will you plant them?",
+    "step2": "Pick up to 4 crops",
+    "step3": "Your group",
+    "category": {
+      "all": "All",
+      "vegetable": "Vegetables",
+      "grain": "Grains",
+      "legume": "Legumes",
+      "forage": "Forage"
+    },
+    "feedsSoil": "Feeds the soil",
+    "count": "{n} of {max}",
+    "reasons": "Why",
+    "moreReasons": "See all reasons ({n})",
+    "fewerReasons": "Show fewer",
+    "nTitle": "Nitrogen",
+    "nCover": "Legumes cover {pct} of the nitrogen these crops need.",
+    "nNone": "No legumes: all the nitrogen has to come from fertilizer.",
+    "careTitle": "Care tips",
+    "moreTitle": "More detail",
+    "clear": "Clear",
+    "remove": "Remove {crop}",
+    "moveUp": "Move {crop} up"
   }
 }

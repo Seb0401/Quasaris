@@ -497,72 +497,98 @@
   },
   "aprende": {
     "title": "¿Qué significa?",
-    "subtitle": "Las ideas detrás de FarmTwin, explicadas en simple.",
+    "subtitle": "Diez ideas detrás de FarmTwin, en palabras simples. Toca una para leer más.",
     "how": "En FarmTwin",
     "source": "Dato",
     "disclaimer": "Las explicaciones son simplificadas. Para decisiones importantes consulta a tu técnico agrario o a INIA.",
     "topics": {
       "et": {
-        "title": "Evapotranspiración (ET)",
+        "title": "El agua que pierde el campo (ET)",
+        "short": "El sol, el calor y el viento sacan agua del suelo y de las hojas.",
         "text": "Es el agua que sale del campo hacia el aire: la que se evapora del suelo y la que \"suda\" la planta por sus hojas. Con más sol, calor, viento y aire seco, el campo pierde más agua.",
         "how": "Calculamos la ET de referencia (ET0) de cada día de los últimos 21 años con la fórmula Penman-Monteith de la FAO.",
         "source": "NASA POWER (temperatura, radiación, humedad y viento)"
       },
       "kc": {
-        "title": "Coeficiente de cultivo (Kc)",
+        "title": "Qué tan sediento es cada cultivo (Kc)",
+        "short": "Cada cultivo toma más o menos agua según su edad.",
         "text": "Cada cultivo toma una parte distinta de esa ET0 según su tamaño. Recién sembrado pide poco (Kc bajo); en plena floración pide más que el pasto de referencia (Kc mayor a 1).",
         "how": "El agua de tu cultivo es Kc × ET0, día a día, siguiendo sus etapas: inicial, desarrollo, media y final.",
         "source": "FAO-56, tablas 11 y 12"
       },
       "balance": {
-        "title": "Balance hídrico y riego",
+        "title": "Cuánto regar",
+        "short": "Lo que pide el cultivo, menos la lluvia, más lo que pierde el sistema de riego.",
         "text": "Lo que pide el cultivo menos la lluvia que aprovecha es tu riego neto. Pero ningún sistema es perfecto: con gravedad se pierde casi la mitad del agua y con goteo muy poca. Ese total es el riego bruto.",
         "how": "Comparamos el riego bruto de cada rotación con tu agua disponible. Si no alcanza, la marcamos como \"no viable\". 1 mm de agua = 10 m³ por hectárea.",
         "source": "Eficiencias: gravedad 45 %, aspersión 75 %, goteo 90 %"
       },
       "ndvi": {
-        "title": "NDVI (vigor de la vegetación)",
+        "title": "Verdor de las plantas (NDVI)",
+        "short": "Los satélites ven qué tan verdes y sanas están las plantas.",
         "text": "Es un número que los satélites calculan con la luz que reflejan las plantas. Una planta sana y verde refleja mucho infrarrojo: NDVI alto. Suelo desnudo o seco: NDVI bajo.",
         "how": "Lo ves en el mapa y en la Máquina del tiempo, mes a mes desde el año 2000.",
         "source": "NASA MODIS Terra, vía NASA GIBS"
       },
       "soil": {
         "title": "Humedad del suelo",
+        "short": "Cuánta agua queda en el suelo, donde están las raíces.",
         "text": "Cuánta agua guarda la tierra donde están las raíces. En el desierto de Majes, sin riego, el suelo está seco casi todo el año; en la sierra sube en la temporada de lluvias.",
         "how": "Mostramos la humedad natural del suelo por mes y por semana, y el mapa SMAP de humedad en raíces.",
         "source": "NASA POWER (GWETROOT) y NASA SMAP L4"
       },
       "frost": {
-        "title": "Riesgo de helada y de calor",
+        "title": "Heladas y calor",
+        "short": "Con qué frecuencia cada semana del año hizo demasiado frío o calor.",
         "text": "Una helada quema hojas y flores cuando el aire baja de cierta temperatura; el calor extremo cierra los poros de la planta y baja el rendimiento. Cada cultivo tiene su propio límite.",
         "how": "Contamos en cuántos de los últimos 21 años hubo helada (mínima de 2 °C o menos) o calor en cada semana.",
         "source": "NASA POWER (temperatura mínima y máxima diaria)"
       },
       "fusion": {
-        "title": "Ajuste por altura",
+        "title": "Ajuste por altitud",
+        "short": "Corregimos el clima satelital con la altitud real de tu parcela.",
         "text": "Los datos de clima del satélite vienen en cuadros de unos 50 km, con una altura promedio. Majes está a 1.400 m, pero sus cuadros vecinos están a 835 m (costa) y 1.941 m.",
         "how": "Medimos la altura real de tu parcela con el relieve de la NASA y combinamos los dos cuadros de clima que la rodean.",
         "source": "NASA SRTM + NASA POWER"
       },
       "ground": {
-        "title": "Satélite frente a estación en tierra",
+        "title": "Satélite vs. estación en tierra",
+        "short": "Una estación mide muy bien un punto; los satélites lo cubren todo.",
         "text": "Una estación mide muy bien un solo punto. El satélite cubre todo el planeta, todos los días, pero con menos detalle. Juntos se complementan: la estación sirve para revisar y corregir al satélite.",
         "how": "Preparamos la comparación con la estación SENAMHI Pampa de Majes para medir cuánto se equivoca el dato satelital.",
         "source": "SENAMHI (estación 116006) y NASA POWER"
       },
       "range": {
-        "title": "Rangos en vez de un solo número",
+        "title": "Rangos, no un solo número",
+        "short": "Cada año es distinto: mostramos el valor típico y los extremos.",
         "text": "El clima cambia cada año: hay años secos, normales y con El Niño. Por eso no te damos un solo número sino un rango: lo típico y lo que pasa en años buenos y malos.",
         "how": "Cada cifra viene de simular los 21 años reales: mostramos la mediana y el rango del 10 % al 90 %.",
         "source": "NASA POWER 2005–2025"
       },
       "rotation": {
         "title": "Rotación de cultivos",
+        "short": "Cambiar de cultivo cada campaña corta las plagas y abona el suelo.",
         "text": "Alternar cultivos de familias distintas corta el ciclo de plagas. Las leguminosas (haba, frijol, alfalfa) fijan nitrógeno del aire y abonan el suelo. Dejar el campo desnudo facilita la erosión.",
         "how": "El puntaje de \"salud del suelo\" premia leguminosas, variedad de familias y suelo cubierto, y castiga los meses desnudos.",
         "source": "Reglas agronómicas generales (a validar con un agrónomo)"
       }
-    }
+    },
+    "kicker": "GLOSARIO",
+    "groups": {
+      "water": {
+        "title": "Agua",
+        "text": "Cuánta agua usan tus cultivos y cuánto necesitas regar."
+      },
+      "space": {
+        "title": "Visto desde el espacio",
+        "text": "Qué miden los satélites de la NASA y cómo lo adaptamos a tu parcela."
+      },
+      "decide": {
+        "title": "Riesgo y decisiones",
+        "text": "Cómo FarmTwin convierte 21 años de datos en consejos confiables."
+      }
+    },
+    "more": "Leer más"
   },
   "reco": {
     "kicker": "Recomendación para tu parcela",
@@ -677,38 +703,29 @@
   },
   "group": {
     "title": "Agrupaciones de cultivos",
-    "subtitle": "Arma un grupo de cultivos y mira si conviene, según nutrientes, plagas, raíces, agua y cuidados.",
+    "subtitle": "Elige algunos cultivos y mira de un vistazo si funcionan bien juntos.",
     "mode": {
       "rotation": "Rotación",
       "rotationHint": "Uno después de otro en el mismo lote.",
       "association": "Asociación",
       "associationHint": "Juntos en el mismo lote y al mismo tiempo."
     },
-    "presets": "Ejemplos:",
+    "presets": "O empieza con un clásico:",
     "preset": {
-      "milpa": "Milpa: maíz + frijol",
-      "andean": "Papa + haba",
-      "careful": "Cebolla + haba",
+      "threeSisters": "Maíz + frijol + zapallo",
+      "carrotOnion": "Zanahoria + cebolla",
+      "oatPea": "Avena + arveja",
       "soilWater": "Cebolla → haba → maíz",
+      "quinoaFaba": "Quinua → haba",
       "hungry": "Papa → maíz"
     },
-    "pick": "Toca un cultivo para agregarlo",
-    "fixes": "fija {kg} kg N",
-    "needsN": "pide {kg} kg N",
-    "orderRotation": "Orden de la rotación",
-    "together": "Sembrados juntos",
     "emptyHint": "Agrega al menos un cultivo.",
-    "result": "Evaluación",
+    "result": "Resultado",
     "verdict": {
       "good": "Buena combinación",
       "fair": "Funciona con cuidados",
       "poor": "No recomendable"
     },
-    "pros": "Por qué sí",
-    "cons": "Por qué no",
-    "nutrients": "Nutrientes del grupo",
-    "nDemand": "Nitrógeno que piden",
-    "nFixed": "Nitrógeno que fijan las leguminosas",
     "nSurplus": "Las leguminosas cubren el nitrógeno: sobran unos {kg} kg/ha.",
     "nNeed": "Hay que aportar unos {kg} kg/ha de nitrógeno (abono o guano).",
     "level": {
@@ -717,7 +734,6 @@
       "high": "alto"
     },
     "labor": "Mano de obra",
-    "cares": "Cuidados clave",
     "sharedPests": "Plagas y enfermedades compartidas",
     "save": "Guardar como rotación",
     "saved": "Guardada",
@@ -738,7 +754,7 @@
       "twoFamilies": "Alterna dos familias: ayuda algo contra las plagas.",
       "legumeBeforeHungry": "{a} deja nitrógeno en el suelo para {b}, que es muy exigente.",
       "hungryAfterHungry": "{b} va justo después de {a}: dos cultivos muy exigentes seguidos agotan el suelo.",
-      "potatoRepeat": "Papa repetida: sube mucho el riesgo de gorgojo de los Andes y rancha. Deja 3 años sin papa.",
+      "potatoRepeat": "Varias solanáceas (papa, tomate, páprika) en el mismo ciclo: más rancha y plagas. Sepáralas en el tiempo.",
       "overlap": "Dos cultivos se cruzan {days} días: revisa los meses de siembra.",
       "bareMonths": "El suelo queda desnudo {n} meses: más erosión y pérdida de materia orgánica.",
       "alwaysCovered": "El suelo está cubierto todo el año.",
@@ -752,11 +768,16 @@
       "sharedPestsTogether": "Comparten {n} plaga(s) o enfermedad(es): un brote afecta a ambos a la vez.",
       "companion": {
         "milpa": "{a} y {b} son la clásica milpa: el frijol fija nitrógeno y trepa por el maíz.",
-        "legumeTall": "{b} aporta nitrógeno a {a} y tienen alturas distintas.",
-        "andeanPair": "{a} y {b} son una asociación andina tradicional: la haba aporta nitrógeno.",
-        "alliumLegume": "{a} inhibe el crecimiento de {b} (las aliáceas frenan a las leguminosas).",
-        "shadeHungry": "{b} da sombra a {a} y ambos piden mucho nitrógeno.",
-        "perennialDense": "La alfalfa es perenne y muy densa: compite fuerte. Mejor úsala en rotación."
+        "legumeTall": "{a} y {b}: la leguminosa aporta nitrógeno y crecen a alturas distintas.",
+        "andeanPair": "{a} y {b} son una asociación andina tradicional: la leguminosa aporta nitrógeno.",
+        "alliumLegume": "{a} y {b} no se llevan: el ajo y la cebolla frenan el crecimiento de las leguminosas.",
+        "shadeHungry": "{a} y {b}: uno le da sombra al otro y ambos piden mucho nitrógeno.",
+        "perennialDense": "La alfalfa es perenne y muy densa: compite fuerte. Mejor úsala en rotación.",
+        "threeSisters": "{a} y {b} son parte de las \"tres hermanas\": el zapallo cubre el suelo y guarda la humedad.",
+        "cerealLegume": "{a} y {b} son la clásica mezcla de cereal y leguminosa: más forraje y más nutritivo.",
+        "carrotOnion": "{a} y {b} crecen bien juntos: raíces distintas y el olor aleja las plagas de la zanahoria.",
+        "alliumRepels": "{a} y {b} se llevan bien: el ajo y la cebolla ayudan a alejar algunas plagas.",
+        "nightshadeBlight": "{a} y {b} comparten la rancha: un brote en uno llega rápido al otro."
       }
     },
     "care": {
@@ -778,7 +799,25 @@
       "coldTolerant": "Aguanta el frío mejor que otros cultivos (hasta unos −3 °C).",
       "frostSensitive": "Muy sensible a heladas: no sembrar si hay riesgo de helada en el ciclo.",
       "rust": "Roya: manchas anaranjadas en las hojas; usa variedades tolerantes.",
-      "whitefly": "Mosca blanca: más común en calor; controla temprano."
+      "whitefly": "Mosca blanca: más común en calor; controla temprano.",
+      "birds": "Protege las panojas de los pájaros cerca de la cosecha.",
+      "downyMildewQuinoa": "Mildiu: aparece con humedad; no riegues de más.",
+      "saponin": "Lava el grano para quitar la saponina (sabor amargo) antes de venderlo o consumirlo.",
+      "coldStart": "Siémbralo en los meses frescos: necesita frío para formar buenas cabezas.",
+      "looseSoil": "Necesita suelo suelto y sin piedras para que la raíz crezca recta.",
+      "thinning": "Ralea las plántulas a las 3 o 4 semanas de la siembra.",
+      "evenWater": "Riega de forma pareja: el riego irregular raja frutos y raíces.",
+      "trellis": "Ponle tutores o espalderas para que trepe.",
+      "coolSeason": "Prefiere clima fresco: evita los meses más calurosos.",
+      "powderyMildew": "Oídio: polvo blanco en las hojas, más común en clima seco y templado.",
+      "dryHarvest": "Cosecha cuando el grano esté seco y duro.",
+      "droughtTolerant": "Aguanta la sequía mejor que otros cereales.",
+      "cutAtMilk": "Córtala para forraje cuando el grano aún esté lechoso.",
+      "withVetch": "Mezclada con arveja o vicia da un forraje más nutritivo.",
+      "groundCover": "Sus hojas grandes cubren el suelo y guardan la humedad.",
+      "pollinators": "Necesita abejas para polinizar las flores.",
+      "staking": "Ponle tutor y pódalo para que el fruto no toque el suelo.",
+      "sunDrying": "Seca los frutos al sol sobre suelo limpio después de cosechar."
     },
     "pest": {
       "aphid": "pulgón",
@@ -792,7 +831,38 @@
       "lateBlight": "rancha",
       "downyMildew": "mildiu",
       "rust": "roya",
-      "chocolateSpot": "mancha chocolate"
-    }
+      "chocolateSpot": "mancha chocolate",
+      "quinoaMoth": "polilla de la quinua",
+      "mites": "ácaros",
+      "whiteRot": "pudrición blanca",
+      "leafBlight": "quemadura de la hoja",
+      "leafminer": "mosca minadora",
+      "powderyMildew": "oídio",
+      "tomatoMoth": "polilla del tomate"
+    },
+    "kicker": "AGRUPACIONES",
+    "step1": "¿Cómo los vas a sembrar?",
+    "step2": "Elige hasta 4 cultivos",
+    "step3": "Tu grupo",
+    "category": {
+      "all": "Todos",
+      "vegetable": "Hortalizas",
+      "grain": "Granos",
+      "legume": "Leguminosas",
+      "forage": "Forraje"
+    },
+    "feedsSoil": "Abona el suelo",
+    "count": "{n} de {max}",
+    "reasons": "Por qué",
+    "moreReasons": "Ver todos los motivos ({n})",
+    "fewerReasons": "Ver menos",
+    "nTitle": "Nitrógeno",
+    "nCover": "Las leguminosas cubren {pct} del nitrógeno que piden estos cultivos.",
+    "nNone": "Sin leguminosas: todo el nitrógeno tendrá que venir del abono.",
+    "careTitle": "Cuidados",
+    "moreTitle": "Más detalle",
+    "clear": "Vaciar",
+    "remove": "Quitar {crop}",
+    "moveUp": "Subir {crop}"
   }
 }

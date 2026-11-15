@@ -3,8 +3,8 @@
  * - Estáticos (_next/static, íconos, teselas GIBS): caché primero.
  * - /api/*: siempre red (el cliente guarda su propio respaldo en localStorage).
  */
-const VERSION = "farmtwin-v1";
-const SHELL = ["/es", "/en", "/es/parcela", "/es/comparar", "/en/parcela", "/en/comparar", "/manifest.webmanifest"];
+const VERSION = "farmtwin-v2";
+const SHELL = ["/en", "/es", "/en/parcela", "/en/comparar", "/es/parcela", "/es/comparar", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -60,14 +60,14 @@ self.addEventListener("fetch", (event) => {
           caches.open(VERSION).then((c) => c.put(req, copy));
           return res;
         })
-        .catch(() => caches.match(req).then((hit) => hit || caches.match("/es"))),
+        .catch(() => caches.match(req).then((hit) => hit || caches.match("/en"))),
     );
   }
 });
 
 /* Push: payload JSON { title, body, url } (flujo C · agente C2) */
 self.addEventListener("push", (event) => {
-  let data = { title: "FarmTwin", body: "", url: "/es/calendario" };
+  let data = { title: "FarmTwin", body: "", url: "/en/calendario" };
   try {
     if (event.data) data = { ...data, ...event.data.json() };
   } catch {
@@ -85,7 +85,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = (event.notification.data && event.notification.data.url) || "/es";
+  const target = (event.notification.data && event.notification.data.url) || "/en";
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
       const open = list.find((c) => new URL(c.url).pathname === target);

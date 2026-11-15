@@ -3,7 +3,7 @@ import en from "@/messages/en.json";
 import type { Locale } from "@/lib/contract";
 
 export const locales = ["es", "en"] as const satisfies readonly Locale[];
-export const defaultLocale: Locale = "es";
+export const defaultLocale: Locale = "en";
 
 export type Messages = typeof es;
 const dictionaries: Record<Locale, Messages> = { es, en };

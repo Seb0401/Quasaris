@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     },
   },
   async redirects() {
-    return [{ source: "/", destination: "/es", permanent: false }];
+    return [{ source: "/", destination: "/en", permanent: false }];
   },
   // En local el motor Python corre aparte (npm run dev:py). En Vercel lo enruta vercel.json.
   async rewrites() {

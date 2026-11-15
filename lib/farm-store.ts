@@ -1,8 +1,10 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useMemo, useSyncExternalStore } from "react";
+import { useLocale } from "@/components/i18n-provider";
 import type { Irrigation, Priorities, Rotation, SoilTexture } from "@/lib/contract";
 import rotationsMajes from "@/data/rotations_majes.json";
+import { localizeRotations } from "@/lib/rotation-utils";
 
 /** Estado del agricultor, persistido en localStorage (funciona offline). */
 export type FarmState = {
@@ -80,8 +82,10 @@ function subscribe(l: () => void) {
   return () => listeners.delete(l);
 }
 
+/** Estado del agricultor; las rotaciones de ejemplo llegan con el nombre en el idioma de la página. */
 export function useFarm(): FarmState {
-  return useSyncExternalStore(
+  const locale = useLocale();
+  const raw = useSyncExternalStore(
     subscribe,
     () => {
       load();
@@ -89,4 +93,5 @@ export function useFarm(): FarmState {
     },
     () => DEFAULT,
   );
+  return useMemo(() => ({ ...raw, rotations: localizeRotations(raw.rotations, locale) }), [raw, locale]);
 }

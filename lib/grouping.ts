@@ -102,7 +102,8 @@ export function evaluateGroup(crops: RotationCrop[], mode: GroupMode, names: (id
       if (cur.nFixKg > 0 && next.nDemandKg >= 150) pros.push({ key: "legumeBeforeHungry", params: { a: names(ids[i]), b: names(ids[(i + 1) % ids.length]) }, weight: 10 });
       if (cur.nDemandKg >= 150 && next.nDemandKg >= 150) cons.push({ key: "hungryAfterHungry", params: { a: names(ids[i]), b: names(ids[(i + 1) % ids.length]) }, weight: 8 });
     }
-    if (ids.includes("papa") && fam.filter((f) => f === "solanacea").length > 1) cons.push({ key: "potatoRepeat", weight: 12 });
+    // papa, tomate y páprika comparten rancha, gorgojo y polillas: no conviene repetirlas en el mismo ciclo
+    if (fam.filter((f) => f === "solanacea").length > 1) cons.push({ key: "potatoRepeat", weight: 12 });
 
     const overlap = overlapDays({ id: "x", name: "x", isCurrent: false, crops });
     if (overlap > 0) cons.push({ key: "overlap", params: { days: overlap }, weight: 10 });

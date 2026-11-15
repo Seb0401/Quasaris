@@ -7,7 +7,8 @@
     "costPENha": "S/ por hectárea por campaña",
     "tFrostC": "Tmin diaria bajo la cual hay daño por helada",
     "tHeatC": "Tmax diaria sobre la cual hay estrés por calor",
-    "rootDepthM": "profundidad efectiva de raíz"
+    "rootDepthM": "profundidad efectiva de raíz",
+    "category": "grupo para la interfaz: vegetable | grain | legume | forage"
   },
   "crops": {
     "alfalfa": {
@@ -16,6 +17,7 @@
         "en": "Alfalfa"
       },
       "family": "leguminosa",
+      "category": "forage",
       "fixesNitrogen": true,
       "perennial": true,
       "kc": {
@@ -69,6 +71,7 @@
         "en": "Potato"
       },
       "family": "solanacea",
+      "category": "vegetable",
       "fixesNitrogen": false,
       "perennial": false,
       "kc": {
@@ -123,6 +126,7 @@
         "en": "Onion"
       },
       "family": "aliacea",
+      "category": "vegetable",
       "fixesNitrogen": false,
       "perennial": false,
       "kc": {
@@ -176,6 +180,7 @@
         "en": "Forage maize"
       },
       "family": "graminea",
+      "category": "forage",
       "fixesNitrogen": false,
       "perennial": false,
       "kc": {
@@ -228,6 +233,7 @@
         "en": "Faba bean"
       },
       "family": "leguminosa",
+      "category": "legume",
       "fixesNitrogen": true,
       "perennial": false,
       "kc": {
@@ -280,6 +286,7 @@
         "en": "Dry bean"
       },
       "family": "leguminosa",
+      "category": "legume",
       "fixesNitrogen": true,
       "perennial": false,
       "kc": {
@@ -325,6 +332,541 @@
         "humiditySensitive": false,
         "weedSensitive": false
       }
+    },
+    "quinua": {
+      "name": {
+        "es": "Quinua",
+        "en": "Quinoa"
+      },
+      "family": "amarantacea",
+      "category": "grain",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.3,
+        "mid": 1.0,
+        "end": 0.7
+      },
+      "stagesDays": [
+        25,
+        60,
+        60,
+        35
+      ],
+      "rootDepthM": 1.0,
+      "tFrostC": -4,
+      "tHeatC": 32,
+      "yieldTha": 3.5,
+      "pricePENt": 4500,
+      "costPENha": 9000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (quinua)",
+        "stages": "FAO-56 tabla 11 (quinua, zona árida), ajustado",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 100,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "med",
+        "height": "mid",
+        "labor": "med",
+        "cares": [
+          "birds",
+          "downyMildewQuinoa",
+          "saponin"
+        ],
+        "pests": [
+          "quinoaMoth"
+        ],
+        "diseases": [
+          "downyMildew"
+        ],
+        "humiditySensitive": true,
+        "weedSensitive": false
+      }
+    },
+    "ajo": {
+      "name": {
+        "es": "Ajo",
+        "en": "Garlic"
+      },
+      "family": "aliacea",
+      "category": "vegetable",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.7,
+        "mid": 1.0,
+        "end": 0.7
+      },
+      "stagesDays": [
+        30,
+        50,
+        60,
+        30
+      ],
+      "rootDepthM": 0.4,
+      "tFrostC": -3,
+      "tHeatC": 30,
+      "yieldTha": 14,
+      "pricePENt": 3000,
+      "costPENha": 20000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (ajo, similar a cebolla seca)",
+        "stages": "FAO-56 tabla 11 (cebolla seca), ajustado a ajo",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 150,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "low",
+        "labor": "high",
+        "cares": [
+          "coldStart",
+          "weeding",
+          "stopIrrigation"
+        ],
+        "pests": [
+          "thrips",
+          "mites"
+        ],
+        "diseases": [
+          "whiteRot"
+        ],
+        "humiditySensitive": true,
+        "weedSensitive": true
+      }
+    },
+    "zanahoria": {
+      "name": {
+        "es": "Zanahoria",
+        "en": "Carrot"
+      },
+      "family": "apiacea",
+      "category": "vegetable",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.7,
+        "mid": 1.05,
+        "end": 0.95
+      },
+      "stagesDays": [
+        20,
+        30,
+        50,
+        20
+      ],
+      "rootDepthM": 0.6,
+      "tFrostC": -2,
+      "tHeatC": 30,
+      "yieldTha": 35,
+      "pricePENt": 600,
+      "costPENha": 9000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (zanahoria)",
+        "stages": "FAO-56 tabla 11 (zanahoria, zona árida), ajustado",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 100,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "low",
+        "labor": "med",
+        "cares": [
+          "looseSoil",
+          "thinning",
+          "evenWater"
+        ],
+        "pests": [
+          "nematode"
+        ],
+        "diseases": [
+          "leafBlight"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": true
+      }
+    },
+    "arveja": {
+      "name": {
+        "es": "Arveja",
+        "en": "Pea"
+      },
+      "family": "leguminosa",
+      "category": "legume",
+      "fixesNitrogen": true,
+      "perennial": false,
+      "kc": {
+        "ini": 0.5,
+        "mid": 1.15,
+        "end": 1.1
+      },
+      "stagesDays": [
+        15,
+        25,
+        35,
+        15
+      ],
+      "rootDepthM": 0.6,
+      "tFrostC": -2,
+      "tHeatC": 28,
+      "yieldTha": 9,
+      "pricePENt": 1800,
+      "costPENha": 8000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (arveja fresca)",
+        "stages": "FAO-56 tabla 11 (arveja)",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 30,
+        "nFixKg": 70,
+        "P": "med",
+        "K": "med",
+        "height": "mid",
+        "labor": "med",
+        "cares": [
+          "trellis",
+          "coolSeason",
+          "powderyMildew"
+        ],
+        "pests": [
+          "aphid",
+          "leafminer"
+        ],
+        "diseases": [
+          "powderyMildew"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": false
+      }
+    },
+    "trigo": {
+      "name": {
+        "es": "Trigo",
+        "en": "Wheat"
+      },
+      "family": "graminea",
+      "category": "grain",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.3,
+        "mid": 1.15,
+        "end": 0.25
+      },
+      "stagesDays": [
+        20,
+        25,
+        60,
+        30
+      ],
+      "rootDepthM": 1.2,
+      "tFrostC": -4,
+      "tHeatC": 32,
+      "yieldTha": 4.5,
+      "pricePENt": 1300,
+      "costPENha": 4500,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (trigo de primavera)",
+        "stages": "FAO-56 tabla 11 (trigo), ajustado",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 120,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "med",
+        "height": "mid",
+        "labor": "low",
+        "cares": [
+          "splitN",
+          "rust",
+          "dryHarvest"
+        ],
+        "pests": [
+          "aphid"
+        ],
+        "diseases": [
+          "rust"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": false
+      }
+    },
+    "cebada": {
+      "name": {
+        "es": "Cebada",
+        "en": "Barley"
+      },
+      "family": "graminea",
+      "category": "grain",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.3,
+        "mid": 1.15,
+        "end": 0.25
+      },
+      "stagesDays": [
+        15,
+        25,
+        50,
+        30
+      ],
+      "rootDepthM": 1.0,
+      "tFrostC": -4,
+      "tHeatC": 30,
+      "yieldTha": 4,
+      "pricePENt": 1100,
+      "costPENha": 4000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (cebada)",
+        "stages": "FAO-56 tabla 11 (cebada)",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 90,
+        "nFixKg": 0,
+        "P": "low",
+        "K": "med",
+        "height": "mid",
+        "labor": "low",
+        "cares": [
+          "droughtTolerant",
+          "rust",
+          "dryHarvest"
+        ],
+        "pests": [
+          "aphid"
+        ],
+        "diseases": [
+          "rust"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": false
+      }
+    },
+    "avena": {
+      "name": {
+        "es": "Avena forrajera",
+        "en": "Forage oats"
+      },
+      "family": "graminea",
+      "category": "forage",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.3,
+        "mid": 1.1,
+        "end": 0.5
+      },
+      "stagesDays": [
+        15,
+        25,
+        40,
+        10
+      ],
+      "rootDepthM": 1.0,
+      "tFrostC": -5,
+      "tHeatC": 30,
+      "yieldTha": 40,
+      "pricePENt": 150,
+      "costPENha": 3500,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (avena, corte para forraje)",
+        "stages": "FAO-56 tabla 11 (avena), cosecha anticipada para forraje",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 80,
+        "nFixKg": 0,
+        "P": "low",
+        "K": "med",
+        "height": "mid",
+        "labor": "low",
+        "cares": [
+          "cutAtMilk",
+          "coldTolerant",
+          "withVetch"
+        ],
+        "pests": [
+          "aphid"
+        ],
+        "diseases": [
+          "rust"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": false
+      }
+    },
+    "zapallo": {
+      "name": {
+        "es": "Zapallo",
+        "en": "Squash"
+      },
+      "family": "cucurbitacea",
+      "category": "vegetable",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.5,
+        "mid": 1.0,
+        "end": 0.8
+      },
+      "stagesDays": [
+        25,
+        35,
+        35,
+        25
+      ],
+      "rootDepthM": 1.0,
+      "tFrostC": 2,
+      "tHeatC": 35,
+      "yieldTha": 30,
+      "pricePENt": 500,
+      "costPENha": 7000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (zapallo)",
+        "stages": "FAO-56 tabla 11 (zapallo), ajustado",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 100,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "low",
+        "labor": "low",
+        "cares": [
+          "groundCover",
+          "pollinators",
+          "powderyMildew"
+        ],
+        "pests": [
+          "whitefly",
+          "aphid"
+        ],
+        "diseases": [
+          "powderyMildew"
+        ],
+        "humiditySensitive": true,
+        "weedSensitive": false
+      }
+    },
+    "tomate": {
+      "name": {
+        "es": "Tomate",
+        "en": "Tomato"
+      },
+      "family": "solanacea",
+      "category": "vegetable",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.6,
+        "mid": 1.15,
+        "end": 0.8
+      },
+      "stagesDays": [
+        30,
+        40,
+        45,
+        30
+      ],
+      "rootDepthM": 0.7,
+      "tFrostC": 2,
+      "tHeatC": 32,
+      "yieldTha": 60,
+      "pricePENt": 900,
+      "costPENha": 30000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (tomate)",
+        "stages": "FAO-56 tabla 11 (tomate, zona árida)",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 180,
+        "nFixKg": 0,
+        "P": "high",
+        "K": "high",
+        "height": "mid",
+        "labor": "high",
+        "cares": [
+          "staking",
+          "evenWater",
+          "lateBlight"
+        ],
+        "pests": [
+          "tomatoMoth",
+          "whitefly"
+        ],
+        "diseases": [
+          "lateBlight"
+        ],
+        "humiditySensitive": true,
+        "weedSensitive": false
+      }
+    },
+    "paprika": {
+      "name": {
+        "es": "Páprika",
+        "en": "Paprika"
+      },
+      "family": "solanacea",
+      "category": "vegetable",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.6,
+        "mid": 1.05,
+        "end": 0.9
+      },
+      "stagesDays": [
+        30,
+        35,
+        40,
+        20
+      ],
+      "rootDepthM": 0.6,
+      "tFrostC": 2,
+      "tHeatC": 35,
+      "yieldTha": 5,
+      "pricePENt": 7000,
+      "costPENha": 18000,
+      "sources": {
+        "kc": "FAO-56 tabla 12 (pimiento)",
+        "stages": "FAO-56 tabla 11 (pimiento), ajustado a páprika seca",
+        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+      },
+      "agronomy": {
+        "nDemandKg": 160,
+        "nFixKg": 0,
+        "P": "high",
+        "K": "high",
+        "height": "mid",
+        "labor": "high",
+        "cares": [
+          "transplant",
+          "sunDrying",
+          "evenWater"
+        ],
+        "pests": [
+          "whitefly",
+          "mites"
+        ],
+        "diseases": [
+          "powderyMildew"
+        ],
+        "humiditySensitive": false,
+        "weedSensitive": false
+      }
     }
   },
   "_agronomyNote": "Campo 'agronomy': referencias agronómicas generales (demanda de N en kg/ha por campaña, N fijado por leguminosas, niveles de P y K, cuidados, plagas). Valores orientativos, a validar con un agrónomo o INIA.",
@@ -362,6 +904,114 @@
     {
       "a": "papa",
       "b": "maiz_chala",
+      "effect": -1,
+      "reason": "shadeHungry"
+    },
+    {
+      "a": "maiz_chala",
+      "b": "zapallo",
+      "effect": 2,
+      "reason": "threeSisters"
+    },
+    {
+      "a": "frijol",
+      "b": "zapallo",
+      "effect": 1,
+      "reason": "threeSisters"
+    },
+    {
+      "a": "quinua",
+      "b": "haba",
+      "effect": 1,
+      "reason": "andeanPair"
+    },
+    {
+      "a": "quinua",
+      "b": "arveja",
+      "effect": 1,
+      "reason": "legumeTall"
+    },
+    {
+      "a": "avena",
+      "b": "arveja",
+      "effect": 2,
+      "reason": "cerealLegume"
+    },
+    {
+      "a": "avena",
+      "b": "haba",
+      "effect": 1,
+      "reason": "cerealLegume"
+    },
+    {
+      "a": "cebada",
+      "b": "arveja",
+      "effect": 1,
+      "reason": "cerealLegume"
+    },
+    {
+      "a": "trigo",
+      "b": "arveja",
+      "effect": 1,
+      "reason": "cerealLegume"
+    },
+    {
+      "a": "zanahoria",
+      "b": "cebolla",
+      "effect": 2,
+      "reason": "carrotOnion"
+    },
+    {
+      "a": "zanahoria",
+      "b": "ajo",
+      "effect": 1,
+      "reason": "carrotOnion"
+    },
+    {
+      "a": "tomate",
+      "b": "cebolla",
+      "effect": 1,
+      "reason": "alliumRepels"
+    },
+    {
+      "a": "tomate",
+      "b": "ajo",
+      "effect": 1,
+      "reason": "alliumRepels"
+    },
+    {
+      "a": "ajo",
+      "b": "haba",
+      "effect": -2,
+      "reason": "alliumLegume"
+    },
+    {
+      "a": "ajo",
+      "b": "frijol",
+      "effect": -2,
+      "reason": "alliumLegume"
+    },
+    {
+      "a": "ajo",
+      "b": "arveja",
+      "effect": -2,
+      "reason": "alliumLegume"
+    },
+    {
+      "a": "cebolla",
+      "b": "arveja",
+      "effect": -2,
+      "reason": "alliumLegume"
+    },
+    {
+      "a": "tomate",
+      "b": "papa",
+      "effect": -2,
+      "reason": "nightshadeBlight"
+    },
+    {
+      "a": "zapallo",
+      "b": "papa",
       "effect": -1,
       "reason": "shadeHungry"
     },
