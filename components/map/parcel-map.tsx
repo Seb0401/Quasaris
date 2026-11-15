@@ -2,7 +2,7 @@
 
 import "leaflet/dist/leaflet.css";
 import L, { type Map as LeafletMap } from "leaflet";
-import { CircleMarker, MapContainer, Marker, Polygon, Polyline, TileLayer, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, Polygon, Polyline, TileLayer, useMapEvents } from "react-leaflet";
 import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Check,
@@ -11,6 +11,8 @@ import {
   PenLine,
   Trash2,
   Undo2,
+  Wand2,
+  Loader2,
   Layers,
   LocateFixed,
   Minus,
@@ -22,6 +24,7 @@ import {
 import { useLocale } from "@/components/i18n-provider";
 import { GIBS_LAYERS, gibsUrl, smapDate } from "@/lib/gibs";
 import { centroid, polygonAreaHa, type LatLon } from "@/lib/geo";
+import { detectParcel, type DetectResult } from "@/lib/auto-parcel";
 
 type Props = {
   lat: number;
@@ -94,6 +97,15 @@ function ClickHandler({ onPick }: { onPick: Props["onPick"] }) {
   return null;
 }
 
+/** Esquina del contorno: se puede arrastrar para ajustar la forma. */
+const vertexIcon = (first: boolean, closable: boolean) =>
+  L.divIcon({
+    className: "gm-vertex",
+    html: `<i class="${first ? "first" : ""} ${closable ? "closable" : ""}"></i>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+  });
+
 const nf = (es: boolean) => new Intl.NumberFormat(es ? "es" : "en", { maximumFractionDigits: 2 });
 
 function ParcelMapInner({
@@ -119,13 +131,64 @@ function ParcelMapInner({
   const [map, setMap] = useState<LeafletMap | null>(null);
   const [draft, setDraft] = useState<LatLon[] | null>(null); // dibujando el contorno
   const drawing = draft !== null;
+  // selector inteligente: "pick" espera el toque, "busy" está reconociendo el contorno
+  const [auto, setAuto] = useState<"off" | "pick" | "busy">("off");
+  const [autoNote, setAutoNote] = useState<string | null>(null);
+  const [autoDraft, setAutoDraft] = useState(false); // el contorno en edición salió del detector
+  const autoAbort = useRef<AbortController | null>(null);
+  useEffect(() => () => autoAbort.current?.abort(), []);
+  useEffect(() => {
+    if (!autoNote) return;
+    const t = setTimeout(() => setAutoNote(null), 7000);
+    return () => clearTimeout(t);
+  }, [autoNote]);
+
+  const failText = (r: Extract<DetectResult, { ok: false }>["reason"]) =>
+    ({
+      edge: es ? "El campo parece muy grande o sin bordes claros. Acércate o dibújalo a mano." : "The field looks too big or has no clear edges. Zoom in or draw it by hand.",
+      small: es ? "No encontré un campo ahí. Toca más al centro de tu terreno." : "No field found there. Tap closer to the middle of your field.",
+      unclear: es ? "Esa zona no parece un campo de cultivo. Prueba otro punto o dibújalo a mano." : "That area doesn't look like a crop field. Try another spot or draw it by hand.",
+      load: es ? "No se pudo leer la imagen satelital. Revisa tu conexión." : "Could not read the satellite image. Check your connection.",
+    })[r];
+
+  const runAuto = async (la: number, lo: number) => {
+    autoAbort.current?.abort();
+    const ctrl = new AbortController();
+    autoAbort.current = ctrl;
+    setAuto("busy");
+    setAutoNote(null);
+    try {
+      const r = await detectParcel(la, lo, ctrl.signal);
+      if (ctrl.signal.aborted) return;
+      if (r.ok) {
+        setDraft(r.points);
+        setAutoDraft(true);
+        setAuto("off");
+        map?.fitBounds(L.latLngBounds(r.points.map(([a, b]) => L.latLng(a, b))), { padding: [70, 70], maxZoom: 18 });
+      } else {
+        setAuto("pick"); // se puede tocar otro punto de inmediato
+        setAutoNote(failText(r.reason));
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") {
+        setAuto("pick");
+        setAutoNote(failText("load"));
+      }
+    }
+  };
+  const cancelAuto = () => {
+    autoAbort.current?.abort();
+    setAuto("off");
+    setAutoNote(null);
+  };
 
   // al dibujar, el doble clic no debe acercar el mapa
   useEffect(() => {
     if (!map) return;
-    if (drawing) map.doubleClickZoom.disable();
+    if (drawing || auto !== "off") map.doubleClickZoom.disable();
     else map.doubleClickZoom.enable();
-  }, [map, drawing]);
+    map.getContainer().classList.toggle("gm-picking", auto !== "off");
+  }, [map, drawing, auto]);
 
   const finishDraw = (pts: LatLon[]) => {
     if (pts.length < 3) return;
@@ -133,6 +196,7 @@ function ParcelMapInner({
     onBoundary?.(pts, polygonAreaHa(pts));
     onPick(cla, clo);
     setDraft(null);
+    setAutoDraft(false);
   };
   const addVertex = (la: number, lo: number) =>
     setDraft((d) => {
@@ -239,17 +303,29 @@ function ParcelMapInner({
         {drawing && draft.length === 2 && <Polyline positions={draft} pathOptions={{ color: "#b9ff63", weight: 2 }} />}
         {drawing &&
           draft.map((pt, i) => (
-            <CircleMarker
+            <Marker
               key={i}
-              center={pt}
-              radius={i === 0 && draft.length >= 3 ? 9 : 6}
-              bubblingMouseEvents={false}
-              eventHandlers={{ click: () => i === 0 && finishDraw(draft) }} // tocar el primer punto cierra el contorno
-              pathOptions={{ color: "#0a2230", weight: 2, fillColor: i === 0 ? "#ffffff" : "#b9ff63", fillOpacity: 1 }}
+              position={pt}
+              draggable
+              icon={vertexIcon(i === 0, draft.length >= 3)}
+              eventHandlers={{
+                click: () => i === 0 && finishDraw(draft), // tocar el primer punto cierra el contorno
+                drag: (e) => {
+                  const p = (e.target as L.Marker).getLatLng();
+                  setDraft((d) => (d ? d.map((q, k) => (k === i ? ([p.lat, p.lng] as LatLon) : q)) : d));
+                },
+              }}
             />
           ))}
         {!drawing && <Marker position={[lat, lon]} icon={PIN} draggable eventHandlers={markerEvents} />}
-        <ClickHandler onPick={(la, lo) => (drawing ? addVertex(la, lo) : onPick(la, lo))} />
+        <ClickHandler
+          onPick={(la, lo) => {
+            if (auto === "pick") void runAuto(la, lo);
+            else if (auto === "busy") return;
+            else if (drawing) addVertex(la, lo);
+            else onPick(la, lo);
+          }}
+        />
       </MapContainer>
 
       {search && <SearchBox es={es} onPick={onPick} />}
@@ -474,24 +550,78 @@ function ParcelMapInner({
         )}
       </div>
 
-      {onBoundary && !drawing && (
-        <button type="button" className="gm-chip gm-draw-btn" onClick={() => setDraft([])}>
-          <PenLine size={14} />
-          {boundary?.length ? (es ? "Redibujar terreno" : "Redraw field") : es ? "Dibujar mi terreno" : "Draw my field"}
-        </button>
+      {onBoundary && !drawing && auto === "off" && (
+        <div className="gm-draw-tools">
+          <button
+            type="button"
+            className="gm-chip gm-tool gm-auto-btn"
+            onClick={() => setAuto("pick")}
+            title={es ? "Toca tu terreno y lo reconocemos en la imagen satelital" : "Tap your field and we find it on the satellite image"}
+          >
+            <Wand2 size={14} />
+            {es ? "Seleccionar con un toque" : "Select with one tap"}
+          </button>
+          <button
+            type="button"
+            className="gm-chip gm-tool"
+            onClick={() => {
+              setDraft([]);
+              setAutoDraft(false);
+            }}
+          >
+            <PenLine size={14} />
+            {boundary?.length ? (es ? "Redibujar a mano" : "Redraw by hand") : es ? "Dibujar a mano" : "Draw by hand"}
+          </button>
+        </div>
+      )}
+      {auto !== "off" && (
+        <div className="gm-drawbar gm-autobar" role="status" aria-live="polite">
+          {auto === "busy" ? <Loader2 size={16} className="animate-spin" /> : <Wand2 size={16} />}
+          <span>
+            <b>{auto === "busy" ? (es ? "Reconociendo tu terreno…" : "Finding your field…") : es ? "Toca dentro de tu terreno" : "Tap inside your field"}</b>
+            <small>{autoNote ?? (es ? "Buscamos sus bordes en la imagen satelital" : "We look for its edges on the satellite image")}</small>
+          </span>
+          {auto === "pick" && (
+            <button
+              type="button"
+              onClick={() => {
+                cancelAuto();
+                setDraft([]);
+                setAutoDraft(false);
+              }}
+            >
+              <PenLine size={14} />
+              {es ? "A mano" : "By hand"}
+            </button>
+          )}
+          <button type="button" onClick={cancelAuto} aria-label={es ? "Cancelar" : "Cancel"}>
+            <X size={15} />
+          </button>
+        </div>
       )}
       {drawing && (
         <div className="gm-drawbar" role="toolbar" aria-label={es ? "Dibujar terreno" : "Draw field"}>
           <span>
             <b>{draft.length < 3 ? (es ? "Toca las esquinas de tu terreno" : "Tap the corners of your field") : `${nf(es).format(polygonAreaHa(draft))} ha`}</b>
             <small>
-              {draft.length} {es ? "puntos" : "points"}
+              {autoDraft
+                ? es
+                  ? "Detectado · arrastra las esquinas para ajustar"
+                  : "Detected · drag the corners to adjust"
+                : `${draft.length} ${es ? "puntos · puedes arrastrarlos" : "points · you can drag them"}`}
             </small>
           </span>
           <button type="button" onClick={() => setDraft((d) => (d ?? []).slice(0, -1))} disabled={!draft.length} aria-label={es ? "Deshacer punto" : "Undo point"}>
             <Undo2 size={15} />
           </button>
-          <button type="button" onClick={() => setDraft(null)} aria-label={es ? "Cancelar" : "Cancel"}>
+          <button
+            type="button"
+            onClick={() => {
+              setDraft(null);
+              setAutoDraft(false);
+            }}
+            aria-label={es ? "Cancelar" : "Cancel"}
+          >
             <X size={15} />
           </button>
           <button

@@ -1529,3 +1529,21 @@
 @media (max-width: 1049px) {
   .qx-signal-card.qx-farm-card, :root[data-theme="light"] .qx-signal-card.qx-farm-card { width: 112%; max-width: none; margin-left: -6%; }
 }
+
+/* Mi parcela: selector inteligente (un toque) junto al dibujo a mano */
+.gm-draw-tools { position: absolute; z-index: 700; top: 50px; right: 12px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.map-view .gm-draw-tools { top: 104px; }
+@media (min-width: 1050px) { .map-view .gm-draw-tools { top: 50px; } }
+.gm-draw-tools .gm-chip { position: static; height: 34px; padding: 0 13px; cursor: pointer; font-size: 11.5px; border-color: rgba(185, 255, 99, .5); }
+.gm-draw-tools .gm-chip svg { color: var(--brand-text); }
+.gm-draw-tools .gm-chip:hover { color: var(--brand-ink); background: var(--brand); }
+.gm-draw-tools .gm-chip:hover svg { color: inherit; }
+.gm-draw-tools .gm-auto-btn { color: var(--brand-ink); background: var(--brand); border-color: var(--brand); font-weight: 750; }
+.gm-draw-tools .gm-auto-btn svg { color: inherit; }
+.gm-autobar > svg { flex: none; color: var(--brand); }
+.gm-autobar > span { white-space: normal; max-width: 330px; }
+.gm-picking, .gm-picking .leaflet-interactive { cursor: crosshair !important; }
+.gm-vertex { background: none; border: 0; }
+.gm-vertex i { display: block; width: 14px; height: 14px; margin: 4px; border-radius: 50%; background: #b9ff63; border: 2px solid #0a2230; box-shadow: 0 2px 6px rgba(0, 0, 0, .45); cursor: grab; transition: transform .15s; }
+.gm-vertex i.first.closable { width: 18px; height: 18px; margin: 2px; background: #fff; }
+.gm-vertex:hover i { transform: scale(1.25); }
