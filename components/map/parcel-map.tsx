@@ -166,7 +166,7 @@ function ParcelMapInner({
         setDraft(r.points);
         setAutoDraft(true);
         setAuto("off");
-        map?.fitBounds(L.latLngBounds(r.points.map(([a, b]) => L.latLng(a, b))), { padding: [70, 70], maxZoom: 18 });
+        map?.fitBounds(L.latLngBounds(r.points.map(([a, b]) => L.latLng(a, b))), { padding: [70, 70], maxZoom: 17 });
       } else {
         setAuto("pick"); // se puede tocar otro punto de inmediato
         setAutoNote(failText(r.reason));
@@ -268,7 +268,8 @@ function ParcelMapInner({
           key={base}
           attribution="Imagery © Esri"
           url={b.url}
-          maxZoom={18}
+          maxZoom={19}
+          maxNativeZoom={17}
         />
         {data === "ndvi" && (
           <TileLayer
