@@ -201,6 +201,17 @@ def test_gwetroot_ausente_no_se_inventa():
     assert c.report.absent_optional == ["GWETROOT"]
 
 
+def test_opcional_sin_ningun_dato_valido_se_trata_como_ausente():
+    # Sobre el mar o un lago POWER devuelve GWETROOT = -999 en todos los días
+    p = make_payload()
+    p["parameter"]["GWETROOT"] = {k: -999 for k in p["parameter"]["GWETROOT"]}
+    c = clean_power(p)
+    assert c.series["GWETROOT"] is None
+    assert "GWETROOT" in c.report.absent_optional
+    assert c.report.bad_years == []
+    assert c.series["T2M_MAX"] is not None
+
+
 def test_variable_sin_ningun_dato_valido_descarta_la_celda():
     p = make_payload()
     p["parameter"]["WS2M"] = {k: -999 for k in p["parameter"]["WS2M"]}

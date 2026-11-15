@@ -1,5 +1,5 @@
 {
-  "_note": "Example rotations for the Majes demo. To be validated by an agronomist (CHALLENGE_CONTEXT.md §2).",
+  "_note": "Example rotations for the Majes demo. To be validated by an agronomist (CHALLENGE_CONTEXT.md §2). Each one fits in 365 days with no overlapping crops, using the cycle lengths in crops.json: onion (150 d) + potato (145 d) leaves 70 fallow days (Dec–Feb); onion + faba bean (110 d) + forage oats (90 d) leaves 15.",
   "rotations": [
     {
       "id": "actual",
@@ -9,22 +9,21 @@
     },
     {
       "id": "ingreso",
-      "name": "Cebolla · Papa · Maíz chala",
+      "name": "Cebolla · Papa",
       "isCurrent": false,
       "crops": [
         { "cropId": "cebolla", "sowMonth": 3 },
-        { "cropId": "papa", "sowMonth": 8 },
-        { "cropId": "maiz_chala", "sowMonth": 12 }
+        { "cropId": "papa", "sowMonth": 8 }
       ]
     },
     {
       "id": "suelo_agua",
-      "name": "Cebolla · Haba · Maíz chala",
+      "name": "Cebolla · Haba · Avena forrajera",
       "isCurrent": false,
       "crops": [
         { "cropId": "cebolla", "sowMonth": 3 },
         { "cropId": "haba", "sowMonth": 8 },
-        { "cropId": "maiz_chala", "sowMonth": 12 }
+        { "cropId": "avena", "sowMonth": 12 }
       ]
     }
   ]

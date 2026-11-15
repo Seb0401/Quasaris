@@ -84,9 +84,12 @@ def run(req: SimulateRequest) -> SimulateResponse:
             }
         )
 
-    w_lo, w_hi = min(r["water"]["median"] for r in raw), max(r["water"]["median"] for r in raw)
-    i_lo, i_hi = min(r["income"]["median"] for r in raw), max(r["income"]["median"] for r in raw)
-    s_hi = max(r["soil"] for r in raw)
+    # Una rotación sin cultivos (descanso) gasta 0 agua y gana 0: no entra en los rangos ni puede ser
+    # "la que menos agua gasta" ni la recomendada. El modo granja la usa para las casillas sin sembrar.
+    planted = [r for r in raw if r["rot"].crops] or raw
+    w_lo, w_hi = min(r["water"]["median"] for r in planted), max(r["water"]["median"] for r in planted)
+    i_lo, i_hi = min(r["income"]["median"] for r in planted), max(r["income"]["median"] for r in planted)
+    s_hi = max(r["soil"] for r in planted)
     pr = req.priorities
     weights = np.array([pr.water, pr.income, pr.soil, pr.risk])
     if weights.sum() == 0:
@@ -105,10 +108,13 @@ def run(req: SimulateRequest) -> SimulateResponse:
         score = float(parts @ weights / weights.sum())
         if not r["viable"]:
             score *= NON_VIABLE_PENALTY
+        fallow = not r["rot"].crops
+        if fallow:
+            score = 0.0
         flags = {
-            "bestWater": r["water"]["median"] <= w_lo + 1e-6,
-            "bestIncome": r["income"]["median"] >= i_hi - 1e-6,
-            "bestSoil": r["soil"] >= s_hi - 1e-9,
+            "bestWater": not fallow and r["water"]["median"] <= w_lo + 1e-6,
+            "bestIncome": not fallow and r["income"]["median"] >= i_hi - 1e-6,
+            "bestSoil": not fallow and r["soil"] >= s_hi - 1e-9,
         }
         rotations.append(
             {
@@ -169,7 +175,9 @@ def _explain(rot: Rotation, r: dict, flags: dict, clim: Climate) -> dict:
     legume = any(c.fixes_nitrogen for c in crops)
     frost = sum(y["frostDays"] for y in r["by_year"])
 
-    if rot.isCurrent:
+    if not rot.crops:
+        why = "why.fallow"
+    elif rot.isCurrent:
         why = "why.current"
     elif flags["bestWater"]:
         why = "why.bestWater"

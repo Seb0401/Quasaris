@@ -158,3 +158,15 @@ def test_association_shares_the_field():
     by_id = {r.id: r for r in res.rotations}
     assert by_id["milpa"].water.median < by_id["seq"].water.median * 1.2
     assert by_id["milpa"].income.median != by_id["seq"].income.median
+
+
+def test_descanso_no_es_la_mejor_ni_la_recomendada():
+    # Una rotación sin cultivos gasta 0 agua: no debe ganar "menos agua" ni puntaje
+    rots = [r for r in ROTATIONS] + [{"id": "descanso", "name": "Descanso", "isCurrent": False, "crops": []}]
+    res = run(req(rotations=rots))
+    by = {r.id: r for r in res.rotations}
+    assert by["descanso"].score == 0
+    assert by["descanso"].explain.whyKey == "why.fallow"
+    assert max(res.rotations, key=lambda r: r.score).id != "descanso"
+    assert sum(1 for r in res.rotations if r.explain.whyKey == "why.bestWater") >= 1
+    assert by["descanso"].explain.whyKey != "why.bestWater"

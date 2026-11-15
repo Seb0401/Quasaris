@@ -2,8 +2,8 @@
   "_note": "Rotation palette for the farm mode. The first 3 are the demo rotations (rotations_majes.json). To be validated by an agronomist. Quinoa · Faba bean, the three sisters and Paprika · Oats · Pea use the crops added for Arequipa.",
   "rotations": [
     { "id": "actual", "name": "Alfalfa permanente", "isCurrent": true, "crops": [{"cropId": "alfalfa", "sowMonth": 4}] },
-    { "id": "ingreso", "name": "Cebolla · Papa · Maíz chala", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "papa", "sowMonth": 8}, {"cropId": "maiz_chala", "sowMonth": 12}] },
-    { "id": "suelo_agua", "name": "Cebolla · Haba · Maíz chala", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "haba", "sowMonth": 8}, {"cropId": "maiz_chala", "sowMonth": 12}] },
+    { "id": "ingreso", "name": "Cebolla · Papa", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "papa", "sowMonth": 8}] },
+    { "id": "suelo_agua", "name": "Cebolla · Haba · Avena forrajera", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "haba", "sowMonth": 8}, {"cropId": "avena", "sowMonth": 12}] },
     { "id": "papa_haba", "name": "Papa · Haba", "isCurrent": false, "crops": [{"cropId": "papa", "sowMonth": 4}, {"cropId": "haba", "sowMonth": 9}] },
     { "id": "cebolla_frijol", "name": "Cebolla · Frijol", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "frijol", "sowMonth": 8}] },
     { "id": "maiz_haba", "name": "Maíz chala · Haba · Maíz chala", "isCurrent": false, "crops": [{"cropId": "maiz_chala", "sowMonth": 1}, {"cropId": "haba", "sowMonth": 5}, {"cropId": "maiz_chala", "sowMonth": 9}] },

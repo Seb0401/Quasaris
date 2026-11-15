@@ -4,7 +4,10 @@
     "tagline": "From Space to Soil",
     "subtitle": "Before you plant, see what would have happened, what makes sense today and what's coming.",
     "language": "Language",
-    "offline": "Offline: showing your last saved results"
+    "offline": "Offline: showing your last saved results",
+    "engineInvalid": "These inputs could not be calculated (check water, priorities or rotations). The numbers on screen are an example, not your field.",
+    "engineOfflineCache": "The engine is not responding: you are seeing the last result calculated with these same inputs.",
+    "engineOfflineExample": "The engine is not responding: the numbers on screen are an example (Majes), not your field."
   },
   "nav": {
     "home": "Home",
@@ -151,6 +154,7 @@
     "why.bestIncome": "This rotation has the highest expected income.",
     "why.bestSoil": "This rotation takes the best care of your soil.",
     "why.balanced": "It balances water, income and soil.",
+    "why.fallow": "Fallow: the plot stays unplanted, uses no water but produces nothing.",
     "evidence.power20y": "21 years of daily NASA POWER climate (2005–2025) at your field.",
     "evidence.et0": "Water demand computed with FAO-56 Penman-Monteith and FAO crop coefficients.",
     "evidence.fusion": "Climate adjusted to your field's real altitude (NASA SRTM terrain) by blending two NASA POWER cells.",
