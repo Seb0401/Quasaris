@@ -101,7 +101,7 @@ export function CalendarioClient() {
 
   return (
     <div className="farmer-calendar mx-auto flex max-w-[1380px] flex-col gap-5">
-      <header className="relative isolate overflow-hidden rounded-[24px] bg-[#e9f3ee] px-6 py-6 sm:px-8 sm:py-7" style={{ backgroundImage: "linear-gradient(90deg, rgba(242,248,238,.99) 0%, rgba(242,248,238,.9) 32%, rgba(242,248,238,.2) 75%), url('/images/majes-fields.png')", backgroundSize: "cover", backgroundPosition: "center 57%" }}>
+      <header className="relative isolate overflow-hidden rounded-[24px] bg-[#e9f3ee] px-6 py-6 sm:px-8 sm:py-7" style={{ backgroundImage: "linear-gradient(90deg, rgba(9,29,40,.98) 0%, rgba(9,29,40,.88) 34%, rgba(9,29,40,.24) 100%), url('/images/majes-fields.png')", backgroundSize: "cover", backgroundPosition: "center 57%" }}>
         <div className="relative max-w-xl">
           <p className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-[#397052]"><MapPin size={14} /> {locale === "es" ? "Tu parcela · Majes, Arequipa" : "Your parcel · Majes, Arequipa"}</p>
           <h1 className="text-[2rem] font-bold leading-[1.08] tracking-[-.045em] text-[#173a30] sm:text-5xl">{locale === "es" ? "Mi calendario agrícola" : "My farm calendar"}</h1>
@@ -132,7 +132,9 @@ export function CalendarioClient() {
       </section>
       {!rotation && <p>{copy.noRotation}</p>}
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="calendar-layout">
+        <div className="calendar-left">
+          <div className="calendar-summary">
       <section className="rounded-[24px] border border-[#e0ebe2] bg-white p-6 shadow-[0_12px_35px_rgba(31,73,48,.07)] sm:p-7">
         <div className="flex items-start gap-4">
           <div aria-hidden="true" className="order-2 grid h-20 w-20 shrink-0 place-items-center text-6xl drop-shadow-md">{cropEmoji(currentCrop?.cropId ?? "")}</div>
@@ -146,29 +148,8 @@ export function CalendarioClient() {
       <section className="flex flex-col justify-center rounded-[24px] border border-[#e0ebe2] bg-white p-4 shadow-[0_12px_35px_rgba(31,73,48,.07)]">
         <div className="flex h-full gap-3 rounded-2xl bg-gradient-to-br from-[#eff7e8] to-[#e0efd7] p-5"><CalendarDays className="shrink-0 text-[#408d48]" size={25} /><div><p className="text-xs font-semibold text-[#57735c]">{locale === "es" ? "Próxima acción" : "Next action"}</p><h2 className="mt-1 text-lg font-bold leading-tight text-[#173a30]">{nextText}</h2><p className="mt-2 text-xs leading-relaxed text-[#5f7866]">{nextSowing ? `${copy.sow}: ${fmtMonth.format(new Date(2025, nextSowing.sowMonth - 1, 1))}` : copy.allYear}</p><a href="#annual-calendar" className="mt-4 inline-flex min-h-9 items-center gap-2 text-xs font-bold text-[#267344]">{locale === "es" ? "Ver calendario →" : "View calendar →"}</a></div></div>
       </section>
-      <section className="flex flex-col gap-3 rounded-[24px] border border-[#e0ebe2] bg-white p-6 shadow-[0_12px_35px_rgba(31,73,48,.07)] sm:p-7">
-        <h2 className="text-lg font-semibold">
-          <span className="flex items-center gap-2 text-[#173a30]"><CloudSun className="text-[#4da879]" size={22} /> {copy.historical}</span>
-          <span className="mt-1 block text-xs font-normal text-muted">{now ? fmtDay.format(now) : ""}</span>
-        </h2>
-        {!climateResult ? <p className="text-sm text-muted">{copy.loading}</p> : !climate ? <p role="status" className="text-sm text-muted">{copy.unavailable}</p> : today !== null && (
-          <div className="flex flex-col gap-1 text-sm">
-            {climateResult.cached && <p>{copy.cached}</p>}
-            <div className="grid grid-cols-2 gap-3 py-2"><div className="rounded-2xl bg-[#eef7f7] p-3"><span className="block text-xs text-[#64817d]">{copy.frost}</span><strong className="mt-1 block text-xl text-[#245d66]">{pct.format(climate.weeks[weekOf(today)].pFrost)}</strong></div><div className="rounded-2xl bg-[#fbf4e9] p-3"><span className="block text-xs text-[#927b5a]">{copy.heat}</span><strong className="mt-1 block text-xl text-[#9b6941]">{pct.format(climate.weeks[weekOf(today)].pHeat)}</strong></div></div>
-            <p className="text-xs text-muted">{copy.disclaimer}</p>
-            {outlook && active.length > 0 && <><p>{copy.water}: {n.format(outlook.waterM3ha)} m³/ha</p><p className="text-xs text-muted">{copy.waterNote}</p></>}
           </div>
-        )}
-      </section>
-      </div>
-
-      <div className="grid items-start gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="rounded-[24px] border border-[#e0ebe2] bg-white p-5 shadow-[0_12px_35px_rgba(31,73,48,.07)]">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-[#173a30]"><Sprout size={22} className="text-[#398c53]" />{locale === "es" ? "Tu rotación anual" : "Your annual rotation"}</h2>
-          <p className="mt-1 text-xs text-muted">{locale === "es" ? "Distribución de cultivos por mes" : "Crop schedule by month"}</p>
-          <RotationWheel crops={rotation?.crops ?? []} locale={locale} />
-        </aside>
-      <div className="flex min-w-0 flex-col gap-4">
+      <div className="calendar-main">
       <section id="annual-calendar" className="flex scroll-mt-6 flex-col gap-6 rounded-[24px] border border-[#e0ebe2] bg-white p-6 shadow-[0_12px_35px_rgba(31,73,48,.07)] sm:p-7">
         <div className="flex items-start gap-3">
           <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#e9f5e9] text-[#398c53]"><CalendarDays size={22} /></div>
@@ -231,7 +212,30 @@ export function CalendarioClient() {
         </div></div>
       </section>
       <div className="flex items-center gap-4 rounded-[24px] border border-[#dcebd7] bg-gradient-to-r from-[#e3f1d9] to-[#f6faf1] p-5"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#d3eabc] text-[#3d8c38]"><Sprout size={29} /></span><div><h2 className="text-lg font-bold text-[#173a30]">{locale === "es" ? "¿Qué sigue?" : "What's next?"}</h2><p className="text-sm text-[#4b6b51]">{nextText}{nextSowing ? ` · ${fmtMonth.format(new Date(2025, nextSowing.sowMonth - 1, 1))}` : ""}</p></div></div>
-      </div></div>
+      </div>
+        </div>
+        <div className="calendar-right">
+        <aside className="rounded-[24px] border border-[#e0ebe2] bg-white p-5 shadow-[0_12px_35px_rgba(31,73,48,.07)]">
+          <h2 className="flex items-center gap-2 text-lg font-bold text-[#173a30]"><Sprout size={22} className="text-[#398c53]" />{locale === "es" ? "Tu rotación anual" : "Your annual rotation"}</h2>
+          <p className="mt-1 text-xs text-muted">{locale === "es" ? "Distribución de cultivos por mes" : "Crop schedule by month"}</p>
+          <RotationWheel crops={rotation?.crops ?? []} locale={locale} />
+        </aside>
+      <section className="flex flex-col gap-3 rounded-[24px] border border-[#e0ebe2] bg-white p-6 shadow-[0_12px_35px_rgba(31,73,48,.07)] sm:p-7">
+        <h2 className="text-lg font-semibold">
+          <span className="flex items-center gap-2 text-[#173a30]"><CloudSun className="text-[#4da879]" size={22} /> {copy.historical}</span>
+          <span className="mt-1 block text-xs font-normal text-muted">{now ? fmtDay.format(now) : ""}</span>
+        </h2>
+        {!climateResult ? <p className="text-sm text-muted">{copy.loading}</p> : !climate ? <p role="status" className="text-sm text-muted">{copy.unavailable}</p> : today !== null && (
+          <div className="flex flex-col gap-1 text-sm">
+            {climateResult.cached && <p>{copy.cached}</p>}
+            <div className="grid grid-cols-2 gap-3 py-2"><div className="rounded-2xl bg-[#eef7f7] p-3"><span className="block text-xs text-[#64817d]">{copy.frost}</span><strong className="mt-1 block text-xl text-[#245d66]">{pct.format(climate.weeks[weekOf(today)].pFrost)}</strong></div><div className="rounded-2xl bg-[#fbf4e9] p-3"><span className="block text-xs text-[#927b5a]">{copy.heat}</span><strong className="mt-1 block text-xl text-[#9b6941]">{pct.format(climate.weeks[weekOf(today)].pHeat)}</strong></div></div>
+            <p className="text-xs text-muted">{copy.disclaimer}</p>
+            {outlook && active.length > 0 && <><p>{copy.water}: {n.format(outlook.waterM3ha)} m³/ha</p><p className="text-xs text-muted">{copy.waterNote}</p></>}
+          </div>
+        )}
+      </section>
+        </div>
+      </div>
 
     </div>
   );
@@ -242,7 +246,7 @@ function cropEmoji(id: string) {
 }
 
 function RotationWheel({ crops, locale }: { crops: { cropId: string; sowMonth: number }[]; locale: "es" | "en" }) {
-  const colors = ["#b7db96", "#dbc0e7", "#f7dc79", "#b5ded1", "#f0bf9b"];
+  const colors = ["#79ad51", "#9b6bc4", "#d8ae4f", "#55b9b4", "#d88959"];
   const point = (angle: number, radius: number) => [140 + radius * Math.sin(angle), 140 - radius * Math.cos(angle)];
   return <>
     <svg viewBox="0 0 280 280" className="mx-auto my-3 w-full max-w-[300px]" role="img" aria-label={locale === "es" ? "Ciclo anual aproximado, de enero a diciembre en sentido horario" : "Approximate annual cycle, January to December clockwise"}>
@@ -252,12 +256,12 @@ function RotationWheel({ crops, locale }: { crops: { cropId: string; sowMonth: n
         const a = month / 12 * Math.PI * 2;
         const b = (month + 1) / 12 * Math.PI * 2;
         const p = point(a, 130); const q = point(b, 130); const label = point((a + b) / 2, 108);
-        return <g key={month}><path d={`M140 140 L${p[0]} ${p[1]} A130 130 0 0 1 ${q[0]} ${q[1]} Z`} fill={index === undefined ? "#edf1e9" : colors[index % colors.length]} stroke="white" strokeWidth="2" /><text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle" fontSize="10" fill="#36533d">{new Intl.DateTimeFormat(locale, { month: "short" }).format(new Date(2025, month, 1))}</text></g>;
+        return <g key={month}><path d={`M140 140 L${p[0]} ${p[1]} A130 130 0 0 1 ${q[0]} ${q[1]} Z`} fill={index === undefined ? "#edf1e9" : colors[index % colors.length]} stroke="#0a2230" strokeWidth="2" /><text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle" fontSize="10" fill="#092319">{new Intl.DateTimeFormat(locale, { month: "short" }).format(new Date(2025, month, 1))}</text></g>;
       })}
-      <circle cx="140" cy="140" r="72" fill="#fcfdf8" stroke="white" strokeWidth="5" />
+      <circle cx="140" cy="140" r="72" fill="#0a2230" stroke="#0a2230" strokeWidth="5" />
       <text x="140" y="130" textAnchor="middle" fontSize="27">🌱</text>
-      <text x="140" y="153" textAnchor="middle" fontSize="13" fill="#527057">{locale === "es" ? "Rotación" : "Rotation"}</text>
-      <text x="140" y="176" textAnchor="middle" fontSize="23" fontWeight="700" fill="#173a30">{locale === "es" ? "1 año" : "1 year"}</text>
+      <text x="140" y="153" textAnchor="middle" fontSize="13" fill="#91abb1">{locale === "es" ? "Rotación" : "Rotation"}</text>
+      <text x="140" y="176" textAnchor="middle" fontSize="23" fontWeight="700" fill="#e1f1ef">{locale === "es" ? "1 año" : "1 year"}</text>
     </svg>
     <div className="flex flex-col gap-2">{crops.map((crop, index) => <div key={`${crop.cropId}-${index}`} className="flex items-center gap-2 rounded-xl bg-[#f8faf5] px-3 py-2 text-xs font-semibold text-[#3c5b43]"><span className="h-2.5 w-2.5 rounded-full" style={{ background: colors[index % colors.length] }} /><span aria-hidden="true" className="text-xl">{cropEmoji(crop.cropId)}</span>{cropName(crop.cropId, locale)}</div>)}</div>
     <p className="mt-3 text-[10px] leading-relaxed text-muted">{locale === "es" ? "Vista aproximada a mitad de cada mes. Si hay solapamiento, se muestra el cultivo de mayor demanda relativa de agua." : "Approximate mid-month view. Overlapping crops show the crop with the highest relative water demand."}</p>

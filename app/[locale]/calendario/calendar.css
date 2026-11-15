@@ -1,74 +1,37 @@
-/* Larger, readable controls scoped to the farm calendar. */
-.farmer-calendar { position: relative; isolation: isolate; font-size: 17px; line-height: 1.55; gap: 24px; }
-.farmer-calendar::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 100px -16px 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 8% 16%, #c9e7cb99, transparent 48%), radial-gradient(ellipse at 93% 40%, #c5e4f18a, transparent 45%), radial-gradient(ellipse at 45% 78%, #f5e7bb70, transparent 50%);
-}
-.farmer-calendar section,
-.farmer-calendar aside {
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, .85);
-  border-radius: 28px;
-  background: linear-gradient(135deg, rgba(255,255,255,.88), rgba(250,255,249,.67));
-  -webkit-backdrop-filter: blur(22px) saturate(135%);
-  backdrop-filter: blur(22px) saturate(135%);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(255,255,255,.45), 0 8px 28px rgba(39,74,57,.07), 0 1px 3px rgba(39,74,57,.04);
-  transition: box-shadow .3s ease, border-color .3s ease;
-  animation: calendar-glass-in .6s cubic-bezier(.2,.7,.2,1) both;
-}
-.farmer-calendar > .grid > section:nth-child(2) { animation-delay: .07s; }
-.farmer-calendar > .grid > section:nth-child(3) { animation-delay: .14s; }
-.farmer-calendar aside { animation-delay: .12s; }
-.farmer-calendar #annual-calendar { animation-delay: .18s; }
-.farmer-calendar header { box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 10px 30px rgba(38,74,52,.07); }
-.farmer-calendar button {
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 2px 5px rgba(36,78,51,.03);
-  transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease;
-}
-.farmer-calendar button[aria-pressed="true"] { box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 4px 12px rgba(35,110,58,.12); }
-.farmer-calendar button:active { transform: scale(.98); }
-.farmer-calendar [class~="h-2.5"] > div { background-image: linear-gradient(180deg, rgba(255,255,255,.25), transparent); transition: width .7s cubic-bezier(.2,.7,.2,1); }
-@media (hover: hover) {
-  .farmer-calendar section:hover,
-  .farmer-calendar aside:hover { border-color: #fff; box-shadow: inset 0 1px 0 #fff, 0 14px 36px rgba(39,74,57,.11), 0 2px 5px rgba(39,74,57,.04); }
-  .farmer-calendar button:hover { transform: translateY(-1px); }
-}
-@keyframes calendar-glass-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .farmer-calendar section, .farmer-calendar aside { animation: none; }
-  .farmer-calendar *, .farmer-calendar *::before { transition: none !important; }
-  .farmer-calendar button:hover, .farmer-calendar button:active { transform: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .farmer-calendar section, .farmer-calendar aside { background: #fafdf9; -webkit-backdrop-filter: none; backdrop-filter: none; }
-}
-.farmer-calendar [class~="text-xs"],
-.farmer-calendar [class~="text-[10px]"],
-.farmer-calendar [class~="text-[11px]"] { font-size: 14px; line-height: 1.5; }
-.farmer-calendar [class~="text-sm"] { font-size: 16px; line-height: 1.55; }
-.farmer-calendar [class~="text-base"] { font-size: 18px; }
-.farmer-calendar [class~="text-lg"] { font-size: 21px; line-height: 1.35; }
-.farmer-calendar [class~="text-xl"] { font-size: 24px; line-height: 1.3; }
-.farmer-calendar button,
-.farmer-calendar a { min-height: 48px; }
-.farmer-calendar button { padding-top: 11px; padding-bottom: 11px; font-size: 16px; }
-.farmer-calendar button:focus-visible,
-.farmer-calendar a:focus-visible { outline: 3px solid #267e4d; outline-offset: 4px; }
-.farmer-calendar [class~="text-muted"] { color: #526b60; }
-.farmer-calendar [class~="h-2.5"] { height: 14px; }
-.farmer-calendar [class~="h-7"] { height: 36px; }
-.farmer-calendar svg[viewBox="0 0 280 280"] { max-width: 320px; }
-@media (max-width: 640px) {
-  .farmer-calendar { gap: 18px; }
-  .farmer-calendar section { padding: 20px; }
-  .farmer-calendar header h1 { font-size: 35px; }
-}
+/* Independent columns keep the timeline close to the summary cards. */
+.farmer-calendar { gap: 18px; }
+.calendar-layout { display: grid; gap: 16px; align-items: start; }
+.calendar-left, .calendar-right, .calendar-main { display: flex; min-width: 0; flex-direction: column; gap: 16px; }
+.calendar-summary { display: grid; gap: 16px; }
+.calendar-main > #annual-calendar { min-width: 0; min-height: 400px; }
+@media (min-width: 640px) { .calendar-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .calendar-layout { grid-template-columns: minmax(0, 2.2fr) minmax(300px, 1fr); } }
+.farmer-calendar section, .farmer-calendar aside { background: linear-gradient(145deg, #102c39, #091d28); border: 1px solid #214656; box-shadow: 0 12px 35px rgba(0,0,0,.14); border-radius: 20px; }
+.farmer-calendar section h2, .farmer-calendar aside h2, .farmer-calendar section strong { color: #e0efed; }
+.farmer-calendar section p, .farmer-calendar aside p, .farmer-calendar [class~="text-muted"] { color: #91aab2; }
+.calendar-summary > section { padding: 20px; }
+.calendar-summary > section:nth-child(2) > div { background: transparent; padding: 0; }
+.calendar-summary > section:nth-child(2) a { color: #aaff69; }
+.calendar-right aside svg[viewBox="0 0 280 280"] { max-width: 320px; }
+.calendar-right aside [class~="bg-[#f8faf5]"] { background: #142f3a; color: #e0efed; }
+.calendar-right section [class~="bg-[#eef7f7]"], .calendar-right section [class~="bg-[#fbf4e9]"] { background: #081c27; }
+#annual-calendar [class~="bg-[#f3f7f2]"], #annual-calendar [class~="bg-[#f2f6f1]"] { background: #152f3b; }
+#annual-calendar [class~="text-[#274b39]"] { color: #dceceb; }
+#annual-calendar [class~="bg-[#f3f7f1]"] { background: #081d28; border-color: #214656; }
+#annual-calendar button { color: #9fb7bd; }
+#annual-calendar button[aria-pressed="true"] { color: #10251a; background: #adff68; }
+.calendar-main > div { background: #102c39; border-color: #214656; }
+.calendar-main > div h2 { color: #e0efed; }
+.calendar-main > div p { color: #91aab2; }
+.farmer-calendar button:focus-visible, .farmer-calendar a:focus-visible { outline: 3px solid #adff68; outline-offset: 3px; }
+
+.farmer-calendar header { border: 1px solid #214656; box-shadow: 0 12px 35px rgba(0,0,0,.14); }
+.farmer-calendar header h1 { color: #e0efed; }
+.farmer-calendar header p { color: #a5bec2; }
+.farmer-calendar header p:first-child { color: #7ad8be; }
+.farmer-calendar > section[aria-label] > div:first-child { border-color: #214656; }
+.farmer-calendar > section[aria-label] > div:first-child > span { background: #173a42; color: #7ad8be; }
+.farmer-calendar > section[aria-label] button { background: #0a202c; border-color: #284b59; color: #a9bec3; }
+.farmer-calendar > section[aria-label] button:hover { background: #173743; }
+.farmer-calendar > section[aria-label] button[aria-pressed="true"] { background: #adff68; border-color: #adff68; color: #10251a; }
+.farmer-calendar > section[aria-label] button span[class*="bg-white"] { background: #254c42; color: #d9eee2; }
