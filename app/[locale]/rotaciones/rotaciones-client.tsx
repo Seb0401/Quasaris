@@ -31,7 +31,10 @@ export function RotacionesClient() {
   return (
     <div className="ui-page">
       <PageHeader icon={Repeat2} kicker={es ? "EDITOR" : "EDITOR"} title={t("rotaciones.title")} subtitle={t("rotaciones.subtitle")} />
-      <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm self-start"><Combine size={14} />{t("group.title")}</Link>
+      <div className="flex flex-wrap gap-3">
+        {farm.rotations.length < MAX_ROTATIONS && <Link href={`/${locale}/onboarding`} className="ui-btn ui-btn-sm"><Plus size={14} />{es ? "Crear con guía" : "Create with a guide"}</Link>}
+        <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><Combine size={14} />{t("group.title")}</Link>
+      </div>
 
       <div className="rotation-editor-grid">
         {farm.rotations.map((r, index) => {
