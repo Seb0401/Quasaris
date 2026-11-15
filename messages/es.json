@@ -522,7 +522,7 @@
     },
     "drawn": "Mi terreno dibujado · {ha} ha",
     "drawnHint": "La granja usa el área real que marcaste en el mapa.",
-    "drawTip": "Consejo: usa «Dibujar mi terreno» en el mapa para que la granja tenga el tamaño real de tu chacra.",
+    "drawTip": "Consejo: usa «Seleccionar con un toque» en el mapa (o dibújalo a mano) para que la granja tenga el tamaño real de tu chacra.",
     "scenario": {
       "intro": "Planifica tu campaña {season}. Elige un escenario: cada uno toma como modelo un año real de los 21 años de datos NASA.",
       "basis": "Año modelo: NASA POWER {year}, ajustado a la altitud de tu parcela. Cambio de temperatura: {delta}.",

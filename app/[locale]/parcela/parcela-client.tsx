@@ -269,8 +269,8 @@ export function ParcelaClient() {
                   ? `Tu terreno dibujado mide ${ha.format(farm.areaHa)} ha. La granja usará ese tamaño.`
                   : `Your drawn field is ${ha.format(farm.areaHa)} ha. Farm mode will use that size.`
                 : es
-                  ? "Toca el mapa o arrastra el pin. Con «Dibujar mi terreno» marcas sus esquinas."
-                  : "Tap the map or drag the pin. Use “Draw my field” to mark its corners."}
+                  ? "Toca el mapa o arrastra el pin. Con «Seleccionar con un toque» reconocemos tu terreno, o dibújalo a mano."
+                  : "Tap the map or drag the pin. Use “Select with one tap” to find your field, or draw it by hand."}
             </p>
             <Link href={`/${locale}/comparar`} className="ui-btn">
               {t("parcela.continue")}

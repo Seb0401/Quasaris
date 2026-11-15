@@ -1545,3 +1545,8 @@
 .gm-vertex i { display: block; width: 14px; height: 14px; margin: 4px; border-radius: 50%; background: #b9ff63; border: 2px solid #0a2230; box-shadow: 0 2px 6px rgba(0, 0, 0, .45); cursor: grab; transition: transform .15s; }
 .gm-vertex i.first.closable { width: 18px; height: 18px; margin: 2px; background: #fff; }
 .gm-vertex:hover i { transform: scale(1.25); }
+.gm-autobar { z-index: 760; }
+.gm-autobar button { white-space: nowrap; }
+.map-view .gm-autobar { top: 66px; left: 50%; right: auto; transform: translateX(-50%); }
+@media (min-width: 1050px) { .map-view .gm-autobar { top: 74px; left: calc(50% + 190px); } }
+@media (max-width: 600px) { .map-view .gm-autobar, .gm-autobar { left: 8px; right: 8px; transform: none; } }

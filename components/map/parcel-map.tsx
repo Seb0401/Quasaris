@@ -319,7 +319,7 @@ function ParcelMapInner({
               }}
             />
           ))}
-        {!drawing && <Marker position={[lat, lon]} icon={PIN} draggable eventHandlers={markerEvents} />}
+        {!drawing && auto === "off" && <Marker position={[lat, lon]} icon={PIN} draggable eventHandlers={markerEvents} />}
         <ClickHandler
           onPick={(la, lo) => {
             if (auto === "pick") void runAuto(la, lo);
@@ -557,7 +557,11 @@ function ParcelMapInner({
           <button
             type="button"
             className="gm-chip gm-tool gm-auto-btn"
-            onClick={() => setAuto("pick")}
+            onClick={() => {
+              setAuto("pick");
+              // a escala de chacra el toque cae dentro del campo que se ve
+              if (map && map.getZoom() < 15) map.flyTo([lat, lon], 16, { duration: 0.9 });
+            }}
             title={es ? "Toca tu terreno y lo reconocemos en la imagen satelital" : "Tap your field and we find it on the satellite image"}
           >
             <Wand2 size={14} />
