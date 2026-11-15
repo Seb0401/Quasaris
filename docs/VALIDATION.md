@@ -43,4 +43,4 @@ This answers the **Validity** criterion of the rubric: how reliable are the numb
 
 ## 4. What is still estimated
 
-Prices, yields and costs in `data/crops.json` (approximate MIDAGRI references), the water allocated per hectare (15,000 m³/ha by default) and the yield bonus of crop associations. The interface labels them "to validate". Ideally they are reviewed with an agronomist (UCSM or INIA) and with the irrigation users' board or AUTODEMA.
+Prices, yields and costs in `data/crops.json` (approximate MIDAGRI references), the water allocated per hectare (15,000 m³/ha by default), the yield bonus of crop associations and the rules of the Recommendations screen (nitrogen demand and fixation per crop, fertiliser, microorganism and device suggestions). The interface labels them "to validate". Ideally they are reviewed with an agronomist (UCSM or INIA) and with the irrigation users' board or AUTODEMA.
