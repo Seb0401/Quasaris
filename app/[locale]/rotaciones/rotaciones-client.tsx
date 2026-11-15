@@ -7,10 +7,13 @@ import { useLocale, useT } from "@/components/i18n-provider";
 import { Reveal } from "@/components/motion/reveal";
 import { Badge, PageHeader } from "@/components/ui/kit";
 import type { Rotation } from "@/lib/contract";
-import { CATEGORIES, CROPS, FAMILY_COLOR, MONTH_START, cropName, cropSegments, cropsIn } from "@/lib/crop-calendar";
+import { CROPS, FAMILY_COLOR, MONTH_START, cropName, cropSegments } from "@/lib/crop-calendar";
+import { CropPicker } from "@/components/crops/crop-picker";
 import { setFarm, useFarm } from "@/lib/farm-store";
 import { MAX_CROPS, MAX_ROTATIONS, bareMonths, newRotationId, overlapDays } from "@/lib/rotation-utils";
 import { rotationColor } from "@/lib/ui";
+import { CropModelNotes } from "@/components/crop-model-notes";
+import { isOrchard, orchardConflict } from "@/lib/crop-calendar";
 
 export function RotacionesClient() {
   const t = useT();
@@ -31,7 +34,10 @@ export function RotacionesClient() {
   return (
     <div className="ui-page">
       <PageHeader icon={Repeat2} kicker={es ? "EDITOR" : "EDITOR"} title={t("rotaciones.title")} subtitle={t("rotaciones.subtitle")} />
-      <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm self-start"><Combine size={14} />{t("group.title")}</Link>
+      <div className="flex flex-wrap gap-3">
+        {farm.rotations.length < MAX_ROTATIONS && <Link href={`/${locale}/onboarding`} className="ui-btn ui-btn-sm"><Plus size={14} />{es ? "Crear con guía" : "Create with a guide"}</Link>}
+        <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><Combine size={14} />{t("group.title")}</Link>
+      </div>
 
       <div className="rotation-editor-grid">
         {farm.rotations.map((r, index) => {
@@ -74,24 +80,21 @@ export function RotacionesClient() {
                 <div className="crop-editor">
                   {r.crops.map((rc, i) => (
                     <div key={i} className="crop-editor-row">
-                      <select value={rc.cropId} onChange={(e) => update(r.id, (x) => ({ ...x, crops: x.crops.map((c, k) => (k === i ? { ...c, cropId: e.target.value } : c)) }))} aria-label={t("rotaciones.crop")} className="ui-select">
-                        {CATEGORIES.map((c) => (
-                          <optgroup key={c} label={t(`group.category.${c}`)}>
-                            {cropsIn(c).map((id) => <option key={id} value={id}>{cropName(id, locale)}</option>)}
-                          </optgroup>
-                        ))}
-                      </select>
+                      <CropPicker value={rc.cropId} locale={locale} label={t("rotaciones.crop")} onChange={(cropId) => update(r.id, (x) => ({ ...x, crops: x.crops.map((c, k) => k === i ? { ...c, cropId } : c) }))} isOptionDisabled={(id) => isOrchard(id) && (r.crops.length > 1 || r.mode === "association")} disabledHint={r.crops.length > 1 || r.mode === "association" ? (es ? "Los frutales necesitan un plan de un solo cultivo: el huerto ocupa el lote todo el año." : "Fruit crops need a single-crop plan: the orchard occupies the plot all year.") : undefined} />
                       <select value={rc.sowMonth} disabled={Boolean(CROPS[rc.cropId]?.perennial)} onChange={(e) => update(r.id, (x) => ({ ...x, crops: x.crops.map((c, k) => (k === i ? { ...c, sowMonth: Number(e.target.value) } : c)) }))} aria-label={t("rotaciones.sowMonth")} className="ui-select capitalize">
                         {months.map((m, k) => <option key={k} value={k + 1}>{t("rotaciones.sow")} {m}</option>)}
                       </select>
                       <button type="button" onClick={() => update(r.id, (x) => ({ ...x, crops: x.crops.filter((_, k) => k !== i) }))} aria-label={t("rotaciones.removeCrop")} className="time-btn crop-remove"><X size={15} /></button>
                     </div>
                   ))}
-                  {r.crops.length < MAX_CROPS && (
+                  {r.crops.length < MAX_CROPS && !r.crops.some((c) => isOrchard(c.cropId)) && (
                     <button type="button" onClick={() => update(r.id, (x) => ({ ...x, crops: [...x.crops, { cropId: "cebolla", sowMonth: 3 }] }))} className="crop-add"><Plus size={15} />{t("rotaciones.addCrop")}</button>
                   )}
                 </div>
 
+                <CropModelNotes cropIds={r.crops.map((c) => c.cropId)} locale={locale} />
+                {r.crops.length > 1 && <p className="ui-hint">{es ? "Para elegir un frutal, usa un plan de un solo cultivo: el huerto ocupa el lote todo el año." : "To select a fruit crop, use a single-crop plan: the orchard occupies the plot all year."}</p>}
+                {orchardConflict(r.crops, r.mode) && <p className="ui-alert tone-warn">{es ? "Usa un solo frutal establecido por plan; compara los demás cultivos en lotes separados." : "Use one established orchard crop per plan; compare other crops on separate plots."}</p>}
                 {r.crops.length > 0 && (() => {
                   const ev = evaluateGroup(r.crops, r.mode ?? "rotation", (id) => cropName(id, locale));
                   // un solo motivo que explique el veredicto: el detalle completo está en Agrupaciones

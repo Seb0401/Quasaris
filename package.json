@@ -11,6 +11,7 @@
     "mock": "python scripts/make_mock.py",
     "icons": "node scripts/make_icons.mjs",
     "test:py": "python -m pytest engine/tests -q",
+    "test:crops": "node scripts/test-crop-calendar.cjs && node scripts/test-crop-integration.cjs && node scripts/test-crop-artwork.cjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

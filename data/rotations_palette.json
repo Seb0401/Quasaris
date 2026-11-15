@@ -1,15 +1,218 @@
 {
   "_note": "Rotation palette for the farm mode. The first 3 are the demo rotations (rotations_majes.json). To be validated by an agronomist. Quinoa · Faba bean, the three sisters and Paprika · Oats · Pea use the crops added for Arequipa.",
   "rotations": [
-    { "id": "actual", "name": "Alfalfa permanente", "isCurrent": true, "crops": [{"cropId": "alfalfa", "sowMonth": 4}] },
-    { "id": "ingreso", "name": "Cebolla · Papa · Maíz chala", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "papa", "sowMonth": 8}, {"cropId": "maiz_chala", "sowMonth": 12}] },
-    { "id": "suelo_agua", "name": "Cebolla · Haba · Maíz chala", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "haba", "sowMonth": 8}, {"cropId": "maiz_chala", "sowMonth": 12}] },
-    { "id": "papa_haba", "name": "Papa · Haba", "isCurrent": false, "crops": [{"cropId": "papa", "sowMonth": 4}, {"cropId": "haba", "sowMonth": 9}] },
-    { "id": "cebolla_frijol", "name": "Cebolla · Frijol", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "frijol", "sowMonth": 8}] },
-    { "id": "maiz_haba", "name": "Maíz chala · Haba · Maíz chala", "isCurrent": false, "crops": [{"cropId": "maiz_chala", "sowMonth": 1}, {"cropId": "haba", "sowMonth": 5}, {"cropId": "maiz_chala", "sowMonth": 9}] },
-    { "id": "quinua_haba", "name": "Quinua · Haba", "isCurrent": false, "crops": [{"cropId": "quinua", "sowMonth": 4}, {"cropId": "haba", "sowMonth": 10}] },
-    { "id": "tres_hermanas", "name": "Maíz chala + Frijol + Zapallo", "isCurrent": false, "mode": "association", "crops": [{"cropId": "maiz_chala", "sowMonth": 9}, {"cropId": "frijol", "sowMonth": 9}, {"cropId": "zapallo", "sowMonth": 9}] },
-    { "id": "paprika_avena", "name": "Páprika · Avena forrajera · Arveja", "isCurrent": false, "crops": [{"cropId": "paprika", "sowMonth": 8}, {"cropId": "avena", "sowMonth": 12}, {"cropId": "arveja", "sowMonth": 4}] },
-    { "id": "descanso", "name": "Descanso", "isCurrent": false, "crops": [] }
+    {
+      "id": "actual",
+      "name": "Alfalfa permanente",
+      "isCurrent": true,
+      "crops": [
+        {
+          "cropId": "alfalfa",
+          "sowMonth": 4
+        }
+      ]
+    },
+    {
+      "id": "ingreso",
+      "name": "Cebolla · Papa · Maíz chala",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "cebolla",
+          "sowMonth": 3
+        },
+        {
+          "cropId": "papa",
+          "sowMonth": 8
+        },
+        {
+          "cropId": "maiz_chala",
+          "sowMonth": 12
+        }
+      ]
+    },
+    {
+      "id": "suelo_agua",
+      "name": "Cebolla · Haba · Maíz chala",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "cebolla",
+          "sowMonth": 3
+        },
+        {
+          "cropId": "haba",
+          "sowMonth": 8
+        },
+        {
+          "cropId": "maiz_chala",
+          "sowMonth": 12
+        }
+      ]
+    },
+    {
+      "id": "papa_haba",
+      "name": "Papa · Haba",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "papa",
+          "sowMonth": 4
+        },
+        {
+          "cropId": "haba",
+          "sowMonth": 9
+        }
+      ]
+    },
+    {
+      "id": "cebolla_frijol",
+      "name": "Cebolla · Frijol",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "cebolla",
+          "sowMonth": 3
+        },
+        {
+          "cropId": "frijol",
+          "sowMonth": 8
+        }
+      ]
+    },
+    {
+      "id": "maiz_haba",
+      "name": "Maíz chala · Haba · Maíz chala",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "maiz_chala",
+          "sowMonth": 1
+        },
+        {
+          "cropId": "haba",
+          "sowMonth": 5
+        },
+        {
+          "cropId": "maiz_chala",
+          "sowMonth": 9
+        }
+      ]
+    },
+    {
+      "id": "quinua_haba",
+      "name": "Quinua · Haba",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "quinua",
+          "sowMonth": 4
+        },
+        {
+          "cropId": "haba",
+          "sowMonth": 10
+        }
+      ]
+    },
+    {
+      "id": "tres_hermanas",
+      "name": "Maíz chala + Frijol + Zapallo",
+      "isCurrent": false,
+      "mode": "association",
+      "crops": [
+        {
+          "cropId": "maiz_chala",
+          "sowMonth": 9
+        },
+        {
+          "cropId": "frijol",
+          "sowMonth": 9
+        },
+        {
+          "cropId": "zapallo",
+          "sowMonth": 9
+        }
+      ]
+    },
+    {
+      "id": "paprika_avena",
+      "name": "Páprika · Avena forrajera · Arveja",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "paprika",
+          "sowMonth": 8
+        },
+        {
+          "cropId": "avena",
+          "sowMonth": 12
+        },
+        {
+          "cropId": "arveja",
+          "sowMonth": 4
+        }
+      ]
+    },
+    {
+      "id": "descanso",
+      "name": "Descanso",
+      "isCurrent": false,
+      "crops": []
+    },
+    {
+      "id": "majes_alcachofa",
+      "name": "Alcachofa",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "alcachofa",
+          "sowMonth": 4
+        }
+      ]
+    },
+    {
+      "id": "majes_palta",
+      "name": "Palta",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "palta",
+          "sowMonth": 1
+        }
+      ]
+    },
+    {
+      "id": "majes_uva",
+      "name": "Uva de mesa",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "uva",
+          "sowMonth": 1
+        }
+      ]
+    },
+    {
+      "id": "majes_mandarina",
+      "name": "Mandarina",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "mandarina",
+          "sowMonth": 1
+        }
+      ]
+    },
+    {
+      "id": "majes_granada",
+      "name": "Granada",
+      "isCurrent": false,
+      "crops": [
+        {
+          "cropId": "granada",
+          "sowMonth": 1
+        }
+      ]
+    }
   ]
 }

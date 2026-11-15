@@ -4,9 +4,8 @@ import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { I18nProvider } from "@/components/i18n-provider";
-import { AppNav } from "@/components/app-nav";
+import { AppShell } from "@/components/app-shell";
 import { SwRegister } from "@/components/sw-register";
-import { AssistantDrawer } from "@/components/assistant/assistant-drawer";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
 import { THEME_SCRIPT } from "@/lib/theme";
 
@@ -45,9 +44,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
             Next lo inyecta en el HTML inicial; un <script> renderizado por React da un error en consola. */}
         <Script id="farmtwin-theme" strategy="beforeInteractive">{THEME_SCRIPT}</Script>
         <I18nProvider locale={locale}>
-          <AppNav />
-          <main className="app-main">{children}</main>
-          <AssistantDrawer />
+          <AppShell>{children}</AppShell>
           <SwRegister />
         </I18nProvider>
       </body>

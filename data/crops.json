@@ -2,13 +2,16 @@
   "_note": "ESTIMATED values for Majes, to be validated by an agronomist. Kc and stages: FAO-56 tables 11 and 12, adjusted. Yield, price and cost: orders of magnitude from public MIDAGRI references (Arequipa); they are not official figures. Threshold temperatures: general agronomic ranges.",
   "_units": {
     "stagesDays": "[initial, development, mid, late] in days (FAO-56 table 11)",
-    "yieldTha": "t/ha per season (alfalfa: t/ha/year of green forage)",
+    "yieldTha": "t/ha per field season for annual crops; t/ha/year for alfalfa and producing orchards; see crop.product",
     "pricePENt": "S/ per tonne at the farm gate",
-    "costPENha": "S/ per hectare per season",
+    "costPENha": "PEN/ha per annual field season or per producing orchard year; establishment investment excluded",
     "tFrostC": "daily Tmin below which frost damage occurs",
     "tHeatC": "daily Tmax above which heat stress occurs",
     "rootDepthM": "effective root depth",
-    "category": "group for the interface: vegetable | grain | legume | forage"
+    "category": "vegetable | grain | legume | forage | fruit",
+    "monthlyKc": "12 calendar-month coefficients, January–December; established orchards only, season placement is an explicit planning assumption",
+    "harvestMonths": "1..12 calendar months; approximate producing-orchard harvest window",
+    "harvestDays": "0-based days after field establishment for illustrative repeated picking; not separate full-yield harvests"
   },
   "crops": {
     "alfalfa": {
@@ -194,7 +197,7 @@
         40,
         15
       ],
-      "rootDepthM": 1.0,
+      "rootDepthM": 1,
       "tFrostC": 0,
       "tHeatC": 38,
       "yieldTha": 60,
@@ -344,7 +347,7 @@
       "perennial": false,
       "kc": {
         "ini": 0.3,
-        "mid": 1.0,
+        "mid": 1,
         "end": 0.7
       },
       "stagesDays": [
@@ -353,7 +356,7 @@
         60,
         35
       ],
-      "rootDepthM": 1.0,
+      "rootDepthM": 1,
       "tFrostC": -4,
       "tHeatC": 32,
       "yieldTha": 3.5,
@@ -397,7 +400,7 @@
       "perennial": false,
       "kc": {
         "ini": 0.7,
-        "mid": 1.0,
+        "mid": 1,
         "end": 0.7
       },
       "stagesDays": [
@@ -620,7 +623,7 @@
         50,
         30
       ],
-      "rootDepthM": 1.0,
+      "rootDepthM": 1,
       "tFrostC": -4,
       "tHeatC": 30,
       "yieldTha": 4,
@@ -673,7 +676,7 @@
         40,
         10
       ],
-      "rootDepthM": 1.0,
+      "rootDepthM": 1,
       "tFrostC": -5,
       "tHeatC": 30,
       "yieldTha": 40,
@@ -717,7 +720,7 @@
       "perennial": false,
       "kc": {
         "ini": 0.5,
-        "mid": 1.0,
+        "mid": 1,
         "end": 0.8
       },
       "stagesDays": [
@@ -726,7 +729,7 @@
         35,
         25
       ],
-      "rootDepthM": 1.0,
+      "rootDepthM": 1,
       "tFrostC": 2,
       "tHeatC": 35,
       "yieldTha": 30,
@@ -867,6 +870,435 @@
         "humiditySensitive": false,
         "weedSensitive": false
       }
+    },
+    "alcachofa": {
+      "name": {
+        "es": "Alcachofa",
+        "en": "Artichoke"
+      },
+      "family": "asteracea",
+      "category": "vegetable",
+      "fixesNitrogen": false,
+      "perennial": false,
+      "kc": {
+        "ini": 0.5,
+        "mid": 1,
+        "end": 0.95
+      },
+      "stagesDays": [
+        30,
+        60,
+        120,
+        30
+      ],
+      "rootDepthM": 0.8,
+      "tFrostC": -1,
+      "tHeatC": 32,
+      "yieldTha": 18,
+      "pricePENt": 1800,
+      "costPENha": 22000,
+      "product": {
+        "es": "Capítulos frescos para procesamiento · t/ha/campaña en campo",
+        "en": "Fresh heads for processing · t/ha per field season"
+      },
+      "modelNote": {
+        "es": "Perfil orientativo para Majes. Rendimiento, precio, costo, umbrales y fechas son supuestos de planificación sin validar localmente. Confírmalos con tu agrónomo y comprador.",
+        "en": "Indicative Majes profile. Yield, price, cost, thresholds and dates are planning assumptions without local validation. Confirm them with your agronomist and buyer."
+      },
+      "evidenceStatus": "planning_assumption",
+      "reviewedAt": null,
+      "sources": {
+        "kc": "https://www.fao.org/4/x0490e/x0490e0b.htm",
+        "agronomy": "https://repositorio.inia.gob.pe/items/e065ce0d-8d04-4c14-b2bc-55ce3412f285",
+        "localPresence": "https://laccei.org/LACCEI2025-Mexico/full-papers/Contribution_1678_final_a.pdf",
+        "economics": "Illustrative planning assumptions, not an observed local production budget.",
+        "timing": "Annual transplanted field crop; four illustrative picking dates, nursery time excluded."
+      },
+      "agronomy": {
+        "nDemandKg": 200,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "mid",
+        "labor": "high",
+        "humiditySensitive": true,
+        "weedSensitive": false,
+        "cares": [
+          "transplant",
+          "repeatedPicking",
+          "buyerGrade"
+        ],
+        "pests": [
+          "aphid",
+          "cutworm"
+        ],
+        "diseases": [
+          "rootRot"
+        ]
+      },
+      "harvestDays": [
+        150,
+        180,
+        210,
+        239
+      ]
+    },
+    "palta": {
+      "name": {
+        "es": "Palta",
+        "en": "Avocado"
+      },
+      "family": "lauracea",
+      "category": "fruit",
+      "fixesNitrogen": false,
+      "perennial": true,
+      "kc": {
+        "ini": 0.6,
+        "mid": 0.85,
+        "end": 0.75
+      },
+      "stagesDays": [
+        0,
+        0,
+        365,
+        0
+      ],
+      "rootDepthM": 1,
+      "tFrostC": -1,
+      "tHeatC": 35,
+      "yieldTha": 15,
+      "pricePENt": 3000,
+      "costPENha": 25000,
+      "product": {
+        "es": "Fruta fresca comercializable · t/ha/año de huerto en producción",
+        "en": "Marketable fresh fruit · t/ha/year of producing orchard"
+      },
+      "modelNote": {
+        "es": "Perfil orientativo para Majes. Rendimiento, precio, costo, umbrales y fechas son supuestos de planificación sin validar localmente. Confírmalos con tu agrónomo y comprador. Solo huerto establecido en producción: no incluye instalación, años juveniles ni retorno de la inversión. Otros cultivos se comparan en lotes separados.",
+        "en": "Indicative Majes profile. Yield, price, cost, thresholds and dates are planning assumptions without local validation. Confirm them with your agronomist and buyer. Producing established orchard only: excludes establishment, juvenile years and investment returns. Compare other crops on separate plots."
+      },
+      "evidenceStatus": "planning_assumption",
+      "reviewedAt": null,
+      "sources": {
+        "kc": "https://www.fao.org/4/x0490e/x0490e0b.htm",
+        "localPresence": "https://www.gob.pe/institucion/regionarequipa/noticias/908942-realizan-campana-de-control-de-plaga-de-la-mosca-en-majes",
+        "economics": "Illustrative planning assumptions; no observed local prices or costs are claimed.",
+        "timing": "Illustrative annual schedule; confirm cultivar, pruning, season and buyer requirements locally."
+      },
+      "agronomy": {
+        "nDemandKg": 150,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "tall",
+        "labor": "high",
+        "humiditySensitive": true,
+        "weedSensitive": false,
+        "cares": [
+          "orchardPruning",
+          "fruitSetWater",
+          "drainage",
+          "buyerGrade"
+        ],
+        "pests": [
+          "fruitFly"
+        ],
+        "diseases": [
+          "rootRot"
+        ]
+      },
+      "lifecycle": "orchard",
+      "monthlyKc": [
+        0.85,
+        0.85,
+        0.85,
+        0.8,
+        0.75,
+        0.65,
+        0.6,
+        0.6,
+        0.7,
+        0.8,
+        0.85,
+        0.85
+      ],
+      "harvestMonths": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "floweringMonths": [
+        9,
+        10
+      ]
+    },
+    "uva": {
+      "name": {
+        "es": "Uva de mesa",
+        "en": "Table grape"
+      },
+      "family": "vitacea",
+      "category": "fruit",
+      "fixesNitrogen": false,
+      "perennial": true,
+      "kc": {
+        "ini": 0.3,
+        "mid": 0.85,
+        "end": 0.45
+      },
+      "stagesDays": [
+        0,
+        0,
+        365,
+        0
+      ],
+      "rootDepthM": 1.2,
+      "tFrostC": -1,
+      "tHeatC": 35,
+      "yieldTha": 25,
+      "pricePENt": 2000,
+      "costPENha": 35000,
+      "product": {
+        "es": "Fruta fresca comercializable · t/ha/año de huerto en producción",
+        "en": "Marketable fresh fruit · t/ha/year of producing orchard"
+      },
+      "modelNote": {
+        "es": "Perfil orientativo para Majes. Rendimiento, precio, costo, umbrales y fechas son supuestos de planificación sin validar localmente. Confírmalos con tu agrónomo y comprador. Solo huerto establecido en producción: no incluye instalación, años juveniles ni retorno de la inversión. Otros cultivos se comparan en lotes separados.",
+        "en": "Indicative Majes profile. Yield, price, cost, thresholds and dates are planning assumptions without local validation. Confirm them with your agronomist and buyer. Producing established orchard only: excludes establishment, juvenile years and investment returns. Compare other crops on separate plots."
+      },
+      "evidenceStatus": "planning_assumption",
+      "reviewedAt": null,
+      "sources": {
+        "kc": "https://www.fao.org/4/x0490e/x0490e0b.htm",
+        "localPresence": "https://www.gob.pe/institucion/regionarequipa/noticias/908942-realizan-campana-de-control-de-plaga-de-la-mosca-en-majes",
+        "economics": "Illustrative planning assumptions; no observed local prices or costs are claimed.",
+        "timing": "Illustrative annual schedule; confirm cultivar, pruning, season and buyer requirements locally."
+      },
+      "agronomy": {
+        "nDemandKg": 100,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "tall",
+        "labor": "high",
+        "humiditySensitive": true,
+        "weedSensitive": false,
+        "cares": [
+          "vinePruning",
+          "trellis",
+          "buyerGrade"
+        ],
+        "pests": [
+          "fruitFly",
+          "mealybug"
+        ],
+        "diseases": [
+          "powderyMildew"
+        ]
+      },
+      "lifecycle": "orchard",
+      "monthlyKc": [
+        0.85,
+        0.8,
+        0.65,
+        0.45,
+        0.3,
+        0.3,
+        0.3,
+        0.35,
+        0.55,
+        0.75,
+        0.85,
+        0.85
+      ],
+      "harvestMonths": [
+        12,
+        1,
+        2
+      ],
+      "floweringMonths": [
+        9,
+        10
+      ]
+    },
+    "mandarina": {
+      "name": {
+        "es": "Mandarina",
+        "en": "Mandarin"
+      },
+      "family": "rutacea",
+      "category": "fruit",
+      "fixesNitrogen": false,
+      "perennial": true,
+      "kc": {
+        "ini": 0.7,
+        "mid": 0.65,
+        "end": 0.7
+      },
+      "stagesDays": [
+        0,
+        0,
+        365,
+        0
+      ],
+      "rootDepthM": 1.2,
+      "tFrostC": -2,
+      "tHeatC": 36,
+      "yieldTha": 25,
+      "pricePENt": 1200,
+      "costPENha": 18000,
+      "product": {
+        "es": "Fruta fresca comercializable · t/ha/año de huerto en producción",
+        "en": "Marketable fresh fruit · t/ha/year of producing orchard"
+      },
+      "modelNote": {
+        "es": "Perfil orientativo para Majes. Rendimiento, precio, costo, umbrales y fechas son supuestos de planificación sin validar localmente. Confírmalos con tu agrónomo y comprador. Solo huerto establecido en producción: no incluye instalación, años juveniles ni retorno de la inversión. Otros cultivos se comparan en lotes separados.",
+        "en": "Indicative Majes profile. Yield, price, cost, thresholds and dates are planning assumptions without local validation. Confirm them with your agronomist and buyer. Producing established orchard only: excludes establishment, juvenile years and investment returns. Compare other crops on separate plots."
+      },
+      "evidenceStatus": "planning_assumption",
+      "reviewedAt": null,
+      "sources": {
+        "kc": "https://www.fao.org/4/x0490e/x0490e0b.htm",
+        "localPresence": "https://www.gob.pe/institucion/regionarequipa/noticias/908942-realizan-campana-de-control-de-plaga-de-la-mosca-en-majes",
+        "economics": "Illustrative planning assumptions; no observed local prices or costs are claimed.",
+        "timing": "Illustrative annual schedule; confirm cultivar, pruning, season and buyer requirements locally."
+      },
+      "agronomy": {
+        "nDemandKg": 160,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "tall",
+        "labor": "high",
+        "humiditySensitive": true,
+        "weedSensitive": false,
+        "cares": [
+          "orchardPruning",
+          "fruitSetWater",
+          "buyerGrade"
+        ],
+        "pests": [
+          "fruitFly",
+          "aphid"
+        ],
+        "diseases": [
+          "rootRot"
+        ]
+      },
+      "lifecycle": "orchard",
+      "monthlyKc": [
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.65,
+        0.65,
+        0.65,
+        0.65,
+        0.7,
+        0.7
+      ],
+      "harvestMonths": [
+        4,
+        5,
+        6
+      ],
+      "floweringMonths": [
+        9,
+        10
+      ]
+    },
+    "granada": {
+      "name": {
+        "es": "Granada",
+        "en": "Pomegranate"
+      },
+      "family": "litracea",
+      "category": "fruit",
+      "fixesNitrogen": false,
+      "perennial": true,
+      "kc": {
+        "ini": 0.35,
+        "mid": 0.75,
+        "end": 0.5
+      },
+      "stagesDays": [
+        0,
+        0,
+        365,
+        0
+      ],
+      "rootDepthM": 1,
+      "tFrostC": -2,
+      "tHeatC": 38,
+      "yieldTha": 20,
+      "pricePENt": 2000,
+      "costPENha": 22000,
+      "product": {
+        "es": "Fruta fresca comercializable · t/ha/año de huerto en producción",
+        "en": "Marketable fresh fruit · t/ha/year of producing orchard"
+      },
+      "modelNote": {
+        "es": "Perfil orientativo para Majes. Rendimiento, precio, costo, umbrales y fechas son supuestos de planificación sin validar localmente. Confírmalos con tu agrónomo y comprador. Solo huerto establecido en producción: no incluye instalación, años juveniles ni retorno de la inversión. Otros cultivos se comparan en lotes separados.",
+        "en": "Indicative Majes profile. Yield, price, cost, thresholds and dates are planning assumptions without local validation. Confirm them with your agronomist and buyer. Producing established orchard only: excludes establishment, juvenile years and investment returns. Compare other crops on separate plots."
+      },
+      "evidenceStatus": "planning_assumption",
+      "reviewedAt": null,
+      "sources": {
+        "kc": "Planning assumption: pomegranate is not listed in original FAO-56 table 12; monthly coefficients are uncalibrated, not a direct FAO value.",
+        "localPresence": "https://www.gob.pe/institucion/regionarequipa/noticias/908942-realizan-campana-de-control-de-plaga-de-la-mosca-en-majes",
+        "economics": "Illustrative planning assumptions; no observed local prices or costs are claimed.",
+        "timing": "Illustrative annual harvest and flowering months; requires local cultivar review."
+      },
+      "agronomy": {
+        "nDemandKg": 120,
+        "nFixKg": 0,
+        "P": "med",
+        "K": "high",
+        "height": "tall",
+        "labor": "high",
+        "humiditySensitive": true,
+        "weedSensitive": false,
+        "cares": [
+          "orchardPruning",
+          "fruitCracking",
+          "buyerGrade"
+        ],
+        "pests": [
+          "fruitFly",
+          "aphid"
+        ],
+        "diseases": [
+          "rootRot"
+        ]
+      },
+      "lifecycle": "orchard",
+      "monthlyKc": [
+        0.75,
+        0.75,
+        0.7,
+        0.6,
+        0.5,
+        0.35,
+        0.35,
+        0.35,
+        0.45,
+        0.6,
+        0.75,
+        0.75
+      ],
+      "harvestMonths": [
+        2,
+        3,
+        4
+      ],
+      "floweringMonths": [
+        10,
+        11
+      ]
     }
   },
   "_agronomyNote": "Field 'agronomy': general agronomic references (N demand in kg/ha per season, N fixed by legumes, P and K levels, care tasks, pests). Indicative values, to be validated by an agronomist or INIA.",
@@ -1021,5 +1453,6 @@
       "effect": -1,
       "reason": "perennialDense"
     }
-  ]
+  ],
+  "_schemaVersion": 2
 }

@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ArrowRight, BadgeDollarSign, ChevronDown, ChevronUp, Droplet, Droplets, Layers, Leaf, MapPin, Scale, ShieldAlert, Sprout, Waves } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { CountUp, Meter, RangeInput } from "@/components/ui/kit";
@@ -45,6 +45,10 @@ export function ParcelaClient() {
   // en celular el panel empieza plegado para que se vea el mapa
   const [openState, setOpen] = useState<boolean | null>(null);
   const open = openState ?? !mobile;
+  const [searchMenu, setSearchMenu] = useState({ open: false, height: 0 });
+  const handleSearchMenuChange = useCallback((visible: boolean, height: number) => {
+    setSearchMenu((current) => (current.open === visible && current.height === height ? current : { open: visible, height }));
+  }, []);
   const [section, setSection] = useState<Section>("resources");
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const soilNumber = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
@@ -68,9 +72,13 @@ export function ParcelaClient() {
   return (
     <div className="map-view">
       <h1 className="sr-only">{t("parcela.title")}</h1>
-      <ParcelMap fill search lat={farm.lat} lon={farm.lon} onPick={moveFarm} boundary={farm.boundary} onBoundary={saveBoundary}>
-        <aside className={`map-panel ${open ? "open" : ""}`} aria-label={t("parcela.title")}>
-          <button type="button" className="map-panel-head" onClick={() => setOpen(!open)} aria-expanded={open}>
+      <ParcelMap fill search onSearchMenuChange={handleSearchMenuChange} lat={farm.lat} lon={farm.lon} onPick={moveFarm} boundary={farm.boundary} onBoundary={saveBoundary}>
+        <aside
+          className={`map-panel ${open ? "open" : ""} ${searchMenu.open ? "search-collapsed" : ""}`}
+          style={{ "--search-panel-top": `${66 + searchMenu.height}px` } as React.CSSProperties}
+          aria-label={t("parcela.title")}
+        >
+          <button type="button" className="map-panel-head" onClick={() => !searchMenu.open && setOpen(!open)} aria-expanded={open && !searchMenu.open}>
             <span className="map-panel-icon">
               <MapPin size={17} />
             </span>
@@ -81,10 +89,10 @@ export function ParcelaClient() {
                 {n.format(farm.waterAvailableM3ha)} m³/ha · {t(`irrigation.${farm.irrigation}`)} · {t(`soil.${farm.soilTexture}`)}
               </small>
             </span>
-            {open ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+            {open && !searchMenu.open ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
           </button>
 
-          {open && (
+          {open && !searchMenu.open && (
             <>
               <div className="map-panel-tabs" role="tablist">
                 {SECTIONS.map(({ id, icon: Icon, label }) => (
@@ -254,21 +262,21 @@ export function ParcelaClient() {
             </>
           )}
 
-          <div className="map-panel-foot">
+          {!searchMenu.open && <div className="map-panel-foot">
             <p>
               {farm.areaHa
                 ? es
                   ? `Tu terreno dibujado mide ${ha.format(farm.areaHa)} ha. La granja usará ese tamaño.`
                   : `Your drawn field is ${ha.format(farm.areaHa)} ha. Farm mode will use that size.`
                 : es
-                  ? "Toca el mapa o arrastra el pin. Con «Dibujar mi terreno» marcas sus esquinas."
-                  : "Tap the map or drag the pin. Use “Draw my field” to mark its corners."}
+                  ? "Toca el mapa o arrastra el pin. Con «Seleccionar con un toque» reconocemos tu terreno, o dibújalo a mano."
+                  : "Tap the map or drag the pin. Use “Select with one tap” to find your field, or draw it by hand."}
             </p>
             <Link href={`/${locale}/comparar`} className="ui-btn">
               {t("parcela.continue")}
               <ArrowRight size={17} />
             </Link>
-          </div>
+          </div>}
         </aside>
       </ParcelMap>
     </div>

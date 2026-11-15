@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import {
@@ -13,6 +14,7 @@ import {
   Sprout,
   Sun,
   Target,
+  Tractor,
   TrendingDown,
   WheatOff,
 } from "lucide-react";
@@ -40,16 +42,16 @@ function useReducedMotion() {
   return useSyncExternalStore(subscribeReducedMotion, () => window.matchMedia(REDUCED_MOTION).matches, () => false);
 }
 
-export function ImpactVisual({ locale }: { locale: string }) {
+export function ImpactVisual({ locale, paused = false }: { locale: string; paused?: boolean }) {
   const es = locale === "es";
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || paused) return; // oculta en el carrusel del hero: no anima en segundo plano
     const id = window.setInterval(() => setStep((s) => (s + 1) % STEPS), STEP_MS);
     return () => window.clearInterval(id);
-  }, [reduced]);
+  }, [reduced, paused]);
 
   // sin animación se ve todo a la vez: los dos problemas y la solución
   const state = (i: number) => (reduced ? "is-active" : step === i ? "is-active" : step === 2 && i < 2 ? "is-resolved" : "");
@@ -103,6 +105,94 @@ export function ImpactVisual({ locale }: { locale: string }) {
         <Link href={`/${locale}/granja`} className="qx-farm-cta">{es ? "Probar en la granja" : "Try it on the farm"}<ArrowUpRight size={15} /></Link>
       </footer>
       <div className="qx-imp-dots" aria-hidden>{Array.from({ length: STEPS }, (_, i) => <i key={i} className={reduced || step === i ? "on" : ""} />)}</div>
+    </div>
+  );
+}
+
+// ---------- hero: dos vistas (impacto y granja 3D) ----------
+
+type HeroView = "impact" | "farm";
+const VIEW_MS = 9000; // cada vista dura ~una vuelta completa de la animación de impacto
+
+/**
+ * Panel derecho del hero con dos vistas superpuestas: la animación problema → solución y la granja 3D.
+ * Cambian solas cada VIEW_MS (se pausa con el mouse encima) y con los botones; elegir una a mano
+ * detiene el cambio automático. Con "reducir animaciones" no hay cambio automático.
+ */
+export function HeroShowcase({ locale }: { locale: string }) {
+  const es = locale === "es";
+  const reduced = useReducedMotion();
+  const [view, setView] = useState<HeroView>("impact");
+  const [auto, setAuto] = useState(true);
+  const [hover, setHover] = useState(false);
+  const [round, setRound] = useState(0); // reinicia la animación de impacto cada vez que vuelve a verse
+  const rotating = auto && !reduced && !hover;
+
+  useEffect(() => {
+    if (!rotating) return;
+    const id = window.setTimeout(() => {
+      setView((v) => (v === "impact" ? "farm" : "impact"));
+      setRound((r) => r + 1);
+    }, VIEW_MS);
+    return () => window.clearTimeout(id);
+  }, [rotating, view]);
+
+  const choose = (v: HeroView) => {
+    setAuto(false);
+    if (v !== view) {
+      setView(v);
+      setRound((r) => r + 1);
+    }
+  };
+
+  const tabs: { id: HeroView; label: string; icon: typeof Target }[] = [
+    { id: "impact", label: es ? "Impacto" : "Impact", icon: Target },
+    { id: "farm", label: es ? "Granja 3D" : "3D farm", icon: Tractor },
+  ];
+
+  return (
+    <div className="qx-hero-showcase" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onFocus={() => setHover(true)} onBlur={() => setHover(false)}>
+      <div className="qx-view-switch" role="tablist" aria-label={es ? "Vista del panel" : "Panel view"}>
+        {tabs.map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            id={`qx-view-tab-${id}`}
+            aria-selected={view === id}
+            aria-controls={`qx-view-${id}`}
+            className={`${view === id ? "active" : ""} ${view === id && rotating ? "is-auto" : ""}`}
+            style={{ "--view-ms": `${VIEW_MS}ms` } as React.CSSProperties}
+            onClick={() => choose(id)}
+          >
+            <Icon size={14} /> {label}
+            {view === id && rotating && <i key={`${round}-${id}`} className="qx-view-progress" aria-hidden />}
+          </button>
+        ))}
+      </div>
+
+      <div className="qx-hero-views">
+        <div className="qx-view qx-view-impact" id="qx-view-impact" role="tabpanel" aria-labelledby="qx-view-tab-impact" aria-hidden={view !== "impact"} inert={view !== "impact"}>
+          <ImpactVisual key={`impact-${round}`} locale={locale} paused={view !== "impact"} />
+        </div>
+
+        <div className="qx-view qx-view-farm" id="qx-view-farm" role="tabpanel" aria-labelledby="qx-view-tab-farm" aria-hidden={view !== "farm"} inert={view !== "farm"}>
+          <Link href={`/${locale}/granja`} className="qx-signal-card qx-farm-card" aria-label={es ? "Abrir el modo granja" : "Open farm mode"}>
+            <header>
+              <div><span className="qx-live-dot" /><small>{es ? "GEMELO DIGITAL 3D" : "3D DIGITAL TWIN"}</small></div>
+              <span>{es ? "MODO GRANJA" : "FARM MODE"}</span>
+            </header>
+            <div className="qx-satellite-frame qx-farm-frame">
+              {/* captura real del modo granja (public/images/farm-twin.webp) */}
+              <Image src="/images/farm-twin.webp" alt={es ? "Gemelo digital 3D de una chacra con parcelas sembradas, casa, animales y reservorio" : "3D digital twin of a farm with planted plots, a house, animals and a reservoir"} fill sizes="(min-width: 1050px) 640px, 92vw" priority />
+            </div>
+            <footer>
+              <span>{es ? "Juega la próxima campaña antes de sembrar" : "Play next season before you sow"}</span>
+              <span className="qx-farm-cta">{es ? "Abrir la granja" : "Open the farm"}<ArrowUpRight size={15} /></span>
+            </footer>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

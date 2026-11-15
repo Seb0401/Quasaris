@@ -5,7 +5,7 @@
  */
 import paletteJson from "@/data/rotations_palette.json";
 import type { Locale, MonthStatus, Rotation, SimulateResponse } from "@/lib/contract";
-import { CROPS, MONTH_START, cropOnDay, cycleDays, sowDay } from "@/lib/crop-calendar";
+import { CROPS, MONTH_START, cropOnDay, cycleDays, cropHarvestMonths, isOrchard } from "@/lib/crop-calendar";
 import { localizeRotations } from "@/lib/rotation-utils";
 import { ENSO_YEARS, HEAT_WATER_FACTOR, hazardDamage, type FarmAlert, type FarmEvent } from "@/lib/granja-events";
 import { isOn } from "@/lib/farm-shape";
@@ -79,23 +79,15 @@ export type YearSummary = {
   distinctRotations: number;
 };
 
-function harvestMonths(r: Rotation): number[] {
-  return r.crops.map((rc) => {
-    if (CROPS[rc.cropId]?.perennial) return -1; // perenne: cortes todo el año
-    const end = (sowDay(rc) + cycleDays(rc.cropId) - 1) % 365;
-    return MONTH_START.findLastIndex((s) => s <= end);
-  });
-}
-
 /** Fracción del ingreso anual de una rotación que entra en cada mes. */
 function incomeShare(r: Rotation): number[] {
   const share = Array(12).fill(0);
   if (r.crops.length === 0) return share;
-  const months = harvestMonths(r);
   const per = 1 / r.crops.length; // en una asociación cada cultivo aporta su parte del lote
-  months.forEach((m) => {
-    if (m === -1) for (let i = 0; i < 12; i++) share[i] += per / 12;
-    else share[m] += per;
+  r.crops.forEach((rc) => {
+    const months = cropHarvestMonths(rc);
+    if (!months.length && CROPS[rc.cropId]?.perennial) for (let i = 0; i < 12; i++) share[i] += per / 12;
+    else months.forEach((m) => { share[m] += per / months.length; });
   });
   return share;
 }
@@ -114,7 +106,7 @@ export function cropAt(r: Rotation, month: number): { cropId: string | null; gro
   for (const rc of r.crops) {
     const d = cropOnDay(rc, doy);
     // alfalfa (perenne): se corta cada ~2 meses, así que alterna rebrote y floración
-    if (d && d.kc > best.kc) best = { cropId: rc.cropId, growth: CROPS[rc.cropId].perennial ? (month % 2 === 0 ? 0.4 : 0.75) : d.dayInCycle / cycleDays(rc.cropId), kc: d.kc };
+    if (d && d.kc > best.kc) best = { cropId: rc.cropId, growth: isOrchard(rc.cropId) ? (d.stage === "late" ? 0.95 : d.stage === "dev" ? 0.7 : 0.4) : CROPS[rc.cropId].perennial ? (month % 2 === 0 ? 0.4 : 0.75) : d.dayInCycle / cycleDays(rc.cropId), kc: d.kc };
   }
   return best;
 }
@@ -196,7 +188,7 @@ export function simulateYear(
           // si el reservorio se vació, la cosecha rinde menos (proporcional al agua que faltó)
           const waterFactor = m >= dryFrom ? Math.max(0.3, capNow / used) : 1;
           income += y.incomePEN * haPerTile * share * waterFactor * damage[i];
-          harvestMonths(r).forEach((hm, k) => hm === m && harvests.push({ tile: i, cropId: r.crops[k].cropId }));
+          r.crops.forEach((rc) => { if (cropHarvestMonths(rc).includes(m)) harvests.push({ tile: i, cropId: rc.cropId }); });
         }
       }
       return { rotationId: id, cropId, growth, stage: cropId ? stageOf(growth) : null, status, ...(mix?.length ? { mix } : {}) };
