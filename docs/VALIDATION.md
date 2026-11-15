@@ -41,6 +41,19 @@ This answers the **Validity** criterion of the rubric: how reliable are the numb
 4. Run `python scripts/validate_senamhi.py`. It prints the bias, MAE, RMSE and correlation of Tmax, Tmin and ET0 (Hargreaves on both sides), and saves `data/validation_senamhi.json`.
 5. That result feeds the chart on the Validity slide. If there is a systematic temperature bias, it can be corrected in `engine/power.py` (bias correction), as long as it is documented.
 
-## 4. What is still estimated
+## 4. Automated checks
+
+Run on `main` on 15 November 2026. Anyone can reproduce them with the commands in the README ("Run locally").
+
+| Check | Command | Result |
+| --- | --- | --- |
+| Engine and contract tests: FAO-56 worked examples, SRTM fusion, data quality (ranges, gaps, spikes, unreliable years), year-by-year simulation, associations, the 21-crop catalogue and the API contract | `npm run test:py` (pytest, `engine/tests/`) | **42 passed** |
+| Crop calendar, integration of the 21 crops across every screen, and the crop illustrations | `npm run test:crops` | All passed (21 crops, 21 illustrations) |
+| Type checking of the whole web app | `npm run typecheck` | No errors |
+| Linting | `npx eslint .` | No errors |
+
+Every push to `main` is also built and deployed by Vercel, so the live app always matches the repository.
+
+## 5. What is still estimated
 
 Prices, yields and costs in `data/crops.json` (approximate MIDAGRI references), the water allocated per hectare (15,000 m³/ha by default), the yield bonus of crop associations and the rules of the Recommendations screen (nitrogen demand and fixation per crop, fertiliser, microorganism and device suggestions). The interface labels them "to validate". Ideally they are reviewed with an agronomist (UCSM or INIA) and with the irrigation users' board or AUTODEMA.
