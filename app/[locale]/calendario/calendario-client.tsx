@@ -1,5 +1,7 @@
 "use client";
 
+import "./calendar.css";
+
 import { useEffect, useState } from "react";
 import { ArrowDown, CalendarDays, CalendarRange, CloudOff, CloudSun, Database, Info, RefreshCw, Sprout, Sun } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
@@ -115,7 +117,9 @@ export function CalendarioClient() {
       </div>
       {!rotation && <p className="ui-alert tone-neutral"><Info size={16} />{copy.noRotation}</p>}
 
-      <div className="cal-cards">
+      <div className="calendar-layout">
+        <div className="calendar-left">
+          <div className="calendar-summary">
         <Reveal>
           <Panel kicker={es ? "CULTIVO EN ESTA FECHA" : "CROP AT THIS TIME"} icon={Sprout} className="cal-card">
             {currentCrop ? (
@@ -151,43 +155,7 @@ export function CalendarioClient() {
           </Panel>
         </Reveal>
 
-        <Reveal delay={160}>
-          <Panel kicker={now ? fmtDay.format(now).toUpperCase() : (es ? "ESTA SEMANA" : "THIS WEEK")} icon={CloudSun} title={copy.historical} className="cal-card">
-            {!climateResult ? (
-              <div className="week-skeleton"><span className="ui-skeleton" /><span className="ui-skeleton" /></div>
-            ) : !week ? (
-              <p role="status" className="ui-alert tone-warn"><CloudOff size={16} />{copy.unavailable}</p>
-            ) : (
-              <>
-                {climateResult.cached && <p className="ui-hint"><RefreshCw size={14} />{copy.cached}</p>}
-                <div className="week-stats cols-2">
-                  <div className="tone-sky"><FrostIcon size={18} /><small>{copy.frost}</small><strong>{pct.format(week.pFrost)}</strong></div>
-                  <div className="tone-amber"><HeatIcon size={18} /><small>{copy.heat}</small><strong>{pct.format(week.pHeat)}</strong></div>
-                </div>
-                {outlook && active.length > 0 && (
-                  <div className="water-insight">
-                    <div>
-                      <small>{copy.water}</small>
-                      <strong><CountUp value={outlook.waterM3ha} format={(v) => n.format(v)} /> <em>m³/ha</em></strong>
-                    </div>
-                    <p>{copy.waterNote}</p>
-                  </div>
-                )}
-                <p className="ui-source">{copy.disclaimer}</p>
-              </>
-            )}
-          </Panel>
-        </Reveal>
-      </div>
-
-      <div className="cal-main">
-        <Reveal>
-          <Panel kicker={es ? "12 MESES" : "12 MONTHS"} icon={Sprout} title={es ? "Tu rotación anual" : "Your annual rotation"}>
-            <p className="ui-hint">{es ? "Distribución de cultivos por mes" : "Crop schedule by month"}</p>
-            <RotationWheel crops={rotation?.crops ?? []} locale={locale} today={today} />
-          </Panel>
-        </Reveal>
-
+          </div>
         <Reveal delay={90}>
           <Panel
             id="annual-calendar"
@@ -244,6 +212,42 @@ export function CalendarioClient() {
             <p className="ui-source"><Database size={11} className="mr-1 inline" />{t("calendario.source")}</p>
           </Panel>
         </Reveal>
+        </div>
+        <div className="calendar-right">
+        <Reveal>
+          <Panel kicker={es ? "12 MESES" : "12 MONTHS"} icon={Sprout} title={es ? "Tu rotación anual" : "Your annual rotation"}>
+            <p className="ui-hint">{es ? "Distribución de cultivos por mes" : "Crop schedule by month"}</p>
+            <RotationWheel crops={rotation?.crops ?? []} locale={locale} today={today} />
+          </Panel>
+        </Reveal>
+        <Reveal delay={160}>
+          <Panel kicker={now ? fmtDay.format(now).toUpperCase() : (es ? "ESTA SEMANA" : "THIS WEEK")} icon={CloudSun} title={copy.historical} className="cal-card">
+            {!climateResult ? (
+              <div className="week-skeleton"><span className="ui-skeleton" /><span className="ui-skeleton" /></div>
+            ) : !week ? (
+              <p role="status" className="ui-alert tone-warn"><CloudOff size={16} />{copy.unavailable}</p>
+            ) : (
+              <>
+                {climateResult.cached && <p className="ui-hint"><RefreshCw size={14} />{copy.cached}</p>}
+                <div className="week-stats cols-2">
+                  <div className="tone-sky"><FrostIcon size={18} /><small>{copy.frost}</small><strong>{pct.format(week.pFrost)}</strong></div>
+                  <div className="tone-amber"><HeatIcon size={18} /><small>{copy.heat}</small><strong>{pct.format(week.pHeat)}</strong></div>
+                </div>
+                {outlook && active.length > 0 && (
+                  <div className="water-insight">
+                    <div>
+                      <small>{copy.water}</small>
+                      <strong><CountUp value={outlook.waterM3ha} format={(v) => n.format(v)} /> <em>m³/ha</em></strong>
+                    </div>
+                    <p>{copy.waterNote}</p>
+                  </div>
+                )}
+                <p className="ui-source">{copy.disclaimer}</p>
+              </>
+            )}
+          </Panel>
+        </Reveal>
+        </div>
       </div>
     </div>
   );
