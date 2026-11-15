@@ -62,7 +62,7 @@ export function PlansPanel(props: Props) {
       {full && <p className="text-[11px] text-[var(--muted)]">{t("granja.plans.full", { max: MAX_PLANS })}</p>}
 
       {plans.length === 0 ? (
-        <p className="rounded-xl bg-white/[.04] px-3 py-2 text-xs text-[var(--muted)]">{t("granja.plans.empty")}</p>
+        <p className="rounded-xl bg-[var(--tint)] px-3 py-2 text-xs text-[var(--muted)]">{t("granja.plans.empty")}</p>
       ) : (
         <ul className="farm-plan-list">
           {plans.map((p) => (

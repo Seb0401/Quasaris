@@ -26,7 +26,7 @@ export function HazardControls({ events, month, onChange }: { events: FarmEvent[
       <p className="text-xs text-[var(--muted)]">{t("granja.hazard.hint")}</p>
       <div className="flex flex-wrap gap-1.5">
         {KINDS.map((k) => (
-          <button key={k} type="button" onClick={() => add(k)} className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-white/5 px-2.5 py-1.5 text-xs font-semibold">
+          <button key={k} type="button" onClick={() => add(k)} className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--tint)] px-2.5 py-1.5 text-xs font-semibold">
             <Plus size={12} />
             <AlertIcon kind={k} size={14} /> {t(`granja.alert.${k}.title`)}
           </button>
@@ -35,7 +35,7 @@ export function HazardControls({ events, month, onChange }: { events: FarmEvent[
       {events.length > 0 && (
         <ul className="flex flex-col gap-1.5">
           {events.map((e) => (
-            <li key={e.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-white/[.04] px-2.5 py-2 text-xs">
+            <li key={e.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-[var(--tint)] px-2.5 py-2 text-xs">
               <AlertIcon kind={e.kind} size={15} />
               <span className="font-semibold">{t(`granja.alert.${e.kind}.title`)}</span>
               <select value={e.month} onChange={(ev) => patch(e.id, { month: Number(ev.target.value) })} aria-label={t("granja.hazard.month")} className="rounded-lg border border-[var(--border)] bg-transparent px-1.5 py-1 capitalize">
