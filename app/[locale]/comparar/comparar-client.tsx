@@ -5,6 +5,7 @@ import { ArrowRight, ChevronDown, BadgeDollarSign, BarChart3, Combine, Crown, Dr
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
 import { ScoreBreakdown } from "@/components/cards/score-breakdown";
+import { ImprovePlan } from "@/components/cards/improve-plan";
 import { Reveal } from "@/components/motion/reveal";
 import { CountUp, HeroStat, LoadingOrbit, PageHeader, Panel, ScoreRing } from "@/components/ui/kit";
 import { useFarm } from "@/lib/farm-store";
@@ -72,6 +73,8 @@ export function CompararClient() {
       {data.source.power === "mock" && <p className="ui-alert tone-warn"><FlaskConical size={16} />{t("comparar.mockWarning")}</p>}
 
       {best && current && <Verdict best={best} current={current} rows={rows} anyViable={viable.length > 0} all={rows.map((r) => r.result)} />}
+
+      {current && <Reveal><ImprovePlan rows={rows} current={current} /></Reveal>}
 
       <Reveal>
         <Panel id="cmp-duel" kicker={es ? "CARA A CARA" : "HEAD TO HEAD"} icon={BarChart3} title={es ? "¿En qué gana cada rotación?" : "Where does each rotation win?"} actions={<div className="duel-legend">{rows.map((r) => <span key={r.rotation.id}><i style={{ background: r.color }} />{r.rotation.name}</span>)}</div>}>

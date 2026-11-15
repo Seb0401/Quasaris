@@ -646,6 +646,27 @@
 .delta-note { margin: 10px 0 0; color: var(--muted); font-size: 11.5px; line-height: 1.5; }
 @media (max-width: 520px) { .rot-cta .ui-btn { width: 100%; } .delta-grid { grid-template-columns: 1fr; } }
 
+/* comparar: qué puede hacer el agricultor para mejorar */
+.improve-grid { display: grid; gap: 14px; }
+.improve-card { --tone: var(--cyan); display: flex; flex-direction: column; gap: 12px; padding: 16px; border: 1px solid var(--border); border-top: 3px solid var(--tone); border-radius: 16px; background: var(--inset); }
+.improve-card.tone-water { --tone: var(--sky); }
+.improve-card.tone-income { --tone: var(--warn); }
+.improve-card.tone-soil { --tone: var(--ok); }
+.improve-card.tone-risk { --tone: var(--danger); }
+.improve-card header { display: flex; align-items: flex-start; gap: 11px; }
+.improve-card header b { display: block; font-size: 15px; }
+.improve-card header small { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.improve-icon { display: grid; flex-shrink: 0; width: 34px; height: 34px; place-items: center; border-radius: 11px; color: var(--tone); background: color-mix(in srgb, var(--tone) 14%, transparent); }
+.improve-card ol { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.improve-card li { position: relative; padding: 0 0 0 30px; counter-increment: step; }
+.improve-card li::before { content: counter(step); position: absolute; left: 0; top: 0; display: grid; width: 21px; height: 21px; place-items: center; border-radius: 50%; color: var(--tone); background: color-mix(in srgb, var(--tone) 14%, transparent); font-size: 11px; font-weight: 800; }
+.improve-card li strong { display: block; font-size: 13.5px; line-height: 1.35; }
+.improve-card li p { margin: 3px 0 6px; color: var(--text-soft); font-size: 12.5px; line-height: 1.5; }
+.improve-link { display: inline-flex; align-items: center; gap: 5px; color: var(--brand-text); font-size: 12px; font-weight: 700; }
+.improve-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.improve-ok { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--ok-text); font-size: 12.5px; }
+@media (min-width: 900px) { .improve-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 /* -------------------------------------------------------------------- máquina del tiempo */
 
 .time-console { position: sticky; top: 72px; z-index: 800; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px 16px; padding: 14px 16px; border: 1px solid var(--border-strong); border-radius: 20px; background: var(--console-bg); box-shadow: var(--panel-shadow); backdrop-filter: blur(20px); }
