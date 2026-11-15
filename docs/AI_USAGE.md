@@ -55,6 +55,8 @@ Shared decisions:
 
 ## 3. Images and media
 
-The two photographs in the app are **AI-generated with ChatGPT**: `public/images/majes-fields.png` (section headers) and `public/images/quasaris-orbit.png` (home page). They are illustrations, not satellite imagery or photos of real fields; all maps and data layers come from Esri, NASA GIBS and the simulation engine.
+The two photographs in the app are **AI-generated with ChatGPT**: `public/images/majes-fields.png` (section headers) and `public/images/quasaris-orbit.png` (home page). They are illustrations, not satellite imagery or photos of real fields; all maps and data layers come from Esri, NASA GIBS and the simulation engine. Wherever they appear in the app (section headers, home page, onboarding, glossary) they carry a visible "AI-generated image" label, as the Space Apps 2026 rules require.
+
+`public/images/farm-twin.webp` is not AI-generated: it is a screenshot of the app's own 3D farm. The screenshots in `docs/screenshots/` are also captures of the real app.
 
 **TODO:** declare any other AI-generated images, video or audio in the pitch or the demo video. The app icon and logo are hand-written SVG (`scripts/make_icons.mjs`). The demo video is a screen recording of the real app.
