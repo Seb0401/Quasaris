@@ -5,6 +5,8 @@ import type { MonthStatus, Rotation, RotationResult } from "@/lib/contract";
 import { BadgeDollarSign, CheckCircle2, ChevronDown, Clock3, Crown, Droplets, Leaf, ShieldAlert, XCircle } from "lucide-react";
 import { Badge, CountUp, Meter, ScoreRing } from "@/components/ui/kit";
 import { waterFit } from "@/lib/water-fit";
+import { useFarm } from "@/lib/farm-store";
+import { ScoreBreakdown } from "@/components/cards/score-breakdown";
 
 export const MONTH_COLOR: Record<MonthStatus, string> = {
   ok: "var(--ok)",
@@ -43,8 +45,9 @@ export function MonthLegend() {
 
 export type MetricScale = { water: number; income: number; waterLimit: number };
 
-export function RotationCard({ rotation, result, color, recommended, scale }: { rotation: Rotation; result: RotationResult; color: string; recommended?: boolean; scale: MetricScale }) {
+export function RotationCard({ rotation, result, color, recommended, scale, all }: { rotation: Rotation; result: RotationResult; color: string; recommended?: boolean; scale: MetricScale; all: RotationResult[] }) {
   const t = useT();
+  const farm = useFarm();
   const locale = useLocale();
   const es = locale === "es";
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
@@ -108,7 +111,7 @@ export function RotationCard({ rotation, result, color, recommended, scale }: { 
           </div>
           <h3><i style={{ background: color }} />{rotation.name}</h3>
         </div>
-        <ScoreRing value={Math.round(result.score * 100)} size={74} stroke={7} color={color} label={t("comparar.score")} />
+        <ScoreRing value={Math.round(result.score * 100)} size={74} stroke={7} color={color} label={t("comparar.fit.short")} />
       </header>
 
       <div className="rotation-metrics">
@@ -123,6 +126,13 @@ export function RotationCard({ rotation, result, color, recommended, scale }: { 
           </div>
         ))}
       </div>
+
+      <details className="rotation-details score-details">
+        <summary>{t("comparar.fit.why", { score: Math.round(result.score * 100) })}<ChevronDown size={16} /></summary>
+        <div className="rotation-details-body">
+          <ScoreBreakdown result={result} all={all} priorities={farm.priorities} compact />
+        </div>
+      </details>
 
       <div className="rotation-months">
         <span className="ui-mini-title">{t("comparar.months")}</span>

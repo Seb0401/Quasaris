@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, Mountain, PencilLine, Sprout, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
+import { ScoreBreakdown } from "@/components/cards/score-breakdown";
 import { Reveal } from "@/components/motion/reveal";
 import { CountUp, HeroStat, LoadingOrbit, PageHeader, Panel, ScoreRing } from "@/components/ui/kit";
 import { useFarm } from "@/lib/farm-store";
@@ -44,36 +45,28 @@ export function CompararClient() {
         icon={BarChart3}
         kicker={es ? "ESCENARIOS" : "SCENARIOS"}
         title={t("comparar.title")}
-        subtitle={es ? `Cada rotación se simuló con el clima real de ${data.source.period[0]} a ${data.source.period[1]} sobre tu parcela. Aquí ves cuál conviene y por qué.` : `Each rotation was simulated with real climate from ${data.source.period[0]} to ${data.source.period[1]} over your field. Here is which one fits and why.`}
+        subtitle={t("comparar.subtitle", { from: data.source.period[0], to: data.source.period[1], n: data.source.period[1] - data.source.period[0] + 1 })}
       >
         <HeroStat icon={Satellite} label="NASA POWER">{data.source.period[0]}–{data.source.period[1]}</HeroStat>
-        {data.source.elevationM !== undefined && <HeroStat icon={Mountain} label={es ? "ALTITUD SRTM" : "SRTM ELEVATION"} tone="lime"><CountUp value={data.source.elevationM} format={(v) => `${n.format(v)} m`} /></HeroStat>}
-        <HeroStat icon={Target} label={es ? "ESCENARIOS" : "SCENARIOS"} tone="amber">{rows.length}</HeroStat>
-        {data.source.rootZoneWetness && (
-          <HeroStat icon={Sprout} label={es ? "HUMEDAD SUELO" : "SOIL MOISTURE"} tone="sky">
-            <CountUp value={(data.source.rootZoneWetness.reduce((a, b) => a + b, 0) / data.source.rootZoneWetness.length) * 100} format={(v) => `${Math.round(v)}%`} />
-          </HeroStat>
-        )}
+        <HeroStat icon={Target} label={es ? "ROTACIONES" : "ROTATIONS"} tone="amber">{rows.length}</HeroStat>
       </PageHeader>
 
       <div className="compare-toolbar">
-        {data.source.rootZoneWetness && (
-          <p className="ui-hint"><Sprout size={14} />{t("comparar.soilWetness", {
-            pct: `${Math.round((data.source.rootZoneWetness.reduce((a, b) => a + b, 0) / data.source.rootZoneWetness.length) * 100)}%`,
-            min: `${Math.round(Math.min(...data.source.rootZoneWetness) * 100)}%`,
-            max: `${Math.round(Math.max(...data.source.rootZoneWetness) * 100)}%`,
-          })}</p>
-        )}
+        <ol className="compare-steps">
+          {(["pick", "duel", "detail"] as const).map((k, i) => (
+            <li key={k}><a href={`#cmp-${k}`}><b>{i + 1}</b>{t(`comparar.steps.${k}`)}</a></li>
+          ))}
+        </ol>
         <Link href={`/${locale}/rotaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><PencilLine size={14} />{t("rotaciones.edit")}</Link>
         <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><Combine size={14} />{t("group.title")}</Link>
       </div>
 
       {data.source.power === "mock" && <p className="ui-alert tone-warn"><FlaskConical size={16} />{t("comparar.mockWarning")}</p>}
 
-      {best && current && <Verdict best={best} current={current} anyViable={viable.length > 0} />}
+      {best && current && <Verdict best={best} current={current} anyViable={viable.length > 0} all={rows.map((r) => r.result)} />}
 
       <Reveal>
-        <Panel kicker={es ? "CARA A CARA" : "HEAD TO HEAD"} icon={BarChart3} title={es ? "¿En qué gana cada rotación?" : "Where does each rotation win?"} actions={<div className="duel-legend">{rows.map((r) => <span key={r.rotation.id}><i style={{ background: r.color }} />{r.rotation.name}</span>)}</div>}>
+        <Panel id="cmp-duel" kicker={es ? "CARA A CARA" : "HEAD TO HEAD"} icon={BarChart3} title={es ? "¿En qué gana cada rotación?" : "Where does each rotation win?"} actions={<div className="duel-legend">{rows.map((r) => <span key={r.rotation.id}><i style={{ background: r.color }} />{r.rotation.name}</span>)}</div>}>
           <div className="duel-grid">
             <Duel rows={rows} icon={Droplets} title={t("comparar.water")} hint={es ? "Menos es mejor" : "Lower is better"} pick={(r) => r.water.median} format={(v) => `${n.format(v)} m³`} lowerIsBetter limit={farm.waterAvailableM3ha} limitLabel={es ? "Tu agua" : "Your water"} />
             <Duel rows={rows} icon={BadgeDollarSign} title={t("comparar.income")} hint={es ? "Más es mejor · S/ por ha" : "Higher is better · S/ per ha"} pick={(r) => r.income.median} format={(v) => `S/ ${n.format(v)}`} />
@@ -83,7 +76,7 @@ export function CompararClient() {
         </Panel>
       </Reveal>
 
-      <div className="section-title">
+      <div className="section-title" id="cmp-detail">
         <div>
           <span className="ui-kicker"><Sparkles size={13} /> {es ? "DETALLE POR ROTACIÓN" : "ROTATION DETAIL"}</span>
           <h2>{es ? "La evidencia completa" : "The full evidence"}</h2>
@@ -94,7 +87,7 @@ export function CompararClient() {
       <div className="compare-grid">
         {rows.map((row, index) => (
           <Reveal key={row.rotation.id} delay={index * 110}>
-            <RotationCard rotation={row.rotation} result={row.result} color={row.color} recommended={row === best} scale={scale} />
+            <RotationCard rotation={row.rotation} result={row.result} color={row.color} recommended={row === best} scale={scale} all={rows.map((r) => r.result)} />
           </Reveal>
         ))}
       </div>
@@ -103,7 +96,7 @@ export function CompararClient() {
 }
 
 /** El resultado en una frase, con el puntaje y las diferencias contra lo que siembras hoy. */
-function Verdict({ best, current, anyViable }: { best: Row; current: Row; anyViable: boolean }) {
+function Verdict({ best, current, anyViable, all }: { best: Row; current: Row; anyViable: boolean; all: RotationResult[] }) {
   const farm = useFarm();
   const fit = waterFit(best.result, farm.waterAvailableM3ha);
   const t = useT();
@@ -120,10 +113,10 @@ function Verdict({ best, current, anyViable }: { best: Row; current: Row; anyVia
 
   return (
     <Reveal>
-      <section className="verdict" style={{ "--accent": best.color } as React.CSSProperties}>
+      <section className="verdict" id="cmp-pick" style={{ "--accent": best.color } as React.CSSProperties}>
         <div className="verdict-aurora" aria-hidden />
         <div className="verdict-main">
-          <ScoreRing value={Math.round(best.result.score * 100)} size={150} stroke={11} color={best.color} label={es ? "de 100" : "of 100"} />
+          <ScoreRing value={Math.round(best.result.score * 100)} size={150} stroke={11} color={best.color} label={t("comparar.fit.label")} />
           <div className="verdict-copy">
             <span className="ui-kicker"><Crown size={14} /> {anyViable ? (es ? "NUESTRA RECOMENDACIÓN" : "OUR RECOMMENDATION") : (es ? "LA MÁS CERCANA" : "THE CLOSEST OPTION")}</span>
             <h2>{best.rotation.name}</h2>
@@ -131,6 +124,7 @@ function Verdict({ best, current, anyViable }: { best: Row; current: Row; anyVia
             {!anyViable && (
               <p className="verdict-warning"><TriangleAlert size={16} />{t("comparar.shortfall", { m3: n.format(fit.shortfallM3ha) })} · {t("comparar.yearsFit", { n: fit.yearsFit, total: fit.years })}. {es ? "Es la opción que mejor equilibra tus prioridades; con riego por goteo o reduciendo el área sembrada podría alcanzar." : "It best balances your priorities; drip irrigation or a smaller planted area could make it fit."}</p>
             )}
+            <ScoreBreakdown result={best.result} all={all} priorities={farm.priorities} />
           </div>
         </div>
 

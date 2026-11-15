@@ -93,7 +93,40 @@
     "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER",
     "soilWetness": "Humedad natural del suelo (NASA POWER GWETROOT): {pct} en promedio, {min}–{max} según el mes.",
     "shortfall": "Te faltan {m3} m³/ha",
-    "yearsFit": "Alcanza en {n} de {total} años"
+    "yearsFit": "Alcanza en {n} de {total} años",
+    "subtitle": "Probamos cada una de tus rotaciones con {n} años de clima real de la NASA sobre tu parcela ({from}–{to}). Empieza por nuestra recomendación y luego mira en qué gana cada una.",
+    "steps": {
+      "pick": "Nuestra recomendación y su puntaje",
+      "duel": "En qué gana cada rotación",
+      "detail": "El detalle de cada una"
+    },
+    "fit": {
+      "label": "puntaje de ajuste",
+      "short": "ajuste",
+      "title": "¿Qué significa {score} de 100?",
+      "intro": "Es qué tan bien encaja esta rotación con tus prioridades, comparada con tus otras rotaciones. Cada parte de abajo vale de 0 a 100% y pesa tanto como dijiste que te importa. 100 sería la mejor opción en todo lo que te importa.",
+      "why": "¿Por qué un ajuste de {score}?",
+      "part": {
+        "water": "Ahorra agua",
+        "income": "Gana más",
+        "soil": "Cuida el suelo",
+        "risk": "Poco riesgo climático"
+      },
+      "how": {
+        "water": "{v} frente a tus otras rotaciones",
+        "income": "{v} frente a tus otras rotaciones",
+        "soil": "salud del suelo {v}",
+        "risk": "{v} a salvo de helada, calor y falta de agua"
+      },
+      "weight": {
+        "high": "te importa mucho",
+        "med": "te importa",
+        "low": "te importa poco",
+        "off": "no cuenta"
+      },
+      "penalty": "Tu agua no le alcanza en la mayoría de años, así que sus {raw} puntos se multiplican por 0,6: {score}.",
+      "change": "Cambiar lo que te importa"
+    }
   },
   "month": {
     "ok": "Bien",
