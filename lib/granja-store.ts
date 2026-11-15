@@ -5,12 +5,25 @@ import type { FarmEvent } from "@/lib/granja-events";
 import { setFarm } from "@/lib/farm-store";
 import { isOn, shapeFromBoundary, toggleCell } from "@/lib/farm-shape";
 import type { LatLon } from "@/lib/geo";
+import type { Irrigation } from "@/lib/contract";
 
 /** Escenarios de la próxima campaña: cada uno se arma con un año real análogo de los 21 de NASA POWER. */
 export type Scenario = "typical" | "dry" | "nino" | "warm";
 export const SCENARIOS: Scenario[] = ["typical", "dry", "nino", "warm"];
 /** Calentamiento del escenario "más calor" (°C sumados al año típico). */
 export const WARM_DELTA = 1.5;
+
+/** Distribución guardada para compararla en distintos años (pasados y venideros). */
+export type SavedPlan = {
+  id: string;
+  name: string;
+  cols: number;
+  rows: number;
+  tiles: string[];
+  haPerTile: number;
+  irrigation: Irrigation;
+  savedAt: number;
+};
 
 /** Estado del modo granja (persistido en el celular). La zona, el agua y el riego viven en farm-store. */
 export type GranjaState = {
@@ -19,9 +32,11 @@ export type GranjaState = {
   rows: number;
   haPerTile: number;
   tiles: string[]; // id de rotación por casilla ("off" = fuera del terreno)
-  /** @deprecated antes se elegía un año del pasado; ahora manda el escenario */
+  /** "past" = un año real 2005-2025 (year); "future" = la próxima campaña con un escenario */
+  mode: "past" | "future";
   year: number;
   scenario: Scenario;
+  plans: SavedPlan[];
   badges: string[]; // medallas ganadas (persisten entre partidas)
   lastWon: string[]; // medallas nuevas por celebrar
   tutorialDone: boolean;
@@ -48,6 +63,8 @@ const DEFAULT: GranjaState = {
   tiles: Array(20).fill("actual"),
   year: 2016,
   scenario: "typical",
+  mode: "future",
+  plans: [],
   badges: [],
   lastWon: [],
   tutorialDone: false,
@@ -140,4 +157,8 @@ export function useGranja(): GranjaState {
     },
     () => DEFAULT,
   );
+}
+
+export function newPlanId() {
+  return `plan-${Date.now().toString(36)}`;
 }

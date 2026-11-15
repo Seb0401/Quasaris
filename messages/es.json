@@ -344,7 +344,8 @@
       "climate": "Clima",
       "whatif": "¿Y si…?",
       "goals": "Metas",
-      "risks": "Riesgos"
+      "risks": "Riesgos",
+      "plans": "Planes"
     },
     "mode": {
       "paint": "Pintar",
@@ -521,6 +522,36 @@
       "drip": "Pasa a riego por goteo: los mismos cultivos gastan mucha menos agua.",
       "saveWater": "Cambia {lots} a {to}, que pide menos agua, para que el reservorio alcance toda la campaña.",
       "peak": "Riega temprano los lotes que más piden y evita sembrarlos todos en el mismo mes."
+    },
+    "when": {
+      "label": "Qué campaña",
+      "past": "Pasado",
+      "future": "Futuro",
+      "real": "Datos NASA",
+      "pastIntro": "Repite un año real medido por la NASA (2005 a 2025). Los años marcados fueron los más secos, tuvieron heladas o calor, o El Niño."
+    },
+    "plans": {
+      "intro": "Guarda esta distribución (lotes, forma y riego) para compararla luego en años pasados y en los escenarios de la próxima campaña.",
+      "name": "Nombre del plan",
+      "defaultName": "Plan {n}",
+      "save": "Guardar plan",
+      "saved": "Guardado",
+      "full": "Puedes guardar hasta {max} planes. Borra uno para guardar otro.",
+      "empty": "Todavía no hay planes guardados.",
+      "meta": "{n} lotes · {ha} ha · {irrigation}",
+      "load": "Cargar este plan",
+      "delete": "Borrar plan",
+      "compare": "Comparar planes entre años",
+      "compareTitle": "Planes a lo largo de los años",
+      "compareHint": "Ganancia y agua de cada plan en años pasados reales y en los escenarios de la próxima campaña. En verde, el mejor plan de cada columna.",
+      "pastYears": "Años pasados (hasta 4):",
+      "plan": "Plan",
+      "current": "Distribución actual",
+      "real": "año real",
+      "modelled": "modelo: {year}",
+      "waterOk": "agua alcanza ({pct}%)",
+      "dryFrom": "seco desde {month}",
+      "note": "El mismo motor de la granja: clima NASA POWER, agua FAO-56 y los precios estimados de data/crops.json. Los planes con otro sistema de riego se ajustan por su eficiencia."
     }
   },
   "rotaciones": {

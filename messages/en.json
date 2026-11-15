@@ -344,7 +344,8 @@
       "climate": "Weather",
       "whatif": "What if…",
       "goals": "Goals",
-      "risks": "Risks"
+      "risks": "Risks",
+      "plans": "Plans"
     },
     "mode": {
       "paint": "Paint",
@@ -521,6 +522,36 @@
       "drip": "Switch to drip irrigation: the same crops use much less water.",
       "saveWater": "Change {lots} to {to}, which needs less water, so the reservoir lasts all season.",
       "peak": "Water the most demanding plots early in the morning and avoid planting them all in the same month."
+    },
+    "when": {
+      "label": "Which season",
+      "past": "Past",
+      "future": "Future",
+      "real": "NASA data",
+      "pastIntro": "Replay a real year measured by NASA (2005 to 2025). Marked years were the driest, had frost or heat, or El Niño."
+    },
+    "plans": {
+      "intro": "Save this layout (plots, shape and irrigation) to compare it later in past years and in next season's scenarios.",
+      "name": "Plan name",
+      "defaultName": "Plan {n}",
+      "save": "Save plan",
+      "saved": "Saved",
+      "full": "You can keep up to {max} plans. Delete one to save another.",
+      "empty": "No saved plans yet.",
+      "meta": "{n} plots · {ha} ha · {irrigation}",
+      "load": "Load this plan",
+      "delete": "Delete plan",
+      "compare": "Compare plans across years",
+      "compareTitle": "Plans across years",
+      "compareHint": "Profit and water for each plan in real past years and in next season's scenarios. Green marks the best plan in each column.",
+      "pastYears": "Past years (up to 4):",
+      "plan": "Plan",
+      "current": "Current layout",
+      "real": "real year",
+      "modelled": "modelled on {year}",
+      "waterOk": "water OK ({pct}%)",
+      "dryFrom": "dry from {month}",
+      "note": "Same engine as the farm: NASA POWER weather, FAO-56 water and the estimated prices in data/crops.json. Plans with another irrigation system are adjusted by its efficiency."
     }
   },
   "rotaciones": {

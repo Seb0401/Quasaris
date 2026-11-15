@@ -7,7 +7,7 @@ import { useLocale, useT } from "@/components/i18n-provider";
 import type { Irrigation, SimulateRequest, SimulateResponse, SoilTexture } from "@/lib/contract";
 import { cropName, efficiency } from "@/lib/crop-calendar";
 import { moveFarm, setFarm, useFarm } from "@/lib/farm-store";
-import { FARM_SIZES, SCENARIOS, WARM_DELTA, editShape, resizeFarm, resizeFarmToArea, saveBoundary, setGranja, shapeFarmFromBoundary, useGranja, type Scenario } from "@/lib/granja-store";
+import { FARM_SIZES, SCENARIOS, WARM_DELTA, editShape, newPlanId, resizeFarm, resizeFarmToArea, saveBoundary, setGranja, shapeFarmFromBoundary, useGranja, type Scenario } from "@/lib/granja-store";
 import { OFF, activeCount, isOn, lotLabel, lotNumbers } from "@/lib/farm-shape";
 import { fixFor, type Fix } from "@/lib/granja-fixes";
 import { useToday } from "@/lib/use-today";
@@ -18,6 +18,7 @@ import {
   evaluateGoals,
   lensColor,
   nextSeason,
+  notableYears,
   oddsKey,
   riskOdds,
   rotationColor,
@@ -33,13 +34,14 @@ import { useIsMobile } from "@/lib/use-media";
 import { SKY_GRADIENT, type Weather } from "@/components/granja/farm-scene";
 import { Celebration, Tutorial, playCoin } from "@/components/granja/overlays";
 import { AlertIcon } from "@/components/granja/risk-panel";
+import { PlansPanel } from "@/components/granja/plans-panel";
 import { HazardControls } from "@/components/granja/hazard-controls";
-import type { FarmAlert } from "@/lib/granja-events";
+import { ENSO_YEARS, type FarmAlert } from "@/lib/granja-events";
 import { Reveal } from "@/components/motion/reveal";
 import { LoadingOrbit, PageHeader, Panel, RangeInput } from "@/components/ui/kit";
-import { CircleHelp, CloudSun, Droplets, Gamepad2, Grid2x2Plus, Layers, SlidersHorizontal, Sprout, Waves, Wand2 } from "lucide-react";
+import { CircleHelp, CloudSun, Droplets, Gamepad2, Grid2x2Plus, History, Layers, Rocket, SlidersHorizontal, Sprout, Waves, Wand2, FolderKanban } from "lucide-react";
 import { BarChart3, Check, ChevronLeft, ChevronRight, Eye, Flag, MapPin, Pause, Play, RotateCcw, SkipBack, Tractor, Undo2, Volume2, VolumeX, X } from "lucide-react";
-import { BrushIcon, CropIcon, DroughtIcon, EvapoIcon, GOAL_ICON, HeatIcon, MedalIcon, ProfitIcon, RainIcon, ReservoirIcon, SoilIcon, STAGE_ICON, ThermoIcon, WaterIcon } from "@/components/icons/farm-icons";
+import { BrushIcon, CropIcon, DroughtIcon, EvapoIcon, FrostIcon, GOAL_ICON, HeatIcon, MedalIcon, ProfitIcon, RainIcon, ReservoirIcon, SoilIcon, STAGE_ICON, ThermoIcon, WaterIcon } from "@/components/icons/farm-icons";
 import { RotationIcons } from "@/components/icons/rotation-icons";
 
 const FarmScene = dynamic(() => import("@/components/granja/farm-scene"), {
@@ -53,6 +55,7 @@ const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
 
 const fallbackGranja = () => import("@/data/mock_granja.json").then((m) => m.default as unknown as SimulateResponse);
 const STEP_MS = 1300;
+const TAG_ICON = { driest: DroughtIcon, frost: FrostIcon, heat: HeatIcon, wettest: WaterIcon } as const;
 const SCENARIO_ICON: Record<Scenario, (p: { size?: number; className?: string }) => React.JSX.Element> = {
   typical: (p) => <CloudSun size={p.size} className={p.className} />,
   dry: DroughtIcon,
@@ -66,12 +69,13 @@ const LENSES: { id: Lens; Icon: (p: { size?: number }) => React.JSX.Element }[] 
   { id: "soil", Icon: SoilIcon },
   { id: "income", Icon: ProfitIcon },
 ];
-type Tab = "sow" | "climate" | "whatif" | "goals";
+type Tab = "sow" | "climate" | "whatif" | "goals" | "plans";
 const TABS: { id: Tab; Icon: (p: { size?: number }) => React.JSX.Element }[] = [
   { id: "sow", Icon: BrushIcon },
   { id: "climate", Icon: ThermoIcon },
   { id: "whatif", Icon: (p) => <SlidersHorizontal size={p.size} /> },
   { id: "goals", Icon: (p) => <Flag size={p.size} /> },
+  { id: "plans", Icon: (p) => <FolderKanban size={p.size} /> },
 ];
 const SEV = { low: 1, med: 2, high: 3 } as const;
 
@@ -196,8 +200,9 @@ function Farm() {
   const palette = useMemo(() => buildPalette(farm.rotations, locale), [farm.rotations, locale]);
   const water = Math.round(farm.waterAvailableM3ha * granja.waterFactor);
   const scenario: Scenario = granja.scenario ?? "typical";
+  const past = granja.mode === "past";
   // "más calor" = el año típico con +1,5 °C; el control de temperatura de "¿Y si…?" se suma encima
-  const delta = granja.tempDelta + (scenario === "warm" ? WARM_DELTA : 0);
+  const delta = granja.tempDelta + (!past && scenario === "warm" ? WARM_DELTA : 0);
   const extra = useMemo<Partial<SimulateRequest>>(
     () => ({ includeClimate: true, waterAvailableM3ha: water, scenario: delta ? { tempDeltaC: delta } : undefined }),
     [water, delta],
@@ -227,7 +232,11 @@ function Farm() {
   const [applied, setApplied] = useState<{ key: string; undo: () => void } | null>(null);
 
   // la próxima campaña se arma con un año real análogo al escenario elegido
-  const year = useMemo(() => (data ? scenarioYear(data, scenario) : 2016), [data, scenario]);
+  const year = useMemo(() => (past ? granja.year : data ? scenarioYear(data, scenario) : 2016), [data, scenario, past, granja.year]);
+  const years = useMemo(() => (data ? notableYears(data) : []), [data]);
+  // año que se muestra: el real (pasado) o la próxima campaña (futuro)
+  const shownYear = past ? year : season;
+  const viewKey = past ? `y${year}` : scenario;
   const sim = useMemo(
     () => (data ? simulateYear(data, granja.tiles, granja.haPerTile, year, water, palette, granja.events) : null),
     [data, granja.tiles, granja.haPerTile, year, water, palette, granja.events],
@@ -243,14 +252,14 @@ function Farm() {
     });
     const keys = new Set(shown.map(oddsKey));
     // riesgos que no tocan en este escenario pero sí en 1 de cada 4 años o más
-    for (const [k, o] of odds) {
+    for (const [k, o] of past ? [] : odds) {
       if (keys.has(k) || k.startsWith("waterPeak") || o.hits / o.total < 0.25) continue;
       const kind = k === "dry" ? "dry" : "climate";
       const crops = Array.from(new Set(o.tiles.map((i) => sim.months[o.month]?.tiles[i]?.cropId).filter(Boolean) as string[]));
       shown.push({ month: o.month, kind, severity: o.hits / o.total >= 0.4 ? "med" : "low", tiles: o.tiles, crops, fromEvent: false, odds: { hits: o.hits, total: o.total }, possible: true });
     }
     return shown.sort((a, b) => a.month - b.month);
-  }, [sim, odds]);
+  }, [sim, odds, past]);
   const goals = useMemo(() => (sim ? evaluateGoals(sim.summary, activeCount(granja.tiles)) : []), [sim, granja.tiles]);
   const finished = month === 11;
 
@@ -329,13 +338,13 @@ function Farm() {
   const lots = lotNumbers(granja.tiles);
   const nLots = activeCount(granja.tiles);
   const monthAlerts = alerts.filter((a) => a.month === month);
-  const alertId = (a: FarmAlert) => `${scenario}-${a.kind}-${a.month}`;
+  const alertId = (a: FarmAlert) => `${viewKey}-${a.kind}-${a.month}`;
   // tarjetas en pantalla: lo de este mes y, desde el inicio, lo que vale para todo el año
   // "mes de alta demanda" es solo informativo: queda como punto en la línea de tiempo, no como tarjeta
   const cards = [...alerts.filter((a) => a.kind !== "waterPeak" && (a.month === month || (a.month === -1 && month === 0)))]
     .filter((a) => !closedAlerts.includes(alertId(a)))
     .sort((a, b) => SEV[b.severity] - SEV[a.severity]);
-  const toastKey = `${scenario}-${month}`;
+  const toastKey = `${viewKey}-${month}`;
   const alertByMonth = Array.from({ length: 12 }, (_, m) => alerts.filter((a) => a.month === m).reduce((mx, a) => Math.max(mx, SEV[a.severity]), 0));
   const fixCtx = { data, tiles: granja.tiles, palette, year, irrigation: farm.irrigation, waterAvailableM3ha: water };
   const rotName = (id?: string) => (id ? (id === "descanso" ? t("granja.fallow") : (palette.find((p) => p.id === id)?.name ?? id)) : "");
@@ -380,7 +389,7 @@ function Farm() {
             reservoir={reservoir}
             weather={weather}
             harvestTiles={snap.harvests.map((h) => h.tile)}
-            harvestKey={`${scenario}-${month}`}
+            harvestKey={`${viewKey}-${month}`}
             selectedTile={selected}
             alertTiles={monthAlerts.flatMap((a) => a.tiles)}
             paintMode={effectivePaint}
@@ -413,8 +422,8 @@ function Farm() {
       {/* estado del mes: discreto, arriba a la derecha */}
       <button type="button" className="farm-status" onClick={() => togglePanel("climate")} title={t("granja.tab.climate")}>
         <span className="farm-status-date capitalize">
-          {fmtMonth.format(new Date(season, month, 1))} {season}
-          <i>{t(`granja.scenario.${scenario}.short`)}</i>
+          {fmtMonth.format(new Date(shownYear, month, 1))} {shownYear}
+          {past ? <i>{ENSO_YEARS[year] ? t(`granja.enso.${ENSO_YEARS[year]}`) : t("granja.when.real")}</i> : <i>{t(`granja.scenario.${scenario}.short`)}</i>}
           {granja.tempDelta ? <i className="hot">{granja.tempDelta > 0 ? "+" : ""}{granja.tempDelta} °C</i> : null}
         </span>
         <span className="farm-status-row">
@@ -496,7 +505,7 @@ function Farm() {
               fix={fixFor(a, fixCtx)}
               lotsOf={(idx) => lotLabel(idx, granja.tiles)}
               rotName={rotName}
-              monthName={a.month >= 0 ? fmtMonth.format(new Date(season, a.month, 1)) : t("granja.risk.allYear")}
+              monthName={a.month >= 0 ? fmtMonth.format(new Date(shownYear, a.month, 1)) : t("granja.risk.allYear")}
               more={cards.length - (mobile ? 1 : 2)}
               onApply={(fix) => applyFix(a, fix)}
               onClose={() => setClosedAlerts((c) => [...c, alertId(a)])}
@@ -543,7 +552,7 @@ function Farm() {
                 setPlaying(false);
                 setMonth(i);
               }}
-              aria-label={fmtMonth.format(new Date(season, i, 1))}
+              aria-label={fmtMonth.format(new Date(shownYear, i, 1))}
               aria-current={i === month}
               className={`${i === month ? "now" : ""} ${i < month ? "past" : ""}`}
             >
@@ -703,6 +712,52 @@ function Farm() {
 
               {!sel && panel === "climate" && (
                 <section className="flex flex-col gap-2 text-sm">
+                  <div className="farm-when" role="radiogroup" aria-label={t("granja.when.label")}>
+                    {(["past", "future"] as const).map((md) => (
+                      <button
+                        key={md}
+                        type="button"
+                        role="radio"
+                        aria-checked={granja.mode === md}
+                        className={granja.mode === md ? "active" : ""}
+                        onClick={() => {
+                          setGranja({ mode: md });
+                          reset();
+                        }}
+                      >
+                        {md === "past" ? <History size={15} /> : <Rocket size={15} />}
+                        {t(`granja.when.${md}`)}
+                      </button>
+                    ))}
+                  </div>
+                  {past ? (
+                    <>
+                      <p className="text-xs text-[var(--muted)]">{t("granja.when.pastIntro")}</p>
+                      <div className="farm-years">
+                        {years.map((y) => {
+                          const I = y.tag ? TAG_ICON[y.tag] : null;
+                          return (
+                            <button
+                              key={y.year}
+                              type="button"
+                              aria-pressed={y.year === year}
+                              title={y.tag ? t(`granja.tag.${y.tag}`) : undefined}
+                              className={y.year === year ? "active" : ""}
+                              onClick={() => {
+                                setGranja({ year: y.year });
+                                reset();
+                              }}
+                            >
+                              {I && <I size={12} />}
+                              {y.year}
+                              {ENSO_YEARS[y.year] && <em>{t(`granja.enso.${ENSO_YEARS[y.year]}`)}</em>}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                  <>
                   <p className="text-xs text-[var(--muted)]">{t("granja.scenario.intro", { season })}</p>
                   <div className="farm-scenarios">
                     {SCENARIOS.map((sc) => {
@@ -727,6 +782,8 @@ function Farm() {
                       );
                     })}
                   </div>
+                  </>
+                  )}
                   {clim ? (
                     <>
                       <div className="grid grid-cols-2 gap-2">
@@ -745,7 +802,7 @@ function Farm() {
                                 type="button"
                                 onClick={() => setMonth(i)}
                                 className="flex flex-1 flex-col items-center justify-end gap-0.5"
-                                aria-label={fmtMonth.format(new Date(season, i, 1))}
+                                aria-label={fmtMonth.format(new Date(shownYear, i, 1))}
                               >
                                 <span className="w-full rounded-t" style={{ height: `${(mc.et0 / 7) * 44}px`, background: i === month ? "var(--brand)" : "rgba(92,200,245,.55)" }} />
                                 <span className={`text-[9px] ${i === month ? "font-bold" : "text-[var(--muted)]"}`}>{fmtMonthShort.format(new Date(2025, i, 1))}</span>
@@ -754,7 +811,7 @@ function Farm() {
                           </div>
                         </div>
                       )}
-                      <p className="text-[11px] text-[var(--muted)]">{t("granja.scenario.basis", { year, delta: delta ? `${delta > 0 ? "+" : ""}${n1.format(delta)} °C` : "0 °C" })}</p>
+                      <p className="text-[11px] text-[var(--muted)]">{past ? (granja.tempDelta ? t("granja.climate.scenario", { d: granja.tempDelta }) : t("granja.climate.real", { year })) : t("granja.scenario.basis", { year, delta: delta ? `${delta > 0 ? "+" : ""}${n1.format(delta)} °C` : "0 °C" })}</p>
                     </>
                   ) : (
                     <p className="text-xs text-[var(--muted)]">{t("comparar.loading")}</p>
@@ -815,6 +872,30 @@ function Farm() {
               )}
 
 
+              {!sel && panel === "plans" && (
+                <PlansPanel
+                  data={data}
+                  palette={palette}
+                  plans={granja.plans ?? []}
+                  current={{ cols: granja.cols, rows: granja.rows, tiles: granja.tiles, haPerTile: granja.haPerTile }}
+                  irrigation={farm.irrigation}
+                  soil={farm.soilTexture}
+                  waterAvailableM3ha={water}
+                  season={season}
+                  onSave={(name) =>
+                    setGranja((st) => ({
+                      plans: [...(st.plans ?? []), { id: newPlanId(), name, cols: st.cols, rows: st.rows, tiles: st.tiles, haPerTile: st.haPerTile, irrigation: farm.irrigation, savedAt: Date.now() }],
+                    }))
+                  }
+                  onLoad={(pl) => {
+                    remember();
+                    setGranja({ cols: pl.cols, rows: pl.rows, tiles: pl.tiles, haPerTile: pl.haPerTile });
+                    setFarm({ irrigation: pl.irrigation });
+                  }}
+                  onDelete={(id) => setGranja((st) => ({ plans: (st.plans ?? []).filter((x) => x.id !== id) }))}
+                />
+              )}
+
               {!sel && panel === "goals" && (
                 <section className="flex flex-col gap-2 text-sm">
                   {goals.map((g) => (
@@ -838,7 +919,7 @@ function Farm() {
                   {finished && (
                     <div className="mt-1 flex flex-col gap-1 rounded-xl border-2 border-[var(--brand)] bg-[rgba(185,255,99,.05)] p-3">
                       <b className="flex items-center gap-1">
-                        <Flag size={15} /> {t("granja.resultTitle", { year: season })}
+                        <Flag size={15} /> {t("granja.resultTitle", { year: shownYear })}
                       </b>
                       <ResultRow label={`${t("comparar.water")} (m³)`} mine={sim.summary.waterM3} base={sim.summary.baseline.waterM3} lowerIsBetter />
                       <ResultRow label={`${t("comparar.income")} (S/)`} mine={sim.summary.incomePEN} base={sim.summary.baseline.incomePEN} />

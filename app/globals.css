@@ -746,6 +746,45 @@
 .farm-scenarios button small { display: block; margin-top: 2px; color: var(--muted); font-size: 10.5px; line-height: 1.35; }
 .farm-scenarios button.active { border-color: var(--brand); background: rgba(185, 255, 99, .08); box-shadow: 0 0 0 1px var(--brand) inset; }
 .farm-scenarios button.active svg { color: var(--brand); }
+.farm-when { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, .06); }
+.farm-when button { display: inline-flex; height: 34px; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 999px; color: rgba(255, 255, 255, .78); background: transparent; cursor: pointer; font-size: 12.5px; font-weight: 750; }
+.farm-when button.active { color: var(--brand-ink); background: var(--brand); }
+.farm-years { display: flex; flex-wrap: wrap; gap: 5px; }
+.farm-years button { display: inline-flex; align-items: center; gap: 4px; padding: 5px 9px; border: 1px solid var(--border); border-radius: 999px; color: var(--foreground); background: rgba(255, 255, 255, .04); cursor: pointer; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.farm-years button svg { color: var(--cyan); }
+.farm-years button em { padding: 0 4px; border-radius: 4px; background: rgba(255, 255, 255, .1); font-size: 9px; font-style: normal; font-weight: 800; text-transform: uppercase; }
+.farm-years button.active { color: var(--brand-ink); border-color: var(--brand); background: var(--brand); }
+.farm-years button.active svg { color: var(--brand-ink); }
+.farm-plan-save { display: flex; gap: 6px; }
+.farm-plan-save .ui-input { min-width: 0; flex: 1; padding: 8px 11px; font-size: 13px; }
+.farm-plan-list { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.farm-plan-list li { display: flex; align-items: center; gap: 6px; padding: 8px 8px 8px 12px; border: 1px solid var(--border); border-radius: 13px; background: rgba(3, 14, 22, .45); }
+.farm-plan-list li > div { flex: 1; min-width: 0; }
+.farm-plan-list b { display: block; overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.farm-plan-list small { color: var(--muted); font-size: 11px; }
+.farm-plan-list button { display: grid; width: 32px; height: 32px; flex-shrink: 0; place-items: center; border: 1px solid var(--border); border-radius: 10px; color: var(--foreground); background: rgba(255, 255, 255, .04); cursor: pointer; }
+.farm-plan-list button:hover { border-color: var(--brand); color: var(--brand); }
+.farm-compare { position: fixed; z-index: 60; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(2, 10, 16, .72); backdrop-filter: blur(6px); animation: fadeUp .25s var(--ease) both; }
+.farm-compare-card { display: flex; width: min(980px, 100%); max-height: calc(100dvh - 32px); flex-direction: column; gap: 12px; padding: 18px; border: 1px solid var(--border-strong); border-radius: 20px; background: #071c28; box-shadow: 0 30px 80px rgba(0, 0, 0, .55); }
+.farm-compare-card header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.farm-compare-card header b { display: block; font-size: 18px; letter-spacing: -.02em; }
+.farm-compare-card header small { display: block; margin-top: 3px; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.farm-compare-card header button { display: grid; width: 32px; height: 32px; flex-shrink: 0; place-items: center; border: 0; border-radius: 50%; color: white; background: rgba(255, 255, 255, .08); cursor: pointer; }
+.farm-compare-years { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.farm-compare-years span { margin-right: 4px; color: var(--muted); font-size: 12px; font-weight: 650; }
+.farm-compare-years button { padding: 3px 8px; border: 1px solid var(--border); border-radius: 999px; color: rgba(255, 255, 255, .75); background: transparent; cursor: pointer; font-size: 11px; font-variant-numeric: tabular-nums; }
+.farm-compare-years button.active { color: var(--brand-ink); border-color: var(--brand); background: var(--brand); font-weight: 750; }
+.farm-compare-scroll { min-height: 0; overflow: auto; border: 1px solid var(--border); border-radius: 14px; }
+.farm-compare table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.farm-compare th, .farm-compare td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; white-space: nowrap; }
+.farm-compare thead th { position: sticky; top: 0; z-index: 1; color: rgba(255, 255, 255, .85); background: #0b2533; font-size: 12px; }
+.farm-compare thead th.is-future { color: var(--brand); }
+.farm-compare th small, .farm-compare td small { display: block; margin-top: 2px; color: var(--muted); font-size: 10.5px; font-weight: 600; }
+.farm-compare tbody th { position: sticky; left: 0; background: #08202c; font-weight: 750; }
+.farm-compare td b { font-variant-numeric: tabular-nums; }
+.farm-compare td small.is-ok { color: var(--ok); }
+.farm-compare td small.is-bad { color: #ff8f8f; }
+.farm-compare td.is-best { background: rgba(79, 211, 154, .12); box-shadow: inset 3px 0 0 var(--ok); }
 .farm-timeline { position: absolute; z-index: 7; left: 12px; right: 12px; bottom: 14px; display: flex; max-width: 700px; margin: 0 auto; align-items: center; gap: 4px; padding: 5px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 999px; background: rgba(4, 18, 27, .86); box-shadow: 0 10px 28px rgba(0, 0, 0, .38); backdrop-filter: blur(14px); transition: left .3s var(--ease), bottom .3s var(--ease); }
 .farm-palette { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .farm-tl-btn { display: grid; width: 34px; height: 34px; flex-shrink: 0; place-items: center; border: 0; border-radius: 50%; color: white; background: rgba(255, 255, 255, .06); cursor: pointer; }
