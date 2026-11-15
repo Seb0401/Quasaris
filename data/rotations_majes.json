@@ -1,5 +1,5 @@
 {
-  "_note": "Rotaciones de ejemplo para la demo en Majes. A validar con un agrónomo (CONTEXTO_RETO.md §2). Cada una cabe en 365 días sin cultivos cruzados con las duraciones de crops.json: Cebolla (150 d) + Papa (145 d) deja 70 días de descanso (dic–feb); Cebolla + Haba (110 d) + Avena forrajera (90 d) deja 15 días.",
+  "_note": "Example rotations for the Majes demo. To be validated by an agronomist (CHALLENGE_CONTEXT.md §2). Each one fits in 365 days with no overlapping crops, using the cycle lengths in crops.json: onion (150 d) + potato (145 d) leaves 70 fallow days (Dec–Feb); onion + faba bean (110 d) + forage oats (90 d) leaves 15.",
   "rotations": [
     {
       "id": "actual",

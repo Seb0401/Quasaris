@@ -1,5 +1,5 @@
 {
-  "_note": "Paleta de rotaciones del modo granja. Las 3 primeras son las de la demo (rotations_majes.json). A validar con un agrónomo. Quinua · Haba, las tres hermanas y Páprika · Avena · Arveja usan los cultivos añadidos para Arequipa.",
+  "_note": "Rotation palette for the farm mode. The first 3 are the demo rotations (rotations_majes.json). To be validated by an agronomist. Quinoa · Faba bean, the three sisters and Paprika · Oats · Pea use the crops added for Arequipa.",
   "rotations": [
     { "id": "actual", "name": "Alfalfa permanente", "isCurrent": true, "crops": [{"cropId": "alfalfa", "sowMonth": 4}] },
     { "id": "ingreso", "name": "Cebolla · Papa", "isCurrent": false, "crops": [{"cropId": "cebolla", "sowMonth": 3}, {"cropId": "papa", "sowMonth": 8}] },

@@ -6,6 +6,8 @@ NASA Space Apps Challenge 2026 · challenge **Field Shift: Adapting Farms with N
 
 **Live app:** https://quasaris-farmtwin.vercel.app
 
+![Quasaris FarmTwin home page: "Your field's future, before you plant"](docs/screenshots/home.webp)
+
 ## Summary
 
 The farmer marks their field on a satellite map (or draws its outline) and enters their water allocation, irrigation system, soil and priorities. FarmTwin then compares crop rotations, including the one the farmer grows today, using 21 years of daily NASA POWER climate adjusted to the field's real altitude with NASA SRTM terrain data. For each rotation it estimates water demand (FAO-56 Penman-Monteith), income, soil health and climate risk, shown as a range across years instead of a single number.
@@ -18,12 +20,55 @@ The app is organised around **past, present and future**:
 
 FarmTwin supports the judgment of the farmer and the local agronomist. It does not replace it.
 
+## Product tour
+
+Five steps, from the satellite view to a plan the farmer can print. All screenshots come from the live app.
+
+### 1. Locate the field
+
+Search a place or paste coordinates, tap the field on the satellite map or draw its outline. NASA MODIS NDVI shows active vegetation; the side panel collects water, irrigation system, soil texture and priorities, and shows how much water actually reaches the crop.
+
+![My field: satellite map with NDVI layer and the water, irrigation and soil panel](docs/screenshots/my-field.webp)
+
+### 2. Compare rotations
+
+The current rotation is compared with the alternatives under 21 years of real climate. The verdict says which one fits best and what changes against today. When water is short, the app says how many m³/ha are missing and in how many of the 21 years the water would have been enough, instead of a bare "not viable". Head-to-head charts show where each rotation wins.
+
+![Compare: verdict with score, deltas against the current rotation and head-to-head charts](docs/screenshots/compare.webp)
+
+### 3. Travel through 21 years
+
+The time machine replays every rotation year by year (2005–2025). Taller, redder bars mark years with more months of water or climate stress; each card shows that year's income, water need and monthly status.
+
+![Time machine: playback bar, year cards and water chart](docs/screenshots/time-machine.webp)
+
+### 4. Play the next season
+
+A 3D digital twin of the farm. The farmer paints crops on the plots, picks a scenario (typical year, dry year, El Niño or a hotter future) and simulates the season month by month. Alert cards explain each risk and propose a fix.
+
+![Farm: 3D digital twin with crop palette and a pest-risk alert](docs/screenshots/farm.webp)
+
+### 5. Plan the year
+
+The calendar shows each crop's cycle, the annual rotation wheel, weekly historical frost and heat risk, and this week's irrigation estimate. Push alerts warn before risky weeks.
+
+![Calendar: crop at this time, next action, annual rotation wheel and 52-week calendar](docs/screenshots/calendar.webp)
+
+### Mobile, light and dark
+
+The app is mobile-first and installable as a PWA. A sun/moon button switches between dark and light themes; the choice is remembered.
+
+<p>
+  <img src="docs/screenshots/mobile.webp" alt="Mobile view of My field and Compare" width="40%" />
+  <img src="docs/screenshots/light-theme.webp" alt="Compare screen in the light theme" width="58%" />
+</p>
+
 ## Features
 
 | Screen | What it does |
 | --- | --- |
 | **My field** | Full-screen satellite map with NASA NDVI and SMAP layers, place search (local zones, coordinates or OpenStreetMap), and a tool to draw the field outline and measure its area. Floating panels for water, irrigation, soil (ISRIC SoilGrids) and priorities. |
-| **Compare** | At least 3 rotations (including the current one) with water, income, soil health, climate risk, typical months, "not viable with your water" and what to check with an expert. |
+| **Compare** | At least 3 rotations (including the current one) with water, income, soil health, climate risk, typical months, how many m³/ha of water are missing and in how many of the 21 years the water was enough, and what to check with an expert. |
 | **Time machine** | What each rotation would have produced in every year from 2005 to 2025, with animated playback, a per-year chart, a 21-year strip and that month's NDVI. |
 | **Farm** | A 3D digital twin of the farm for the **next season**. The island takes the shape of the drawn field (square plots inside the outline) and can be reshaped by adding or removing edge plots. The farmer paints crops, picks a scenario (typical year, dry year, El Niño or +1.5 °C, each modelled on a real NASA POWER year) and plays the season month by month, or switches to Past to replay any real year from 2005 to 2025. Layouts can be saved as plans and compared side by side in past years and next-season scenarios (profit and whether the water lasts). On-screen alert cards say how often each risk happened in the 21 real years, which plots are affected and what to change, with a one-tap "Apply change". Supports intercropping (associations such as the *milpa* and the three sisters). |
 | **Calendar** | Crop cycles and stages, weekly frost and heat risk, this week's irrigation and push alerts. |
@@ -31,6 +76,7 @@ FarmTwin supports the judgment of the farmer and the local agronomist. It does n
 | **My rotations / Groupings** | Build custom rotations or crop associations from 16 crops grown around Arequipa and compare them on every screen. |
 | **My plan** | A printable farm plan (PDF) with the chosen rotation, calendar and risks. |
 | **What does it mean?** | Ten plain-language ideas (water, seen from space, risk and decisions), each one a short expandable card. |
+| **Light and dark theme** | A sun/moon button in the sidebar (and in the mobile top bar) switches themes; the choice is saved in the browser. |
 
 ## How it works
 
@@ -110,8 +156,9 @@ The microphone relies on the browser's speech recognition. Test voice in Chrome 
 ## Project structure
 
 ```
-app/[locale]/        pages: inicio, parcela, comparar, tiempo, granja, calendario, asistente,
-                     rotaciones, agrupaciones, plan, aprende
+app/[locale]/        pages (URL paths): parcela (my field), comparar (compare), tiempo (time
+                     machine), granja (farm), calendario (calendar), asistente (assistant),
+                     rotaciones (my rotations), agrupaciones (groupings), plan, aprende (glossary)
 app/api/             chat (assistant + tools), push/subscribe, push/test, cron/alerts
 app/manifest.ts      PWA manifest              public/sw.js   service worker (offline and push)
 components/          map/, cards/, timemachine/, calendar/, granja/
@@ -124,7 +171,7 @@ engine/              schema, power (POWER + SRTM fusion), quality, elevation, et
                      rotation, simulate, tests/
 data/                crops.json, rotations_majes.json, mock_simulate.json, power_cache/,
                      soilgrids/, senamhi/
-docs/                DATA_SOURCES.md, AI_USAGE.md, VALIDATION.md
+docs/                DATA_SOURCES.md, AI_USAGE.md, VALIDATION.md, screenshots/
 ```
 
 ## Deployment
@@ -135,4 +182,4 @@ Environment variables (already set on Vercel): `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `
 
 ## For coding agents
 
-> Read `CONTEXTO_RETO.md`, `PLAN.md` (§4 to §8), `README.md` and `lib/contract.ts`. Only change the files of your task. Respect the contract (`lib/contract.ts` ↔ `engine/schema.py`); if you need to change it, stop and tell the team. Run `npm run build`, `npx eslint .` and `npm run test:py` before pushing.
+> Read `CHALLENGE_CONTEXT.md`, `PLAN.md` (§4 to §8), `README.md` and `lib/contract.ts`. Only change the files of your task. Respect the contract (`lib/contract.ts` ↔ `engine/schema.py`); if you need to change it, stop and tell the team. Run `npm run build`, `npx eslint .` and `npm run test:py` before pushing.

@@ -5,7 +5,7 @@ Context document for team Quasaris at the NASA Space Apps Challenge 2026, Arequi
 ## 1. The challenge
 
 - **Official name:** Field Shift: Adapting Farms with NASA Data
-- **Name in the local material:** Cambio de rumbo: adaptando las granjas con datos de la NASA
+- **Name in the local material:** *Cambio de rumbo: adaptando las granjas con datos de la NASA* (official Spanish title; in English, "Change of course: adapting farms with NASA data")
 - **Official page:** https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/
 - **Difficulty:** intermediate and advanced
 - **Subjects:** Earth science, software, arts and multimedia
