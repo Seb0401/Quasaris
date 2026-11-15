@@ -35,6 +35,7 @@ type Props = {
   fill?: boolean;
   /** caja de búsqueda flotante arriba a la izquierda */
   search?: boolean;
+  onSearchMenuChange?: (open: boolean, height: number) => void;
   /** paneles flotantes propios de la página, encima del mapa */
   children?: React.ReactNode;
   /** contorno de la parcela; con onBoundary se puede dibujar sobre el mapa */
@@ -105,6 +106,7 @@ function ParcelMapInner({
   compact = false,
   fill = false,
   search = false,
+  onSearchMenuChange,
   className = "",
   children,
   boundary,
@@ -252,7 +254,7 @@ function ParcelMapInner({
         <ClickHandler onPick={(la, lo) => (drawing ? addVertex(la, lo) : onPick(la, lo))} />
       </MapContainer>
 
-      {search && <SearchBox es={es} onPick={onPick} />}
+      {search && <SearchBox es={es} onPick={onPick} onMenuChange={onSearchMenuChange} />}
 
       {/* arriba a la derecha: fecha de la capa NASA */}
       {data !== "none" && (
@@ -534,12 +536,13 @@ type Place = { name: string; sub: string; lat: number; lon: number };
  * Búsqueda: zonas locales al escribir; cualquier lugar con OpenStreetMap (Nominatim) solo al confirmar
  * (Enter o el botón), como pide su política de uso: nada de autocompletar contra su servidor.
  */
-function SearchBox({ es, onPick }: { es: boolean; onPick: (lat: number, lon: number) => void }) {
+function SearchBox({ es, onPick, onMenuChange }: { es: boolean; onPick: (lat: number, lon: number) => void; onMenuChange?: (open: boolean, height: number) => void }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [remote, setRemote] = useState<Place[] | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const ref = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const abort = useRef<AbortController | null>(null);
   const m = q.match(/^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/);
   // solo coordenadas válidas (lat ±90, lon ±180)
@@ -578,6 +581,20 @@ function SearchBox({ es, onPick }: { es: boolean; onPick: (lat: number, lon: num
   };
 
   const showList = open && (coords || hits.length > 0 || canSearch || remote !== null || status !== "idle");
+
+  useEffect(() => {
+    if (!showList) {
+      onMenuChange?.(false, 0);
+      return;
+    }
+    const list = listRef.current;
+    if (!list) return;
+    const reportSize = () => onMenuChange?.(true, list.getBoundingClientRect().height);
+    reportSize();
+    const observer = new ResizeObserver(reportSize);
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, [showList, onMenuChange]);
 
   return (
     <div className={`gm-search ${showList ? "open" : ""}`}>
@@ -623,7 +640,7 @@ function SearchBox({ es, onPick }: { es: boolean; onPick: (lat: number, lon: num
         )}
       </form>
       {showList && (
-        <ul className="gm-search-list">
+        <ul ref={listRef} className="gm-search-list">
           {coords && (
             <li>
               <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => go(Number(coords[1]), Number(coords[2]))}>
