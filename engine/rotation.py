@@ -89,9 +89,12 @@ def place_association(rotation: Rotation) -> tuple[list[Placement], np.ndarray, 
 
 def place(rotation: Rotation) -> tuple[list[Placement], np.ndarray, np.ndarray]:
     """Devuelve (cultivos ubicados, Kc diario de 365 días, índice de cultivo por día o −1 si está desnudo)."""
+    cat = catalog()
+    if any(cat[c.cropId].lifecycle == "orchard" for c in rotation.crops):
+        if len(rotation.crops) != 1 or rotation.mode == "association":
+            raise ValueError("Established orchards must be simulated alone; use separate farm plots for other crops.")
     if rotation.mode == "association":
         return place_association(rotation)
-    cat = catalog()
     placements = []
     kc_year = np.zeros(365)
     owner = np.full(365, -1)

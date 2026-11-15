@@ -29,6 +29,8 @@ class Crop:
     yield_t_ha: float
     price_pen_t: float
     cost_pen_ha: float
+    lifecycle: str = "annual"
+    monthly_kc: tuple[float, ...] = ()
 
     @property
     def cycle_days(self) -> int:
@@ -36,6 +38,8 @@ class Crop:
 
     def kc_curve(self) -> np.ndarray:
         """Kc diario desde la siembra hasta la cosecha."""
+        if self.lifecycle == "orchard":
+            return np.repeat(self.monthly_kc, [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
         if self.perennial:
             return np.full(365, self.kc_avg if self.kc_avg is not None else self.kc_mid)
         ini, dev, mid, late = self.stages
@@ -66,6 +70,11 @@ def catalog() -> dict[str, Crop]:
     raw = json.loads((ROOT / "data" / "crops.json").read_text(encoding="utf-8"))["crops"]
     out = {}
     for cid, c in raw.items():
+        if c.get("lifecycle") == "orchard":
+            if not c.get("perennial") or len(c.get("monthlyKc", [])) != 12:
+                raise ValueError(f"{cid}: orchard requires year-round occupancy and 12 monthly Kc values")
+            if not c.get("harvestMonths") or any(m not in range(1, 13) for m in c["harvestMonths"]):
+                raise ValueError(f"{cid}: invalid orchard harvest months")
         out[cid] = Crop(
             id=cid,
             family=c["family"],
@@ -82,5 +91,7 @@ def catalog() -> dict[str, Crop]:
             yield_t_ha=c["yieldTha"],
             price_pen_t=c["pricePENt"],
             cost_pen_ha=c["costPENha"],
+            lifecycle=c.get("lifecycle", "annual"),
+            monthly_kc=tuple(c.get("monthlyKc", [])),
         )
     return out

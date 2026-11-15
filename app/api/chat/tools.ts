@@ -4,6 +4,7 @@ import type { SimulateRequest, SimulateResponse } from "@/lib/contract";
 import { simulateMock } from "@/lib/engine-client";
 import { getMessages } from "@/lib/i18n";
 import { getMajesSoilGridsReference } from "@/lib/soilgrids";
+import { CROPS, cropName, cropTiming } from "@/lib/crop-calendar";
 
 const priorities = z.object({
   water: z.number().min(0).max(1),
@@ -24,6 +25,7 @@ export const farmSchema = z.object({
     id: z.string().min(1).max(100),
     name: z.string().min(1).max(200),
     isCurrent: z.boolean(),
+    mode: z.enum(["rotation", "association"]).optional(),
     crops: z.array(z.object({
       cropId: z.string().min(1).max(100),
       sowMonth: z.number().int().min(1).max(12),
@@ -46,7 +48,8 @@ async function simulate(farm: SimulateRequest, signal: AbortSignal): Promise<Sim
     return await response.json() as SimulateResponse;
   } catch {
     signal.throwIfAborted();
-    return simulateMock(farm);
+    const snapshot = (await import("@/data/mock_granja.json")).default as unknown as SimulateResponse;
+    return simulateMock(farm, snapshot);
   }
 }
 
@@ -58,6 +61,22 @@ export function chatTools(initialFarm: SimulateRequest, signal: AbortSignal) {
   const terms = getMessages(farm.locale).assistant.glossary;
 
   return {
+    consultarCultivos: tool({
+      description: "List crops actually available in Quasaris, or inspect one crop by ID. Returns product definitions and any model assumptions. Use before answering which crops are supported or describing a new Majes profile.",
+      inputSchema: z.object({ cropId: z.string().max(100).optional() }),
+      execute: async ({ cropId }) => ({
+        available: !cropId || Boolean(CROPS[cropId]),
+        crops: Object.entries(CROPS).filter(([id]) => !cropId || id === cropId).map(([id, crop]) => ({
+          id,
+          name: cropName(id, farm.locale),
+          category: crop.category,
+          perennial: Boolean(crop.perennial),
+          product: crop.product?.[farm.locale],
+          assumptions: crop.modelNote?.[farm.locale],
+          sources: crop.sources,
+        })),
+      }),
+    }),
     simularRotacion: tool({
       description: "Get water, income, soil, risk, viability and evidence for the current parcel and its rotations. Call after changing parcel inputs to compare again.",
       inputSchema: z.object({ rotationId: z.string().max(100).optional() }),
@@ -72,6 +91,13 @@ export function chatTools(initialFarm: SimulateRequest, signal: AbortSignal) {
           rotations: rotations.filter(({ id }) => !rotationId || id === rotationId).map((rotation) => ({
             id: rotation.id,
             name: planned.find(({ id }) => id === rotation.id)?.name ?? rotation.id,
+            crops: (planned.find(({ id }) => id === rotation.id)?.crops ?? []).map((rc) => ({
+              id: rc.cropId,
+              name: cropName(rc.cropId, locale),
+              product: CROPS[rc.cropId]?.product?.[locale],
+              timing: cropTiming(rc, locale),
+              assumptions: CROPS[rc.cropId]?.modelNote?.[locale],
+            })),
             water: rotation.water,
             income: rotation.income,
             soil: rotation.soil,

@@ -38,13 +38,15 @@ Shared decisions:
 - Code reviews of each feature before merging, plus type checking, linting and the engine test suite.
 - Every estimate that is not measured (prices, yields, water allocation) is labelled "to validate" in the app and in `data/crops.json`.
 
+The Majes crop integration and illustrated crop picker were also developed with OpenAI Codex. Its 21 transparent crop illustrations (`public/images/crops/*.webp`) were generated using OpenAI's built-in image generation tool (model name not recorded), then resized and encoded as WebP. Each displayed crop illustration carries a visible `AI` mark. The complete prompt set is in [`CROP_ARTWORK.md`](CROP_ARTWORK.md). The five additional crop profiles contain explicit planning assumptions, not locally validated agronomic or economic observations; see [`MAJES_CROPS_IMPLEMENTATION.md`](MAJES_CROPS_IMPLEMENTATION.md).
+
 ## 2. AI inside the product
 
 **The numbers do not come from AI.** Water, income, soil health, risk and every chart in FarmTwin come from a deterministic engine (NASA data + FAO-56 equations + transparent rules). No machine-learning model produces a recommendation.
 
 **Field assistant** (`/asistente`, `app/api/chat/`). An LLM chat explains results in plain language, accepts voice dictation (the browser's speech recognition) and photos. It runs through the Vercel AI SDK, with Vercel AI Gateway (`anthropic/claude-sonnet-5.5` by default) or OpenRouter as the provider. Safeguards:
 
-- It may only quote numbers returned by the engine through tool calls: `simularRotacion` (simulate a rotation), `consultarAno` (look up one year of the time machine), `explicarTermino` (explain a term), `consultarSueloRegional` (ISRIC SoilGrids summary) and `cambiarPrioridades` (adjust the farmer's priorities).
+- It may only quote numbers returned by the engine through tool calls: `simularRotacion` (simulate a rotation), `consultarAno` (look up one year of the time machine), `explicarTermino` (explain a term), `consultarSueloRegional` (ISRIC SoilGrids summary) and `cambiarPrioridades` (adjust the farmer's priorities). `consultarCultivos` lists the 21 supported crops and their product definitions, source references and model assumptions.
 - The system prompt tells it to separate satellite or model estimates from field measurements, to say what needs local validation, and to send the farmer to an agronomist for important decisions.
 - When the engine is unavailable, the assistant labels the answer as demo data.
 

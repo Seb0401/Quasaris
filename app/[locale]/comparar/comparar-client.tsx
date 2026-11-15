@@ -13,6 +13,7 @@ import { useSimulation } from "@/lib/use-simulation";
 import { rotationColor } from "@/lib/ui";
 import { waterFit } from "@/lib/water-fit";
 import type { Rotation, RotationResult } from "@/lib/contract";
+import { CropModelNotes } from "@/components/crop-model-notes";
 
 type Row = { rotation: Rotation; result: RotationResult; color: string };
 
@@ -51,6 +52,7 @@ export function CompararClient() {
         <HeroStat icon={Satellite} label="NASA POWER">{data.source.period[0]}–{data.source.period[1]}</HeroStat>
         <HeroStat icon={Target} label={es ? "ROTACIONES" : "ROTATIONS"} tone="amber">{rows.length}</HeroStat>
       </PageHeader>
+      <CropModelNotes cropIds={farm.rotations.flatMap((r) => r.crops.map((c) => c.cropId))} locale={locale} />
 
       <div className="compare-toolbar">
         <ol className="compare-steps">

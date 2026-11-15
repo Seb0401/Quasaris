@@ -214,7 +214,9 @@
     "highlight.worstYear": "{year}: the worst year; you would have earned S/ {lossPEN} less per hectare.",
     "highlight.problemYears": "{count} of {total} years with problems (water or climate). Latest: {year}.",
     "evidence.soilDry": "Without irrigation the soil stays dry almost all year (NASA POWER root-zone wetness near 33%): everything depends on irrigation water.",
-    "evidence.soilSeasonal": "Natural soil moisture rises in the rainy season (NASA POWER): use it for planting."
+    "evidence.soilSeasonal": "Natural soil moisture rises in the rainy season (NASA POWER): use it for planting.",
+    "review.establishedOrchard": "Producing established orchard: review cultivar, age, pruning and harvest. Establishment and juvenile years are excluded.",
+    "review.cropAssumptions": "Validate yield, price, costs and timing: the new Majes profiles are planning assumptions."
   },
   "tiempo": {
     "title": "Time machine",
@@ -864,7 +866,7 @@
       "looseSoil": "Needs loose, stone-free soil so the roots grow straight.",
       "thinning": "Thin the seedlings 3 to 4 weeks after sowing.",
       "evenWater": "Water evenly: irregular irrigation cracks fruits and roots.",
-      "trellis": "Give it stakes or a trellis to climb.",
+      "trellis": "Check the vine training and support system.",
       "coolSeason": "Prefers cool weather: avoid the hottest months.",
       "powderyMildew": "Powdery mildew: white powder on the leaves, more common in dry, warm weather.",
       "dryHarvest": "Harvest when the grain is dry and hard.",
@@ -874,7 +876,14 @@
       "groundCover": "Its big leaves cover the soil and keep moisture in.",
       "pollinators": "Needs bees to pollinate the flowers.",
       "staking": "Stake and prune it so the fruit stays off the ground.",
-      "sunDrying": "Dry the pods in the sun on clean ground after harvest."
+      "sunDrying": "Dry the pods in the sun on clean ground after harvest.",
+      "repeatedPicking": "Plan repeated picking; confirm size and quality with the buyer.",
+      "buyerGrade": "Confirm product grade, saleable quality and price with the buyer.",
+      "orchardPruning": "Plan pruning and orchard management with a local technician.",
+      "fruitSetWater": "Review water availability during flowering and fruit set.",
+      "drainage": "Check drainage and soil and water analyses.",
+      "vinePruning": "Review vine pruning and production timing with a technician.",
+      "fruitCracking": "Watch for fruit cracking and abrupt changes in water availability."
     },
     "pest": {
       "aphid": "aphid",
@@ -895,7 +904,9 @@
       "leafBlight": "leaf blight",
       "leafminer": "leafminer",
       "powderyMildew": "powdery mildew",
-      "tomatoMoth": "tomato moth"
+      "tomatoMoth": "tomato moth",
+      "fruitFly": "Fruit fly",
+      "mealybug": "Mealybug"
     },
     "kicker": "GROUPINGS",
     "step1": "How will you plant them?",
@@ -906,7 +917,8 @@
       "vegetable": "Vegetables",
       "grain": "Grains",
       "legume": "Legumes",
-      "forage": "Forage"
+      "forage": "Forage",
+      "fruit": "Fruit"
     },
     "feedsSoil": "Feeds the soil",
     "count": "{n} of {max}",

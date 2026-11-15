@@ -15,7 +15,7 @@ from engine.schema import ClimateResponse, Rotation, SimulateRequest, SimulateRe
 
 SEVERITY = {"bare": 0, "ok": 1, "water_stress": 2, "climate_risk": 3}
 FORAGE = {"alfalfa", "maiz_chala", "avena"}
-CASH = {"papa", "cebolla", "ajo", "zanahoria", "tomate", "paprika", "quinua"}
+CASH = {"papa", "cebolla", "ajo", "zanahoria", "tomate", "paprika", "quinua", "alcachofa", "palta", "uva", "mandarina", "granada"}
 NON_VIABLE_PENALTY = 0.6
 AGRO_FROST_C = 2.0  # Tmin a 2 m ≤ 2 °C → posible helada a nivel del cultivo
 HEAT_C = 30.0
@@ -208,6 +208,10 @@ def _explain(rot: Rotation, r: dict, flags: dict, clim: Climate) -> dict:
         missing.append("missing.groundStation")
 
     review = []
+    if any(c.lifecycle == "orchard" for c in crops):
+        review.append("review.establishedOrchard")
+    if ids & {"alcachofa", "palta", "uva", "mandarina", "granada"}:
+        review.append("review.cropAssumptions")
     if not r["viable"]:
         review.append("review.waterShortage")
     if frost:

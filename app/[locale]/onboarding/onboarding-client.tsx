@@ -12,6 +12,10 @@ import { CROPS, FAMILY_COLOR, MONTH_START, cropName, cropSegments, cycleDays } f
 import { setFarm, useFarm } from "@/lib/farm-store";
 import { MAX_CROPS, MAX_ROTATIONS, newRotationId, overlapDays } from "@/lib/rotation-utils";
 import "./onboarding.css";
+import { CropModelNotes } from "@/components/crop-model-notes";
+import { isOrchard } from "@/lib/crop-calendar";
+import { CropPicker } from "@/components/crops/crop-picker";
+import { CropArtwork } from "@/components/crops/crop-artwork";
 
 const STARTERS: { id: string; crops: RotationCrop[] }[] = [
   { id: "onion", crops: [{ cropId: "cebolla", sowMonth: 3 }, { cropId: "haba", sowMonth: 8 }] },
@@ -142,7 +146,7 @@ export function OnboardingClient() {
                   <div className="onboarding-starters">
                     {STARTERS.map((option) => (
                       <button key={option.id} type="button" aria-pressed={starter === option.id} className="onboarding-starter" data-selected={starter === option.id} onClick={() => { setStarter(option.id); setCrops(option.crops); }}>
-                        <span className="onboarding-starterIcon">{option.id === "custom" ? <Plus size={25} /> : option.crops.map((c) => <CropIcon key={c.cropId} crop={c.cropId} size={28} />)}</span>
+                        <span className="onboarding-starterIcon">{option.id === "custom" ? <Plus size={25} /> : option.crops.map((c) => <CropArtwork key={c.cropId} crop={c.cropId} size={44} />)}</span>
                         <span className="onboarding-starterCopy">
                           <b>{option.id === "custom" ? (es ? "A mi manera" : "Start my own") : option.crops.map((c) => cropName(c.cropId, locale)).join(" + ")}</b>
                           <small>{option.id === "custom" ? (es ? "Empieza con un cultivo y construye tu plan." : "Begin with one crop and build from there.") : option.crops.map((c) => `${cropName(c.cropId, locale)} · ${monthNames[c.sowMonth - 1]}`).join(" → ")}</small>
@@ -159,12 +163,14 @@ export function OnboardingClient() {
                     {crops.map((crop, i) => (
                       <div className="onboarding-cropRow" key={i}>
                         <span className="onboarding-cropNumber">{String(i + 1).padStart(2, "0")}</span>
-                        <label>{es ? "Cultivo" : "Crop"}<select value={crop.cropId} onChange={(e) => updateCrop(i, { cropId: e.target.value })} className="ui-select" aria-label={`${es ? "Cultivo" : "Crop"} ${i + 1}`}>{Object.keys(CROPS).map((id) => <option value={id} key={id}>{cropName(id, locale)}</option>)}</select></label>
+                        <div className="onboarding-cropField"><span>{es ? "Cultivo" : "Crop"}</span><CropPicker value={crop.cropId} locale={locale} label={`${es ? "Cultivo" : "Crop"} ${i + 1}`} onChange={(cropId) => updateCrop(i, { cropId })} isOptionDisabled={(id) => isOrchard(id) && crops.length > 1} disabledHint={crops.length > 1 ? (es ? "Para elegir un frutal, deja un solo cultivo en este plan." : "To choose a fruit crop, keep one crop in this plan.") : undefined} /></div>
                         <label>{es ? "Siembra" : "Plant in"}<select className="ui-select" value={crop.sowMonth} disabled={!!CROPS[crop.cropId].perennial} onChange={(e) => updateCrop(i, { sowMonth: Number(e.target.value) })} aria-label={`${es ? "Mes de siembra" : "Planting month"} ${i + 1}`}>{monthNames.map((m, j) => <option key={j} value={j + 1}>{m}</option>)}</select></label>
                         <button type="button" className="onboarding-remove" disabled={crops.length === 1} aria-label={`${es ? "Quitar" : "Remove"} ${cropName(crop.cropId, locale)} ${i + 1}`} onClick={() => setCrops((previous) => previous.filter((_, j) => j !== i))}><Trash2 size={16} /></button>
                       </div>
                     ))}
-                    {crops.length < MAX_CROPS && <button className="onboarding-addCrop" type="button" onClick={addCrop}><Plus size={16} />{es ? "Añadir otro cultivo" : "Add another crop"}<span>{crops.length}/{MAX_CROPS}</span></button>}
+                    {crops.length < MAX_CROPS && !crops.some((c) => isOrchard(c.cropId)) && <button className="onboarding-addCrop" type="button" onClick={addCrop}><Plus size={16} />{es ? "Añadir otro cultivo" : "Add another crop"}<span>{crops.length}/{MAX_CROPS}</span></button>}
+                    <CropModelNotes cropIds={crops.map((c) => c.cropId)} locale={locale} />
+                    {crops.length > 1 && <p className="onboarding-note">{es ? "Para elegir un frutal, deja un solo cultivo: el huerto permanece todo el año." : "To choose a fruit crop, keep a single crop: the orchard remains all year."}</p>}
                     {overlap > 0 ? <p className="onboarding-warning" role="status"><TriangleAlert size={17} />{es ? `Los cultivos se superponen ${overlap} días. Ajusta los meses para sembrar uno después de otro.` : `Your crops overlap by ${overlap} days. Adjust planting months so they grow one after another.`}</p> : <p className="onboarding-note"><Check size={16} />{es ? "Sin superposiciones. Cada cultivo tiene su momento." : "No overlaps. Every crop has its own time to grow."}</p>}
                     {crops.some((c) => CROPS[c.cropId].perennial) && <p className="onboarding-note">{es ? "Los cultivos permanentes ocupan todo el año; no necesitan un mes de siembra." : "Perennial crops occupy the full year and do not need a planting month."}</p>}
                   </div>

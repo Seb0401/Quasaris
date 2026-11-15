@@ -80,7 +80,7 @@ The app is mobile-first and installable as a PWA. A sun/moon button switches bet
 | **Farm** | A 3D digital twin of the farm for the **next season**. The island takes the shape of the drawn field (square plots inside the outline) and can be reshaped by adding or removing edge plots. The farmer paints crops, picks a scenario (typical year, dry year, El Niño or +1.5 °C, each modelled on a real NASA POWER year) and plays the season month by month, or switches to Past to replay any real year from 2005 to 2025. Layouts can be saved as plans and compared side by side in past years and next-season scenarios (profit and whether the water lasts). On-screen alert cards say how often each risk happened in the 21 real years, which plots are affected and what to change, with a one-tap "Apply change". Supports intercropping (associations such as the *milpa* and the three sisters). |
 | **Calendar** | Crop cycles and stages, weekly frost and heat risk, this week's irrigation and push alerts. |
 | **Assistant** | AI chat with voice dictation and photo upload. It answers with numbers that come only from the engine through tool calls. |
-| **My rotations / Groupings** | Build custom rotations or crop associations from 16 crops grown around Arequipa and compare them on every screen. A full-page guided setup (crops, calendar, review) helps create the first rotation. |
+| **My rotations / Groupings** | Build custom rotations or crop associations from 21 crops, including artichoke and four Majes fruit crops. A full-page guided setup (crops, calendar, review) helps create the first rotation. Established orchards use a standalone annual plan; compare other crops on separate farm plots. |
 | **My plan** | A printable farm plan (PDF) with the chosen rotation, calendar and risks. |
 | **What does it mean?** | Ten plain-language ideas (water, seen from space, risk and decisions), each one a short expandable card. |
 | **Light and dark theme** | A sun/moon button in the sidebar (and in the mobile top bar) switches themes; the choice is saved in the browser. |
@@ -115,6 +115,8 @@ Field (lat, lon) ──► SRTM: real altitude ──► pick the 2 NASA POWER c
 | Data | NASA POWER, NASA SRTM, NASA GIBS (MODIS NDVI, SMAP L4), ISRIC SoilGrids, FAO-56, MIDAGRI, OpenStreetMap Nominatim, Esri basemaps |
 
 ## Open items
+
+The new Majes profiles are **artichoke, avocado, table grape, mandarin and pomegranate**. They include bilingual names, icons and 3D plants, farm presets, calendar/harvest timing, engine results and printable plans. Orchard profiles represent an established producing stand with seasonal water coefficients; they exclude establishment investment and juvenile years. Artichoke has repeated illustrative picking dates. The UI and assistant identify all five profiles' yields, economics and schedules as **planning assumptions requiring local validation**. Source links and product/units are stored with each profile. `npm run test:crops` checks feature integration; Python API tests cover the new crops. See [`docs/MAJES_CROPS_IMPLEMENTATION.md`](docs/MAJES_CROPS_IMPLEMENTATION.md).
 
 | Item | Owner | Detail |
 | --- | --- | --- |

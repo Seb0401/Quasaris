@@ -2,15 +2,18 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowRight, ArrowUp, Check, ChevronDown, Combine, Leaf, Save, Sprout, X } from "lucide-react";
+import { ArrowRight, ArrowUp, Check, ChevronDown, Combine, Save, Sprout, X } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { CropIcon, CycleIcon, SoilIcon } from "@/components/icons/farm-icons";
 import { Badge, PageHeader, Panel } from "@/components/ui/kit";
 import type { RotationCrop } from "@/lib/contract";
-import { CATEGORIES, CROPS, MONTH_START, cropName, cropsIn, type CropCategory } from "@/lib/crop-calendar";
+import { CROPS, MONTH_START, cropName } from "@/lib/crop-calendar";
+import { CropBrowser } from "@/components/crops/crop-picker";
 import { setFarm, useFarm } from "@/lib/farm-store";
 import { evaluateGroup, type GroupMode, type Point } from "@/lib/grouping";
 import { MAX_CROPS, MAX_ROTATIONS, newRotationId } from "@/lib/rotation-utils";
+import { CropModelNotes } from "@/components/crop-model-notes";
+import { isOrchard } from "@/lib/crop-calendar";
 
 const PRESETS: { id: string; mode: GroupMode; crops: RotationCrop[] }[] = [
   { id: "threeSisters", mode: "association", crops: [{ cropId: "maiz_chala", sowMonth: 9 }, { cropId: "frijol", sowMonth: 9 }, { cropId: "zapallo", sowMonth: 9 }] },
@@ -30,7 +33,6 @@ export function AgrupacionesClient() {
   const farm = useFarm();
   const [mode, setMode] = useState<GroupMode>("rotation");
   const [crops, setCrops] = useState<RotationCrop[]>(PRESETS[3].crops);
-  const [category, setCategory] = useState<CropCategory | "all">("all");
   const [allReasons, setAllReasons] = useState(false);
   const [saved, setSaved] = useState(false);
   const names = (id: string) => cropName(id, locale);
@@ -44,6 +46,15 @@ export function AgrupacionesClient() {
     setSaved(false);
   };
   const add = (cropId: string) => {
+    if (isOrchard(cropId)) {
+      setMode("rotation");
+      change([{ cropId, sowMonth: 1 }]);
+      return;
+    }
+    if (crops.some((c) => isOrchard(c.cropId))) {
+      change([{ cropId, sowMonth: 3 }]);
+      return;
+    }
     if (crops.length >= MAX_CROPS) return;
     change([...crops, { cropId, sowMonth: mode === "association" && crops[0] ? crops[0].sowMonth : 3 }]);
   };
@@ -75,6 +86,7 @@ export function AgrupacionesClient() {
                 type="button"
                 role="radio"
                 aria-checked={mode === m}
+                disabled={m === "association" && crops.some((c) => isOrchard(c.cropId))}
                 onClick={() => {
                   setMode(m);
                   if (m === "association" && crops[0]) change(crops.map((c) => ({ ...c, sowMonth: crops[0].sowMonth })));
@@ -96,28 +108,11 @@ export function AgrupacionesClient() {
             <span>2</span>{t("group.step2")}
             <em>{t("group.count", { n: crops.length, max: MAX_CROPS })}</em>
           </h2>
-          <div className="group-cats" role="tablist">
-            {(["all", ...CATEGORIES] as const).map((c) => (
-              <button key={c} type="button" role="tab" aria-selected={category === c} onClick={() => setCategory(c)} className={category === c ? "is-active" : ""}>
-                {t(`group.category.${c}`)}
-              </button>
-            ))}
-          </div>
-          <div className="group-crops">
-            {cropsIn(category).map((id) => {
-              const n = crops.filter((c) => c.cropId === id).length;
-              return (
-                <button key={id} type="button" onClick={() => add(id)} disabled={crops.length >= MAX_CROPS} className={n ? "is-picked" : ""} aria-label={names(id)}>
-                  {n > 0 && <i className="group-crop-count">{n > 1 ? n : <Check size={11} strokeWidth={3} />}</i>}
-                  <CropIcon crop={id} size={30} />
-                  <span>{names(id)}</span>
-                  {CROPS[id].fixesNitrogen && <small><Leaf size={10} />{t("group.feedsSoil")}</small>}
-                </button>
-              );
-            })}
-          </div>
+          <CropBrowser locale={locale} selected={Object.fromEntries(crops.map((c) => [c.cropId, crops.filter((other) => other.cropId === c.cropId).length]))} onChoose={add} isOptionDisabled={(id) => crops.length >= MAX_CROPS && !isOrchard(id)} />
+          <p className="ui-hint">{locale === "es" ? "Los frutales se planifican como un huerto establecido por lote. Al elegir uno, se reemplaza la selección actual; los demás cultivos van en lotes separados." : "Fruit crops are planned as one established orchard per plot. Choosing one replaces the current selection; other crops belong on separate plots."}</p>
 
           {/* 3. grupo */}
+          <CropModelNotes cropIds={crops.map((c) => c.cropId)} locale={locale} />
           <h2 className="group-step">
             <span>3</span>{t("group.step3")}
             {crops.length > 0 && <button type="button" className="group-clear" onClick={() => change([])}>{t("group.clear")}</button>}

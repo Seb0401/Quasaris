@@ -4,7 +4,7 @@
  * Las alternativas se eligen con los mismos datos del motor (21 años de NASA POWER + FAO-56).
  */
 import type { Irrigation, Rotation, SimulateResponse } from "@/lib/contract";
-import { CROPS } from "@/lib/crop-calendar";
+import { CROPS, isOrchard } from "@/lib/crop-calendar";
 import { isOn } from "@/lib/farm-shape";
 import { hazardDamage, type FarmAlert, type HazardKind } from "@/lib/granja-events";
 import { cropAt } from "@/lib/granja-sim";
@@ -32,7 +32,7 @@ const SKIP = new Set(["descanso"]);
 
 function candidates(ctx: Ctx) {
   const ids = new Set(ctx.data.rotations.map((r) => r.id));
-  return ctx.palette.filter((r) => r.crops.length > 0 && !SKIP.has(r.id) && ids.has(r.id));
+  return ctx.palette.filter((r) => r.crops.length > 0 && !r.crops.some((c) => isOrchard(c.cropId)) && !SKIP.has(r.id) && ids.has(r.id));
 }
 
 const result = (ctx: Ctx, id: string) => ctx.data.rotations.find((r) => r.id === id);
@@ -89,7 +89,8 @@ function saveWater(ctx: Ctx): Fix | null {
   const water = (id: string) => result(ctx, id)?.byYear.find((y) => y.year === ctx.year)?.waterM3ha ?? result(ctx, id)?.water.median ?? 0;
   const thrifty = candidates(ctx).sort((a, b) => water(a.id) - water(b.id))[0];
   if (!thrifty) return null;
-  const on = ctx.tiles.flatMap((id, i) => (isOn(id) ? [i] : []));
+  const orchardIds = new Set(ctx.palette.filter((r) => r.crops.some((c) => isOrchard(c.cropId))).map((r) => r.id));
+  const on = ctx.tiles.flatMap((id, i) => (isOn(id) && !orchardIds.has(id) ? [i] : []));
   const cap = ctx.waterAvailableM3ha * on.length;
   let need = on.reduce((a, i) => a + water(ctx.tiles[i]), 0);
   const order = [...on].filter((i) => ctx.tiles[i] !== thrifty.id).sort((a, b) => water(ctx.tiles[b]) - water(ctx.tiles[a]));
@@ -104,6 +105,9 @@ function saveWater(ctx: Ctx): Fix | null {
 }
 
 export function fixFor(alert: FarmAlert, ctx: Ctx): Fix {
+  // A one-tap annual crop change must not imply removing a producing orchard.
+  const orchardTiles = new Set(ctx.palette.filter((r) => r.crops.some((c) => isOrchard(c.cropId))).map((r) => r.id));
+  if (alert.tiles.some((i) => orchardTiles.has(ctx.tiles[i]))) return { key: "none", tiles: alert.tiles, apply: null };
   const none: Fix = { key: "none", tiles: alert.tiles, apply: null };
   const m = Math.max(0, alert.month);
   switch (alert.kind) {

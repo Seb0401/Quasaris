@@ -52,6 +52,8 @@
 .onboarding-content { padding-top: 38px; animation: onboardingArrive .25s ease both; }
 
 /* Flat, divided choices keep the form part of the page. */
+.onboarding-cropField { display: grid; gap: 7px; min-width: 0; }
+.onboarding-cropField > span { color: var(--muted); font-size: 11px; }
 .onboarding-starters { display: grid; }
 .onboarding-starter { position: relative; display: flex; align-items: center; gap: 22px; width: 100%; min-height: 116px; padding: 22px 16px; border: 0; border-top: 1px solid var(--border-strong); background: transparent; text-align: left; cursor: pointer; transition: background .2s; }
 .onboarding-starter:last-of-type { border-bottom: 1px solid var(--border-strong); }

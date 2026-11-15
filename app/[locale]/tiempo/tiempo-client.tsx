@@ -1,4 +1,5 @@
 "use client";
+import { CropModelNotes } from "@/components/crop-model-notes";
 
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -99,6 +100,7 @@ export function TiempoClient() {
         <HeroStat icon={CalendarRange} label={es ? "AÑOS SIMULADOS" : "SIMULATED YEARS"}>{years.length}</HeroStat>
         <HeroStat icon={TriangleAlert} label={es ? "AÑO MÁS DIFÍCIL" : "HARDEST YEAR"} tone="amber">{hardestYear}</HeroStat>
       </PageHeader>
+      <CropModelNotes cropIds={farm.rotations.flatMap((r) => r.crops.map((c) => c.cropId))} locale={locale} />
 
       {/* consola de tiempo */}
       <section className="time-console">

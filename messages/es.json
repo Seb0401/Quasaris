@@ -214,7 +214,9 @@
     "highlight.worstYear": "{year}: el peor año; habrías ganado S/ {lossPEN} menos por hectárea.",
     "highlight.problemYears": "{count} de {total} años con problemas (agua o clima). El último: {year}.",
     "evidence.soilDry": "Sin riego, el suelo se queda seco casi todo el año (humedad en raíces de NASA POWER cerca de 33 %): todo depende del agua de riego.",
-    "evidence.soilSeasonal": "La humedad natural del suelo sube en la temporada de lluvias (NASA POWER): aprovéchala para sembrar."
+    "evidence.soilSeasonal": "La humedad natural del suelo sube en la temporada de lluvias (NASA POWER): aprovéchala para sembrar.",
+    "review.establishedOrchard": "Huerto establecido en producción: revisar variedad, edad, poda y cosecha. No incluye instalación ni años juveniles.",
+    "review.cropAssumptions": "Validar rendimiento, precio, costos y calendario: los nuevos perfiles de Majes son supuestos de planificación."
   },
   "tiempo": {
     "title": "Máquina del tiempo",
@@ -864,7 +866,7 @@
       "looseSoil": "Necesita suelo suelto y sin piedras para que la raíz crezca recta.",
       "thinning": "Ralea las plántulas a las 3 o 4 semanas de la siembra.",
       "evenWater": "Riega de forma pareja: el riego irregular raja frutos y raíces.",
-      "trellis": "Ponle tutores o espalderas para que trepe.",
+      "trellis": "Revisar el sistema de conducción y soporte de la vid.",
       "coolSeason": "Prefiere clima fresco: evita los meses más calurosos.",
       "powderyMildew": "Oídio: polvo blanco en las hojas, más común en clima seco y templado.",
       "dryHarvest": "Cosecha cuando el grano esté seco y duro.",
@@ -874,7 +876,14 @@
       "groundCover": "Sus hojas grandes cubren el suelo y guardan la humedad.",
       "pollinators": "Necesita abejas para polinizar las flores.",
       "staking": "Ponle tutor y pódalo para que el fruto no toque el suelo.",
-      "sunDrying": "Seca los frutos al sol sobre suelo limpio después de cosechar."
+      "sunDrying": "Seca los frutos al sol sobre suelo limpio después de cosechar.",
+      "repeatedPicking": "Programar varias recolecciones; confirmar calibre y calidad con el comprador.",
+      "buyerGrade": "Confirmar presentación, calidad comercial y precio con el comprador.",
+      "orchardPruning": "Planificar poda y manejo del huerto con un técnico local.",
+      "fruitSetWater": "Revisar disponibilidad de agua durante floración y cuajado.",
+      "drainage": "Verificar drenaje y análisis de suelo y agua.",
+      "vinePruning": "Ajustar poda y calendario de producción de la vid con un técnico.",
+      "fruitCracking": "Vigilar rajado de fruta y cambios bruscos de disponibilidad de agua."
     },
     "pest": {
       "aphid": "pulgón",
@@ -895,7 +904,9 @@
       "leafBlight": "quemadura de la hoja",
       "leafminer": "mosca minadora",
       "powderyMildew": "oídio",
-      "tomatoMoth": "polilla del tomate"
+      "tomatoMoth": "polilla del tomate",
+      "fruitFly": "Mosca de la fruta",
+      "mealybug": "Cochinilla harinosa"
     },
     "kicker": "AGRUPACIONES",
     "step1": "¿Cómo los vas a sembrar?",
@@ -906,7 +917,8 @@
       "vegetable": "Hortalizas",
       "grain": "Granos",
       "legume": "Leguminosas",
-      "forage": "Forraje"
+      "forage": "Forraje",
+      "fruit": "Frutales"
     },
     "feedsSoil": "Abona el suelo",
     "count": "{n} de {max}",
