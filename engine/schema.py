@@ -30,6 +30,8 @@ class Rotation(BaseModel):
     name: str
     isCurrent: bool
     crops: list[RotationCrop]
+    # Opcional: "association" = los cultivos comparten el lote al mismo tiempo (p. ej. milpa)
+    mode: Literal["rotation", "association"] = "rotation"
 
 
 class SimulateRequest(BaseModel):

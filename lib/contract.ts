@@ -23,6 +23,8 @@ export type Rotation = {
   name: string;
   isCurrent: boolean;
   crops: RotationCrop[];
+  /** "association": los cultivos comparten el lote al mismo tiempo (p. ej. milpa). Por defecto "rotation". */
+  mode?: "rotation" | "association";
 };
 
 // POST /api/py/simulate

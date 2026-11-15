@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Crown, Droplets, FlaskConical, Leaf, Mountain, PencilLine, Sprout, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, Mountain, PencilLine, Sprout, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
 import { Reveal } from "@/components/motion/reveal";
@@ -9,6 +9,7 @@ import { CountUp, HeroStat, LoadingOrbit, PageHeader, Panel, ScoreRing } from "@
 import { useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
 import { rotationColor } from "@/lib/ui";
+import { waterFit } from "@/lib/water-fit";
 import type { Rotation, RotationResult } from "@/lib/contract";
 
 type Row = { rotation: Rotation; result: RotationResult; color: string };
@@ -64,6 +65,7 @@ export function CompararClient() {
           })}</p>
         )}
         <Link href={`/${locale}/rotaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><PencilLine size={14} />{t("rotaciones.edit")}</Link>
+        <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><Combine size={14} />{t("group.title")}</Link>
       </div>
 
       {data.source.power === "mock" && <p className="ui-alert tone-warn"><FlaskConical size={16} />{t("comparar.mockWarning")}</p>}
@@ -102,6 +104,8 @@ export function CompararClient() {
 
 /** El resultado en una frase, con el puntaje y las diferencias contra lo que siembras hoy. */
 function Verdict({ best, current, anyViable }: { best: Row; current: Row; anyViable: boolean }) {
+  const farm = useFarm();
+  const fit = waterFit(best.result, farm.waterAvailableM3ha);
   const t = useT();
   const locale = useLocale();
   const es = locale === "es";
@@ -125,7 +129,7 @@ function Verdict({ best, current, anyViable }: { best: Row; current: Row; anyVia
             <h2>{best.rotation.name}</h2>
             <p>{t(`explain.${best.result.explain.whyKey}`)}</p>
             {!anyViable && (
-              <p className="verdict-warning"><TriangleAlert size={16} />{es ? "Ninguna rotación alcanza con el agua que indicaste. Esta es la que mejor equilibra tus prioridades; prueba con más agua o riego por goteo." : "No rotation fits the water you entered. This one best balances your priorities; try more water or drip irrigation."}</p>
+              <p className="verdict-warning"><TriangleAlert size={16} />{t("comparar.shortfall", { m3: n.format(fit.shortfallM3ha) })} · {t("comparar.yearsFit", { n: fit.yearsFit, total: fit.years })}. {es ? "Es la opción que mejor equilibra tus prioridades; con riego por goteo o reduciendo el área sembrada podría alcanzar." : "It best balances your priorities; drip irrigation or a smaller planted area could make it fit."}</p>
             )}
           </div>
         </div>
@@ -175,7 +179,7 @@ function Duel({ rows, icon: Icon, title, hint, pick, format, lowerIsBetter, max,
             <div key={r.rotation.id} className={`duel-row ${win ? "is-winner" : ""}`}>
               <span className="duel-name" style={{ color: r.color }}>{r.rotation.name}</span>
               <div className="duel-track">
-                <i style={{ width: `${Math.max(2, (v / top) * 100)}%`, background: r.color, animationDelay: `${i * 120}ms` }} />
+                <i style={{ width: `${Math.max(2, (v / top) * 100)}%`, background: `linear-gradient(90deg, color-mix(in srgb, ${r.color} 65%, transparent), ${r.color})`, animationDelay: `${i * 120}ms` }} />
               </div>
               <b><CountUp value={v} format={format} />{win && <Crown size={12} />}</b>
             </div>

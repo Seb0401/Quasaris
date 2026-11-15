@@ -8,7 +8,7 @@ import { HistoryGrid } from "@/components/timemachine/history-grid";
 import { YearChart, type Series } from "@/components/timemachine/water-chart";
 import { Badge, CountUp, HeroStat, LoadingOrbit, Meter, PageHeader, Panel, Segmented } from "@/components/ui/kit";
 import { Reveal } from "@/components/motion/reveal";
-import { setFarm, useFarm } from "@/lib/farm-store";
+import { moveFarm, useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
 import { rotationColor } from "@/lib/ui";
 import { BadgeDollarSign, CalendarRange, Clock3, Droplets, Flame, History, LineChart, Pause, Play, Satellite, SkipBack, Snowflake, TriangleAlert } from "lucide-react";
@@ -157,7 +157,7 @@ export function TiempoClient() {
             <article key={rot.id} className="year-card" style={{ "--accent": color } as React.CSSProperties}>
               <header>
                 <h3><i style={{ background: color }} />{rot.name}</h3>
-                {over ? <Badge tone="danger">{es ? "Falta agua" : "Short on water"}</Badge> : <Badge tone="ok">{t("tiempo.withinLimit")}</Badge>}
+                {over ? <Badge tone="danger">{t("tiempo.shortfallYear", { m3: n.format(y.waterM3ha - farm.waterAvailableM3ha) })}</Badge> : <Badge tone="ok">{t("tiempo.withinLimit")}</Badge>}
               </header>
               <div className="year-card-stats">
                 <div><small><BadgeDollarSign size={13} />{t("comparar.income")}</small><strong><CountUp value={y.incomePEN} format={(v) => `S/ ${n.format(v)}`} duration={600} /></strong></div>
@@ -214,7 +214,7 @@ export function TiempoClient() {
               <button key={m} type="button" onClick={() => setMonth(m)} className={m === month ? "active" : ""}>{fmtMonth.format(new Date(2025, m - 1, 1))}</button>
             ))}
           </div>
-          <ParcelMap compact lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} ndviTime={ndviDate(current, month)} />
+          <ParcelMap compact lat={farm.lat} lon={farm.lon} onPick={moveFarm} ndviTime={ndviDate(current, month)} />
         </Panel>
       </Reveal>
     </div>

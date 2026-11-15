@@ -91,6 +91,87 @@ function parts(cropId: string, look: Look, stage: Stage): Part[] {
             ] as Part[])
           : []),
       ];
+    case "quinua": {
+      const tall = stage === "grow" ? 0.6 : 0.85;
+      const head: MatKey = late ? "grainGold" : "quinoaHead";
+      return [
+        { g: "stalk", m: leaf(look, late ? "leafYellow" : "leaf"), p: [0, 0.6 * tall, 0], s: [0.8, tall, 0.8] },
+        { g: "bushSmall", m: leaf(look, late ? "leafYellow" : "leaf"), p: [0, 0.45 * tall, 0], s: [1.1, 0.9, 1.1] },
+        ...(stage !== "grow" ? ([{ g: "panicle", m: look === "ok" ? head : leaf(look), p: [0, 1.25 * tall + 0.1, 0] }] as Part[]) : []),
+      ];
+    }
+    case "trigo":
+    case "cebada":
+    case "avena": {
+      const forage = cropId === "avena";
+      const m = late && !forage ? leaf(look, "grainGold") : leaf(look, forage ? "oatGreen" : "leafLight");
+      const heads = stage !== "grow";
+      return [
+        { g: "blade", m, p: [0, 0.3, 0], s: [0.7, 1, 0.7] },
+        { g: "blade", m, p: [0.09, 0.28, 0.04], r: [0, 0, -0.25], s: [0.7, 0.95, 0.7] },
+        { g: "blade", m, p: [-0.09, 0.28, -0.04], r: [0, 0, 0.25], s: [0.7, 0.95, 0.7] },
+        ...(heads
+          ? ([
+              { g: "grainHead", m: late && !forage ? "grainGold" : m, p: [0, 0.66, 0] },
+              { g: "grainHead", m: late && !forage ? "grainGold" : m, p: [0.15, 0.6, 0.05], r: [0, 0, -0.25] },
+              { g: "grainHead", m: late && !forage ? "grainGold" : m, p: [-0.15, 0.6, -0.05], r: [0, 0, 0.25] },
+            ] as Part[])
+          : []),
+      ];
+    }
+    case "ajo": {
+      const m = late ? leaf(look, "leafYellow") : leaf(look, "onionLeaf");
+      return [
+        { g: stage === "grow" ? "bulb" : "bulbBig", m: "garlicBulb", p: [0, 0.08, 0], s: [0.85, 0.75, 0.85] },
+        { g: "blade", m, p: [0, 0.38, 0], s: [0.7, 0.9, 0.7] },
+        { g: "blade", m, p: [0.06, 0.34, 0], r: [0, 0, late ? -0.8 : -0.18], s: [0.7, 0.85, 0.7] },
+        { g: "blade", m, p: [-0.06, 0.34, 0], r: [0, 0, late ? 0.8 : 0.18], s: [0.7, 0.85, 0.7] },
+      ];
+    }
+    case "zanahoria": {
+      const m = leaf(look, "leafLight");
+      return [
+        { g: "sproutLeaf", m, p: [0, 0.22, 0], s: [1.3, 1.6, 1.3] },
+        { g: "sproutLeaf", m, p: [0.08, 0.2, 0.03], r: [0, 0, -0.5], s: [1.2, 1.5, 1.2] },
+        { g: "sproutLeaf", m, p: [-0.08, 0.2, -0.03], r: [0, 0, 0.5], s: [1.2, 1.5, 1.2] },
+        ...(stage !== "grow" ? ([{ g: "root", m: "carrotRoot", p: [0, 0.04, 0], r: [Math.PI, 0, 0] }] as Part[]) : []),
+      ];
+    }
+    case "arveja":
+      return [
+        { g: "bushSmall", m: late ? leaf(look, "leafYellow") : leaf(look, "leafLight"), p: [0, 0.22, 0], s: [0.85, 1.2, 0.85] },
+        { g: "bushSmall", m: leaf(look, "leaf"), p: [-0.06, 0.4, 0.03], s: [0.7, 0.9, 0.7] },
+        ...(stage === "flower" && look === "ok" ? ([{ g: "flower", m: "whiteFlower", p: [0.1, 0.45, 0.05] }, { g: "flower", m: "flowerPurple", p: [-0.12, 0.36, -0.05] }] as Part[]) : []),
+        ...(stage !== "grow" ? ([{ g: "pod", m: late ? "podDark" : "pod", p: [0.14, 0.28, 0.05], r: [0, 0, -0.6] }] as Part[]) : []),
+      ];
+    case "zapallo":
+      return [
+        { g: "bush", m: late ? leaf(look, "leafYellow") : leaf(look, "leafDark"), p: [0, 0.1, 0], s: [1.6, 0.42, 1.6] },
+        { g: "bushSmall", m: leaf(look, "leaf"), p: [0.2, 0.16, -0.12], s: [1.2, 0.5, 1.2] },
+        ...(stage === "flower" && look === "ok" ? ([{ g: "flower", m: "yellowFlower", p: [-0.12, 0.24, 0.1] }] as Part[]) : []),
+        ...(stage !== "grow" ? ([{ g: "squash", m: "squash", p: [0.16, 0.13, 0.18], s: late ? [1.1, 0.8, 1.1] : [0.7, 0.55, 0.7] }] as Part[]) : []),
+      ];
+    case "tomate":
+    case "paprika": {
+      const fruitM: MatKey = cropId === "tomate" ? "tomatoRed" : "paprikaRed";
+      const ripe = late ? fruitM : "pod";
+      return [
+        { g: "bush", m: leaf(look, "leafDark"), p: [0, 0.3, 0], s: [0.95, 1.05, 0.95] },
+        ...(stage === "flower" && look === "ok" ? ([{ g: "flower", m: "yellowFlower", p: [0.12, 0.5, 0.08] }] as Part[]) : []),
+        ...(stage === "flower" || late
+          ? cropId === "tomate"
+            ? ([
+                { g: "fruit", m: ripe, p: [0.22, 0.28, 0.08] },
+                { g: "fruit", m: ripe, p: [-0.18, 0.22, -0.12] },
+                { g: "fruit", m: ripe, p: [0.04, 0.2, 0.24] },
+              ] as Part[])
+            : ([
+                { g: "pod", m: ripe, p: [0.2, 0.22, 0.08], r: [0, 0, 0.2] },
+                { g: "pod", m: ripe, p: [-0.18, 0.2, -0.1], r: [0, 0, -0.2] },
+              ] as Part[])
+          : []),
+      ];
+    }
     default: // frijol
       return [
         { g: "bushSmall", m: late ? leaf(look, "leafYellow") : leaf(look), p: [0, 0.2, 0] },
@@ -135,7 +216,8 @@ export function PlantField({
       if (!t.cropId) return;
       // solo se ven secas si el reservorio se vació; la alta demanda mensual es normal en Majes
       const look: Look = t.status === "dry" ? "dry" : t.status === "climate_risk" ? "frost" : "ok";
-      const ps = parts(t.cropId, look, t.stage ?? "grow");
+      // asociación: los cultivos se alternan en damero dentro de la casilla
+      const kinds = [parts(t.cropId, look, t.stage ?? "grow"), ...(t.mix ?? []).map((x) => parts(x.cropId, look, x.stage))];
       const [cx, cz] = tileCenter(i);
       for (let a = 0; a < perSide; a++)
         for (let b = 0; b < perSide; b++) {
@@ -143,7 +225,7 @@ export function PlantField({
           const x = cx - tileSize / 2 + cell * (a + 0.5) + (rand(s) - 0.5) * 0.25;
           const z = cz - tileSize / 2 + cell * (b + 0.5) + (rand(s + 3) - 0.5) * 0.25;
           const plant = new THREE.Matrix4().compose(tmpV.set(x, soilTop, z), tmpQ.setFromEuler(tmpE.set(0, rand(s + 9) * Math.PI * 2, 0)), tmpS.set(1, 1, 1));
-          for (const p of ps) {
+          for (const p of kinds[(a + b) % kinds.length]) {
             const key = `${p.g}|${p.m}`;
             if (!map.has(key)) map.set(key, { g: p.g, m: p.m, items: [] });
             map.get(key)!.items.push({ tile: i, plant, local: localMatrix(p) });

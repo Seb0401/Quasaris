@@ -98,6 +98,117 @@ export function BeanIcon(p: IconProps) {
   );
 }
 
+export function QuinoaIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 21v-8" />
+      <path d="M12 16c-2 0-3.5-1-4-3" />
+      <path d="M12 3c2.6 1.8 3.6 4.4 3.2 7.2-.3 2-1.6 3-3.2 3s-2.9-1-3.2-3C8.4 7.4 9.4 4.8 12 3z" fill={A("#b5334f")} fillOpacity={0.35} />
+      <circle cx="11" cy="7" r=".7" fill="currentColor" />
+      <circle cx="13" cy="9" r=".7" fill="currentColor" />
+      <circle cx="11.6" cy="10.6" r=".7" fill="currentColor" />
+    </Svg>
+  );
+}
+
+export function GarlicIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 8c4.2 1.8 6 4.4 6 7a6 6 0 0 1-12 0c0-2.6 1.8-5.2 6-7z" fill={A("#e9dcc4")} fillOpacity={0.45} />
+      <path d="M12 8V3" />
+      <path d="M12 10c-1.6 1.6-2.2 4-1.8 7.5" />
+      <path d="M12 10c1.6 1.6 2.2 4 1.8 7.5" />
+    </Svg>
+  );
+}
+
+export function CarrotIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M8.5 9.5l6 6c-3.5 3.5-8 5.5-10 5.5 0-2 2-6.5 4-11.5z" fill={A("#e8792b")} fillOpacity={0.4} />
+      <path d="M14.5 9.5c.5-2 2-4.5 4-5.5" />
+      <path d="M14.5 9.5c2-.5 4.5-.3 6 .5" />
+      <path d="M14.5 9.5c-.2-2 .3-4.5 1.3-6" />
+      <path d="M7.2 14l1.6 1.2M5.9 17.2l1.4 1" />
+    </Svg>
+  );
+}
+
+export function PeaIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M4 15c3-6 9-9 16-9-1 6-7 12-14 12-1.2 0-2-1.2-2-3z" fill={A("#6fae4a")} fillOpacity={0.3} />
+      <circle cx="9" cy="14" r="1.6" />
+      <circle cx="12.5" cy="11.5" r="1.6" />
+      <circle cx="16" cy="9" r="1.6" />
+    </Svg>
+  );
+}
+
+export function WheatIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 21V8" />
+      <path d="M12 8c-1.6-.8-2.2-2.4-2-4 1.6.6 2.2 2.2 2 4zM12 8c1.6-.8 2.2-2.4 2-4-1.6.6-2.2 2.2-2 4z" fill={A("#d9b65a")} fillOpacity={0.5} />
+      <path d="M12 12.5c-1.8-.6-2.8-2-2.8-3.8 1.8.4 2.8 1.8 2.8 3.8zM12 12.5c1.8-.6 2.8-2 2.8-3.8-1.8.4-2.8 1.8-2.8 3.8z" fill={A("#d9b65a")} fillOpacity={0.5} />
+      <path d="M12 17c-1.8-.6-2.8-2-2.8-3.8 1.8.4 2.8 1.8 2.8 3.8zM12 17c1.8-.6 2.8-2 2.8-3.8-1.8.4-2.8 1.8-2.8 3.8z" fill={A("#d9b65a")} fillOpacity={0.5} />
+    </Svg>
+  );
+}
+
+export function BarleyIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 21v-9" />
+      <path d="M12 12c-1.2-1-1.6-2.6-1.2-4.2 1.2.8 1.6 2.4 1.2 4.2zM12 12c1.2-1 1.6-2.6 1.2-4.2-1.2.8-1.6 2.4-1.2 4.2zM12 8.2c-.9-1-1.1-2.5-.6-3.8.9.8 1.1 2.4.6 3.8zM12 8.2c.9-1 1.1-2.5.6-3.8-.9.8-1.1 2.4-.6 3.8z" fill={A("#c9a84a")} fillOpacity={0.5} />
+      <path d="M10.8 7.8L8 3M13.2 7.8L16 3M10.8 11.5L7 6.5M13.2 11.5L17 6.5" strokeWidth={1} />
+    </Svg>
+  );
+}
+
+export function OatIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 21V4" />
+      <path d="M12 7c-2 0-3.5 1-4 3M12 7c2 0 3.5 1 4 3M12 12c-2 0-3.5 1-4 3M12 12c2 0 3.5 1 4 3" />
+      <ellipse cx="7.6" cy="11" rx="1.2" ry="1.8" fill={A("#a3c96b")} fillOpacity={0.6} />
+      <ellipse cx="16.4" cy="11" rx="1.2" ry="1.8" fill={A("#a3c96b")} fillOpacity={0.6} />
+      <ellipse cx="7.6" cy="16" rx="1.2" ry="1.8" fill={A("#a3c96b")} fillOpacity={0.6} />
+      <ellipse cx="16.4" cy="16" rx="1.2" ry="1.8" fill={A("#a3c96b")} fillOpacity={0.6} />
+    </Svg>
+  );
+}
+
+export function SquashIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 8c4.5 0 8 2.6 8 6s-3.5 6-8 6-8-2.6-8-6 3.5-6 8-6z" fill={A("#e89a2c")} fillOpacity={0.35} />
+      <path d="M12 8c-1.6 1.6-2.2 3.8-2.2 6s.6 4.4 2.2 6M12 8c1.6 1.6 2.2 3.8 2.2 6s-.6 4.4-2.2 6" />
+      <path d="M12 8c0-2 .8-3.4 2.4-4.4" />
+    </Svg>
+  );
+}
+
+export function TomatoIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M12 8c4.4 0 7 2.8 7 6.2S16 20 12 20s-7-2.4-7-5.8S7.6 8 12 8z" fill={A("#d8382f")} fillOpacity={0.35} />
+      <path d="M12 8V4.5" />
+      <path d="M12 8.2l-3-1.6M12 8.2l3-1.6M12 8.2l-1.6 2.2M12 8.2l1.6 2.2" />
+    </Svg>
+  );
+}
+
+export function PaprikaIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M9 8c2.5-.6 5 0 5.6 2.6.8 3.6-1 8-5.2 10.4-.6-3-1.6-5-2.2-7.2C6.5 11 6.8 8.5 9 8z" fill={A("#a8231b")} fillOpacity={0.4} />
+      <path d="M11 8c0-2 .8-3.4 2.4-4.4" />
+      <path d="M8.6 8.4c.8-.9 2.4-1 3.8-.4" />
+    </Svg>
+  );
+}
+
 export function FallowIcon(p: IconProps) {
   return (
     <Svg {...p}>
@@ -115,6 +226,16 @@ export const CROP_ICON: Record<string, (p: IconProps) => React.JSX.Element> = {
   maiz_chala: CornIcon,
   haba: FavaIcon,
   frijol: BeanIcon,
+  quinua: QuinoaIcon,
+  ajo: GarlicIcon,
+  zanahoria: CarrotIcon,
+  arveja: PeaIcon,
+  trigo: WheatIcon,
+  cebada: BarleyIcon,
+  avena: OatIcon,
+  zapallo: SquashIcon,
+  tomate: TomatoIcon,
+  paprika: PaprikaIcon,
 };
 
 export function CropIcon({ crop, ...p }: IconProps & { crop: string | null }) {

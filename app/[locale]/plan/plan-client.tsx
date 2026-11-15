@@ -10,7 +10,8 @@ import { CROPS, cropName, cropSegments } from "@/lib/crop-calendar";
 import { useFarm } from "@/lib/farm-store";
 import { buildPalette, rotationColor } from "@/lib/granja-sim";
 import { useGranja } from "@/lib/granja-store";
-import { buildPlan, harvestMonth, lotRanges } from "@/lib/plan";
+import { buildPlan, harvestMonth } from "@/lib/plan";
+import { activeCount, isOn, lotLabel } from "@/lib/farm-shape";
 import { recommend } from "@/lib/recommendation";
 import { useSimulation } from "@/lib/use-simulation";
 
@@ -33,7 +34,7 @@ export function PlanClient() {
   const monthName = (m: number) => fmtMonth.format(new Date(2025, m, 1));
 
   const rec = data ? recommend(data, farm.rotations, farm) : null;
-  const tiles = source === "farm" || !rec ? granja.tiles : granja.tiles.map(() => rec.bestRotation.id);
+  const tiles = source === "farm" || !rec ? granja.tiles : granja.tiles.map((id) => (isOn(id) ? rec.bestRotation.id : id));
   const plan = data ? buildPlan(data, palette, tiles, granja.haPerTile, farm.waterAvailableM3ha) : null;
 
   if (!data || !plan) {
@@ -85,7 +86,7 @@ export function PlanClient() {
         <Kpi icon={<WaterIcon size={20} />} label={t("plan.water")} value={`${n.format(plan.waterM3)} m³`} sub={t("plan.waterOf", { cap: n.format(plan.capacityM3) })} tone={fits ? "ok" : "bad"} />
         <Kpi icon={<ProfitIcon size={20} />} label={t("plan.income")} value={`S/ ${n.format(plan.incomePEN)}`} sub={t("plan.perYear")} />
         <Kpi icon={<SoilIcon size={20} />} label={t("plan.soil")} value={pct.format(plan.soil)} sub={t("plan.soilSub")} />
-        <Kpi icon={<Tractor size={20} />} label={t("plan.lots")} value={`${tiles.length}`} sub={t("plan.lotSize", { ha: new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(granja.haPerTile) })} />
+        <Kpi icon={<Tractor size={20} />} label={t("plan.lots")} value={`${activeCount(tiles)}`} sub={t("plan.lotSize", { ha: new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(granja.haPerTile) })} />
       </section>
       {!fits && (
         <p className="flex items-start gap-2 rounded-xl bg-danger/10 px-4 py-3 text-sm text-danger">
@@ -107,7 +108,7 @@ export function PlanClient() {
                 {g.rotation.id === "descanso" ? t("granja.fallow") : g.rotation.name}
               </h3>
               <span className="text-sm text-muted">
-                {t("plan.lotList", { lots: lotRanges(g.tiles) })} · {n1.format(g.ha)} ha
+                {t("plan.lotList", { lots: lotLabel(g.tiles, tiles) })} · {n1.format(g.ha)} ha
               </span>
             </div>
             <div className="mt-2 grid grid-cols-2 gap-2 text-sm md:grid-cols-3">

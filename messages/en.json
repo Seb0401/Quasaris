@@ -38,6 +38,20 @@
     "water": "Water available per season (m³/ha)",
     "irrigation": "Irrigation system",
     "soil": "Soil texture",
+    "soilgridsTitle": "Regional soil reference",
+    "soilgridsDescription": "ISRIC SoilGrids estimate for the selected coordinates (250 m resolution).",
+    "soilgrids": {
+      "sand": "Sand · 0–5 cm",
+      "silt": "Silt · 0–5 cm",
+      "clay": "Clay · 0–5 cm",
+      "availableWater": "Potential available water · 0–30 cm",
+      "uncertainty": "Regional sand quantiles: {low}–{high}%. Potential available water: {waterLow}–{waterHigh} mm across area cells.",
+      "caveat": "This is a regional prediction, not a field measurement or current moisture; validate with a soil sample.",
+      "source": "ISRIC SoilGrids 2.0 · CC BY 4.0",
+      "updated": "Downloaded {date}",
+      "openSource": "View source and method",
+      "outsideCoverage": "SoilGrids data is not available for these coordinates yet."
+    },
     "priorities": "What matters most to you?",
     "continue": "Compare rotations"
   },
@@ -77,13 +91,55 @@
     "review": "Check with an expert",
     "months": "Typical year",
     "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells",
-    "soilWetness": "Natural soil moisture (NASA POWER GWETROOT): {pct} on average, {min}–{max} by month."
+    "soilWetness": "Natural soil moisture (NASA POWER GWETROOT): {pct} on average, {min}–{max} by month.",
+    "shortfall": "You're short {m3} m³/ha",
+    "yearsFit": "Enough in {n} of {total} years"
   },
   "month": {
     "ok": "Good",
     "water_stress": "Water stress",
     "climate_risk": "Frost or heat",
     "bare": "Bare field"
+  },
+  "assistant": {
+    "title": "Ask FarmTwin",
+    "intro": "Explore your parcel’s rotations or try a change in available water.",
+    "water": "Available water",
+    "compare": "See comparison",
+    "exampleRotation": "Why might I switch from alfalfa?",
+    "exampleWater": "What if I get 20% less water?",
+    "exampleYear": "How would my rotation have done in 2016?",
+    "exampleSoil": "What does SoilGrids estimate about my field's soil?",
+    "you": "You",
+    "question": "Your question",
+    "placeholder": "Ask a question about your parcel…",
+    "send": "Send",
+    "waiting": "Checking…",
+    "hold": "Hold to talk",
+    "listening": "Listening…",
+    "finishVoice": "Finish speaking",
+    "voiceError": "Your voice could not be recognized. You can type your question.",
+    "read": "Listen to reply",
+    "voiceReply": "Read new replies aloud",
+    "attach": "Attach photo",
+    "preparingPhoto": "Preparing photo…",
+    "attached": "Field photo",
+    "remove": "Remove photo",
+    "photoPrompt": "What can you see in this photo of the field?",
+    "photoError": "The photo could not be prepared. Try a smaller JPEG, PNG, or WebP.",
+    "gatewayUnavailable": "The assistant still needs a connection to AI Gateway.",
+    "insufficientCredits": "OpenRouter does not have enough credits for that model. Use the default free model or add credits to select Claude.",
+    "gatewayError": "The reply could not be completed. Try again.",
+    "retry": "Retry",
+    "updated": "Your parcel was updated.",
+    "glossary": {
+      "et": "Evapotranspiration is the water that evaporates from the soil plus the water plants release. ET₀ estimates that loss for a standard reference crop surface.",
+      "ndvi": "NDVI uses reflected light to show how much green vegetation a satellite detects.",
+      "soilMoisture": "This is the water in the soil. In the root zone, it indicates how much water plants can access.",
+      "waterBalance": "This compares water coming in through rain and irrigation with water leaving through evapotranspiration, runoff, and drainage.",
+      "frost": "This is the chance that cold will damage a crop. It depends on temperature, how long the cold lasts, and the crop’s growth stage.",
+      "satellite": "A satellite estimates conditions across a wide area. A ground measurement describes one spot in a parcel. Together they help explain local differences."
+    }
   },
   "soon": {
     "title": "Under construction",
@@ -141,7 +197,8 @@
     "ndviTitle": "Vegetation seen from space",
     "ndviHint": "Monthly NASA MODIS NDVI: greener means more active vegetation.",
     "ndviLow": "Bare soil",
-    "ndviHigh": "Dense vegetation"
+    "ndviHigh": "Dense vegetation",
+    "shortfallYear": "You're short {m3} m³/ha"
   },
   "calendario": {
     "title": "My calendar",
@@ -200,9 +257,9 @@
     "tiles": "plots",
     "build": "Build my farm",
     "reservoir": "Reservoir",
-    "play": "Play the year",
+    "play": "Simulate the year",
     "pause": "Pause",
-    "replay": "Again",
+    "replay": "Simulate again",
     "reset": "Back to January",
     "yearHint": "Pick a real year measured by NASA. Marked years were the driest, had frost or heat:",
     "tag": {
@@ -221,7 +278,9 @@
       "water_stress": "water stress",
       "climate_risk": "frost or heat",
       "dry": "out of water",
-      "bare": "resting"
+      "bare": "resting",
+      "disease": "with fungus",
+      "pest": "with pests"
     },
     "event": {
       "dry": "The reservoir is empty! {n} plots are drying out.",
@@ -240,15 +299,15 @@
     },
     "resultTitle": "{year} results",
     "vsBaseline": "vs. alfalfa only:",
-    "resultHint": "Compared with planting alfalfa on all your {ha} ha, with the same real weather.",
+    "resultHint": "Compared with planting alfalfa on all your {ha} ha, with the same weather.",
     "changeZone": "Change area",
     "expert": "See detailed data",
     "source": "Climate: NASA POWER + SRTM. Water and money per plot = FAO-56 engine result × area. Baseline: {base}.",
     "tutorial": {
       "title": "Welcome to your farm!",
       "paint": "Pick a rotation in the palette and tap plots to plant it. All plots share the reservoir's water.",
-      "year": "Choose a real year measured by NASA, for example the driest one.",
-      "play": "Press Play the year: watch crops grow, water drop and earn medals.",
+      "year": "Pick a scenario for next season: a typical year, a dry year, El Niño or a hotter future.",
+      "play": "Press Simulate the year: watch crops grow, the reservoir drop and follow the alerts on screen.",
       "go": "Let's plant!"
     },
     "celebrate": {
@@ -284,13 +343,17 @@
       "sow": "Plant",
       "climate": "Weather",
       "whatif": "What if…",
-      "goals": "Goals"
+      "goals": "Goals",
+      "risks": "Risks",
+      "plans": "Plans"
     },
     "mode": {
       "paint": "Paint",
       "view": "View",
       "paintHint": "Pick a rotation and drag your finger over the plots. The camera stays still while you paint.",
-      "viewHint": "Tap a plot to see its card. Drag to rotate the farm."
+      "viewHint": "Tap a plot to see its card. Drag to rotate the farm.",
+      "shape": "Shape",
+      "shapeHint": "Tap a green square to add a plot next to your farm, or tap a plot on the edge to remove it. Your farm: {n} plots, {ha} ha."
     },
     "undo": "Undo",
     "stage": {
@@ -315,7 +378,9 @@
       "water_stress": "a high-demand month: the crop needs more water than your monthly share.",
       "climate_risk": "there were days colder or hotter than this crop tolerates.",
       "dry": "the reservoir is empty: without irrigation the plant dries out and yields less.",
-      "bare": "no crop this month; the soil rests but is exposed to erosion."
+      "bare": "no crop this month; the soil rests but is exposed to erosion.",
+      "disease": "heavy rain and humidity favor fungi (late blight, downy mildew, chocolate spot) on this crop.",
+      "pest": "a pest outbreak hits it harder because many plots share the same family (monoculture)."
     },
     "climate": {
       "temp": "Average temperature",
@@ -337,6 +402,156 @@
       "irrigation": "Irrigation system",
       "effect": "With this irrigation and soil, efficiency is {eff}. Your farm needs {water} m³ this year and you have {cap} m³.",
       "reset": "Back to reality"
+    },
+    "enso": {
+      "nino": "Niño",
+      "nina": "Niña"
+    },
+    "risk": {
+      "none": "No major hazards for this layout in this year. Try another year or add an event in What if…",
+      "summary": "{n} alerts this year ({high} severe). Tap one to jump to that month.",
+      "allYear": "all year",
+      "lots": "Plots {lots}",
+      "simulated": "Simulated event",
+      "title": "Alerts",
+      "possible": "possible",
+      "odds": "{hits} of {total} years ({pct})",
+      "oddsWhy": "With this layout it happened in {hits} of the {total} years NASA recorded (2005 to 2025).",
+      "manyLots": "{n} plots",
+      "nLots": "{n} plots",
+      "inLots": "plots {lots}"
+    },
+    "hazard": {
+      "title": "Weather events",
+      "hint": "Add an event on top of the real year and see which plots get damaged. Years marked Niño or Niña are real years with those events.",
+      "month": "Month",
+      "from": "from",
+      "cut": "Water cut",
+      "remove": "Remove"
+    },
+    "alert": {
+      "frost": {
+        "title": "Hard frost",
+        "what": "A −3 °C night burns leaves and flowers of sensitive crops.",
+        "action": "Irrigate the evening before, cover nurseries and avoid potato or bean in frost weeks."
+      },
+      "heat": {
+        "title": "Heat wave",
+        "what": "Highs of 34 °C: sensitive crops close their pores and water demand rises 15%.",
+        "action": "Irrigate early or at night and give priority to flowering crops."
+      },
+      "drought": {
+        "title": "Drought / water cut",
+        "what": "The water users' board cuts allocations due to low water in the upper basin.",
+        "action": "Leave plots fallow or with legumes and switch high-value crops to drip."
+      },
+      "heavyRain": {
+        "title": "Heavy rain",
+        "what": "Too much humidity: fungi on sensitive crops and soil washing off bare plots.",
+        "action": "Improve drainage, apply preventive fungicide and cover bare soil."
+      },
+      "pests": {
+        "title": "Pest outbreak",
+        "what": "A pest spreads; it hits harder where many plots share the same family.",
+        "action": "Scout weekly, control early and mix families in your rotation."
+      },
+      "dry": {
+        "title": "Reservoir empty",
+        "what": "Your water for the year ran out: crops dry out and yield less.",
+        "action": "Plant less area, switch to rotations with legumes or improve irrigation."
+      },
+      "climate": {
+        "title": "Real frost or heat",
+        "what": "According to NASA POWER, this month had days outside what some of your crops tolerate.",
+        "action": "Check those crops' planting dates or choose more tolerant varieties."
+      },
+      "waterPeak": {
+        "title": "High-demand month",
+        "what": "Most plots need more water than your monthly share.",
+        "action": "Plan irrigation turns or store water in the reservoir in earlier months."
+      },
+      "monoculture": {
+        "title": "Monoculture pest risk",
+        "what": "Over half the farm is one family: pests and diseases spread easily.",
+        "action": "Mix different families on neighboring plots and rotate every season."
+      },
+      "erosion": {
+        "title": "Erosion on bare plots",
+        "what": "With heavy rain, uncovered soil washes away and loses organic matter.",
+        "action": "Plant a cover crop or leave stubble on those plots."
+      }
+    },
+    "ui": {
+      "layers": "Layers",
+      "close": "Close"
+    },
+    "drawn": "My drawn field · {ha} ha",
+    "drawnHint": "The farm uses the real area you marked on the map.",
+    "drawTip": "Tip: use “Draw my field” on the map so the farm has your field's real size.",
+    "scenario": {
+      "intro": "Plan your {season} season. Pick a scenario: each one uses a real year from 21 years of NASA data as its model.",
+      "basis": "Model year: NASA POWER {year}, adjusted to your field's altitude. Temperature change: {delta}.",
+      "typical": {
+        "short": "Typical year",
+        "title": "Typical year",
+        "text": "The most likely weather: middle of the last 21 years."
+      },
+      "dry": {
+        "short": "Dry year",
+        "title": "Dry year",
+        "text": "The year your crops needed the most water."
+      },
+      "nino": {
+        "short": "El Niño",
+        "title": "El Niño year",
+        "text": "Warmer, with less water in the upper basin."
+      },
+      "warm": {
+        "short": "+1.5 °C",
+        "title": "Hotter future",
+        "text": "A typical year with 1.5 °C more, as expected in the coming decades."
+      }
+    },
+    "fix": {
+      "apply": "Apply change",
+      "why": "Why?",
+      "applied": "Change applied",
+      "swap": "Change {lots} from {from} to {to}: it is not at risk in {month}.",
+      "cover": "Plant {to} on {lots} so the soil is not bare.",
+      "mix": "Plant {to} on {lots} to mix crop families and slow pests down.",
+      "drip": "Switch to drip irrigation: the same crops use much less water.",
+      "saveWater": "Change {lots} to {to}, which needs less water, so the reservoir lasts all season.",
+      "peak": "Water the most demanding plots early in the morning and avoid planting them all in the same month."
+    },
+    "when": {
+      "label": "Which season",
+      "past": "Past",
+      "future": "Future",
+      "real": "NASA data",
+      "pastIntro": "Replay a real year measured by NASA (2005 to 2025). Marked years were the driest, had frost or heat, or El Niño."
+    },
+    "plans": {
+      "intro": "Save this layout (plots, shape and irrigation) to compare it later in past years and in next season's scenarios.",
+      "name": "Plan name",
+      "defaultName": "Plan {n}",
+      "save": "Save plan",
+      "saved": "Saved",
+      "full": "You can keep up to {max} plans. Delete one to save another.",
+      "empty": "No saved plans yet.",
+      "meta": "{n} plots · {ha} ha · {irrigation}",
+      "load": "Load this plan",
+      "delete": "Delete plan",
+      "compare": "Compare plans across years",
+      "compareTitle": "Plans across years",
+      "compareHint": "Profit and water for each plan in real past years and in next season's scenarios. Green marks the best plan in each column.",
+      "pastYears": "Past years (up to 4):",
+      "plan": "Plan",
+      "current": "Current layout",
+      "real": "real year",
+      "modelled": "modelled on {year}",
+      "waterOk": "water OK ({pct}%)",
+      "dryFrom": "dry from {month}",
+      "note": "Same engine as the farm: NASA POWER weather, FAO-56 water and the estimated prices in data/crops.json. Plans with another irrigation system are adjusted by its efficiency."
     }
   },
   "rotaciones": {
@@ -360,79 +575,105 @@
   },
   "aprende": {
     "title": "What does it mean?",
-    "subtitle": "The ideas behind FarmTwin, explained simply.",
+    "subtitle": "Ten ideas behind FarmTwin, in plain words. Tap one to read more.",
     "how": "In FarmTwin",
     "source": "Data",
     "disclaimer": "Explanations are simplified. For important decisions, talk to your local agronomist or INIA.",
     "topics": {
       "et": {
-        "title": "Evapotranspiration (ET)",
+        "title": "Water the field loses (ET)",
+        "short": "Sun, heat and wind pull water out of the soil and the leaves.",
         "text": "It's the water that leaves the field into the air: what evaporates from the soil and what the plant \"sweats\" through its leaves. More sun, heat, wind and dry air mean more water lost.",
         "how": "We compute reference ET (ET0) for every day of the last 21 years with the FAO Penman-Monteith equation.",
         "source": "NASA POWER (temperature, radiation, humidity and wind)"
       },
       "kc": {
-        "title": "Crop coefficient (Kc)",
+        "title": "How thirsty each crop is (Kc)",
+        "short": "Each crop drinks more or less water depending on its age.",
         "text": "Each crop uses a different share of ET0 depending on its size. Just planted it needs little (low Kc); at full bloom it needs more than the reference grass (Kc above 1).",
         "how": "Your crop's water is Kc × ET0, day by day, following its stages: initial, development, mid and late.",
         "source": "FAO-56, tables 11 and 12"
       },
       "balance": {
-        "title": "Water balance and irrigation",
+        "title": "How much to irrigate",
+        "short": "What the crop needs, minus rain, plus what the irrigation system loses.",
         "text": "What the crop needs minus the rain it can use is your net irrigation. No system is perfect: furrow irrigation loses almost half the water, drip very little. That total is gross irrigation.",
-        "how": "We compare each rotation's gross irrigation with your available water. If it isn't enough, it's marked \"not viable\". 1 mm of water = 10 m³ per hectare.",
+        "how": "We compare each rotation's gross irrigation with your available water. If it isn't enough, we show how many m³/ha you are short and in how many of the 21 years it would have been enough. 1 mm of water = 10 m³ per hectare.",
         "source": "Efficiencies: furrow 45%, sprinkler 75%, drip 90%"
       },
       "ndvi": {
-        "title": "NDVI (vegetation vigor)",
+        "title": "Plant greenness (NDVI)",
+        "short": "Satellites see how green and healthy the plants are.",
         "text": "A number satellites compute from the light plants reflect. A healthy green plant reflects a lot of infrared: high NDVI. Bare or dry soil: low NDVI.",
         "how": "You see it on the map and in the Time machine, month by month since 2000.",
         "source": "NASA MODIS Terra, via NASA GIBS"
       },
       "soil": {
         "title": "Soil moisture",
+        "short": "How much water is left in the soil where the roots are.",
         "text": "How much water the soil holds where the roots are. In the Majes desert, without irrigation, the soil is dry almost all year; in the highlands it rises in the rainy season.",
         "how": "We show natural soil moisture by month and week, plus the SMAP root-zone moisture map.",
         "source": "NASA POWER (GWETROOT) and NASA SMAP L4"
       },
       "frost": {
-        "title": "Frost and heat risk",
+        "title": "Frost and heat",
+        "short": "How often each week of the year got too cold or too hot.",
         "text": "Frost burns leaves and flowers when the air drops below a certain temperature; extreme heat closes the plant's pores and lowers yield. Each crop has its own limit.",
         "how": "We count in how many of the last 21 years each week had frost (minimum of 2 °C or less) or heat.",
         "source": "NASA POWER (daily minimum and maximum temperature)"
       },
       "fusion": {
         "title": "Altitude adjustment",
+        "short": "We correct satellite climate data for your field's real altitude.",
         "text": "Satellite climate data comes in squares of about 50 km with an average altitude. Majes is at 1,400 m, but its neighboring squares are at 835 m (coast) and 1,941 m.",
         "how": "We measure your field's real altitude with NASA terrain data and blend the two climate squares around it.",
         "source": "NASA SRTM + NASA POWER"
       },
       "ground": {
         "title": "Satellite vs. ground station",
+        "short": "A station measures one spot well; satellites cover everything.",
         "text": "A station measures one point very well. Satellites cover the whole planet every day, with less detail. Together they complement each other: the station checks and corrects the satellite.",
         "how": "We prepared the comparison with the SENAMHI Pampa de Majes station to measure the satellite error.",
         "source": "SENAMHI (station 116006) and NASA POWER"
       },
       "range": {
-        "title": "Ranges instead of one number",
+        "title": "Ranges, not one number",
+        "short": "Every year is different, so we show the typical value and the extremes.",
         "text": "Weather changes every year: dry years, normal years and El Niño. So we don't give one number but a range: the typical value and what happens in good and bad years.",
         "how": "Every figure comes from simulating the 21 real years: we show the median and the 10%–90% range.",
         "source": "NASA POWER 2005–2025"
       },
       "rotation": {
         "title": "Crop rotation",
+        "short": "Changing crops each season breaks pests and feeds the soil.",
         "text": "Alternating crops from different families breaks pest cycles. Legumes (faba, beans, alfalfa) fix nitrogen from the air and feed the soil. Leaving the field bare makes erosion easier.",
         "how": "The \"soil health\" score rewards legumes, family variety and covered soil, and penalizes bare months.",
         "source": "General agronomic rules (to validate with an agronomist)"
       }
-    }
+    },
+    "kicker": "GLOSSARY",
+    "groups": {
+      "water": {
+        "title": "Water",
+        "text": "How much water your crops use and how much you need to irrigate."
+      },
+      "space": {
+        "title": "Seen from space",
+        "text": "What NASA satellites measure and how we adapt it to your field."
+      },
+      "decide": {
+        "title": "Risk and decisions",
+        "text": "How FarmTwin turns 21 years of data into advice you can trust."
+      }
+    },
+    "more": "Read more"
   },
   "reco": {
     "kicker": "Recommendation for your field",
     "switch": "You should switch to",
     "keep": "Your current rotation is already the best option",
-    "noneViable": "With your water, no rotation fits",
-    "noneText": "The best option needs {need} m³/ha and you have {have} m³/ha. These are your alternatives:",
+    "noneViable": "You're short {m3} m³/ha for the best option",
+    "noneText": "The best option needs {need} m³/ha and you have {have} m³/ha. Your water would have been enough in {n} of {total} years. These are your alternatives:",
     "tryDrip": "With drip irrigation that rotation would need about {m3} m³/ha.",
     "reduceArea": "With your water you can properly irrigate {pct} of your farm; leave the rest fallow or with a cover crop.",
     "water": "Water",
@@ -537,5 +778,169 @@
       "hint": "Computed with your field, your resources and your priorities.",
       "compare": "See all rotations side by side"
     }
+  },
+  "group": {
+    "title": "Crop groupings",
+    "subtitle": "Pick a few crops and see at a glance whether they work well together.",
+    "mode": {
+      "rotation": "Rotation",
+      "rotationHint": "One after another on the same plot.",
+      "association": "Intercropping",
+      "associationHint": "Together on the same plot at the same time."
+    },
+    "presets": "Or start from a classic:",
+    "preset": {
+      "threeSisters": "Maize + bean + squash",
+      "carrotOnion": "Carrot + onion",
+      "oatPea": "Oats + pea",
+      "soilWater": "Onion → faba → maize",
+      "quinoaFaba": "Quinoa → faba",
+      "hungry": "Potato → maize"
+    },
+    "emptyHint": "Add at least one crop.",
+    "result": "Result",
+    "verdict": {
+      "good": "Good combination",
+      "fair": "Works with care",
+      "poor": "Not recommended"
+    },
+    "nSurplus": "Legumes cover the nitrogen: about {kg} kg/ha to spare.",
+    "nNeed": "You'll need to add about {kg} kg/ha of nitrogen (fertilizer or guano).",
+    "level": {
+      "low": "low",
+      "med": "medium",
+      "high": "high"
+    },
+    "labor": "Labor",
+    "sharedPests": "Shared pests and diseases",
+    "save": "Save as rotation",
+    "saved": "Saved",
+    "toCompare": "Compare it with NASA data",
+    "full": "You already have 5 rotations: delete one in My rotations.",
+    "associationNote": "Intercropping is evaluated with agronomic rules. The water and money engine simulates rotations; to simulate, use each crop on neighboring farm plots.",
+    "source": "General agronomic rules and indicative nutrient values; validate them with an agronomist or INIA.",
+    "point": {
+      "empty": "Add crops to evaluate.",
+      "legumeN": "Legumes in the group ({crops}): they fix nitrogen from the air, about {kg} kg/ha, free fertilizer for the soil.",
+      "noLegume": "No legume in the group: all nitrogen must come from fertilizer.",
+      "nDeficit": "The group needs a lot of nitrogen (about {kg} kg/ha short): high fertilizer cost.",
+      "nBalanced": "Nitrogen is balanced between what they need and what they fix.",
+      "laborPeak": "{crops} need a lot of labor: check you have enough hands.",
+      "roots": "Roots at different depths: they use water and nutrients from different layers.",
+      "sameFamily": "Two crops of the same family in a row: pests and diseases carry over.",
+      "breaksPests": "Three different families: breaks pest and disease cycles.",
+      "twoFamilies": "Alternates two families: helps somewhat against pests.",
+      "legumeBeforeHungry": "{a} leaves nitrogen in the soil for {b}, which is very demanding.",
+      "hungryAfterHungry": "{b} comes right after {a}: two very demanding crops in a row deplete the soil.",
+      "potatoRepeat": "Several nightshades (potato, tomato, paprika) in the same cycle: more late blight and pests. Space them out.",
+      "overlap": "Two crops overlap for {days} days: check the planting months.",
+      "bareMonths": "The soil stays bare for {n} months: more erosion and organic matter loss.",
+      "alwaysCovered": "The soil is covered all year.",
+      "sharedPestsRotation": "They share {n} pest(s) or disease(s): watch for carry-over between seasons.",
+      "sameFamilyTogether": "Two crops of the same family together: they share pests and compete the same way.",
+      "nCompetition": "{crops} compete for nitrogen: you'll need more fertilizer.",
+      "heights": "Different heights: they use light better without shading each other.",
+      "waterCompetition": "{crops} need a lot of water at the same time.",
+      "weedSensitive": "{crops} can't compete with weeds: frequent weeding and no dense plants nearby.",
+      "noSharedSeason": "Their seasons barely overlap: they don't really grow together. Adjust the planting month.",
+      "sharedPestsTogether": "They share {n} pest(s) or disease(s): one outbreak hits both at once.",
+      "companion": {
+        "milpa": "{a} and {b} are the classic milpa: beans fix nitrogen and climb the maize.",
+        "legumeTall": "{a} and {b}: the legume provides nitrogen and they grow to different heights.",
+        "andeanPair": "{a} and {b} are a traditional Andean pairing: the legume provides nitrogen.",
+        "alliumLegume": "{a} and {b} don't mix: garlic and onion hold back the growth of legumes.",
+        "shadeHungry": "{a} and {b}: one shades the other and both need a lot of nitrogen.",
+        "perennialDense": "Alfalfa is perennial and very dense: it competes hard. Better use it in rotation.",
+        "threeSisters": "{a} and {b} are part of the \"three sisters\": the squash covers the ground and keeps moisture in.",
+        "cerealLegume": "{a} and {b} are a classic cereal and legume mix: more forage, and richer.",
+        "carrotOnion": "{a} and {b} grow well together: different roots, and the smell keeps carrot pests away.",
+        "alliumRepels": "{a} and {b} get along: garlic and onion help keep some pests away.",
+        "nightshadeBlight": "{a} and {b} share late blight: an outbreak on one quickly reaches the other."
+      }
+    },
+    "care": {
+      "cuts": "Cut every 35 to 40 days; let it regrow before the next cut.",
+      "aphids": "Watch for aphids, especially in dry and hot periods.",
+      "noTrampling": "Don't graze or walk on it when the soil is wet.",
+      "hilling": "Hill up at 30 to 45 days to protect the tubers.",
+      "lateBlight": "Late blight (Phytophthora): appears with humidity or rain; prevent with fungicide and good drainage.",
+      "andeanWeevil": "Andean weevil: rotate and clear residues from the previous season.",
+      "rotation3y": "Don't plant potato on the same plot again for 3 years.",
+      "transplant": "Sown in a nursery and transplanted after 6 to 8 weeks.",
+      "weeding": "Frequent weeding: shallow roots, it can't compete with weeds.",
+      "thrips": "Thrips: more damaging with heat and drought; check the leaves.",
+      "stopIrrigation": "Stop irrigating 2 to 3 weeks before harvest for proper curing.",
+      "splitN": "Split nitrogen into 2 or 3 doses (planting, development and before flowering).",
+      "armyworm": "Fall armyworm: check the whorl in the first weeks.",
+      "floweringWater": "Don't let it lack water at flowering: that's when irrigation pays off most.",
+      "chocolateSpot": "Chocolate spot: appears with humidity; avoid evening irrigation.",
+      "coldTolerant": "Tolerates cold better than other crops (down to about −3 °C).",
+      "frostSensitive": "Very frost-sensitive: don't plant if there is frost risk in the cycle.",
+      "rust": "Rust: orange spots on leaves; use tolerant varieties.",
+      "whitefly": "Whitefly: more common in heat; control early.",
+      "birds": "Protect the seed heads from birds near harvest.",
+      "downyMildewQuinoa": "Downy mildew: appears with humidity; don't overwater.",
+      "saponin": "Wash the grain to remove saponin (bitter taste) before selling or eating it.",
+      "coldStart": "Plant it in the cool months: it needs cold to form good bulbs.",
+      "looseSoil": "Needs loose, stone-free soil so the roots grow straight.",
+      "thinning": "Thin the seedlings 3 to 4 weeks after sowing.",
+      "evenWater": "Water evenly: irregular irrigation cracks fruits and roots.",
+      "trellis": "Give it stakes or a trellis to climb.",
+      "coolSeason": "Prefers cool weather: avoid the hottest months.",
+      "powderyMildew": "Powdery mildew: white powder on the leaves, more common in dry, warm weather.",
+      "dryHarvest": "Harvest when the grain is dry and hard.",
+      "droughtTolerant": "Handles dry spells better than other cereals.",
+      "cutAtMilk": "Cut it for forage when the grain is still milky.",
+      "withVetch": "Mixed with pea or vetch it gives richer forage.",
+      "groundCover": "Its big leaves cover the soil and keep moisture in.",
+      "pollinators": "Needs bees to pollinate the flowers.",
+      "staking": "Stake and prune it so the fruit stays off the ground.",
+      "sunDrying": "Dry the pods in the sun on clean ground after harvest."
+    },
+    "pest": {
+      "aphid": "aphid",
+      "cutworm": "cutworm",
+      "andeanWeevil": "Andean weevil",
+      "nematode": "nematodes",
+      "thrips": "thrips",
+      "armyworm": "fall armyworm",
+      "whitefly": "whitefly",
+      "rootRot": "root rot",
+      "lateBlight": "late blight",
+      "downyMildew": "downy mildew",
+      "rust": "rust",
+      "chocolateSpot": "chocolate spot",
+      "quinoaMoth": "quinoa moth",
+      "mites": "mites",
+      "whiteRot": "white rot",
+      "leafBlight": "leaf blight",
+      "leafminer": "leafminer",
+      "powderyMildew": "powdery mildew",
+      "tomatoMoth": "tomato moth"
+    },
+    "kicker": "GROUPINGS",
+    "step1": "How will you plant them?",
+    "step2": "Pick up to 4 crops",
+    "step3": "Your group",
+    "category": {
+      "all": "All",
+      "vegetable": "Vegetables",
+      "grain": "Grains",
+      "legume": "Legumes",
+      "forage": "Forage"
+    },
+    "feedsSoil": "Feeds the soil",
+    "count": "{n} of {max}",
+    "reasons": "Why",
+    "moreReasons": "See all reasons ({n})",
+    "fewerReasons": "Show fewer",
+    "nTitle": "Nitrogen",
+    "nCover": "Legumes cover {pct} of the nitrogen these crops need.",
+    "nNone": "No legumes: all the nitrogen has to come from fertilizer.",
+    "careTitle": "Care tips",
+    "moreTitle": "More detail",
+    "clear": "Clear",
+    "remove": "Remove {crop}",
+    "moveUp": "Move {crop} up"
   }
 }

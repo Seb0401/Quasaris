@@ -1,11 +1,37 @@
-import type { Rotation } from "@/lib/contract";
-import { CROPS, cropSegments } from "@/lib/crop-calendar";
+import majes from "@/data/rotations_majes.json";
+import palette from "@/data/rotations_palette.json";
+import type { Locale, Rotation } from "@/lib/contract";
+import { CROPS, cropName, cropSegments } from "@/lib/crop-calendar";
 
 export const MAX_ROTATIONS = 5;
 export const MAX_CROPS = 4;
 
 export function newRotationId() {
   return `custom-${Date.now().toString(36)}`;
+}
+
+/** Nombres con que vienen las rotaciones de ejemplo (en español, en los JSON de datos). */
+const DEFAULT_NAMES = new Map<string, string>([...majes.rotations, ...palette.rotations].map((r) => [r.id, r.name]));
+
+function autoName(r: Rotation, locale: Locale) {
+  if (r.id === "actual" && r.crops.length === 1 && r.crops[0].cropId === "alfalfa") return locale === "es" ? "Alfalfa permanente" : "Permanent alfalfa";
+  if (r.crops.length === 0) return locale === "es" ? "Descanso" : "Fallow";
+  return r.crops.map((c) => cropName(c.cropId, locale)).join(r.mode === "association" ? " + " : " · ");
+}
+
+/** Las rotaciones de ejemplo se muestran en el idioma de la página; las que el agricultor renombró, tal cual. */
+export function rotationLabel(r: Rotation, locale: Locale): string {
+  const original = DEFAULT_NAMES.get(r.id);
+  if (original === undefined) return r.name;
+  const untouched = r.name === original || r.name === autoName(r, "es") || r.name === autoName(r, "en");
+  return untouched ? autoName(r, locale) : r.name;
+}
+
+export function localizeRotations(rotations: Rotation[], locale: Locale): Rotation[] {
+  return rotations.map((r) => {
+    const name = rotationLabel(r, locale);
+    return name === r.name ? r : { ...r, name };
+  });
 }
 
 

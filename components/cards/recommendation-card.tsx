@@ -6,6 +6,7 @@ import { useLocale, useT } from "@/components/i18n-provider";
 import { ProfitIcon, ShieldIcon, SoilIcon, TargetIcon, WaterIcon } from "@/components/icons/farm-icons";
 import { RotationIcons } from "@/components/icons/rotation-icons";
 import type { Recommendation, Reason } from "@/lib/recommendation";
+import { waterFit } from "@/lib/water-fit";
 
 const REASON_ICON = { water: WaterIcon, income: ProfitIcon, soil: SoilIcon, risk: ShieldIcon };
 
@@ -25,6 +26,7 @@ export function RecommendationCard({ rec, waterAvailable }: { rec: Recommendatio
           : t("reco.reason.risk", { pts: n.format(r.value * 100) });
 
   const tone = rec.verdict === "noneViable" ? "border-danger" : "border-brand";
+  const fit = waterFit(rec.best, waterAvailable);
 
   return (
     <section className={`flex flex-col gap-4 rounded-3xl border-2 ${tone} bg-surface p-5 shadow-sm`}>
@@ -35,7 +37,7 @@ export function RecommendationCard({ rec, waterAvailable }: { rec: Recommendatio
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">{t("reco.kicker")}</p>
           <h2 className="text-xl font-bold leading-tight">
-            {rec.verdict === "keep" ? t("reco.keep") : rec.verdict === "noneViable" ? t("reco.noneViable") : t("reco.switch")}
+            {rec.verdict === "keep" ? t("reco.keep") : rec.verdict === "noneViable" ? t("reco.noneViable", { m3: n.format(fit.shortfallM3ha) }) : t("reco.switch")}
           </h2>
           <p className="mt-1 flex flex-wrap items-center gap-2 text-base font-semibold">
             <RotationIcons rotation={rec.bestRotation} size={20} className="text-brand" />
@@ -46,7 +48,7 @@ export function RecommendationCard({ rec, waterAvailable }: { rec: Recommendatio
 
       {rec.verdict === "noneViable" ? (
         <div className="flex flex-col gap-2 text-sm">
-          <p>{t("reco.noneText", { need: n.format(rec.best.water.median), have: n.format(waterAvailable) })}</p>
+          <p>{t("reco.noneText", { need: n.format(rec.best.water.median), have: n.format(waterAvailable), n: fit.yearsFit, total: fit.years })}</p>
           <ul className="flex flex-col gap-1.5">
             {rec.dripWaterM3ha !== null && (
               <li className="flex items-start gap-2 rounded-xl bg-background px-3 py-2">

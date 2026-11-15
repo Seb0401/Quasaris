@@ -1,17 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Plus, Repeat2, Star, Trash2, TriangleAlert, X } from "lucide-react";
+import { ArrowRight, Check, Combine, Plus, Repeat2, Star, Trash2, TriangleAlert, X } from "lucide-react";
+import { evaluateGroup } from "@/lib/grouping";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { Reveal } from "@/components/motion/reveal";
 import { Badge, PageHeader } from "@/components/ui/kit";
 import type { Rotation } from "@/lib/contract";
-import { CROPS, MONTH_START, cropName, cropSegments } from "@/lib/crop-calendar";
+import { CATEGORIES, CROPS, FAMILY_COLOR, MONTH_START, cropName, cropSegments, cropsIn } from "@/lib/crop-calendar";
 import { setFarm, useFarm } from "@/lib/farm-store";
 import { MAX_CROPS, MAX_ROTATIONS, bareMonths, newRotationId, overlapDays } from "@/lib/rotation-utils";
 import { rotationColor } from "@/lib/ui";
-
-const FAMILY_COLOR: Record<string, string> = { leguminosa: "#b9ff63", solanacea: "#e39a5d", aliacea: "#b69cff", graminea: "#f6b94c" };
 
 export function RotacionesClient() {
   const t = useT();
@@ -32,10 +31,11 @@ export function RotacionesClient() {
   return (
     <div className="ui-page">
       <PageHeader icon={Repeat2} kicker={es ? "EDITOR" : "EDITOR"} title={t("rotaciones.title")} subtitle={t("rotaciones.subtitle")} />
+      <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm self-start"><Combine size={14} />{t("group.title")}</Link>
 
       <div className="rotation-editor-grid">
         {farm.rotations.map((r, index) => {
-          const overlap = overlapDays(r);
+          const overlap = r.mode === "association" ? 0 : overlapDays(r);
           const bare = bareMonths(r);
           const color = rotationColor(index);
           return (
@@ -45,6 +45,7 @@ export function RotacionesClient() {
                 <div className="rotation-editor-head">
                   <i style={{ background: color }} />
                   <input value={r.name} onChange={(e) => update(r.id, (x) => ({ ...x, name: e.target.value.slice(0, 40) }))} aria-label={t("rotaciones.name")} className="ui-input rotation-name-input" />
+                  {r.mode === "association" && <Badge tone="brand" icon={Combine}>{t("group.mode.association")}</Badge>}
                   {r.isCurrent ? (
                     <Badge tone="sky" icon={Star}>{t("comparar.current")}</Badge>
                   ) : (
@@ -74,7 +75,11 @@ export function RotacionesClient() {
                   {r.crops.map((rc, i) => (
                     <div key={i} className="crop-editor-row">
                       <select value={rc.cropId} onChange={(e) => update(r.id, (x) => ({ ...x, crops: x.crops.map((c, k) => (k === i ? { ...c, cropId: e.target.value } : c)) }))} aria-label={t("rotaciones.crop")} className="ui-select">
-                        {Object.keys(CROPS).map((id) => <option key={id} value={id}>{cropName(id, locale)}</option>)}
+                        {CATEGORIES.map((c) => (
+                          <optgroup key={c} label={t(`group.category.${c}`)}>
+                            {cropsIn(c).map((id) => <option key={id} value={id}>{cropName(id, locale)}</option>)}
+                          </optgroup>
+                        ))}
                       </select>
                       <select value={rc.sowMonth} disabled={Boolean(CROPS[rc.cropId]?.perennial)} onChange={(e) => update(r.id, (x) => ({ ...x, crops: x.crops.map((c, k) => (k === i ? { ...c, sowMonth: Number(e.target.value) } : c)) }))} aria-label={t("rotaciones.sowMonth")} className="ui-select capitalize">
                         {months.map((m, k) => <option key={k} value={k + 1}>{t("rotaciones.sow")} {m}</option>)}
@@ -87,6 +92,21 @@ export function RotacionesClient() {
                   )}
                 </div>
 
+                {r.crops.length > 0 && (() => {
+                  const ev = evaluateGroup(r.crops, r.mode ?? "rotation", (id) => cropName(id, locale));
+                  // un solo motivo que explique el veredicto: el detalle completo está en Agrupaciones
+                  const pro = ev.pros[0] && { ...ev.pros[0], good: true };
+                  const con = ev.cons[0] && { ...ev.cons[0], good: false };
+                  const top = ev.verdict === "good" ? pro ?? con : con ?? pro;
+                  return (
+                    <div className="rotation-verdict">
+                      <div>
+                        <Badge tone={ev.verdict === "good" ? "ok" : ev.verdict === "fair" ? "warn" : "danger"}>{t(`group.verdict.${ev.verdict}`)} · {ev.score}</Badge>
+                      </div>
+                      {top && <p>{top.good ? <Check size={14} className="text-ok" /> : <X size={14} className="text-danger" />}{t(`group.point.${top.key}`, top.params)}</p>}
+                    </div>
+                  );
+                })()}
                 {overlap > 0 && <p className="ui-alert tone-warn"><TriangleAlert size={15} />{t("rotaciones.overlap", { days: overlap })}</p>}
                 {bare.length > 0 && r.crops.length > 0 && <p className="ui-hint">{t("rotaciones.bare", { n: bare.length })}</p>}
 

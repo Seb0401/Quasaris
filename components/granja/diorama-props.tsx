@@ -141,7 +141,7 @@ export function Windmill({ x, z }: { x: number; z: number }) {
   );
 }
 
-export function Pond({ x, z, level }: { x: number; z: number; level: number }) {
+export function Pond({ x, z, level, s = 1 }: { x: number; z: number; level: number; s?: number }) {
   const water = useRef<THREE.Mesh>(null);
   useFrame(({ clock }, dt) => {
     const w = water.current;
@@ -152,7 +152,7 @@ export function Pond({ x, z, level }: { x: number; z: number; level: number }) {
   });
   const stones = useMemo(() => Array.from({ length: 14 }, (_, i) => (i / 14) * Math.PI * 2), []);
   return (
-    <group position={[x, 0, z]}>
+    <group position={[x, 0, z]} scale={s}>
       {/* fondo y muro del reservorio */}
       <mesh position={[0, 0.02, 0]}>
         <cylinderGeometry args={[1.45, 1.45, 0.04, 14]} />
@@ -272,6 +272,80 @@ export function Clouds({ radius }: { radius: number }) {
           <mesh position={[-0.9, -0.15, -0.1]} geometry={GEO.crownRound} material={DM.cloud} scale={[0.9, 0.6, 0.8]} />
         </group>
       ))}
+    </group>
+  );
+}
+
+/** Isla con la forma del terreno: un bloque de pasto y tierra por celda (celdas de la chacra más un borde). */
+export function ShapedIsland({ cells, step }: { cells: { x: number; z: number; edge: boolean }[]; step: number }) {
+  const interior = cells.filter((c) => !c.edge);
+  // la roca colgante va bajo el centro de masa y con un tamaño que no asome por los huecos de la forma
+  const core = interior.length ? interior : cells;
+  const cx = core.reduce((a, c) => a + c.x, 0) / core.length;
+  const cz = core.reduce((a, c) => a + c.z, 0) / core.length;
+  const w = Math.sqrt(core.length) * step * 0.9;
+  const d = w;
+  const fill = (list: { x: number; z: number }[], y: number, h: number, inset: number) => (mesh: THREE.InstancedMesh | null) => {
+    if (!mesh) return;
+    const mat = new THREE.Matrix4();
+    list.forEach((c, i) => mesh.setMatrixAt(i, mat.compose(new THREE.Vector3(c.x, y, c.z), new THREE.Quaternion(), new THREE.Vector3(step - inset, h, step - inset))));
+    mesh.instanceMatrix.needsUpdate = true;
+  };
+  return (
+    <group>
+      <instancedMesh key={`g${cells.length}`} ref={fill(cells, -0.15, 0.3, -0.001)} args={[BOX, DM.grass, cells.length]} receiveShadow />
+      <instancedMesh key={`d${cells.length}`} ref={fill(cells, -0.75, 0.9, 0.2)} args={[BOX, DM.dirt1, cells.length]} />
+      {interior.length > 0 && <instancedMesh key={`i${interior.length}`} ref={fill(interior, -1.6, 0.8, 0.3)} args={[BOX, DM.dirt2, interior.length]} />}
+      <mesh position={[cx, -3, cz]} rotation={[Math.PI, Math.PI / 4, 0]} scale={[w * 0.42, 2.4, d * 0.42]} material={DM.rock}>
+        <coneGeometry args={[1, 1, 4]} />
+      </mesh>
+      {[0, 1, 2, 3].map((k) => {
+        const c = interior[Math.floor(rand(k + 4) * interior.length)] ?? cells[Math.floor(rand(k + 4) * cells.length)];
+        return <mesh key={k} position={[c.x, -2.1 - rand(k + 2), c.z]} geometry={GEO.rock} material={k % 2 ? DM.rock : DM.rockDark} scale={0.7 + rand(k) * 0.8} />;
+      })}
+    </group>
+  );
+}
+
+/** Cerca que sigue el contorno de la chacra: un tramo por cada lado de casilla que da al exterior. */
+export function ShapeFence({ segments }: { segments: { x1: number; z1: number; x2: number; z2: number }[] }) {
+  const posts = useMemo(() => {
+    const out: [number, number][] = [];
+    for (const s of segments) {
+      const len = Math.hypot(s.x2 - s.x1, s.z2 - s.z1);
+      const n = Math.max(1, Math.round(len / 1.1));
+      for (let k = 0; k < n; k++) out.push([s.x1 + ((s.x2 - s.x1) * k) / n, s.z1 + ((s.z2 - s.z1) * k) / n]);
+    }
+    return out;
+  }, [segments]);
+  return (
+    <group>
+      <instancedMesh
+        key={`p${posts.length}`}
+        ref={(mesh) => {
+          if (!mesh) return;
+          const mat = new THREE.Matrix4();
+          posts.forEach(([x, z], i) => mesh.setMatrixAt(i, mat.compose(new THREE.Vector3(x, 0.3, z), new THREE.Quaternion(), new THREE.Vector3(0.12, 0.6, 0.12))));
+          mesh.instanceMatrix.needsUpdate = true;
+        }}
+        args={[BOX, DM.wood, posts.length]}
+        castShadow
+      />
+      <instancedMesh
+        key={`r${segments.length}`}
+        ref={(mesh) => {
+          if (!mesh) return;
+          const mat = new THREE.Matrix4();
+          const q = new THREE.Quaternion();
+          segments.forEach((s, i) => {
+            const len = Math.hypot(s.x2 - s.x1, s.z2 - s.z1);
+            q.setFromEuler(new THREE.Euler(0, -Math.atan2(s.z2 - s.z1, s.x2 - s.x1), 0));
+            mesh.setMatrixAt(i, mat.compose(new THREE.Vector3((s.x1 + s.x2) / 2, 0.42, (s.z1 + s.z2) / 2), q, new THREE.Vector3(len + 0.07, 0.07, 0.07)));
+          });
+          mesh.instanceMatrix.needsUpdate = true;
+        }}
+        args={[BOX, DM.wood, segments.length]}
+      />
     </group>
   );
 }

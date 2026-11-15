@@ -14,8 +14,8 @@ from engine.rotation import compute_et0, simulate_rotation, soil_score
 from engine.schema import ClimateResponse, Rotation, SimulateRequest, SimulateResponse
 
 SEVERITY = {"bare": 0, "ok": 1, "water_stress": 2, "climate_risk": 3}
-FORAGE = {"alfalfa", "maiz_chala"}
-CASH = {"papa", "cebolla"}
+FORAGE = {"alfalfa", "maiz_chala", "avena"}
+CASH = {"papa", "cebolla", "ajo", "zanahoria", "tomate", "paprika", "quinua"}
 NON_VIABLE_PENALTY = 0.6
 AGRO_FROST_C = 2.0  # Tmin a 2 m ≤ 2 °C → posible helada a nivel del cultivo
 HEAT_C = 30.0

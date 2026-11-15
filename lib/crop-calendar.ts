@@ -5,9 +5,13 @@
 import cropsJson from "@/data/crops.json";
 import type { ClimateWeek, Irrigation, Locale, RotationCrop, SoilTexture } from "@/lib/contract";
 
+export type CropCategory = "vegetable" | "grain" | "legume" | "forage";
+export const CATEGORIES: CropCategory[] = ["vegetable", "grain", "legume", "forage"];
+
 type CropJson = {
   name: Record<Locale, string>;
   family: string;
+  category: CropCategory;
   fixesNitrogen: boolean;
   perennial?: boolean;
   kc: { ini: number; mid: number; end: number };
@@ -35,6 +39,22 @@ export function efficiency(irrigation: Irrigation, soil: SoilTexture) {
 export function cropName(cropId: string, locale: Locale) {
   return CROPS[cropId]?.name[locale] ?? cropId;
 }
+
+/** Cultivos de una categoría, en el orden del catálogo. */
+export function cropsIn(category: CropCategory | "all"): string[] {
+  return Object.keys(CROPS).filter((id) => category === "all" || CROPS[id].category === category);
+}
+
+/** Color de cada familia botánica (líneas de tiempo de rotaciones y calendario). */
+export const FAMILY_COLOR: Record<string, string> = {
+  leguminosa: "#b9ff63",
+  solanacea: "#e39a5d",
+  aliacea: "#b69cff",
+  graminea: "#f6b94c",
+  amarantacea: "#e0607e",
+  apiacea: "#ff9f43",
+  cucurbitacea: "#3fb6a8",
+};
 
 export function cycleDays(cropId: string) {
   const c = CROPS[cropId];

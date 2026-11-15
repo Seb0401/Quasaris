@@ -4,6 +4,7 @@ import { useT, useLocale } from "@/components/i18n-provider";
 import type { MonthStatus, Rotation, RotationResult } from "@/lib/contract";
 import { BadgeDollarSign, CheckCircle2, ChevronDown, Clock3, Crown, Droplets, Leaf, ShieldAlert, XCircle } from "lucide-react";
 import { Badge, CountUp, Meter, ScoreRing } from "@/components/ui/kit";
+import { waterFit } from "@/lib/water-fit";
 
 export const MONTH_COLOR: Record<MonthStatus, string> = {
   ok: "var(--ok)",
@@ -55,7 +56,9 @@ export function RotationCard({ rotation, result, color, recommended, scale }: { 
     { title: t("comparar.review"), items: result.explain.reviewWithExpert },
   ].filter((s) => s.items.length > 0);
 
-  const overWater = result.water.median - scale.waterLimit;
+  const fit = waterFit(result, scale.waterLimit);
+  const overWater = fit.shortfallM3ha;
+  const yearsFitText = t("comparar.yearsFit", { n: fit.yearsFit, total: fit.years });
   const rows = [
     {
       icon: Droplets,
@@ -64,7 +67,7 @@ export function RotationCard({ rotation, result, color, recommended, scale }: { 
       meter: result.water.median / scale.water,
       marker: scale.waterLimit / scale.water,
       color: "#5cc8f5",
-      note: overWater > 0 ? (es ? `${n.format(overWater)} m³/ha más de lo que tienes` : `${n.format(overWater)} m³/ha over your supply`) : (es ? "Alcanza con tu agua" : "Fits your water"),
+      note: overWater > 0 ? `${t("comparar.shortfall", { m3: n.format(overWater) })} · ${yearsFitText}` : yearsFitText,
       bad: overWater > 0,
     },
     {
@@ -101,7 +104,7 @@ export function RotationCard({ rotation, result, color, recommended, scale }: { 
           <div className="rotation-badges">
             {rotation.isCurrent && <Badge tone="sky">{t("comparar.current")}</Badge>}
             {recommended && <Badge tone="brand" icon={Crown}>{es ? "Recomendada" : "Recommended"}</Badge>}
-            {result.viable ? <Badge tone="ok" icon={CheckCircle2}>{es ? "Viable" : "Viable"}</Badge> : <Badge tone="danger" icon={XCircle}>{t("comparar.notViable")}</Badge>}
+            {result.viable ? <Badge tone={fit.yearsFit === fit.years ? "ok" : "warn"} icon={CheckCircle2}>{yearsFitText}</Badge> : <Badge tone="danger" icon={XCircle}>{t("comparar.shortfall", { m3: n.format(fit.shortfallM3ha) })}</Badge>}
           </div>
           <h3><i style={{ background: color }} />{rotation.name}</h3>
         </div>

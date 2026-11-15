@@ -38,6 +38,20 @@
     "water": "Agua disponible por campaña (m³/ha)",
     "irrigation": "Sistema de riego",
     "soil": "Textura del suelo",
+    "soilgridsTitle": "Referencia regional del suelo",
+    "soilgridsDescription": "Estimación de ISRIC SoilGrids para las coordenadas seleccionadas (resolución de 250 m).",
+    "soilgrids": {
+      "sand": "Arena · 0–5 cm",
+      "silt": "Limo · 0–5 cm",
+      "clay": "Arcilla · 0–5 cm",
+      "availableWater": "Retención potencial · 0–30 cm",
+      "uncertainty": "Cuantiles regionales de arena: {low}–{high} %. Retención potencial: {waterLow}–{waterHigh} mm entre celdas del área.",
+      "caveat": "Es una predicción regional, no una medición de tu parcela ni humedad actual; valida con una muestra de campo.",
+      "source": "ISRIC SoilGrids 2.0 · CC BY 4.0",
+      "updated": "Descargado {date}",
+      "openSource": "Ver fuente y metodología",
+      "outsideCoverage": "Aún no hay datos SoilGrids disponibles para estas coordenadas."
+    },
     "priorities": "¿Qué es más importante para ti?",
     "continue": "Comparar rotaciones"
   },
@@ -77,13 +91,55 @@
     "review": "Qué revisar con un experto",
     "months": "Año típico",
     "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER",
-    "soilWetness": "Humedad natural del suelo (NASA POWER GWETROOT): {pct} en promedio, {min}–{max} según el mes."
+    "soilWetness": "Humedad natural del suelo (NASA POWER GWETROOT): {pct} en promedio, {min}–{max} según el mes.",
+    "shortfall": "Te faltan {m3} m³/ha",
+    "yearsFit": "Alcanza en {n} de {total} años"
   },
   "month": {
     "ok": "Bien",
     "water_stress": "Estrés hídrico",
     "climate_risk": "Helada o calor",
     "bare": "Campo desnudo"
+  },
+  "assistant": {
+    "title": "Pregúntale a FarmTwin",
+    "intro": "Consulta las rotaciones de tu parcela o prueba un cambio en el agua disponible.",
+    "water": "Agua disponible",
+    "compare": "Ver comparación",
+    "exampleRotation": "¿Por qué me conviene cambiar la alfalfa?",
+    "exampleWater": "¿Y si me dan 20 % menos agua?",
+    "exampleYear": "¿Cómo le habría ido a mi rotación en 2016?",
+    "exampleSoil": "¿Qué estima SoilGrids sobre el suelo de mi parcela?",
+    "you": "Tú",
+    "question": "Tu pregunta",
+    "placeholder": "Escribe tu pregunta sobre la parcela…",
+    "send": "Enviar",
+    "waiting": "Consultando…",
+    "hold": "Mantén para hablar",
+    "listening": "Escuchando…",
+    "finishVoice": "Terminar de hablar",
+    "voiceError": "No se pudo reconocer tu voz. Puedes escribir la pregunta.",
+    "read": "Escuchar respuesta",
+    "voiceReply": "Leer nuevas respuestas en voz alta",
+    "attach": "Adjuntar foto",
+    "preparingPhoto": "Preparando foto…",
+    "attached": "Foto del campo",
+    "remove": "Quitar foto",
+    "photoPrompt": "¿Qué se puede observar en esta foto del campo?",
+    "photoError": "No se pudo preparar la foto. Prueba con un JPEG, PNG o WebP más pequeño.",
+    "gatewayUnavailable": "El asistente todavía necesita conexión con AI Gateway.",
+    "insufficientCredits": "OpenRouter no tiene saldo suficiente para ese modelo. Usa el modelo gratuito predeterminado o agrega saldo para elegir Claude.",
+    "gatewayError": "No se pudo completar la respuesta. Vuelve a intentarlo.",
+    "retry": "Reintentar",
+    "updated": "Se actualizó tu parcela.",
+    "glossary": {
+      "et": "La evapotranspiración es el agua que se evapora del suelo y la que liberan las plantas. La ET₀ estima esa pérdida para una superficie vegetal de referencia.",
+      "ndvi": "El NDVI usa la luz reflejada para indicar cuánta vegetación verde detecta un satélite.",
+      "soilMoisture": "Es el agua presente en el suelo. En la zona de las raíces, indica cuánta agua puede aprovechar el cultivo.",
+      "waterBalance": "Es la diferencia entre el agua que entra por lluvia o riego y la que sale por evapotranspiración, escorrentía y drenaje.",
+      "frost": "Es el riesgo de que el frío dañe el cultivo. Depende de la temperatura, la duración del frío y la etapa de la planta.",
+      "satellite": "El satélite estima condiciones sobre una zona amplia. Una medición en tierra describe un punto de la parcela. Juntas ayudan a interpretar las diferencias locales."
+    }
   },
   "soon": {
     "title": "En construcción",
@@ -141,7 +197,8 @@
     "ndviTitle": "Vegetación vista desde el espacio",
     "ndviHint": "NDVI mensual de NASA MODIS: más verde significa más vegetación activa.",
     "ndviLow": "Suelo desnudo",
-    "ndviHigh": "Vegetación densa"
+    "ndviHigh": "Vegetación densa",
+    "shortfallYear": "Te faltan {m3} m³/ha"
   },
   "calendario": {
     "title": "Mi calendario",
@@ -200,9 +257,9 @@
     "tiles": "casillas",
     "build": "Construir mi granja",
     "reservoir": "Reservorio",
-    "play": "Jugar el año",
+    "play": "Simular el año",
     "pause": "Pausa",
-    "replay": "Otra vez",
+    "replay": "Simular otra vez",
     "reset": "Volver a enero",
     "yearHint": "Elige un año real medido por la NASA. Los años marcados fueron el más seco, con heladas o con calor:",
     "tag": {
@@ -221,7 +278,9 @@
       "water_stress": "estrés hídrico",
       "climate_risk": "helada o calor",
       "dry": "sin agua",
-      "bare": "descansando"
+      "bare": "descansando",
+      "disease": "con hongos",
+      "pest": "con plaga"
     },
     "event": {
       "dry": "¡Se acabó el agua del reservorio! {n} casillas se secan.",
@@ -240,15 +299,15 @@
     },
     "resultTitle": "Resultado de {year}",
     "vsBaseline": "vs. solo alfalfa:",
-    "resultHint": "Comparado con sembrar alfalfa en todas tus {ha} ha, con el mismo clima real.",
+    "resultHint": "Comparado con sembrar solo alfalfa en tus {ha} ha, con el mismo clima.",
     "changeZone": "Cambiar zona",
     "expert": "Ver datos detallados",
     "source": "Clima: NASA POWER + SRTM. Agua y dinero por casilla = resultado del motor FAO-56 × área. Referencia: {base}.",
     "tutorial": {
       "title": "¡Bienvenido a tu granja!",
       "paint": "Elige una rotación en la paleta y toca las casillas para sembrarla. Todas comparten el agua del reservorio.",
-      "year": "Elige un año real medido por la NASA, por ejemplo el más seco.",
-      "play": "Presiona Jugar el año: mira crecer tus cultivos, bajar el agua y ganar medallas.",
+      "year": "Elige un escenario para la próxima campaña: año típico, año seco, El Niño o un futuro más caluroso.",
+      "play": "Pulsa Simular el año: mira crecer los cultivos, bajar el reservorio y sigue las alertas en pantalla.",
       "go": "¡A sembrar!"
     },
     "celebrate": {
@@ -284,13 +343,17 @@
       "sow": "Sembrar",
       "climate": "Clima",
       "whatif": "¿Y si…?",
-      "goals": "Metas"
+      "goals": "Metas",
+      "risks": "Riesgos",
+      "plans": "Planes"
     },
     "mode": {
       "paint": "Pintar",
       "view": "Ver",
       "paintHint": "Elige una rotación y arrastra el dedo sobre las casillas. La cámara queda fija mientras pintas.",
-      "viewHint": "Toca una casilla para ver su ficha. Arrastra para girar la granja."
+      "viewHint": "Toca una casilla para ver su ficha. Arrastra para girar la granja.",
+      "shape": "Forma",
+      "shapeHint": "Toca un cuadro verde para sumar un lote junto a tu chacra, o toca un lote del borde para quitarlo. Tu chacra: {n} lotes, {ha} ha."
     },
     "undo": "Deshacer",
     "stage": {
@@ -315,7 +378,9 @@
       "water_stress": "es un mes de mucha demanda: el cultivo pide más agua que tu cuota mensual.",
       "climate_risk": "hubo días más fríos o más calientes de lo que este cultivo tolera.",
       "dry": "el reservorio se vació: sin riego la planta se seca y rinde menos.",
-      "bare": "no hay cultivo este mes; el suelo descansa pero queda expuesto a la erosión."
+      "bare": "no hay cultivo este mes; el suelo descansa pero queda expuesto a la erosión.",
+      "disease": "la lluvia intensa y la humedad favorecen hongos (rancha, mildiu, mancha chocolate) en este cultivo.",
+      "pest": "un brote de plagas lo afecta más porque hay muchas casillas de la misma familia (monocultivo)."
     },
     "climate": {
       "temp": "Temperatura media",
@@ -337,6 +402,156 @@
       "irrigation": "Sistema de riego",
       "effect": "Con este riego y suelo, la eficiencia es {eff}. Tu chacra necesita {water} m³ en el año y tienes {cap} m³.",
       "reset": "Volver a la realidad"
+    },
+    "enso": {
+      "nino": "Niño",
+      "nina": "Niña"
+    },
+    "risk": {
+      "none": "No vemos peligros importantes para este reparto en este año. Prueba otro año o activa un fenómeno en ¿Y si…?.",
+      "summary": "{n} alertas en el año ({high} graves). Toca una para ir a ese mes.",
+      "allYear": "todo el año",
+      "lots": "Lotes {lots}",
+      "simulated": "Fenómeno simulado",
+      "title": "Alertas",
+      "possible": "posible",
+      "odds": "{hits} de {total} años ({pct})",
+      "oddsWhy": "Con esta distribución pasó en {hits} de los {total} años que registró la NASA (2005 a 2025).",
+      "manyLots": "{n} lotes",
+      "nLots": "{n} lotes",
+      "inLots": "los lotes {lots}"
+    },
+    "hazard": {
+      "title": "Fenómenos",
+      "hint": "Agrega un fenómeno sobre el año real y mira qué casillas se dañan. Los años marcados Niño o Niña son años reales con esos eventos.",
+      "month": "Mes",
+      "from": "desde",
+      "cut": "Recorte de agua",
+      "remove": "Quitar"
+    },
+    "alert": {
+      "frost": {
+        "title": "Helada fuerte",
+        "what": "Una noche de −3 °C quema hojas y flores de los cultivos sensibles.",
+        "action": "Riega la tarde anterior, cubre almácigos y no siembres papa ni frijol en las semanas de helada."
+      },
+      "heat": {
+        "title": "Ola de calor",
+        "what": "Máximas de 34 °C: los cultivos sensibles cierran sus poros y la demanda de agua sube 15 %.",
+        "action": "Riega temprano o de noche y prioriza el agua para los cultivos en floración."
+      },
+      "drought": {
+        "title": "Sequía / recorte de agua",
+        "what": "La junta de usuarios recorta la dotación por falta de agua en la cuenca alta.",
+        "action": "Deja lotes en descanso o con leguminosas y pasa a goteo en los cultivos de mayor valor."
+      },
+      "heavyRain": {
+        "title": "Lluvia intensa",
+        "what": "Exceso de humedad: hongos en cultivos sensibles y arrastre de suelo en lotes desnudos.",
+        "action": "Mejora el drenaje, aplica fungicida preventivo y cubre el suelo desnudo."
+      },
+      "pests": {
+        "title": "Brote de plagas",
+        "what": "Una plaga se extiende; golpea más donde hay muchas casillas de la misma familia.",
+        "action": "Monitorea cada semana, usa control temprano y diversifica familias en la rotación."
+      },
+      "dry": {
+        "title": "Reservorio vacío",
+        "what": "Tu agua del año se acabó: los cultivos se secan y rinden menos.",
+        "action": "Siembra menos área, cambia a rotaciones con leguminosas o mejora el riego."
+      },
+      "climate": {
+        "title": "Helada o calor real",
+        "what": "Según NASA POWER, este mes hubo días fuera de lo que toleran algunos de tus cultivos.",
+        "action": "Revisa la fecha de siembra de esos cultivos o elige variedades más tolerantes."
+      },
+      "waterPeak": {
+        "title": "Mes de alta demanda",
+        "what": "La mayoría de casillas pide más agua que tu cuota mensual.",
+        "action": "Planifica turnos de riego o guarda agua en el reservorio los meses anteriores."
+      },
+      "monoculture": {
+        "title": "Riesgo de plagas por monocultivo",
+        "what": "Más de la mitad de la chacra es de la misma familia: plagas y enfermedades se propagan fácil.",
+        "action": "Mezcla familias distintas en lotes vecinos y rota cada campaña."
+      },
+      "erosion": {
+        "title": "Erosión en lotes desnudos",
+        "what": "Con lluvia fuerte, el suelo sin cultivo se lava y pierde materia orgánica.",
+        "action": "Siembra un cultivo de cobertura o deja rastrojo en esos lotes."
+      }
+    },
+    "ui": {
+      "layers": "Capas",
+      "close": "Cerrar"
+    },
+    "drawn": "Mi terreno dibujado · {ha} ha",
+    "drawnHint": "La granja usa el área real que marcaste en el mapa.",
+    "drawTip": "Consejo: usa «Dibujar mi terreno» en el mapa para que la granja tenga el tamaño real de tu chacra.",
+    "scenario": {
+      "intro": "Planifica tu campaña {season}. Elige un escenario: cada uno toma como modelo un año real de los 21 años de datos NASA.",
+      "basis": "Año modelo: NASA POWER {year}, ajustado a la altitud de tu parcela. Cambio de temperatura: {delta}.",
+      "typical": {
+        "short": "Año típico",
+        "title": "Año típico",
+        "text": "El clima más probable: el del medio de los últimos 21 años."
+      },
+      "dry": {
+        "short": "Año seco",
+        "title": "Año seco",
+        "text": "El año en que tus cultivos pidieron más agua."
+      },
+      "nino": {
+        "short": "El Niño",
+        "title": "Año El Niño",
+        "text": "Más calor y menos agua en la cuenca alta."
+      },
+      "warm": {
+        "short": "+1,5 °C",
+        "title": "Futuro más caluroso",
+        "text": "Un año típico con 1,5 °C más, como se espera en las próximas décadas."
+      }
+    },
+    "fix": {
+      "apply": "Aplicar cambio",
+      "why": "¿Por qué?",
+      "applied": "Cambio aplicado",
+      "swap": "Cambia {lots} de {from} a {to}: no corre riesgo en {month}.",
+      "cover": "Siembra {to} en {lots} para que el suelo no quede desnudo.",
+      "mix": "Siembra {to} en {lots} para mezclar familias y frenar las plagas.",
+      "drip": "Pasa a riego por goteo: los mismos cultivos gastan mucha menos agua.",
+      "saveWater": "Cambia {lots} a {to}, que pide menos agua, para que el reservorio alcance toda la campaña.",
+      "peak": "Riega temprano los lotes que más piden y evita sembrarlos todos en el mismo mes."
+    },
+    "when": {
+      "label": "Qué campaña",
+      "past": "Pasado",
+      "future": "Futuro",
+      "real": "Datos NASA",
+      "pastIntro": "Repite un año real medido por la NASA (2005 a 2025). Los años marcados fueron los más secos, tuvieron heladas o calor, o El Niño."
+    },
+    "plans": {
+      "intro": "Guarda esta distribución (lotes, forma y riego) para compararla luego en años pasados y en los escenarios de la próxima campaña.",
+      "name": "Nombre del plan",
+      "defaultName": "Plan {n}",
+      "save": "Guardar plan",
+      "saved": "Guardado",
+      "full": "Puedes guardar hasta {max} planes. Borra uno para guardar otro.",
+      "empty": "Todavía no hay planes guardados.",
+      "meta": "{n} lotes · {ha} ha · {irrigation}",
+      "load": "Cargar este plan",
+      "delete": "Borrar plan",
+      "compare": "Comparar planes entre años",
+      "compareTitle": "Planes a lo largo de los años",
+      "compareHint": "Ganancia y agua de cada plan en años pasados reales y en los escenarios de la próxima campaña. En verde, el mejor plan de cada columna.",
+      "pastYears": "Años pasados (hasta 4):",
+      "plan": "Plan",
+      "current": "Distribución actual",
+      "real": "año real",
+      "modelled": "modelo: {year}",
+      "waterOk": "agua alcanza ({pct}%)",
+      "dryFrom": "seco desde {month}",
+      "note": "El mismo motor de la granja: clima NASA POWER, agua FAO-56 y los precios estimados de data/crops.json. Los planes con otro sistema de riego se ajustan por su eficiencia."
     }
   },
   "rotaciones": {
@@ -360,79 +575,105 @@
   },
   "aprende": {
     "title": "¿Qué significa?",
-    "subtitle": "Las ideas detrás de FarmTwin, explicadas en simple.",
+    "subtitle": "Diez ideas detrás de FarmTwin, en palabras simples. Toca una para leer más.",
     "how": "En FarmTwin",
     "source": "Dato",
     "disclaimer": "Las explicaciones son simplificadas. Para decisiones importantes consulta a tu técnico agrario o a INIA.",
     "topics": {
       "et": {
-        "title": "Evapotranspiración (ET)",
+        "title": "El agua que pierde el campo (ET)",
+        "short": "El sol, el calor y el viento sacan agua del suelo y de las hojas.",
         "text": "Es el agua que sale del campo hacia el aire: la que se evapora del suelo y la que \"suda\" la planta por sus hojas. Con más sol, calor, viento y aire seco, el campo pierde más agua.",
         "how": "Calculamos la ET de referencia (ET0) de cada día de los últimos 21 años con la fórmula Penman-Monteith de la FAO.",
         "source": "NASA POWER (temperatura, radiación, humedad y viento)"
       },
       "kc": {
-        "title": "Coeficiente de cultivo (Kc)",
+        "title": "Qué tan sediento es cada cultivo (Kc)",
+        "short": "Cada cultivo toma más o menos agua según su edad.",
         "text": "Cada cultivo toma una parte distinta de esa ET0 según su tamaño. Recién sembrado pide poco (Kc bajo); en plena floración pide más que el pasto de referencia (Kc mayor a 1).",
         "how": "El agua de tu cultivo es Kc × ET0, día a día, siguiendo sus etapas: inicial, desarrollo, media y final.",
         "source": "FAO-56, tablas 11 y 12"
       },
       "balance": {
-        "title": "Balance hídrico y riego",
+        "title": "Cuánto regar",
+        "short": "Lo que pide el cultivo, menos la lluvia, más lo que pierde el sistema de riego.",
         "text": "Lo que pide el cultivo menos la lluvia que aprovecha es tu riego neto. Pero ningún sistema es perfecto: con gravedad se pierde casi la mitad del agua y con goteo muy poca. Ese total es el riego bruto.",
-        "how": "Comparamos el riego bruto de cada rotación con tu agua disponible. Si no alcanza, la marcamos como \"no viable\". 1 mm de agua = 10 m³ por hectárea.",
+        "how": "Comparamos el riego bruto de cada rotación con tu agua disponible. Si no alcanza, te mostramos cuántos m³/ha te faltan y en cuántos de los 21 años habría alcanzado. 1 mm de agua = 10 m³ por hectárea.",
         "source": "Eficiencias: gravedad 45 %, aspersión 75 %, goteo 90 %"
       },
       "ndvi": {
-        "title": "NDVI (vigor de la vegetación)",
+        "title": "Verdor de las plantas (NDVI)",
+        "short": "Los satélites ven qué tan verdes y sanas están las plantas.",
         "text": "Es un número que los satélites calculan con la luz que reflejan las plantas. Una planta sana y verde refleja mucho infrarrojo: NDVI alto. Suelo desnudo o seco: NDVI bajo.",
         "how": "Lo ves en el mapa y en la Máquina del tiempo, mes a mes desde el año 2000.",
         "source": "NASA MODIS Terra, vía NASA GIBS"
       },
       "soil": {
         "title": "Humedad del suelo",
+        "short": "Cuánta agua queda en el suelo, donde están las raíces.",
         "text": "Cuánta agua guarda la tierra donde están las raíces. En el desierto de Majes, sin riego, el suelo está seco casi todo el año; en la sierra sube en la temporada de lluvias.",
         "how": "Mostramos la humedad natural del suelo por mes y por semana, y el mapa SMAP de humedad en raíces.",
         "source": "NASA POWER (GWETROOT) y NASA SMAP L4"
       },
       "frost": {
-        "title": "Riesgo de helada y de calor",
+        "title": "Heladas y calor",
+        "short": "Con qué frecuencia cada semana del año hizo demasiado frío o calor.",
         "text": "Una helada quema hojas y flores cuando el aire baja de cierta temperatura; el calor extremo cierra los poros de la planta y baja el rendimiento. Cada cultivo tiene su propio límite.",
         "how": "Contamos en cuántos de los últimos 21 años hubo helada (mínima de 2 °C o menos) o calor en cada semana.",
         "source": "NASA POWER (temperatura mínima y máxima diaria)"
       },
       "fusion": {
-        "title": "Ajuste por altura",
+        "title": "Ajuste por altitud",
+        "short": "Corregimos el clima satelital con la altitud real de tu parcela.",
         "text": "Los datos de clima del satélite vienen en cuadros de unos 50 km, con una altura promedio. Majes está a 1.400 m, pero sus cuadros vecinos están a 835 m (costa) y 1.941 m.",
         "how": "Medimos la altura real de tu parcela con el relieve de la NASA y combinamos los dos cuadros de clima que la rodean.",
         "source": "NASA SRTM + NASA POWER"
       },
       "ground": {
-        "title": "Satélite frente a estación en tierra",
+        "title": "Satélite vs. estación en tierra",
+        "short": "Una estación mide muy bien un punto; los satélites lo cubren todo.",
         "text": "Una estación mide muy bien un solo punto. El satélite cubre todo el planeta, todos los días, pero con menos detalle. Juntos se complementan: la estación sirve para revisar y corregir al satélite.",
         "how": "Preparamos la comparación con la estación SENAMHI Pampa de Majes para medir cuánto se equivoca el dato satelital.",
         "source": "SENAMHI (estación 116006) y NASA POWER"
       },
       "range": {
-        "title": "Rangos en vez de un solo número",
+        "title": "Rangos, no un solo número",
+        "short": "Cada año es distinto: mostramos el valor típico y los extremos.",
         "text": "El clima cambia cada año: hay años secos, normales y con El Niño. Por eso no te damos un solo número sino un rango: lo típico y lo que pasa en años buenos y malos.",
         "how": "Cada cifra viene de simular los 21 años reales: mostramos la mediana y el rango del 10 % al 90 %.",
         "source": "NASA POWER 2005–2025"
       },
       "rotation": {
         "title": "Rotación de cultivos",
+        "short": "Cambiar de cultivo cada campaña corta las plagas y abona el suelo.",
         "text": "Alternar cultivos de familias distintas corta el ciclo de plagas. Las leguminosas (haba, frijol, alfalfa) fijan nitrógeno del aire y abonan el suelo. Dejar el campo desnudo facilita la erosión.",
         "how": "El puntaje de \"salud del suelo\" premia leguminosas, variedad de familias y suelo cubierto, y castiga los meses desnudos.",
         "source": "Reglas agronómicas generales (a validar con un agrónomo)"
       }
-    }
+    },
+    "kicker": "GLOSARIO",
+    "groups": {
+      "water": {
+        "title": "Agua",
+        "text": "Cuánta agua usan tus cultivos y cuánto necesitas regar."
+      },
+      "space": {
+        "title": "Visto desde el espacio",
+        "text": "Qué miden los satélites de la NASA y cómo lo adaptamos a tu parcela."
+      },
+      "decide": {
+        "title": "Riesgo y decisiones",
+        "text": "Cómo FarmTwin convierte 21 años de datos en consejos confiables."
+      }
+    },
+    "more": "Leer más"
   },
   "reco": {
     "kicker": "Recomendación para tu parcela",
     "switch": "Te conviene cambiar a",
     "keep": "Tu rotación actual ya es la mejor opción",
-    "noneViable": "Con tu agua, ninguna rotación alcanza",
-    "noneText": "La mejor opción necesita {need} m³/ha y tienes {have} m³/ha. Estas son tus alternativas:",
+    "noneViable": "Te faltan {m3} m³/ha para la mejor opción",
+    "noneText": "La mejor opción necesita {need} m³/ha y tienes {have} m³/ha. Con tu agua habría alcanzado en {n} de {total} años. Estas son tus alternativas:",
     "tryDrip": "Con riego por goteo esa rotación necesitaría unos {m3} m³/ha.",
     "reduceArea": "Con el agua que tienes puedes regar bien el {pct} de tu chacra; el resto, en descanso o con cultivo de cobertura.",
     "water": "Agua",
@@ -537,5 +778,169 @@
       "hint": "Calculada con tu parcela, tus recursos y tus prioridades.",
       "compare": "Ver todas las rotaciones lado a lado"
     }
+  },
+  "group": {
+    "title": "Agrupaciones de cultivos",
+    "subtitle": "Elige algunos cultivos y mira de un vistazo si funcionan bien juntos.",
+    "mode": {
+      "rotation": "Rotación",
+      "rotationHint": "Uno después de otro en el mismo lote.",
+      "association": "Asociación",
+      "associationHint": "Juntos en el mismo lote y al mismo tiempo."
+    },
+    "presets": "O empieza con un clásico:",
+    "preset": {
+      "threeSisters": "Maíz + frijol + zapallo",
+      "carrotOnion": "Zanahoria + cebolla",
+      "oatPea": "Avena + arveja",
+      "soilWater": "Cebolla → haba → maíz",
+      "quinoaFaba": "Quinua → haba",
+      "hungry": "Papa → maíz"
+    },
+    "emptyHint": "Agrega al menos un cultivo.",
+    "result": "Resultado",
+    "verdict": {
+      "good": "Buena combinación",
+      "fair": "Funciona con cuidados",
+      "poor": "No recomendable"
+    },
+    "nSurplus": "Las leguminosas cubren el nitrógeno: sobran unos {kg} kg/ha.",
+    "nNeed": "Hay que aportar unos {kg} kg/ha de nitrógeno (abono o guano).",
+    "level": {
+      "low": "bajo",
+      "med": "medio",
+      "high": "alto"
+    },
+    "labor": "Mano de obra",
+    "sharedPests": "Plagas y enfermedades compartidas",
+    "save": "Guardar como rotación",
+    "saved": "Guardada",
+    "toCompare": "Compararla con datos NASA",
+    "full": "Ya tienes 5 rotaciones: borra una en Mis rotaciones.",
+    "associationNote": "La asociación se evalúa con reglas agronómicas. El motor de agua y dinero simula rotaciones; para simular, usa cada cultivo en lotes vecinos de la granja.",
+    "source": "Reglas agronómicas generales y valores orientativos de nutrientes; valídalos con un agrónomo o con INIA.",
+    "point": {
+      "empty": "Agrega cultivos para evaluar.",
+      "legumeN": "Leguminosas en el grupo ({crops}): fijan nitrógeno del aire, unos {kg} kg/ha, y abonan el suelo gratis.",
+      "noLegume": "No hay ninguna leguminosa: todo el nitrógeno tendrá que venir del abono.",
+      "nDeficit": "El grupo pide mucho nitrógeno (faltan unos {kg} kg/ha): costo alto de abono.",
+      "nBalanced": "El nitrógeno está equilibrado entre lo que piden y lo que fijan.",
+      "laborPeak": "{crops} piden mucha mano de obra: revisa si te alcanza la gente.",
+      "roots": "Raíces a distinta profundidad: aprovechan agua y nutrientes de capas diferentes.",
+      "sameFamily": "Dos cultivos de la misma familia seguidos: las plagas y enfermedades pasan de uno al otro.",
+      "breaksPests": "Tres familias distintas: corta el ciclo de plagas y enfermedades.",
+      "twoFamilies": "Alterna dos familias: ayuda algo contra las plagas.",
+      "legumeBeforeHungry": "{a} deja nitrógeno en el suelo para {b}, que es muy exigente.",
+      "hungryAfterHungry": "{b} va justo después de {a}: dos cultivos muy exigentes seguidos agotan el suelo.",
+      "potatoRepeat": "Varias solanáceas (papa, tomate, páprika) en el mismo ciclo: más rancha y plagas. Sepáralas en el tiempo.",
+      "overlap": "Dos cultivos se cruzan {days} días: revisa los meses de siembra.",
+      "bareMonths": "El suelo queda desnudo {n} meses: más erosión y pérdida de materia orgánica.",
+      "alwaysCovered": "El suelo está cubierto todo el año.",
+      "sharedPestsRotation": "Comparten {n} plaga(s) o enfermedad(es): vigila los rebrotes entre campañas.",
+      "sameFamilyTogether": "Dos cultivos de la misma familia juntos: comparten plagas y compiten igual.",
+      "nCompetition": "{crops} compiten por el nitrógeno: necesitarás más abono.",
+      "heights": "Alturas distintas: aprovechan mejor la luz sin taparse.",
+      "waterCompetition": "{crops} piden mucha agua en la misma época.",
+      "weedSensitive": "{crops} no compite con malezas: deshierbo frecuente y sin plantas muy densas cerca.",
+      "noSharedSeason": "Sus temporadas casi no coinciden: no crecen juntos de verdad. Ajusta el mes de siembra.",
+      "sharedPestsTogether": "Comparten {n} plaga(s) o enfermedad(es): un brote afecta a ambos a la vez.",
+      "companion": {
+        "milpa": "{a} y {b} son la clásica milpa: el frijol fija nitrógeno y trepa por el maíz.",
+        "legumeTall": "{a} y {b}: la leguminosa aporta nitrógeno y crecen a alturas distintas.",
+        "andeanPair": "{a} y {b} son una asociación andina tradicional: la leguminosa aporta nitrógeno.",
+        "alliumLegume": "{a} y {b} no se llevan: el ajo y la cebolla frenan el crecimiento de las leguminosas.",
+        "shadeHungry": "{a} y {b}: uno le da sombra al otro y ambos piden mucho nitrógeno.",
+        "perennialDense": "La alfalfa es perenne y muy densa: compite fuerte. Mejor úsala en rotación.",
+        "threeSisters": "{a} y {b} son parte de las \"tres hermanas\": el zapallo cubre el suelo y guarda la humedad.",
+        "cerealLegume": "{a} y {b} son la clásica mezcla de cereal y leguminosa: más forraje y más nutritivo.",
+        "carrotOnion": "{a} y {b} crecen bien juntos: raíces distintas y el olor aleja las plagas de la zanahoria.",
+        "alliumRepels": "{a} y {b} se llevan bien: el ajo y la cebolla ayudan a alejar algunas plagas.",
+        "nightshadeBlight": "{a} y {b} comparten la rancha: un brote en uno llega rápido al otro."
+      }
+    },
+    "care": {
+      "cuts": "Cortes cada 35 a 40 días; deja rebrotar antes del siguiente corte.",
+      "aphids": "Vigila el pulgón, sobre todo en épocas secas y calurosas.",
+      "noTrampling": "No pastorear ni pisar con el suelo húmedo.",
+      "hilling": "Aporque a los 30 a 45 días para proteger los tubérculos.",
+      "lateBlight": "Rancha (Phytophthora): aparece con humedad o lluvia; prevén con fungicida y buen drenaje.",
+      "andeanWeevil": "Gorgojo de los Andes: rota y limpia restos de la campaña anterior.",
+      "rotation3y": "No vuelvas a sembrar papa en el mismo lote antes de 3 años.",
+      "transplant": "Se siembra en almácigo y se trasplanta a las 6 a 8 semanas.",
+      "weeding": "Deshierbo frecuente: su raíz es superficial y no compite con malezas.",
+      "thrips": "Trips: más dañino con calor y sequía; monitorea las hojas.",
+      "stopIrrigation": "Corta el riego 2 a 3 semanas antes de cosechar para un buen curado.",
+      "splitN": "Abono nitrogenado en 2 o 3 partes (siembra, desarrollo y antes de la floración).",
+      "armyworm": "Gusano cogollero: revisa el cogollo en las primeras semanas.",
+      "floweringWater": "No le falte agua en la floración: es cuando más rinde el riego.",
+      "chocolateSpot": "Mancha chocolate: aparece con humedad; evita riegos por la tarde.",
+      "coldTolerant": "Aguanta el frío mejor que otros cultivos (hasta unos −3 °C).",
+      "frostSensitive": "Muy sensible a heladas: no sembrar si hay riesgo de helada en el ciclo.",
+      "rust": "Roya: manchas anaranjadas en las hojas; usa variedades tolerantes.",
+      "whitefly": "Mosca blanca: más común en calor; controla temprano.",
+      "birds": "Protege las panojas de los pájaros cerca de la cosecha.",
+      "downyMildewQuinoa": "Mildiu: aparece con humedad; no riegues de más.",
+      "saponin": "Lava el grano para quitar la saponina (sabor amargo) antes de venderlo o consumirlo.",
+      "coldStart": "Siémbralo en los meses frescos: necesita frío para formar buenas cabezas.",
+      "looseSoil": "Necesita suelo suelto y sin piedras para que la raíz crezca recta.",
+      "thinning": "Ralea las plántulas a las 3 o 4 semanas de la siembra.",
+      "evenWater": "Riega de forma pareja: el riego irregular raja frutos y raíces.",
+      "trellis": "Ponle tutores o espalderas para que trepe.",
+      "coolSeason": "Prefiere clima fresco: evita los meses más calurosos.",
+      "powderyMildew": "Oídio: polvo blanco en las hojas, más común en clima seco y templado.",
+      "dryHarvest": "Cosecha cuando el grano esté seco y duro.",
+      "droughtTolerant": "Aguanta la sequía mejor que otros cereales.",
+      "cutAtMilk": "Córtala para forraje cuando el grano aún esté lechoso.",
+      "withVetch": "Mezclada con arveja o vicia da un forraje más nutritivo.",
+      "groundCover": "Sus hojas grandes cubren el suelo y guardan la humedad.",
+      "pollinators": "Necesita abejas para polinizar las flores.",
+      "staking": "Ponle tutor y pódalo para que el fruto no toque el suelo.",
+      "sunDrying": "Seca los frutos al sol sobre suelo limpio después de cosechar."
+    },
+    "pest": {
+      "aphid": "pulgón",
+      "cutworm": "gusano de tierra",
+      "andeanWeevil": "gorgojo de los Andes",
+      "nematode": "nematodos",
+      "thrips": "trips",
+      "armyworm": "gusano cogollero",
+      "whitefly": "mosca blanca",
+      "rootRot": "pudrición de raíz",
+      "lateBlight": "rancha",
+      "downyMildew": "mildiu",
+      "rust": "roya",
+      "chocolateSpot": "mancha chocolate",
+      "quinoaMoth": "polilla de la quinua",
+      "mites": "ácaros",
+      "whiteRot": "pudrición blanca",
+      "leafBlight": "quemadura de la hoja",
+      "leafminer": "mosca minadora",
+      "powderyMildew": "oídio",
+      "tomatoMoth": "polilla del tomate"
+    },
+    "kicker": "AGRUPACIONES",
+    "step1": "¿Cómo los vas a sembrar?",
+    "step2": "Elige hasta 4 cultivos",
+    "step3": "Tu grupo",
+    "category": {
+      "all": "Todos",
+      "vegetable": "Hortalizas",
+      "grain": "Granos",
+      "legume": "Leguminosas",
+      "forage": "Forraje"
+    },
+    "feedsSoil": "Abona el suelo",
+    "count": "{n} de {max}",
+    "reasons": "Por qué",
+    "moreReasons": "Ver todos los motivos ({n})",
+    "fewerReasons": "Ver menos",
+    "nTitle": "Nitrógeno",
+    "nCover": "Las leguminosas cubren {pct} del nitrógeno que piden estos cultivos.",
+    "nNone": "Sin leguminosas: todo el nitrógeno tendrá que venir del abono.",
+    "careTitle": "Cuidados",
+    "moreTitle": "Más detalle",
+    "clear": "Vaciar",
+    "remove": "Quitar {crop}",
+    "moveUp": "Subir {crop}"
   }
 }

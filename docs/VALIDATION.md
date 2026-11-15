@@ -1,45 +1,46 @@
-# Validación del motor de FarmTwin
+# FarmTwin engine validation
 
-Criterio **Validez** de la rúbrica: ¿qué tan confiables son las cifras? Este documento separa lo que ya está verificado de lo que falta.
+This answers the **Validity** criterion of the rubric: how reliable are the numbers? It separates what is already verified from what is still missing.
 
-## 1. Verificado
+## 1. Verified
 
-| Qué | Contra qué | Resultado | Dónde |
+| What | Against | Result | Where |
 | --- | --- | --- | --- |
-| ET0 Penman-Monteith | FAO-56, ejemplo 18 (Bruselas, 6 de julio) | 3,9 mm/día, igual que el manual | `engine/tests/test_engine.py` |
-| Radiación extraterrestre Ra | FAO-56, ejemplo 8 (20° S, 3 de septiembre) | 32,2 MJ/m²/día | `engine/tests/test_engine.py` |
-| Fusión vertical de NASA POWER | Elevación SRTM de la parcela | Majes (1.409 m) queda entre celdas de 835 m y 1.941 m; pesos 0,48 / 0,52 | `engine/power.py` |
+| ET0 Penman-Monteith | FAO-56, example 18 (Brussels, 6 July) | 3.9 mm/day, same as the manual | `engine/tests/test_engine.py` |
+| Extraterrestrial radiation Ra | FAO-56, example 8 (20° S, 3 September) | 32.2 MJ/m²/day | `engine/tests/test_engine.py` |
+| Vertical fusion of NASA POWER | SRTM elevation of the field | Majes (1,409 m) lies between cells at 835 m and 1,941 m; weights 0.48 / 0.52 | `engine/power.py` |
+| Input data quality | Physical ranges, Tmin ≤ Tmax, radiation ≤ Ra, stuck values, temperature spikes, gaps | Bad values become gaps, short gaps are interpolated, years with more than 15% filled days are excluded | `engine/quality.py`, `engine/tests/` |
 
-## 2. Comparación con un estudio independiente (no es una observación)
+## 2. Comparison with an independent study (not an observation)
 
-**Fuente:** Purdue University, *AguaRiego*, Tabla 11, "Uso de agua para cultivos en la estación meteorológica Pampa de Majes", suelo franco arenoso. El estudio usó CropWAT 8.0 con FAO-56 Penman-Monteith. Su clima viene de mapas climáticos (Moraes et al., 2020), viento de CFSR y radiación estimada (Thornton y Running). Es otro modelo, no mediciones.
+**Source:** Purdue University, *AguaRiego*, Table 11, "Crop water use at the Pampa de Majes weather station", sandy loam soil. The study used CropWAT 8.0 with FAO-56 Penman-Monteith. Its climate comes from climate maps (Moraes et al., 2020), wind from CFSR and estimated radiation (Thornton and Running). It is another model, not measurements.
 
-| Indicador | AguaRiego (Purdue) | FarmTwin (NASA POWER + SRTM) | Diferencia |
+| Indicator | AguaRiego (Purdue) | FarmTwin (NASA POWER + SRTM) | Difference |
 | --- | --- | --- | --- |
-| Alfalfa: requerimiento neto anual | 10.701 m³/ha | 13.219 m³/ha (mediana 2005–2025; rango 11.933 a 13.806) | +24 % |
-| Kc de alfalfa | 0,40 / 0,95 / 0,90 (con curva de cortes) | 0,90 constante (promedio FAO con cortes) | — |
+| Alfalfa: annual net requirement | 10,701 m³/ha | 13,219 m³/ha (median 2005–2025; range 11,933 to 13,806) | +24% |
+| Alfalfa Kc | 0.40 / 0.95 / 0.90 (with cutting curve) | 0.90 constant (FAO average with cuttings) | — |
 
-**Lectura:** el orden de magnitud coincide. FarmTwin sale más alto, probablemente porque usa un Kc constante de 0,90 en vez de la curva de cortes y porque su clima es más seco (humedad interpolada de unos 65 %). Para el pitch, el mensaje es: "dos métodos independientes dan entre 10.700 y 13.200 m³/ha para la alfalfa en Majes; la incertidumbre se muestra como rango".
+**Reading:** the order of magnitude matches. FarmTwin comes out higher, probably because it uses a constant Kc of 0.90 instead of the cutting curve and because its climate is drier (interpolated humidity of about 65%). Message for the pitch: "two independent methods give between 10,700 and 13,200 m³/ha for alfalfa in Majes; the uncertainty is shown as a range".
 
-## 3. Pendiente: estación SENAMHI Pampa de Majes
+## 3. Pending: SENAMHI Pampa de Majes station
 
-- **Estación:** PAMPA DE MAJES, código **116006** (convencional, categoría MAP), lat −16,3357, lon −72,1525. Está a unos 4 km del punto piloto. También existe una automática con código 4729E39A.
-- **Datos disponibles:** tablas diarias mensuales desde 2017-01 hasta hoy en el [mapa de estaciones de SENAMHI](https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/).
-- **Por qué no está automatizado:** el visor tiene una verificación anti-bots (Cloudflare Turnstile). La descarga la hace **una persona desde el navegador**.
+- **Station:** PAMPA DE MAJES, code **116006** (conventional, MAP category), lat −16.3357, lon −72.1525. It is about 4 km from the pilot point. There is also an automatic station with code 4729E39A.
+- **Available data:** monthly tables of daily data from 2017-01 to today on the [SENAMHI station map](https://www.senamhi.gob.pe/mapas/mapa-estaciones-2/).
+- **Why it is not automated:** the viewer has an anti-bot check (Cloudflare Turnstile). The download is done **by a person in the browser**.
 
-### Cómo completarla (unos 20 minutos, persona D)
+### How to complete it (about 20 minutes)
 
-1. Abre el mapa de SENAMHI, busca "Pampa de Majes" (convencional, 116006) y abre "Datos".
-2. Elige un mes (ideal: 12 o más meses entre 2017 y 2025) y copia la tabla diaria.
-3. Pega en `data/senamhi/pampa_de_majes.csv` con este encabezado:
+1. Open the SENAMHI map, search for "Pampa de Majes" (conventional, 116006) and open "Datos".
+2. Choose a month (ideally 12 or more months between 2017 and 2025) and copy the daily table.
+3. Paste it into `data/senamhi/pampa_de_majes.csv` with this header:
    ```
    fecha,tmax,tmin,hr,precip
    2023-01-01,27.4,12.1,58,0.0
    ```
-   Fecha en formato AAAA-MM-DD; deja vacío o "S/D" cuando no haya dato.
-4. Corre `python scripts/validate_senamhi.py`. Imprime el sesgo, MAE, RMSE y correlación de Tmax, Tmin y ET0 (Hargreaves en ambos lados), y guarda `data/validation_senamhi.json`.
-5. Con ese resultado se arma la gráfica de la diapositiva de Validez. Si hay un sesgo sistemático de temperatura, se puede corregir en `engine/power.py` (*bias correction*), siempre que se documente.
+   Date in YYYY-MM-DD format; leave the value empty or "S/D" when there is no data.
+4. Run `python scripts/validate_senamhi.py`. It prints the bias, MAE, RMSE and correlation of Tmax, Tmin and ET0 (Hargreaves on both sides), and saves `data/validation_senamhi.json`.
+5. That result feeds the chart on the Validity slide. If there is a systematic temperature bias, it can be corrected in `engine/power.py` (bias correction), as long as it is documented.
 
-## 4. Lo que sigue estimado
+## 4. What is still estimated
 
-Precios, rendimientos y costos de `data/crops.json` (referencias aproximadas de MIDAGRI) y el agua asignada por hectárea (15.000 m³/ha por defecto). La interfaz los marca como "a validar". Lo ideal es revisarlos con un agrónomo (UCSM o INIA) y con la junta de usuarios o AUTODEMA.
+Prices, yields and costs in `data/crops.json` (approximate MIDAGRI references), the water allocated per hectare (15,000 m³/ha by default) and the yield bonus of crop associations. The interface labels them "to validate". Ideally they are reviewed with an agronomist (UCSM or INIA) and with the irrigation users' board or AUTODEMA.

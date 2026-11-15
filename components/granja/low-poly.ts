@@ -33,6 +33,15 @@ export const MAT = {
   redFlower: flat("#e0503f"),
   whiteFlower: flat("#ffffff"),
   podDark: flat("#3c5b2c"),
+  quinoaHead: flat("#b5334f"),
+  grainGold: flat("#d9b65a"),
+  oatGreen: flat("#a3c96b"),
+  carrotRoot: flat("#e8792b"),
+  squash: flat("#e89a2c"),
+  tomatoRed: flat("#d8382f"),
+  paprikaRed: flat("#a8231b"),
+  garlicBulb: flat("#efe7d6"),
+  yellowFlower: flat("#f3d34a"),
   snow: new THREE.PointsMaterial({ color: "#ffffff", size: 0.12, transparent: true, opacity: 0.9 }),
   dust: new THREE.PointsMaterial({ color: "#e0b770", size: 0.1, transparent: true, opacity: 0.6 }),
 };
@@ -43,6 +52,8 @@ export const SOIL: Record<string, THREE.MeshStandardMaterial> = {
   climate_risk: flat("#6f7f93"),
   dry: flat("#cdb487"),
   bare: flat("#8d6a48"),
+  disease: flat("#5d4a63"),
+  pest: flat("#6f6232"),
 };
 
 export const GEO = {
@@ -66,6 +77,11 @@ export const GEO = {
   tassel: new THREE.ConeGeometry(0.06, 0.3, 4),
   tuber: new THREE.DodecahedronGeometry(0.09, 0),
   bulbBig: new THREE.IcosahedronGeometry(0.17, 0),
+  panicle: new THREE.ConeGeometry(0.09, 0.32, 5),
+  grainHead: new THREE.CylinderGeometry(0.035, 0.02, 0.22, 4),
+  fruit: new THREE.IcosahedronGeometry(0.075, 0),
+  squash: new THREE.IcosahedronGeometry(0.2, 0),
+  root: new THREE.ConeGeometry(0.06, 0.26, 5),
 };
 
 /** Pseudoaleatorio determinista (misma granja = mismas posiciones). */

@@ -1,6 +1,29 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import type { FarmEvent } from "@/lib/granja-events";
+import { setFarm } from "@/lib/farm-store";
+import { isOn, shapeFromBoundary, toggleCell } from "@/lib/farm-shape";
+import type { LatLon } from "@/lib/geo";
+import type { Irrigation } from "@/lib/contract";
+
+/** Escenarios de la próxima campaña: cada uno se arma con un año real análogo de los 21 de NASA POWER. */
+export type Scenario = "typical" | "dry" | "nino" | "warm";
+export const SCENARIOS: Scenario[] = ["typical", "dry", "nino", "warm"];
+/** Calentamiento del escenario "más calor" (°C sumados al año típico). */
+export const WARM_DELTA = 1.5;
+
+/** Distribución guardada para compararla en distintos años (pasados y venideros). */
+export type SavedPlan = {
+  id: string;
+  name: string;
+  cols: number;
+  rows: number;
+  tiles: string[];
+  haPerTile: number;
+  irrigation: Irrigation;
+  savedAt: number;
+};
 
 /** Estado del modo granja (persistido en el celular). La zona, el agua y el riego viven en farm-store. */
 export type GranjaState = {
@@ -8,14 +31,19 @@ export type GranjaState = {
   cols: number;
   rows: number;
   haPerTile: number;
-  tiles: string[]; // id de rotación por casilla
+  tiles: string[]; // id de rotación por casilla ("off" = fuera del terreno)
+  /** "past" = un año real 2005-2025 (year); "future" = la próxima campaña con un escenario */
+  mode: "past" | "future";
   year: number;
+  scenario: Scenario;
+  plans: SavedPlan[];
   badges: string[]; // medallas ganadas (persisten entre partidas)
   lastWon: string[]; // medallas nuevas por celebrar
   tutorialDone: boolean;
   sound: boolean;
   tempDelta: number; // escenario: °C sumados a todas las temperaturas
   waterFactor: number; // escenario: fracción del agua disponible (1 = normal)
+  events: FarmEvent[]; // fenómenos activados sobre el año real
 };
 
 const KEY = "farmtwin.granja.v1";
@@ -34,12 +62,16 @@ const DEFAULT: GranjaState = {
   haPerTile: 0.25,
   tiles: Array(20).fill("actual"),
   year: 2016,
+  scenario: "typical",
+  mode: "future",
+  plans: [],
   badges: [],
   lastWon: [],
   tutorialDone: false,
   sound: true,
   tempDelta: 0,
   waterFactor: 1,
+  events: [],
 };
 
 let state: GranjaState = DEFAULT;
@@ -71,8 +103,46 @@ export function resizeFarm(ha: number) {
     cols: size.cols,
     rows: size.rows,
     haPerTile: size.ha / n,
-    tiles: Array.from({ length: n }, (_, i) => s.tiles[i] ?? "actual"),
+    tiles: Array.from({ length: n }, (_, i) => (s.tiles[i] && isOn(s.tiles[i]) ? s.tiles[i] : "actual")),
   }));
+}
+
+/** Arma la granja con la forma del terreno dibujado: casillas cuadradas dentro del contorno. */
+export function shapeFarmFromBoundary(pts: LatLon[], areaHa: number) {
+  if (pts.length < 3 || !(areaHa > 0)) return;
+  setGranja((s) => {
+    const sown = s.tiles.filter(isOn);
+    const shape = shapeFromBoundary(pts, areaHa, (i) => sown[i % Math.max(sown.length, 1)] ?? "actual");
+    return { cols: shape.cols, rows: shape.rows, tiles: shape.tiles, haPerTile: shape.haPerTile };
+  });
+}
+
+/** Suma (vecina) o quita (del borde) una casilla desde la granja. r y c pueden quedar fuera de la rejilla actual. */
+export function editShape(r: number, c: number, rotationId: string) {
+  setGranja((s) => {
+    const next = toggleCell({ cols: s.cols, rows: s.rows, tiles: s.tiles }, r, c, rotationId);
+    return { cols: next.cols, rows: next.rows, tiles: next.tiles };
+  });
+}
+
+/** Ajusta la granja al área real dibujada en el mapa: elige la cuadrícula más parecida y reparte el área exacta. */
+export function resizeFarmToArea(areaHa: number) {
+  if (!(areaHa > 0)) return;
+  const size = [...FARM_SIZES].sort((x, y) => Math.abs(Math.log(x.ha / areaHa)) - Math.abs(Math.log(y.ha / areaHa)))[0];
+  const n = size.cols * size.rows;
+  setGranja((s) => ({
+    cols: size.cols,
+    rows: size.rows,
+    haPerTile: areaHa / n,
+    tiles: Array.from({ length: n }, (_, i) => (s.tiles[i] && isOn(s.tiles[i]) ? s.tiles[i] : "actual")),
+  }));
+}
+
+/** Guarda el contorno dibujado y su área, y ajusta la granja a ese tamaño real. */
+export function saveBoundary(pts: [number, number][] | undefined, areaHa: number | undefined) {
+  setFarm({ boundary: pts, areaHa });
+  if (pts && pts.length >= 3 && areaHa) shapeFarmFromBoundary(pts, areaHa);
+  else if (areaHa) resizeFarmToArea(areaHa);
 }
 
 export function useGranja(): GranjaState {
@@ -87,4 +157,8 @@ export function useGranja(): GranjaState {
     },
     () => DEFAULT,
   );
+}
+
+export function newPlanId() {
+  return `plan-${Date.now().toString(36)}`;
 }
