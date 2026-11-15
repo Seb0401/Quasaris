@@ -38,7 +38,8 @@ export function scoreParts(result: RotationResult, all: RotationResult[], priori
   return { parts, raw: parts.reduce((a, p) => a + p.points, 0), penalized: !result.viable };
 }
 
-const level = (w: number) => (w >= 0.3 ? "high" : w >= 0.18 ? "med" : w > 0 ? "low" : "off");
+/** Cuánto importa cada parte, frente a la prioridad más alta (los empates quedan iguales). */
+const level = (w: number, max: number) => (w <= 0 ? "off" : w >= max - 1e-9 ? "high" : w >= max * 0.5 ? "med" : "low");
 
 /** "¿Qué significa 55 de 100?": las cuatro partes, cuánto pesa cada una y cuántos puntos aporta. */
 export function ScoreBreakdown({ result, all, priorities, compact }: { result: RotationResult; all: RotationResult[]; priorities: Priorities; compact?: boolean }) {
@@ -48,15 +49,12 @@ export function ScoreBreakdown({ result, all, priorities, compact }: { result: R
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const pct = new Intl.NumberFormat(locale, { style: "percent", maximumFractionDigits: 0 });
   const score = Math.round(result.score * 100);
+  const maxW = Math.max(...parts.map((p) => p.weight));
+  const equal = parts.every((p) => Math.abs(p.weight - maxW) < 1e-9);
 
   return (
     <div className={`score-explain ${compact ? "is-compact" : ""}`}>
-      {!compact && (
-        <>
-          <b className="score-explain-title">{t("comparar.fit.title", { score })}</b>
-          <p className="score-explain-intro">{t("comparar.fit.intro")}</p>
-        </>
-      )}
+      <p className="score-explain-intro">{t("comparar.fit.intro")} {equal ? t("comparar.fit.equal") : ""}</p>
       <div className="score-stack" role="img" aria-label={t("comparar.fit.title", { score })}>
         {parts.map((p) => (
           <i key={p.key} style={{ width: `${p.points * (penalized ? PENALTY : 1)}%`, background: COLOR[p.key] }} />
@@ -69,8 +67,8 @@ export function ScoreBreakdown({ result, all, priorities, compact }: { result: R
             <li key={p.key}>
               <span className="score-part-name"><Icon size={14} style={{ color: COLOR[p.key] }} />{t(`comparar.fit.part.${p.key}`)}</span>
               <span className="score-part-bar"><i style={{ width: `${p.value * 100}%`, background: COLOR[p.key] }} /></span>
-              <span className="score-part-note">{t(`comparar.fit.how.${p.key}`, { v: pct.format(p.value) })}</span>
-              <span className={`score-part-weight w-${level(p.weight)}`}>{t(`comparar.fit.weight.${level(p.weight)}`)}</span>
+              <span className="score-part-pct" title={t(`comparar.fit.how.${p.key}`, { v: pct.format(p.value) })}>{pct.format(p.value)}</span>
+              {!equal && <span className={`score-part-weight w-${level(p.weight, maxW)}`}>{t(`comparar.fit.weight.${level(p.weight, maxW)}`)}</span>}
               <b>+{n.format(p.points)}</b>
             </li>
           );

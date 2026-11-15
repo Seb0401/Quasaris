@@ -53,8 +53,11 @@ export function ParcelaClient() {
   const efficiency = effectiveEfficiency(farm.irrigation, farm.soilTexture);
   const usefulWater = farm.waterAvailableM3ha * efficiency;
   const totalWeight = PRIORITIES.reduce((sum, p) => sum + farm.priorities[p.key], 0) || 1;
-  const top = [...PRIORITIES].sort((a, b) => farm.priorities[b.key] - farm.priorities[a.key])[0];
-  const balanced = PRIORITIES.every((p) => Math.abs(farm.priorities[p.key] - farm.priorities[top.key]) < 0.001);
+  const maxPriority = Math.max(...PRIORITIES.map((p) => farm.priorities[p.key]));
+  // todas las que empatan arriba son principales (no solo la primera)
+  const tops = PRIORITIES.filter((p) => maxPriority > 0 && Math.abs(farm.priorities[p.key] - maxPriority) < 0.001);
+  const balanced = tops.length === PRIORITIES.length;
+  const topNames = new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(tops.map((p) => `“${t(`priority.${p.key}`).toLowerCase()}”`));
 
   const SECTIONS: { id: Section; icon: typeof Droplets; label: string }[] = [
     { id: "resources", icon: Droplets, label: es ? "Recursos" : "Resources" },
@@ -236,9 +239,13 @@ export function ParcelaClient() {
                           ? es
                             ? "Todas tus prioridades pesan igual: buscaremos la rotación más equilibrada."
                             : "All your priorities weigh the same: we will look for the most balanced rotation."
-                          : es
-                            ? `Tu prioridad principal es “${t(`priority.${top.key}`).toLowerCase()}”. Las rotaciones que mejor lo cumplan subirán en el ranking.`
-                            : `Your top priority is “${t(`priority.${top.key}`).toLowerCase()}”. Rotations that do it best will rank higher.`}
+                          : tops.length > 1
+                            ? es
+                              ? `Tus prioridades principales son ${topNames}, con el mismo peso. Las rotaciones que mejor las cumplan subirán en el ranking.`
+                              : `Your top priorities are ${topNames}, with the same weight. Rotations that do them best will rank higher.`
+                            : es
+                              ? `Tu prioridad principal es ${topNames}. Las rotaciones que mejor lo cumplan subirán en el ranking.`
+                              : `Your top priority is ${topNames}. Rotations that do it best will rank higher.`}
                       </p>
                     </div>
                   </>

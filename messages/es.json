@@ -104,7 +104,7 @@
       "label": "puntaje de ajuste",
       "short": "ajuste",
       "title": "¿Qué significa {score} de 100?",
-      "intro": "Es qué tan bien encaja esta rotación con tus prioridades, comparada con tus otras rotaciones. Cada parte de abajo vale de 0 a 100% y pesa tanto como dijiste que te importa. 100 sería la mejor opción en todo lo que te importa.",
+      "intro": "Qué tan bien encaja esta rotación con tus prioridades, comparada con tus otras rotaciones. 100 = la mejor en todo lo que te importa.",
       "why": "¿Por qué un ajuste de {score}?",
       "part": {
         "water": "Ahorra agua",
@@ -119,13 +119,14 @@
         "risk": "{v} a salvo de helada, calor y falta de agua"
       },
       "weight": {
-        "high": "te importa mucho",
+        "high": "prioridad principal",
         "med": "te importa",
         "low": "te importa poco",
         "off": "no cuenta"
       },
       "penalty": "Tu agua no le alcanza en la mayoría de años, así que sus {raw} puntos se multiplican por 0,6: {score}.",
-      "change": "Cambiar lo que te importa"
+      "change": "Cambiar lo que te importa",
+      "equal": "Tus cuatro prioridades pesan igual, así que cada parte cuenta lo mismo."
     }
   },
   "month": {

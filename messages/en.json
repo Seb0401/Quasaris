@@ -104,7 +104,7 @@
       "label": "fit score",
       "short": "fit",
       "title": "What does {score} out of 100 mean?",
-      "intro": "It is how well this rotation matches your priorities compared with your other rotations. Each part below scores from 0 to 100% and counts as much as you said it matters. 100 would mean the best option in everything you care about.",
+      "intro": "How well this rotation matches your priorities, compared with your other rotations. 100 = best in everything you care about.",
       "why": "Why a fit score of {score}?",
       "part": {
         "water": "Saves water",
@@ -119,13 +119,14 @@
         "risk": "{v} safe from frost, heat and water shortage"
       },
       "weight": {
-        "high": "matters a lot",
+        "high": "top priority",
         "med": "matters",
         "low": "matters little",
         "off": "ignored"
       },
       "penalty": "Your water is not enough for it in most years, so its {raw} points are multiplied by 0.6: {score}.",
-      "change": "Change what matters to you"
+      "change": "Change what matters to you",
+      "equal": "Your four priorities weigh the same, so each part counts equally."
     }
   },
   "month": {

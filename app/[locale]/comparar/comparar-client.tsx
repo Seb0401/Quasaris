@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ChevronDown, ArrowUpRight, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
 import { ScoreBreakdown } from "@/components/cards/score-breakdown";
@@ -124,7 +124,10 @@ function Verdict({ best, current, anyViable, all }: { best: Row; current: Row; a
             {!anyViable && (
               <p className="verdict-warning"><TriangleAlert size={16} />{t("comparar.shortfall", { m3: n.format(fit.shortfallM3ha) })} · {t("comparar.yearsFit", { n: fit.yearsFit, total: fit.years })}. {es ? "Es la opción que mejor equilibra tus prioridades; con riego por goteo o reduciendo el área sembrada podría alcanzar." : "It best balances your priorities; drip irrigation or a smaller planted area could make it fit."}</p>
             )}
-            <ScoreBreakdown result={best.result} all={all} priorities={farm.priorities} />
+            <details className="score-toggle">
+              <summary>{t("comparar.fit.title", { score: Math.round(best.result.score * 100) })}<ChevronDown size={15} /></summary>
+              <ScoreBreakdown result={best.result} all={all} priorities={farm.priorities} />
+            </details>
           </div>
         </div>
 

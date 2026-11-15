@@ -141,21 +141,20 @@ export function RotationCard({ rotation, result, color, recommended, scale, all 
 
       <p className="rotation-why"><b>{t("comparar.why")}:</b> {t(`explain.${result.explain.whyKey}`)}</p>
 
-      {result.highlights.length > 0 && (
-        <ul className="rotation-highlights">
-          {result.highlights.map((h) => (
-            <li key={h.key + h.year}>
-              <Clock3 size={14} />
-              <span>{t(`explain.${h.key}`, { year: h.year, ...Object.fromEntries(Object.entries(h.params).map(([k, v]) => [k, n.format(v)])) })}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
       {sections.length > 0 && (
         <details className="rotation-details">
           <summary>{t("comparar.evidence")} · {t("comparar.review")}<ChevronDown size={16} /></summary>
           <div className="rotation-details-body">
+              {result.highlights.length > 0 && (
+                <ul className="rotation-highlights">
+                  {result.highlights.map((h) => (
+                    <li key={h.key + h.year}>
+                      <Clock3 size={14} />
+                      <span>{t(`explain.${h.key}`, { year: h.year, ...Object.fromEntries(Object.entries(h.params).map(([k, v]) => [k, n.format(v)])) })}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             {sections.map((s) => (
               <div key={s.title}>
                 <b>{s.title}</b>
