@@ -1,126 +1,128 @@
 # Plan: Quasaris FarmTwin, PWA
 
-> **From Space to Soil.** Antes de sembrar, mira lo que habría pasado, lo que conviene hoy y lo que viene.
+> **From Space to Soil.** Before you plant, see what would have happened, what makes sense today and what is coming.
 
-Plan de ejecución para NASA Space Apps Challenge 2026, sede Arequipa. Reto: **Field Shift: Adapting Farms with NASA Data**. Complementa a `CONTEXTO_RETO.md`, que tiene el detalle del reto, los datos y el motor de cálculo. Aquí no se repite: se decide qué construimos, cómo y en qué orden.
+Execution plan for the NASA Space Apps Challenge 2026, Arequipa venue. Challenge: **Field Shift: Adapting Farms with NASA Data**. It complements `CONTEXTO_RETO.md`, which details the challenge, the data and the calculation engine. That detail is not repeated here: this document decides what we build, how and in what order.
+
+This is the plan written at the start of the hackathon. The README describes what was finally built (for example, the 3D farm simulation and crop associations were added later).
 
 ---
 
-## 1. La idea en una frase
+## 1. The idea in one sentence
 
-FarmTwin es un **gemelo digital de la parcela** en el bolsillo del agricultor. Con datos de la NASA le muestra tres cosas sobre cada rotación posible:
+FarmTwin is a **digital twin of the field** in the farmer's pocket. Using NASA data, it shows three things about every possible rotation:
 
-| Tiempo | Función | Pregunta que responde |
+| Time | Feature | Question it answers |
 | --- | --- | --- |
-| **Pasado** | 🕰️ **Máquina del tiempo** | "Si hubiera sembrado esta rotación los últimos 20 años, ¿cuánta agua habría gastado, cuánto habría ganado y en qué años me habría ido mal?" |
-| **Presente** | 🎙️ **Asistente de campo con IA (voz y foto)** | "Explícame en simple por qué me recomiendas esto." El agricultor habla o toma una foto y recibe la respuesta hablada, en español o inglés. |
-| **Futuro** | 📅 **Calendario vivo y alertas** | "¿Cuándo siembro y cuándo debo cuidarme de la helada o el calor?" Llegan notificaciones push según el cultivo y su etapa. |
+| **Past** | **Time machine** | "If I had planted this rotation over the last 20 years, how much water would I have used, how much would I have earned and in which years would it have gone badly?" |
+| **Present** | **AI field assistant (voice and photo)** | "Explain simply why you recommend this." The farmer speaks or takes a photo and gets a spoken answer, in Spanish or English. |
+| **Future** | **Live calendar and alerts** | "When do I plant, and when should I watch out for frost or heat?" Push notifications arrive according to the crop and its stage. |
 
-El simulador de rotaciones de `CONTEXTO_RETO.md` es el **motor** que alimenta las tres funciones. Las tres usan el mismo cálculo, presentado de tres maneras.
+The rotation simulator in `CONTEXTO_RETO.md` is the **engine** behind all three features. They all use the same calculation, presented in three ways.
 
-### Por qué es innovador (argumentos para el jurado)
+### Why it is innovative (arguments for the judges)
 
-1. **Evidencia en vez de promedios.** Casi todas las herramientas dan un solo número ("la papa necesita X m³"). FarmTwin reproduce **cada año real** de clima NASA desde 2005, incluidos El Niño 2016 y 2023 y las heladas fuertes. Así el agricultor ve el riesgo como algo que vivió ("en 2016 esta rotación te habría dejado sin agua en septiembre") y no como un porcentaje abstracto. Además resuelve la incertidumbre que pide el reto: es un rango que se ve, no una nota al pie.
-2. **IA que no inventa.** El asistente solo cita números que salieron del motor; las cifras le llegan mediante *tool calling*. Si un dato falta, lo dice y recomienda consultar a un experto local. Responde a la frase del reto: "apoya, no reemplaza".
-3. **De herramienta de análisis a compañero de temporada.** La PWA se instala, funciona con mala señal y avisa de forma proactiva. Las herramientas académicas se usan una vez; esta se queda en el celular.
-4. **Pensado para el campo.** Funciona por voz, con botones grandes, sin conexión para lo ya calculado y en dos idiomas (ES/EN).
+1. **Evidence instead of averages.** Most tools give a single number ("potato needs X m³"). FarmTwin replays **every real year** of NASA climate since 2005, including El Niño 2016 and 2023 and the strong frosts. The farmer sees risk as something they lived through ("in 2016 this rotation would have left you without water in September"), not as an abstract percentage. It also addresses the uncertainty the challenge asks for: a range you can see, not a footnote.
+2. **AI that does not make things up.** The assistant only quotes numbers that came out of the engine; it gets them through tool calling. If a value is missing, it says so and recommends asking a local expert. This answers the challenge's phrase: "supports, not replaces".
+3. **From analysis tool to season companion.** The PWA installs, works with poor signal and warns proactively. Academic tools are used once; this one stays on the phone.
+4. **Designed for the field.** Voice input, large buttons, offline access to what was already calculated, and two languages (ES/EN).
 
 ---
 
-## 2. Decisiones tomadas
+## 2. Decisions made
 
-| Tema | Decisión |
+| Topic | Decision |
 | --- | --- |
-| Plataforma | **PWA** instalable, mobile-first (Android de gama baja como referencia) |
-| Stack | **Next.js (App Router) + funciones Python en Vercel** para el motor (pyet, pandas) |
-| Despliegue | **Vercel** (preview por PR y producción en `main`) |
-| Idioma | **Bilingüe ES/EN** con selector visible; español por defecto |
-| IA | Claude a través de **Vercel AI Gateway** con AI SDK |
-| Zona piloto | Irrigación Majes, Arequipa (lat −16.36, lon −72.19) |
-| Equipo | 4 personas con unos 10 agentes, en 4 flujos de trabajo paralelos (sección 8) |
+| Platform | Installable, mobile-first **PWA** (low-end Android as reference) |
+| Stack | **Next.js (App Router) + Python functions on Vercel** for the engine |
+| Deployment | **Vercel** (preview per PR, production on `main`) |
+| Language | **Bilingual ES/EN** with a visible switch; Spanish by default |
+| AI | Claude through **Vercel AI Gateway** with the AI SDK |
+| Pilot area | Majes irrigation district, Arequipa (lat −16.36, lon −72.19) |
+| Team | 4 people with about 10 agents, in 4 parallel workstreams (section 8) |
 
 ---
 
-## 3. Experiencia de usuario (flujo de la demo)
+## 3. User experience (demo flow)
 
 ```
-[Inicio] ──► [1. Mi parcela] ──► [2. Mis recursos y prioridades] ──► [3. Comparar rotaciones]
-                                                                          │
-                       ┌──────────────────────────┬───────────────────────┼───────────────────────┐
-                       ▼                          ▼                       ▼                       ▼
-              [🕰️ Máquina del tiempo]   [🎙️ Pregúntale a FarmTwin]   [📅 Mi calendario]   [📖 ¿Qué significa?]
+[Home] ──► [1. My field] ──► [2. My resources and priorities] ──► [3. Compare rotations]
+                                                                        │
+                    ┌──────────────────────────┬────────────────────────┼─────────────────────┐
+                    ▼                          ▼                        ▼                     ▼
+             [Time machine]            [Ask FarmTwin]             [My calendar]      [What does it mean?]
 ```
 
-1. **Mi parcela.** Mapa Leaflet centrado en Majes. Toco mi parcela o uso "📍 Estoy aquí" (GPS). Encima se ve la capa NDVI de NASA GIBS.
-2. **Mis recursos.** Agua disponible (m³/ha por campaña), sistema de riego (gravedad, aspersión o goteo), textura del suelo (sugerida por SoilGrids y corregible), rotación actual y deslizadores de prioridad: 💧 agua, 💰 ingreso, 🌱 suelo, ⚠️ riesgo.
-3. **Comparar.** Tres tarjetas o más (la actual siempre primero) con agua, ingreso, salud del suelo, riesgo y puntaje. Cada indicador muestra un **rango** (años buenos y malos), no un solo número. Si una rotación supera el agua disponible, se marca **"No viable con tu agua"**.
-   Cada tarjeta tiene cinco secciones: *Por qué se sugiere · Evidencia NASA · Beneficios · Qué falta saber · Qué revisar con un experto*.
-4. **🕰️ Máquina del tiempo** (sección 4.1).
-5. **🎙️ Asistente** (sección 4.2).
-6. **📅 Calendario y alertas** (sección 4.3).
-7. **📖 ¿Qué significa?** Explicaciones de 2 líneas, con ícono, sobre ET, NDVI, humedad del suelo, balance hídrico, riesgo de helada, y sobre la diferencia entre datos satelitales y mediciones en tierra.
+1. **My field.** Leaflet map centred on Majes. I tap my field or use "I'm here" (GPS). The NASA GIBS NDVI layer is shown on top.
+2. **My resources.** Available water (m³/ha per season), irrigation system (furrow, sprinkler or drip), soil texture (suggested by SoilGrids and editable), current rotation and priority sliders: water, income, soil, risk.
+3. **Compare.** Three or more cards (the current rotation always first) with water, income, soil health, risk and score. Every indicator shows a **range** (good and bad years), not a single number. If a rotation exceeds the available water, it is marked **"Not viable with your water"**.
+   Each card has five sections: *Why it is suggested · NASA evidence · Benefits · What we don't know yet · What to check with an expert*.
+4. **Time machine** (section 4.1).
+5. **Assistant** (section 4.2).
+6. **Calendar and alerts** (section 4.3).
+7. **What does it mean?** Two-line explanations with an icon about ET, NDVI, soil moisture, water balance, frost risk, and the difference between satellite data and ground measurements.
 
 ---
 
-## 4. Las tres funciones estrella
+## 4. The three flagship features
 
-### 4.1 🕰️ Máquina del tiempo ("¿Qué habría pasado?")
+### 4.1 Time machine ("What would have happened?")
 
-**Qué ve el agricultor**
-- Un **deslizador de años (2005 a 2025)**. Al moverlo cambian al mismo tiempo:
-  - el **mapa**: capa NDVI de GIBS en esa fecha (parámetro `TIME` de WMTS);
-  - las **tarjetas**: agua, ingreso y riesgo de cada rotación *en ese año*;
-  - una **cinta de 12 meses** por rotación, coloreada por mes: 🟩 bien, 🟨 estrés hídrico, 🟥 helada o calor fuera de rango, ⬜ campo desnudo.
-- Una **"tira de 20 años"** (mapa de calor años × meses) que muestra de un vistazo qué rotación es más estable.
-- **Momentos destacados** generados automáticamente: "2016: el año más seco. La rotación Ingreso habría necesitado +2.300 m³/ha más que el promedio."
-- El botón **"▶ Reproducir"** anima los 20 años en unos 15 segundos. Es el momento fuerte del video de 30 s.
+**What the farmer sees**
+- A **year slider (2005 to 2025)**. Moving it changes, at the same time:
+  - the **map**: GIBS NDVI layer on that date (WMTS `TIME` parameter);
+  - the **cards**: water, income and risk of each rotation *in that year*;
+  - a **12-month strip** per rotation, coloured by month: green ok, yellow water stress, red frost or heat out of range, grey bare field.
+- A **20-year strip** (years × months heat map) that shows at a glance which rotation is most stable.
+- Automatically generated **highlights**: "2016: the driest year. The Income rotation would have needed 2,300 m³/ha more than average."
+- A **Play** button animates the 20 years in about 15 seconds. It is the strongest moment of the 30-second video.
 
-**Cómo se calcula**
-El motor ya calcula por año para obtener el rango de incertidumbre (paso 10 del motor en `CONTEXTO_RETO.md`). La máquina del tiempo **expone ese cálculo año por año** en vez de resumirlo. Casi no cuesta trabajo extra en el backend.
+**How it is calculated**
+The engine already calculates per year to get the uncertainty range (engine step 10 in `CONTEXTO_RETO.md`). The time machine **exposes that calculation year by year** instead of summarising it. It costs almost no extra backend work.
 
-**Datos:** NASA POWER diario (T2M_MAX, T2M_MIN, ALLSKY_SFC_SW_DWN, RH2M, WS2M, PRECTOTCORR, GWETROOT), MODIS NDVI por GIBS (visual) y, si hay tiempo, la serie MOD13Q1 por AppEEARS para detectar meses de campo desnudo de verdad.
+**Data:** daily NASA POWER (T2M_MAX, T2M_MIN, ALLSKY_SFC_SW_DWN, RH2M, WS2M, PRECTOTCORR, GWETROOT), MODIS NDVI through GIBS (visual) and, if time allows, the MOD13Q1 series through AppEEARS to detect truly bare months.
 
-### 4.2 🎙️ Asistente de campo con IA (voz y foto)
+### 4.2 AI field assistant (voice and photo)
 
-**Qué hace**
-- 🎤 **Voz:** botón grande "Mantén para hablar". Usa Web Speech API (`SpeechRecognition` con `es-PE` / `en-US`) y responde en voz con `speechSynthesis`. Si el navegador no tiene reconocimiento de voz, hay un campo de texto.
-- 💬 Preguntas de ejemplo en botones: "¿Por qué no me conviene seguir con alfalfa?", "¿Qué pasa si me dan menos agua?", "¿Cuándo es peligroso sembrar papa?".
-- 📷 **Foto del campo** (opcional): Claude con visión describe lo que ve (campo desnudo, cobertura, etapa aproximada) y lo cruza con la rotación. **No diagnostica plagas ni enfermedades**; ese tipo de preguntas las deriva a un experto.
+**What it does**
+- **Voice:** a large "Hold to talk" button. It uses the Web Speech API (`SpeechRecognition` with `es-PE` / `en-US`) and answers aloud with `speechSynthesis`. If the browser has no speech recognition, there is a text field.
+- Sample questions as buttons: "Why shouldn't I keep growing alfalfa?", "What if I get less water?", "When is it dangerous to plant potato?".
+- **Field photo** (optional): Claude with vision describes what it sees (bare field, cover, approximate stage) and relates it to the rotation. **It does not diagnose pests or diseases**; it refers those questions to an expert.
 
-**Por qué no alucina (punto clave del pitch)**
-- AI SDK con **herramientas** que llaman al motor: `simularRotacion`, `consultarAño`, `explicarTermino`, `cambiarPrioridades`.
-- El *system prompt* exige que **toda cifra venga de una herramienta**, que cite la fuente ("según NASA POWER 2005 a 2025") y que cierre con "Revísalo con tu técnico agrario", cuando corresponda.
-- El asistente puede **mover la interfaz**. Por ejemplo, "¿qué pasa si tengo 20 % menos agua?" ajusta el campo de agua y la comparación se recalcula en pantalla.
+**Why it does not hallucinate (key pitch point)**
+- AI SDK with **tools** that call the engine: `simularRotacion`, `consultarAño`, `explicarTermino`, `cambiarPrioridades`.
+- The system prompt requires that **every number comes from a tool**, that it cites the source ("according to NASA POWER 2005 to 2025") and that it closes with "Check it with your agricultural technician" when relevant.
+- The assistant can **drive the interface**. For example, "what if I have 20% less water?" adjusts the water field and the comparison is recalculated on screen.
 
-**Técnico:** Route Handler de Next.js con `streamText`, el modelo Claude por AI Gateway (por ejemplo, `anthropic/claude-sonnet-5.5`; confirmar el id exacto en el Gateway) y el idioma de la interfaz pasado al prompt.
+**Technical:** Next.js Route Handler with `streamText`, a Claude model through AI Gateway (for example `anthropic/claude-sonnet-5.5`; confirm the exact id in the Gateway) and the interface language passed to the prompt.
 
-### 4.3 📅 Calendario vivo y alertas
+### 4.3 Live calendar and alerts
 
-**Qué ve el agricultor**
-- Un calendario anual por rotación con las ventanas de siembra recomendadas, las etapas del cultivo (Kc inicial, medio y final) y las **semanas de riesgo climatológico**. Por ejemplo: "Semanas 26 a 30: 35 % de los años tuvieron helada < 0 °C (NASA POWER)".
-- Al activar "🔔 Avísame" (con permiso de notificaciones):
-  - **Alertas climatológicas (100 % NASA):** "Tu papa entra a floración. Históricamente, esta semana tiene un riesgo alto de helada."
-  - **Alertas de pronóstico (opcional):** un cron diario consulta el pronóstico de 3 días y avisa si viene helada o calor fuera del rango del cultivo. El pronóstico **no es de NASA** (POWER no pronostica): se usa una fuente abierta como Open-Meteo y se declara así en la entrega.
+**What the farmer sees**
+- A yearly calendar per rotation with the recommended sowing windows, the crop stages (initial, mid and late Kc) and the **climatological risk weeks**. For example: "Weeks 26 to 30: 35% of years had frost below 0 °C (NASA POWER)".
+- After turning on "Notify me" (with notification permission):
+  - **Climatological alerts (100% NASA):** "Your potato is entering flowering. Historically, this week has a high frost risk."
+  - **Forecast alerts (optional):** a daily cron checks the 3-day forecast and warns if frost or heat outside the crop's range is coming. The forecast is **not from NASA** (POWER does not forecast): an open source such as Open-Meteo would be used and declared in the submission.
 
-**Técnico:** Web Push con claves VAPID y el service worker de la PWA. Un Vercel Cron diario recorre las suscripciones, que se guardan en una base KV o Redis provista desde el Marketplace de Vercel. En iOS, el push solo funciona si la PWA está instalada en la pantalla de inicio; para la demo se usa Android.
+**Technical:** Web Push with VAPID keys and the PWA service worker. A daily Vercel Cron goes through the subscriptions, stored in a Vercel-provided store. On iOS, push only works if the PWA is installed on the home screen; the demo uses Android.
 
 ---
 
-## 5. Arquitectura
+## 5. Architecture
 
 ```
 ┌───────────────────────── PWA (Next.js, Vercel) ─────────────────────────┐
-│  app/[locale]/…  UI: mapa Leaflet + GIBS, tarjetas, máquina del tiempo,  │
-│                  calendario, asistente (voz/foto)                         │
-│  Service worker: caché offline + recepción de push                        │
+│  app/[locale]/…  UI: Leaflet map + GIBS, cards, time machine,            │
+│                  calendar, assistant (voice/photo)                        │
+│  Service worker: offline cache + push reception                           │
 │  app/api/chat        → AI SDK + AI Gateway (Claude) + tools               │
-│  app/api/push/*      → suscribir / probar notificación                    │
-│  app/api/cron/alerts → cron diario de alertas                             │
+│  app/api/push/*      → subscribe / test notification                      │
+│  app/api/cron/alerts → daily alerts cron                                  │
 └──────────────┬──────────────────────────────────────────────────────────┘
-               │ JSON (contrato en sección 6)
-┌──────────────▼───────────── Funciones Python (Vercel) ────────────────────┐
-│  api/py/simulate   → motor: POWER → ET0 (pyet) → ETc → riego → puntajes    │
-│  api/py/climate    → climatología: heladas/calor por semana                │
+               │ JSON (contract in section 6)
+┌──────────────▼───────────── Python functions (Vercel) ────────────────────┐
+│  api/py/simulate   → engine: POWER → ET0 → ETc → irrigation → scores       │
+│  api/py/climate    → climatology: frost/heat per week                      │
 │  engine/  power.py · et0.py · crops.py · rotation.py · score.py            │
 │  data/    crops.json · rotations_majes.json · power_cache/*.json           │
 └──────────────┬──────────────────────────────────────────────────────────┘
@@ -128,14 +130,14 @@ El motor ya calcula por año para obtener el rango de incertidumbre (paso 10 del
    NASA POWER API · NASA GIBS (WMTS) · SoilGrids · (AppEEARS) · (Open-Meteo)
 ```
 
-**Decisiones técnicas importantes**
-- **Caché de POWER en el repo.** Antes de la demo se descargan y versionan 20 años de datos para 5 a 10 puntos de Majes (`data/power_cache/`). En vivo se usa la API real y, si falla o tarda, se cae al caché. **La demo no depende del wifi de la sede.**
-- **Offline:** el service worker guarda la interfaz, el último resultado de simulación y los textos de "¿Qué significa?". El asistente y las alertas sí necesitan red.
-- **Python y Next en el mismo proyecto de Vercel.** Las funciones Python van en `api/py/` (en la raíz). Hay que verificarlo en el primer despliegue (hora 2). **Plan B:** un segundo proyecto de Vercel solo con FastAPI, llamado desde Next mediante una variable de entorno `ENGINE_URL`.
-- **i18n:** `next-intl` con rutas `/es` y `/en`. Los textos de explicación viven en `messages/{es,en}.json`, y los mensajes que genera el motor salen como claves más parámetros, no como texto fijo.
-- **PWA:** `manifest.webmanifest`, íconos y un service worker con Serwist (o uno escrito a mano si da problemas con la versión de Next).
+**Key technical decisions**
+- **POWER cache in the repo.** Before the demo, 20 years of data are downloaded and versioned for the points around Majes (`data/power_cache/`). Live, the real API is used and, if it fails or is slow, the app falls back to the cache. **The demo does not depend on the venue's wifi.**
+- **Offline:** the service worker stores the interface, the last simulation result and the "What does it mean?" texts. The assistant and alerts need a connection.
+- **Python and Next in the same Vercel project.** Python functions live in `api/py/` (at the root). To be verified on the first deploy (hour 2). **Plan B:** a second Vercel project with FastAPI only, called from Next through an `ENGINE_URL` environment variable.
+- **i18n:** `/es` and `/en` routes. Explanation texts live in `messages/{es,en}.json`, and engine-generated messages come as keys plus parameters, not fixed text.
+- **PWA:** web manifest, icons and a service worker.
 
-### Estructura del repo
+### Repository structure (as planned)
 
 ```
 Quasaris/
@@ -147,31 +149,32 @@ Quasaris/
 ├─ api/py/ (simulate.py, climate.py)
 ├─ engine/ (power.py, et0.py, crops.py, rotation.py, score.py, tests/)
 ├─ data/ (crops.json, rotations_majes.json, power_cache/)
-├─ public/ (manifest.webmanifest, icons/)
+├─ public/ (manifest, icons/)
 ├─ scripts/ (fetch_power_cache.py, validate_senamhi.py)
-├─ docs/ (DATA_SOURCES.md, AI_USAGE.md, PITCH.md)
-├─ CONTEXTO_RETO.md · PLAN.md · README.md · requirements.txt · vercel.ts
+├─ docs/ (DATA_SOURCES.md, AI_USAGE.md, VALIDATION.md)
+├─ CONTEXTO_RETO.md · PLAN.md · README.md · requirements.txt · vercel.json
 ```
 
 ---
 
-## 6. Contrato entre módulos (se congela en la hora 2)
+## 6. Contract between modules (frozen at hour 2)
 
-Es lo que permite que 10 agentes trabajen en paralelo sin pisarse. Vive en `lib/contract.ts` y en `engine/schema.py` (Pydantic) **con los mismos nombres de campos**.
+This is what lets 10 agents work in parallel without stepping on each other. It lives in `lib/contract.ts` and in `engine/schema.py` (Pydantic) **with the same field names**. Spanish enum values are part of the API.
 
 ```ts
 // POST /api/py/simulate
 type SimulateRequest = {
   lat: number; lon: number;
-  soilTexture: "arenoso" | "franco" | "arcilloso";
-  irrigation: "gravedad" | "aspersion" | "goteo";
-  waterAvailableM3ha: number;               // por campaña anual
+  soilTexture: "arenoso" | "franco" | "arcilloso";   // sandy | loam | clay
+  irrigation: "gravedad" | "aspersion" | "goteo";    // furrow | sprinkler | drip
+  waterAvailableM3ha: number;               // per yearly season
   priorities: { water: number; income: number; soil: number; risk: number }; // 0..1
-  rotations: Rotation[];                    // [actual, ...alternativas]
+  rotations: Rotation[];                    // [current, ...alternatives]
   years?: [number, number];                 // default [2005, 2025]
   locale: "es" | "en";
 };
 type Rotation = { id: string; name: string; isCurrent: boolean;
+  mode?: "rotation" | "association";        // added later: intercropping
   crops: { cropId: string; sowMonth: number }[] };
 
 type SimulateResponse = {
@@ -181,8 +184,8 @@ type SimulateResponse = {
 type RotationResult = {
   id: string; viable: boolean; score: number;            // 0..1
   water:  Stat; income: Stat; soil: number; risk: Stat;  // soil 0..1
-  byYear: YearResult[];                                   // ← Máquina del tiempo
-  months: MonthStatus[];                                  // 12 meses típicos
+  byYear: YearResult[];                                   // ← time machine
+  months: MonthStatus[];                                  // 12 typical months
   highlights: { year: number; key: string; params: Record<string, number> }[];
   explain: { whyKey: string; evidence: string[]; benefits: string[];
              missing: string[]; reviewWithExpert: string[] };
@@ -194,142 +197,142 @@ type MonthStatus = "ok" | "water_stress" | "climate_risk" | "bare";
 ```
 
 ```ts
-// GET /api/py/climate?lat&lon  → calendario y alertas
+// GET /api/py/climate?lat&lon  → calendar and alerts
 type ClimateResponse = { weeks: { week: number; pFrost: number; pHeat: number;
   et0MeanMm: number }[] };
 ```
 
-Mientras el motor no esté listo, el frontend trabaja con un **mock** (`data/mock_simulate.json`) que cumple este contrato.
+While the engine was not ready, the frontend worked with a **mock** (`data/mock_simulate.json`) that follows this contract.
 
 ---
 
-## 7. Alcance por prioridad
+## 7. Scope by priority
 
-| Prioridad | Qué | Responsable |
+| Priority | What | Owner |
 | --- | --- | --- |
-| **P0: sin esto no hay demo** | Mapa y selección de parcela · motor POWER→ET0→agua · 3 rotaciones comparadas con rango · deslizadores y agua disponible · "No viable" · PWA instalable · ES/EN · desplegado en Vercel | A + B |
-| **P1: lo que nos diferencia** | Máquina del tiempo (deslizador, cinta de meses, tira de 20 años, reproducción) · asistente por texto con herramientas · capa NDVI de GIBS con tiempo · "Qué revisar con un experto" | A + B + C |
-| **P2: lo que impresiona** | Voz (hablar y escuchar) · calendario climatológico · push "Avísame" con alerta de prueba · validación POWER frente a SENAMHI · explicaciones "¿Qué significa?" | B + C + D |
-| **P3: si sobra tiempo** | Foto del campo con visión · alertas de pronóstico con cron · NDVI por parcela con AppEEARS/HLS (campo desnudo real) · SoilGrids automático | C + A |
-| **Solo visión (pitch)** | Junta de usuarios: agua compartida entre parcelas · quechua · conexión con AUTODEMA y SENAMHI | D |
+| **P0: no demo without it** | Map and field selection · POWER→ET0→water engine · 3 rotations compared with a range · sliders and available water · "Not viable" · installable PWA · ES/EN · deployed on Vercel | A + B |
+| **P1: what sets us apart** | Time machine (slider, month strip, 20-year strip, playback) · text assistant with tools · time-enabled GIBS NDVI layer · "What to check with an expert" | A + B + C |
+| **P2: what impresses** | Voice (speak and listen) · climatological calendar · "Notify me" push with test alert · POWER vs SENAMHI validation · "What does it mean?" explanations | B + C + D |
+| **P3: if there is time** | Field photo with vision · forecast alerts with cron · field-level NDVI with AppEEARS/HLS (real bare months) · automatic SoilGrids | C + A |
+| **Vision only (pitch)** | Users' board: water shared between fields · Quechua · connection with AUTODEMA and SENAMHI | D |
 
-**Regla de corte:** si a la mitad del tiempo el P0 no está desplegado y estable, se congelan P2 y P3 y todos pasan a cerrar P0 y P1.
+**Cut rule:** if P0 is not deployed and stable halfway through, P2 and P3 are frozen and everyone works on closing P0 and P1.
 
 ---
 
-## 8. Equipo: 4 flujos de trabajo y ~10 agentes
+## 8. Team: 4 workstreams and ~10 agents
 
-Cada persona supervisa uno o varios flujos, revisa los PRs de sus agentes y es la **única que toca su contrato**. Los agentes trabajan en ramas propias (`feat/<flujo>-<tarea>`) o en *worktrees* aislados y entran a `main` mediante PR con preview de Vercel.
+Each person supervises one or more workstreams, reviews their agents' changes and is the **only one who touches their contract**. Agents work on their own branches (`feat/<stream>-<task>`) or isolated worktrees.
 
-| Flujo | Persona | Agentes sugeridos (≈10 en total) | Archivos que le pertenecen |
+| Workstream | Person | Suggested agents (≈10 total) | Files it owns |
 | --- | --- | --- | --- |
-| **A. Motor y datos (Python)** | Persona A | **A1** descarga POWER y caché · **A2** ET0, ETc y riego con tests · **A3** puntaje, suelo, riesgo, `byYear` y textos de "explain" | `engine/`, `api/py/`, `data/`, `scripts/` |
-| **B. PWA y visualización** | Persona B | **B1** shell, PWA, i18n y diseño · **B2** mapa con GIBS, selección y GPS · **B3** tarjetas y gráficos de comparación · **B4** máquina del tiempo | `app/[locale]/`, `components/`, `messages/` |
-| **C. IA y alertas** | Persona C | **C1** asistente: AI SDK, herramientas, voz y foto · **C2** push, cron y calendario | `app/api/chat`, `app/api/push`, `app/api/cron`, `components/assistant`, `components/calendar` |
-| **D. Ciencia, contenido y pitch** | Persona D | Agente de apoyo (puede ser el 10.º o compartido) para tabla de cultivos con fuentes, explicaciones ES/EN, `DATA_SOURCES.md` y `AI_USAGE.md` | `docs/`, `data/crops.json` (en conjunto con A) |
+| **A. Engine and data (Python)** | Person A | **A1** POWER download and cache · **A2** ET0, ETc and irrigation with tests · **A3** score, soil, risk, `byYear` and "explain" texts | `engine/`, `api/py/`, `data/`, `scripts/` |
+| **B. PWA and visualisation** | Person B | **B1** shell, PWA, i18n and design · **B2** map with GIBS, selection and GPS · **B3** comparison cards and charts · **B4** time machine | `app/[locale]/`, `components/`, `messages/` |
+| **C. AI and alerts** | Person C | **C1** assistant: AI SDK, tools, voice and photo · **C2** push, cron and calendar | `app/api/chat`, `app/api/push`, `app/api/cron`, `components/assistant`, `components/calendar` |
+| **D. Science, content and pitch** | Person D | Support agent for the crop table with sources, ES/EN explanations, `DATA_SOURCES.md` and `AI_USAGE.md` | `docs/`, `data/crops.json` (together with A) |
 
-**Primer prompt de cada agente:** "Lee `CONTEXTO_RETO.md`, `PLAN.md` (secciones 5 a 7) y `lib/contract.ts`. Tu tarea es X. Solo modifica estos archivos: Y. Cumple el contrato; si necesitas cambiarlo, detente y avisa."
+**First prompt for each agent:** "Read `CONTEXTO_RETO.md`, `PLAN.md` (sections 5 to 7) and `lib/contract.ts`. Your task is X. Only change these files: Y. Respect the contract; if you need to change it, stop and tell us."
 
-**Persona D, además:** contacta a un agrónomo (UCSM o INIA) para validar las rotaciones, consigue la estación SENAMHI de referencia (Majes / Pampa de Majes), arma el video y las diapositivas y lleva el control de tiempos.
+**Person D also:** contacts an agronomist (UCSM or INIA) to validate the rotations, gets the reference SENAMHI station (Pampa de Majes), produces the video and slides and keeps track of time.
 
 ---
 
-## 9. Cronograma (≈36 h; ajustar a la hora oficial de entrega)
+## 9. Schedule (≈36 h; adjust to the official submission time)
 
-| Bloque | Horas | A. Motor | B. PWA | C. IA y alertas | D. Ciencia y pitch |
+| Block | Hours | A. Engine | B. PWA | C. AI and alerts | D. Science and pitch |
 | --- | --- | --- | --- | --- | --- |
-| **0. Arranque** | 0 a 2 | `engine/` vacío y endpoint "hola" en Vercel | Next + PWA + i18n desplegados | Cuenta de AI Gateway y prueba de `streamText` | Cuenta Earthdata, Resources del reto, agrónomo |
-| **1. Contrato** | 2 | **Se congela `contract.ts` y `schema.py` y se crea el mock** (todos) | | | |
-| **2. Núcleo** | 2 a 10 | POWER y caché, ET0, agua por rotación | Mapa, formulario, tarjetas con mock | Herramientas del asistente sobre el mock | Tabla de cultivos con fuentes, rotaciones |
-| **3. Integración P0** | 10 a 14 | `/simulate` real con `byYear` | Conectar al motor real | Chat por texto en la UI | Explicaciones ES/EN |
-| ✅ **Hito P0** | 14 | **Demo de punta a punta desplegada** | | | |
-| **4. Diferenciadores** | 14 a 24 | Riesgo, suelo, `highlights`, `/climate` | Máquina del tiempo y NDVI con tiempo | Voz, calendario y push | Validación SENAMHI (gráfico) |
-| ✅ **Hito P1** | 24 | **Todo P1 en producción** | | | |
-| **5. Pulido y P2/P3** | 24 a 30 | Tests, casos borde, caché completo | Rendimiento, offline, accesibilidad | Foto o cron de pronóstico (si hay tiempo) | Guion, grabación del video |
-| **6. Congelado** | 30 a 33 | Solo corrección de errores | Solo corrección de errores | Solo corrección de errores | Diapositivas, README, declaraciones |
-| **7. Entrega** | 33 a 36 | Ensayo de la demo ×3 · revisar enlaces públicos · enviar | | | |
+| **0. Kick-off** | 0 to 2 | Empty `engine/` and "hello" endpoint on Vercel | Next + PWA + i18n deployed | AI Gateway account and `streamText` test | Earthdata account, challenge Resources, agronomist |
+| **1. Contract** | 2 | **Freeze `contract.ts` and `schema.py` and create the mock** (everyone) | | | |
+| **2. Core** | 2 to 10 | POWER and cache, ET0, water per rotation | Map, form, cards with mock | Assistant tools on the mock | Crop table with sources, rotations |
+| **3. P0 integration** | 10 to 14 | Real `/simulate` with `byYear` | Connect to the real engine | Text chat in the UI | ES/EN explanations |
+| **P0 milestone** | 14 | **End-to-end demo deployed** | | | |
+| **4. Differentiators** | 14 to 24 | Risk, soil, `highlights`, `/climate` | Time machine and time-enabled NDVI | Voice, calendar and push | SENAMHI validation (chart) |
+| **P1 milestone** | 24 | **All of P1 in production** | | | |
+| **5. Polish and P2/P3** | 24 to 30 | Tests, edge cases, full cache | Performance, offline, accessibility | Photo or forecast cron (if time) | Script, video recording |
+| **6. Freeze** | 30 to 33 | Bug fixes only | Bug fixes only | Bug fixes only | Slides, README, declarations |
+| **7. Submission** | 33 to 36 | Rehearse the demo ×3 · check public links · submit | | | |
 
 ---
 
-## 10. Datos usados (para declarar en la entrega)
+## 10. Data used (to declare in the submission)
 
-| Fuente | Agencia | Uso | Prioridad |
+| Source | Agency | Use | Priority |
 | --- | --- | --- | --- |
-| NASA POWER (comunidad AG, diaria) | NASA | ET0, heladas, calor, lluvia, GWETROOT, máquina del tiempo, calendario | P0 |
-| GIBS: MODIS NDVI (capa con tiempo) | NASA | Mapa y máquina del tiempo (visual) | P1 |
-| GIBS: SMAP humedad del suelo (si hay capa) | NASA | Capa de contexto | P2 |
-| MODIS MOD13Q1 / HLS vía AppEEARS | NASA / USGS / ESA (Sentinel-2) | Meses de campo desnudo por parcela | P3 |
-| SRTM | NASA | Pendiente y erosión | P3 |
-| SoilGrids | ISRIC | Textura sugerida | P2 |
-| FAO-56 (Kc), MIDAGRI, INIA | FAO / Perú | Cultivos, precios, calendarios | P0 |
-| SENAMHI | Perú | Validación de POWER | P2 |
-| Open-Meteo (pronóstico) | No es NASA | Alertas de pronóstico | P3 |
+| NASA POWER (AG community, daily) | NASA | ET0, frost, heat, rain, GWETROOT, time machine, calendar | P0 |
+| GIBS: MODIS NDVI (time-enabled layer) | NASA | Map and time machine (visual) | P1 |
+| GIBS: SMAP soil moisture | NASA | Context layer | P2 |
+| MODIS MOD13Q1 / HLS via AppEEARS | NASA / USGS / ESA (Sentinel-2) | Bare months per field | P3 |
+| SRTM | NASA | Elevation (used for the vertical fusion of POWER cells) | P3 |
+| SoilGrids | ISRIC | Suggested texture | P2 |
+| FAO-56 (Kc), MIDAGRI, INIA | FAO / Peru | Crops, prices, calendars | P0 |
+| SENAMHI | Peru | POWER validation | P2 |
+| Open-Meteo (forecast) | Not NASA | Forecast alerts | P3 |
 
-Los nombres exactos de capas GIBS (NDVI, SMAP) se confirman en Worldview antes de programarlas.
+The final list of what is actually used is in `docs/DATA_SOURCES.md`.
 
 ---
 
-## 11. Cómo cubrimos la rúbrica
+## 11. How we cover the rubric
 
-| Criterio | Evidencia en FarmTwin |
+| Criterion | Evidence in FarmTwin |
 | --- | --- |
-| **Impacto** | m³/ha ahorrados al año entre la rotación actual y la recomendada; meses de campo desnudo evitados; años con pérdida evitados (de la máquina del tiempo) |
-| **Creatividad** | Gemelo digital en pasado, presente y futuro · máquina del tiempo con 20 años reales · IA anclada al motor · alertas proactivas |
-| **Validez** | POWER frente a SENAMHI (gráfico y error), tests del motor contra ejemplos de FAO-56, revisión de un agrónomo con su nombre en la diapositiva |
-| **Pertinencia** | Cubre los cuatro ingredientes del reto (NASA, suelo, cultivo, prioridades), 3 rotaciones o más con la actual, campo desnudo, vulnerabilidad estacional, "qué revisar con un experto" |
-| **Presentación** | Video de 30 s centrado en la máquina del tiempo y la voz; narrativa pasado, presente y futuro |
-| **Diversidad** | Cada flujo (A a D) tiene dueño visible; se explica qué aportó cada persona y cómo coordinamos los agentes de IA |
+| **Impact** | m³/ha saved per year between the current and the recommended rotation; bare months avoided; loss years avoided (from the time machine) |
+| **Creativity** | Digital twin in past, present and future · time machine with 20 real years · AI anchored to the engine · proactive alerts · 3D farm simulation |
+| **Validity** | POWER vs SENAMHI (chart and error), engine tests against FAO-56 examples, review by an agronomist named on the slide |
+| **Relevance** | Covers the four ingredients of the challenge (NASA, soil, crop, priorities), 3 or more rotations including the current one, bare fields, seasonal vulnerability, "what to check with an expert" |
+| **Presentation** | 30-second video; past, present and future narrative |
+| **Diversity** | Each workstream (A to D) has a visible owner; we explain what each person contributed and how we coordinated the AI agents |
 
-Premios globales: **Impacto Local** (Majes y el agua compartida), **Mejor Uso de los Datos** (POWER, GIBS y validación en tierra), **Mejor Uso de la Ciencia** (FAO-56 Penman-Monteith e incertidumbre interanual).
-
----
-
-## 12. Guion de la demo
-
-**Video de 30 s**
-1. (0 a 4 s) Imagen de Majes: "En Majes casi no llueve y el agua es compartida."
-2. (4 a 10 s) Toco la parcela y se comparan 3 rotaciones; "Alfalfa actual: 14.000 m³/ha".
-3. (10 a 20 s) **▶ Máquina del tiempo:** pasan 20 años, el NDVI cambia y 2016 se pone en rojo.
-4. (20 a 27 s) Pregunta por voz: "¿Y si me dan 20 % menos agua?" FarmTwin responde con voz y las tarjetas se recalculan.
-5. (27 a 30 s) Llega la notificación "Helada probable esta semana" y aparece el lema *From Space to Soil*.
-
-**7 diapositivas:** 1 Problema · 2 Solución (pasado, presente, futuro) · 3 Datos NASA y ciencia (ET0 y el diagrama del motor) · 4 Demo (capturas o QR) · 5 Validación (SENAMHI y agrónomo) · 6 Impacto (m³ ahorrados) y visión (junta de usuarios) · 7 Equipo y uso de IA.
-
-Las cifras del guion son de ejemplo y se reemplazan por las que dé el motor.
+Global awards: **Local Impact** (Majes and shared water), **Best Use of Data** (POWER, GIBS and ground validation), **Best Use of Science** (FAO-56 Penman-Monteith and year-to-year uncertainty).
 
 ---
 
-## 13. Riesgos y mitigaciones
+## 12. Demo script (initial draft)
 
-| Riesgo | Mitigación |
+**30-second video**
+1. (0 to 4 s) Image of Majes: "In Majes it barely rains and water is shared."
+2. (4 to 10 s) I tap the field and 3 rotations are compared; "Current alfalfa: 14,000 m³/ha".
+3. (10 to 20 s) **Time machine:** 20 years go by, the NDVI changes and 2016 turns red.
+4. (20 to 27 s) Voice question: "What if I get 20% less water?" FarmTwin answers and the cards are recalculated.
+5. (27 to 30 s) The "Frost likely this week" notification arrives and the tagline *From Space to Soil* appears.
+
+**7 slides:** 1 Problem · 2 Solution (past, present, future) · 3 NASA data and science (ET0 and the engine diagram) · 4 Demo (screenshots or QR) · 5 Validation (SENAMHI and agronomist) · 6 Impact (m³ saved) and vision (users' board) · 7 Team and use of AI.
+
+The numbers in the script are examples and are replaced by the engine's output.
+
+---
+
+## 13. Risks and mitigations
+
+| Risk | Mitigation |
 | --- | --- |
-| La API de POWER es lenta o el wifi falla en la sede | Caché versionado en `data/power_cache/` con respaldo automático; video grabado con antelación |
-| Python dentro del proyecto Next falla en Vercel | Se prueba en la hora 0 a 2; plan B: proyecto FastAPI aparte con `ENGINE_URL` |
-| Web Speech no funciona en el dispositivo de la demo | Campo de texto siempre visible; demo en Chrome Android probado de antemano |
-| El asistente inventa cifras | Solo usa herramientas, el prompt lo prohíbe y se prueban 10 preguntas trampa antes de la entrega |
-| Push en iOS | La demo se hace en Android; en iOS se explica que hay que instalar la PWA |
-| Valores de cultivos o precios dudosos | Cada valor lleva su fuente en `crops.json`; la interfaz muestra "dato aproximado, validar" |
-| Conflictos entre 10 agentes | Contrato congelado, carpetas con dueño, PRs pequeños, un integrador por flujo |
-| Falta de tiempo | Regla de corte de la sección 7; P0 siempre desplegado |
+| The POWER API is slow or the venue wifi fails | Versioned cache in `data/power_cache/` with automatic fallback; video recorded in advance |
+| Python inside the Next project fails on Vercel | Tested in hours 0 to 2; plan B: separate FastAPI project with `ENGINE_URL` |
+| Web Speech does not work on the demo device | Text field always visible; demo on Chrome Android tested beforehand |
+| The assistant makes up numbers | It only uses tools, the prompt forbids it, and 10 trick questions are tested before submission |
+| Push on iOS | The demo is on Android; on iOS we explain that the PWA must be installed |
+| Doubtful crop or price values | Each value carries its source in `crops.json`; the interface shows "approximate value, to validate" |
+| Conflicts between 10 agents | Frozen contract, folders with owners, small changes, one integrator per workstream |
+| Running out of time | Cut rule in section 7; P0 always deployed |
 
 ---
 
-## 14. Entregables
+## 14. Deliverables
 
-- [ ] App en producción en Vercel (URL pública, instalable)
-- [ ] Repositorio público `Seb0401/Quasaris` con README (qué es, cómo correrlo, capturas)
-- [ ] `docs/DATA_SOURCES.md`: datos NASA y de agencias socias usados
-- [ ] `docs/AI_USAGE.md`: uso de IA en el desarrollo (agentes) y en el producto (asistente)
-- [ ] Video de ≤ 30 s y/o 7 diapositivas
-- [ ] Todos los enlaces públicos y verificados desde una ventana de incógnito
+- [ ] App in production on Vercel (public URL, installable)
+- [ ] Public repository `Seb0401/Quasaris` with README (what it is, how to run it, screenshots)
+- [ ] `docs/DATA_SOURCES.md`: NASA and partner-agency data used
+- [ ] `docs/AI_USAGE.md`: AI use in development (agents) and in the product (assistant)
+- [ ] Video of 30 s or less and/or 7 slides
+- [ ] All links public and checked from an incognito window
 
 ---
 
-## 15. Preguntas abiertas (responder en la hora 0)
+## 15. Open questions (answer at hour 0)
 
-1. ¿Cuál es la **hora exacta de entrega** el 15/11? Con eso se ajusta el cronograma.
-2. ¿**Quién es A, B, C y D**? (nombre, fortaleza)
-3. ¿Hay un **agrónomo** disponible (UCSM o INIA) para validar rotaciones y cifras?
-4. ¿Ya tienen **cuenta Earthdata**? (AppEEARS la necesita y puede tardar en procesar)
-5. ¿Existe ya un **equipo o proyecto en Vercel** para conectar el repo y activar AI Gateway?
-6. ¿Qué **celular Android** se usará para la demo de voz y push?
+1. What is the **exact submission time** on 15 November? The schedule is adjusted to it.
+2. **Who are A, B, C and D?** (name, strength)
+3. Is an **agronomist** available (UCSM or INIA) to validate rotations and numbers?
+4. Do we already have an **Earthdata account**? (AppEEARS needs it and processing can take time)
+5. Is there already a **Vercel team or project** to connect the repo and enable AI Gateway?
+6. Which **Android phone** will be used for the voice and push demo?

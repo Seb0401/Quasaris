@@ -1,52 +1,79 @@
-# 🛰️🌱 Quasaris FarmTwin
+# Quasaris FarmTwin
 
-**From Space to Soil.** PWA bilingüe (ES/EN) que ayuda a los agricultores de la irrigación Majes (Arequipa, Perú) a comparar rotaciones de cultivo con datos de la NASA antes de sembrar.
+**From Space to Soil.** A bilingual (Spanish/English) Progressive Web App that helps farmers in the Majes irrigation district (Arequipa, Peru) compare crop rotations with NASA data before they plant.
 
-NASA Space Apps Challenge 2026 · reto **Field Shift: Adapting Farms with NASA Data** · equipo Quasaris.
+NASA Space Apps Challenge 2026 · challenge **Field Shift: Adapting Farms with NASA Data** · team Quasaris.
 
-🔗 **App:** https://quasaris-farmtwin.vercel.app
+**Live app:** https://quasaris-farmtwin.vercel.app
 
-> **English summary.** FarmTwin is a bilingual Progressive Web App for farmers in the Majes irrigation district (Arequipa, Peru). The farmer taps their field and enters their water, irrigation system, soil and priorities. The app then compares crop rotations using 21 years of daily NASA POWER climate, adjusted to the field's real altitude with NASA SRTM terrain data. For each rotation it estimates water (FAO-56 Penman-Monteith), income, soil health and climate risk, shown as a range across years rather than a single number. A **time machine** replays every rotation over 2005–2025 next to monthly MODIS NDVI from NASA GIBS. A **live calendar** shows weekly frost, heat and water demand and sends push alerts. It supports the farmer's judgment and does not replace it.
+## Summary
 
-## Qué hace
+The farmer marks their field on a satellite map (or draws its outline) and enters their water allocation, irrigation system, soil and priorities. FarmTwin then compares crop rotations, including the one the farmer grows today, using 21 years of daily NASA POWER climate adjusted to the field's real altitude with NASA SRTM terrain data. For each rotation it estimates water demand (FAO-56 Penman-Monteith), income, soil health and climate risk, shown as a range across years instead of a single number.
 
-| Pantalla | Para qué sirve |
+The app is organised around **past, present and future**:
+
+- **Past:** a time machine replays every rotation over 2005–2025 next to monthly MODIS NDVI from NASA GIBS.
+- **Present:** a live calendar shows this week's frost, heat and water demand and sends push alerts.
+- **Future:** a 3D farm simulation and an AI assistant let the farmer test a season before sowing it.
+
+FarmTwin supports the judgment of the farmer and the local agronomist. It does not replace it.
+
+## Features
+
+| Screen | What it does |
 | --- | --- |
-| 📍 **Mi parcela** | Elegir la parcela en un mapa satelital con NDVI de la NASA, y cargar agua disponible, riego, suelo y prioridades |
-| ⚖️ **Comparar** | 3 rotaciones (incluida la actual) con agua, ingreso, salud del suelo, riesgo, meses típicos, "no viable con tu agua" y qué revisar con un experto |
-| 🕰️ **Máquina del tiempo** | Qué habría pasado con cada rotación en cada año entre 2005 y 2025, con reproducción animada, gráfico por año, tira de 21 años y NDVI de ese mes |
-| 📅 **Calendario** | Ciclo y etapas de cada cultivo, riesgo semanal de helada y calor, riego de la semana y alertas push |
+| **My field** | Full-screen satellite map with NASA NDVI and SMAP layers, place search (local zones, coordinates or OpenStreetMap), and a tool to draw the field outline and measure its area. Floating panels for water, irrigation, soil (ISRIC SoilGrids) and priorities. |
+| **Compare** | At least 3 rotations (including the current one) with water, income, soil health, climate risk, typical months, "not viable with your water" and what to check with an expert. |
+| **Time machine** | What each rotation would have produced in every year from 2005 to 2025, with animated playback, a per-year chart, a 21-year strip and that month's NDVI. |
+| **Farm** | A 3D digital twin of the farm. The farmer paints crops on plots, plays a full year month by month and sees growth, water stress, frost, heat waves and alerts. Supports intercropping (associations such as the *milpa*). |
+| **Calendar** | Crop cycles and stages, weekly frost and heat risk, this week's irrigation and push alerts. |
+| **Assistant** | AI chat with voice dictation and photo upload. It answers with numbers that come only from the engine through tool calls. |
+| **My rotations / Groupings** | Build custom rotations or crop associations and compare them on every screen. |
+| **My plan** | A printable farm plan (PDF) with the chosen rotation, calendar and risks. |
+| **What does it mean?** | Plain-language explanations of evapotranspiration, NDVI, soil moisture, frost risk and water balance. |
 
-## Cómo funciona
+## How it works
 
 ```
-Parcela (lat, lon) ──► SRTM: altitud real ──► elige 2 celdas NASA POWER que la encierran
-                                                   │  interpola día a día (2005–2025)
-                                                   ▼
-             ET0 Penman-Monteith FAO-56 ──► ETc = Kc × ET0 ──► riego bruto / eficiencia
-                                                   │
-             heladas y calor por cultivo ──► ingreso ──► salud del suelo (reglas) ──► puntaje según prioridades
-                                                   ▼
-                     resultados por año (máquina del tiempo) + mediana y rango p10–p90
+Field (lat, lon) ──► SRTM: real altitude ──► pick the 2 NASA POWER cells that bracket it
+                                                  │  interpolate day by day (2005–2025)
+                                                  ▼
+          data quality checks (ranges, gaps, spikes, unreliable years)
+                                                  ▼
+          ET0 Penman-Monteith FAO-56 ──► ETc = Kc × ET0 ──► gross irrigation / efficiency
+                                                  │
+          frost and heat per crop ──► income ──► soil health (rules) ──► score by priorities
+                                                  ▼
+                 results per year (time machine) + median and p10–p90 range
 ```
 
-- **Motor:** Python (FastAPI) en `engine/` y `api/py/`, desplegado como función de Vercel.
-- **App:** Next.js 16 (App Router), PWA con offline y push, Leaflet, Recharts.
-- **Datos y validación:** [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) · [`docs/VALIDATION.md`](docs/VALIDATION.md) · uso de IA: [`docs/AI_USAGE.md`](docs/AI_USAGE.md)
+- **Engine:** Python (FastAPI) in `engine/` and `api/py/`, deployed as a Vercel Python function.
+- **App:** Next.js 16 (App Router) PWA with offline mode and push notifications.
+- **Data and validation:** [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) · [`docs/VALIDATION.md`](docs/VALIDATION.md) · AI use: [`docs/AI_USAGE.md`](docs/AI_USAGE.md)
 
-## Pendientes
+## Technology
 
-| Pendiente | Responsable | Detalle |
+| Layer | Tools |
+| --- | --- |
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Leaflet / react-leaflet, Recharts, Three.js / React Three Fiber, lucide-react |
+| Backend and engine | Python 3.12, FastAPI, NumPy, pytest |
+| AI assistant | Vercel AI SDK with tool calling, through Vercel AI Gateway or OpenRouter |
+| Platform | Vercel (Next.js + Python functions, daily cron, Blob storage for push subscriptions), Web Push (VAPID), service worker |
+| Data | NASA POWER, NASA SRTM, NASA GIBS (MODIS NDVI, SMAP L4), ISRIC SoilGrids, FAO-56, MIDAGRI, OpenStreetMap Nominatim, Esri basemaps |
+
+## Open items
+
+| Item | Owner | Detail |
 | --- | --- | --- |
-| Datos SENAMHI Pampa de Majes (116006) | Equipo | Descarga manual; pasos en `docs/VALIDATION.md` §3. Luego: `python scripts/validate_senamhi.py` |
-| Escenario de agua de Majes | Equipo | Confirmar el agua asignada por hectárea y el sistema de riego más común. Hoy: aspersión y 15.000 m³/ha (estimado) en `lib/farm-store.ts` y `scripts/make_mock.py` |
-| Precios, rendimientos y costos | Agrónomo | Valores estimados en `data/crops.json` |
-| Fechas de siembra de la rotación "Ingreso" | Agrónomo | La papa (agosto, 145 días) se cruza 43 días con el maíz chala sembrado en diciembre; el editor `/rotaciones` lo marca. Ajustar en `data/rotations_majes.json` |
-| Completar `docs/AI_USAGE.md` | Equipo | Secciones marcadas con ✏️ |
+| SENAMHI Pampa de Majes data (station 116006) | Team | Manual download; steps in `docs/VALIDATION.md` §3. Then run `python scripts/validate_senamhi.py` |
+| Majes water scenario | Team | Confirm the water allocated per hectare and the most common irrigation system. Defaults: sprinkler and 15,000 m³/ha (estimate) in `lib/farm-store.ts` and `scripts/make_mock.py` |
+| Prices, yields and costs | Agronomist | Estimated values in `data/crops.json` |
+| Sowing dates of the "Income" rotation | Agronomist | Potato (August, 145 days) overlaps maize for 43 days when maize is sown in December; the `/rotaciones` editor flags it. Adjust in `data/rotations_majes.json` |
+| Complete `docs/AI_USAGE.md` | Team | Sections marked **TODO** |
 
-## Correr en local
+## Run locally
 
-Requisitos: Node 22 o superior y Python 3.12 o superior.
+Requirements: Node 22 or later and Python 3.12 or later.
 
 ```bash
 npm install
@@ -54,53 +81,57 @@ python -m venv .venv
 # Windows: .venv\Scripts\activate   ·   macOS/Linux: source .venv/bin/activate
 pip install -r requirements-dev.txt
 
-npm run dev:py   # motor Python en http://127.0.0.1:8000 (docs en /api/py/docs)
-npm run dev      # PWA en http://localhost:3000 (reenvía /api/py/* al motor)
+npm run dev:py   # Python engine at http://127.0.0.1:8000 (docs at /api/py/docs)
+npm run dev      # PWA at http://localhost:3000 (proxies /api/py/* to the engine)
 ```
 
-Si el motor no responde, la PWA usa el último resultado guardado y, si no hay ninguno, `data/mock_simulate.json` (una foto del motor real para Majes).
+If the engine does not respond, the PWA uses the last saved result and, if there is none, `data/mock_simulate.json` (a snapshot of the real engine for Majes).
 
-| Script | Qué hace |
+| Script | What it does |
 | --- | --- |
-| `npm run dev` / `npm run build` | PWA Next.js |
-| `npm run dev:py` | Motor FastAPI con recarga automática |
-| `npm run test:py` | Tests del motor (FAO-56, fusión, simulación) y del contrato |
-| `npm run mock` | Regenera `data/mock_simulate.json` con el motor real |
-| `npm run icons` | Regenera los íconos de la PWA |
-| `python scripts/fetch_power_cache.py` | Descarga las celdas NASA POWER alrededor de Majes a `data/power_cache/` |
-| `python scripts/validate_senamhi.py` | Compara NASA POWER con la estación SENAMHI (requiere los CSV) |
+| `npm run dev` / `npm run build` | Next.js PWA |
+| `npm run dev:py` | FastAPI engine with auto-reload |
+| `npm run test:py` | Engine tests (FAO-56, data fusion, quality checks, simulation, associations) and contract tests |
+| `npm run mock` | Regenerates `data/mock_simulate.json` with the real engine |
+| `npm run icons` | Regenerates the PWA icons |
+| `python scripts/fetch_power_cache.py` | Downloads the NASA POWER cells around Majes into `data/power_cache/` |
+| `python scripts/validate_senamhi.py` | Compares NASA POWER with the SENAMHI station (requires the CSV files) |
 
-El service worker y las alertas push solo funcionan en producción (`npm run build && npm start`, o en Vercel).
+The service worker and push alerts only work in production (`npm run build && npm start`, or on Vercel).
 
-### Probar el asistente
+### Try the assistant
 
-Configura `OPENROUTER_API_KEY` o `AI_GATEWAY_API_KEY` en `.env.local`. OpenRouter usa `openrouter/free` por defecto para que el chat funcione sin saldo y puedes cambiarlo con `OPENROUTER_MODEL`, por ejemplo `anthropic/claude-sonnet-4.6` con saldo disponible. AI Gateway usa `anthropic/claude-sonnet-5.5` y acepta `AI_GATEWAY_MODEL`. El modelo elegido debe admitir imágenes y herramientas.
+Set `OPENROUTER_API_KEY` or `AI_GATEWAY_API_KEY` in `.env.local`. OpenRouter uses `openrouter/free` by default so the chat works without credit; change it with `OPENROUTER_MODEL`, for example `anthropic/claude-sonnet-4.6` if you have credit. AI Gateway uses `anthropic/claude-sonnet-5.5` and accepts `AI_GATEWAY_MODEL`. The chosen model must support images and tools.
 
-Abre `/es/asistente` o `/en/asistente`. Prueba la pregunta del 20 % menos de agua y abre **Ver comparación** para comprobar el ajuste. Si el motor Python no está disponible, el chat utiliza el mock y lo identifica como datos de demostración. Si el motor corre en otro proyecto o puerto, configura `ENGINE_URL` en el servidor.
+Open `/es/asistente` or `/en/asistente`. Ask what happens with 20% less water and open **View comparison** to check the adjustment. If the Python engine is not available, the chat uses the mock and labels it as demo data. If the engine runs in another project or port, set `ENGINE_URL` on the server.
 
-El micrófono depende del reconocimiento de voz del navegador. Prueba voz en Chrome Android y una foto JPEG, PNG o WebP desde **Adjuntar foto**.
+The microphone relies on the browser's speech recognition. Test voice in Chrome on Android and a JPEG, PNG or WebP photo through **Attach photo**.
 
-## Estructura
+## Project structure
 
 ```
-app/[locale]/        páginas: parcela, comparar, tiempo, calendario, asistente, aprende
-app/api/             push/subscribe, push/test, cron/alerts
-app/manifest.ts      manifest de la PWA            public/sw.js   service worker (offline y push)
-components/          map/, cards/, timemachine/, calendar/
-lib/                 contract.ts, engine-client.ts, farm-store.ts, crop-calendar.ts, push-server.ts, gibs.ts, i18n.ts
-messages/            textos ES/EN
+app/[locale]/        pages: inicio, parcela, comparar, tiempo, granja, calendario, asistente,
+                     rotaciones, agrupaciones, plan, aprende
+app/api/             chat (assistant + tools), push/subscribe, push/test, cron/alerts
+app/manifest.ts      PWA manifest              public/sw.js   service worker (offline and push)
+components/          map/, cards/, timemachine/, calendar/, granja/
+lib/                 contract.ts, engine-client.ts, farm-store.ts, granja-store.ts, granja-sim.ts,
+                     crop-calendar.ts, push-server.ts, gibs.ts, geo.ts, i18n.ts
+messages/            Spanish and English UI text
 api/py/index.py      FastAPI: /api/py/health · /api/py/simulate · /api/py/climate
-engine/              schema, power (POWER + fusión SRTM), elevation, et0, crops, rotation, simulate, tests/
-data/                crops.json, rotations_majes.json, mock_simulate.json, power_cache/, senamhi/
+engine/              schema, power (POWER + SRTM fusion), quality, elevation, et0, crops,
+                     rotation, simulate, tests/
+data/                crops.json, rotations_majes.json, mock_simulate.json, power_cache/,
+                     soilgrids/, senamhi/
 docs/                DATA_SOURCES.md, AI_USAGE.md, VALIDATION.md
 ```
 
-## Despliegue
+## Deployment
 
-El proyecto de Vercel `quasaris-farmtwin` está enlazado a este repo: **cada push a `main` despliega a producción** y cada rama tiene su preview. `vercel.json` envía `/api/py/*` a la función Python y programa el cron diario de alertas (12:00 UTC).
+The Vercel project `quasaris-farmtwin` is linked to this repository: **every push to `main` deploys to production** and every branch gets a preview. `vercel.json` routes `/api/py/*` to the Python function and schedules the daily alerts cron (12:00 UTC).
 
-Variables de entorno (ya configuradas en Vercel): `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `CRON_SECRET` y `BLOB_READ_WRITE_TOKEN` (almacén Blob privado para las suscripciones).
+Environment variables (already set on Vercel): `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `CRON_SECRET` and `BLOB_READ_WRITE_TOKEN` (private Blob store for push subscriptions), plus the assistant keys above.
 
-## Para los agentes
+## For coding agents
 
-> Lee `CONTEXTO_RETO.md`, `PLAN.md` (§4 a §8), `README.md` y `lib/contract.ts`. Solo modifica los archivos de tu tarea. Cumple el contrato (`lib/contract.ts` ↔ `engine/schema.py`); si necesitas cambiarlo, detente y avisa. Corre `npm run build`, `npx eslint .` y `npm run test:py` antes de subir.
+> Read `CONTEXTO_RETO.md`, `PLAN.md` (§4 to §8), `README.md` and `lib/contract.ts`. Only change the files of your task. Respect the contract (`lib/contract.ts` ↔ `engine/schema.py`); if you need to change it, stop and tell the team. Run `npm run build`, `npx eslint .` and `npm run test:py` before pushing.

@@ -1,226 +1,224 @@
-# Contexto del reto: Field Shift (Quasaris FarmTwin)
+# Challenge context: Field Shift (Quasaris FarmTwin)
 
-Documento de contexto para el equipo Quasaris en el NASA Space Apps Challenge 2026, sede Arequipa (UCSM), 14 y 15 de noviembre de 2026.
+Context document for team Quasaris at the NASA Space Apps Challenge 2026, Arequipa venue (UCSM), 14 and 15 November 2026. Written at the start of the hackathon; the README describes what was finally built.
 
-## 1. El reto
+## 1. The challenge
 
-- **Nombre oficial:** Field Shift: Adapting Farms with NASA Data
-- **Nombre en el material local:** Cambio de rumbo: adaptando las granjas con datos de la NASA
-- **Página oficial:** https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/
-- **Dificultad:** intermedio y avanzado
-- **Temas:** ciencias de la Tierra, software, artes y multimedia
+- **Official name:** Field Shift: Adapting Farms with NASA Data
+- **Name in the local material:** Cambio de rumbo: adaptando las granjas con datos de la NASA
+- **Official page:** https://www.spaceappschallenge.org/2026/challenges/adapting-farms-with-nasa-data/
+- **Difficulty:** intermediate and advanced
+- **Subjects:** Earth science, software, arts and multimedia
 
-### Qué pide
+### What it asks for
 
-Crear una herramienta de apoyo a la decisión (app, modelo, mapa interactivo u otra) que combine cuatro ingredientes para ayudar a los agricultores a explorar estrategias de rotación de cultivos que mejoren la salud del suelo y adapten sus campos a condiciones cambiantes:
+Build a decision-support tool (app, model, interactive map or other) that combines four ingredients to help farmers explore crop rotation strategies that improve soil health and adapt their fields to changing conditions:
 
-1. Observaciones de la Tierra de la NASA
-2. Información local de suelos
-3. Características de los cultivos
-4. Prioridades del agricultor
+1. NASA Earth observations
+2. Local soil information
+3. Crop characteristics
+4. Farmer priorities
 
-### Problema de fondo
+### Underlying problem
 
-Los agricultores enfrentan temperaturas cambiantes, lluvias menos predecibles, escasez de agua, clima extremo y pérdida de salud del suelo. Elegir un cultivo nuevo para una rotación es difícil: uno que mejora el suelo en un lugar puede consumir demasiada agua, traer enfermedades, no tener mercado o no calzar con la temporada en otro.
+Farmers face shifting temperatures, less predictable rain, water scarcity, extreme weather and loss of soil health. Choosing a new crop for a rotation is hard: a crop that improves the soil in one place may use too much water, bring disease, have no market or not fit the season somewhere else.
 
-### Lo que el enunciado sugiere (no obligatorio, pero es lo que el jurado espera)
+### What the brief suggests (not mandatory, but what the judges expect)
 
-- Comparar **al menos tres rotaciones, incluida la actual** del agricultor.
-- Para cada rotación explicar: por qué se sugiere, qué evidencia la respalda, qué beneficios ofrece, qué información falta y qué riesgos debe revisar un agricultor o experto local.
-- Mostrar cuándo los campos suelen estar desnudos y en qué temporadas los cultivos actuales son más vulnerables.
-- Señalar oportunidades de rotación que corten ciclos de plagas, reduzcan la demanda de agua, mejoren la infiltración o sumen ingresos.
-- Analizar con datos de la NASA: temperatura, estrés por calor, lluvia, humedad del suelo, evaporación, riesgo de heladas, precipitación extrema, estrés de la vegetación y tendencias de agua de largo plazo.
-- Considerar prioridades como: uso de agua, valor forrajero, fijación de nitrógeno, reducción de erosión, materia orgánica y mercado.
-- **La herramienta apoya, no reemplaza, el criterio del agricultor ni del experto local.**
+- Compare **at least three rotations, including the farmer's current one**.
+- For each rotation explain: why it is suggested, what evidence supports it, what benefits it offers, what information is missing and what risks a farmer or local expert should review.
+- Show when fields are usually bare and in which seasons current crops are most vulnerable.
+- Point out rotation opportunities that break pest cycles, reduce water demand, improve infiltration or add income.
+- Analyse with NASA data: temperature, heat stress, rain, soil moisture, evaporation, frost risk, extreme precipitation, vegetation stress and long-term water trends.
+- Consider priorities such as: water use, forage value, nitrogen fixation, erosion reduction, organic matter and market.
+- **The tool supports, and does not replace, the judgment of the farmer or the local expert.**
 
-### Consideraciones opcionales del enunciado
+### Optional considerations in the brief
 
-- **Datos y condiciones:** explicar en lenguaje simple evapotranspiración, anomalías de humedad del suelo, NDVI, riesgo de heladas y balance hídrico; aclarar la diferencia entre datos satelitales y mediciones en tierra y por qué combinarlos.
-- **Modelado y fusión de datos:** comparar enfoques estadísticos o de IA; explicar cómo se maneja la incertidumbre y dónde hace falta validación local; llevar datasets de distinta resolución a una grilla común.
-- **Exploración de rotaciones:** comparar por ciclo de nutrientes, erosión, materia orgánica, plagas, agua, forraje y mercado; explicar el aporte de leguminosas, cultivos de cobertura, de raíz profunda y tolerantes a sequía.
-- **Mapas y visualización:** mapas interactivos de tendencias, zonas vulnerables a nivel de parcela, líneas de tiempo, capas superpuestas y deslizadores de escenarios.
-- **Diseño centrado en el agricultor:** fácil de interpretar sin experiencia técnica; entradas para prioridades y restricciones (agua, equipos, mercado).
+- **Data and conditions:** explain in plain language evapotranspiration, soil moisture anomalies, NDVI, frost risk and water balance; clarify the difference between satellite data and ground measurements and why to combine them.
+- **Modelling and data fusion:** compare statistical or AI approaches; explain how uncertainty is handled and where local validation is needed; bring datasets of different resolution to a common grid.
+- **Rotation exploration:** compare by nutrient cycling, erosion, organic matter, pests, water, forage and market; explain the role of legumes, cover crops, deep-rooted and drought-tolerant crops.
+- **Maps and visualisation:** interactive trend maps, field-level vulnerable zones, timelines, overlaid layers and scenario sliders.
+- **Farmer-centred design:** easy to interpret without technical experience; inputs for priorities and constraints (water, equipment, market).
 
-### Datasets que nombra el enunciado
+### Datasets named in the brief
 
-SMAP, ECOSTRESS, GPM, Landsat, MODIS, NASA POWER, GRACE y GRACE-FO, SRTM (u otros productos de elevación) y GEDI. La pestaña **Resources** de la página oficial tiene los enlaces; no está incluida aquí y hay que revisarla.
+SMAP, ECOSTRESS, GPM, Landsat, MODIS, NASA POWER, GRACE and GRACE-FO, SRTM (or other elevation products) and GEDI. The **Resources** tab of the official page has the links.
 
-## 2. Nuestro proyecto
+## 2. Our project
 
-- **Equipo:** Quasaris
-- **Producto:** Quasaris FarmTwin
-- **Lema:** From Space to Soil / Before you plant, explore what's possible.
-- **Zona piloto:** irrigación Majes, Arequipa, Perú (coordenadas aproximadas de El Pedregal: lat -16.36, lon -72.19)
+- **Team:** Quasaris
+- **Product:** Quasaris FarmTwin
+- **Tagline:** From Space to Soil / Before you plant, explore what's possible.
+- **Pilot area:** Majes irrigation district, Arequipa, Peru (approximate coordinates of El Pedregal: lat −16.36, lon −72.19)
 
 ### Idea
 
-En Majes el agua es limitada y compartida, y cada agricultor decide por separado qué sembrar. FarmTwin es una plataforma web donde el agricultor selecciona su parcela, ingresa sus recursos y simula rotaciones antes de sembrar. Para cada rotación estima agua requerida, rentabilidad, efecto en el suelo y riesgo climático, y entrega una recomendación clara. La visión a futuro es escalarla a juntas de usuarios de riego para repartir mejor el agua entre parcelas.
+In Majes water is limited and shared, and every farmer decides on their own what to plant. FarmTwin is a web platform where the farmer selects their field, enters their resources and simulates rotations before planting. For each rotation it estimates the water required, profitability, effect on the soil and climate risk, and gives a clear recommendation. The long-term vision is to scale it to irrigation users' boards to share water better between fields.
 
-### Contexto de Majes
+### Majes context
 
-- Casi no llueve: prácticamente toda el agua es de riego.
-- El agua viene de la represa de Condoroma (cuenca alta del Colca) y la administra AUTODEMA.
-- Cultivos habituales: alfalfa (ganadería lechera), cebolla, papa, maíz chala.
-- Suelos en buena parte arenosos, con poca retención de agua.
+- It almost never rains: practically all the water comes from irrigation.
+- The water comes from the Condoroma dam (upper Colca basin) and is managed by AUTODEMA.
+- Common crops: alfalfa (dairy farming), onion, potato, forage maize.
+- Soils are largely sandy, with low water retention.
 
-### Rotaciones de ejemplo para la demo (a validar con un agrónomo)
+### Sample rotations for the demo (to validate with an agronomist)
 
-1. **Actual:** alfalfa permanente.
-2. **Ingreso:** cebolla, papa y maíz chala.
-3. **Suelo y agua:** rotación con una leguminosa de ciclo corto (frijol o haba) entre dos cultivos comerciales.
+1. **Current:** permanent alfalfa.
+2. **Income:** onion, potato and forage maize.
+3. **Soil and water:** a rotation with a short-cycle legume (bean or broad bean) between two cash crops.
 
-## 3. Datos
+## 3. Data
 
 ### NASA
 
-| Fuente | Qué aporta | Píxel aprox. | Frecuencia | Uso en FarmTwin |
+| Source | What it provides | Approx. pixel | Frequency | Use in FarmTwin |
 | --- | --- | --- | --- | --- |
-| NASA POWER | Temperatura, radiación, humedad, viento, lluvia | 50 km | Diaria | Base del cálculo: ET0, heladas, calor |
-| MODIS (MOD13Q1) | NDVI | 250 m | 16 días | Historia de vegetación, capa de mapa |
-| HLS (Landsat + Sentinel-2) | Reflectancia para NDVI | 30 m | 2 a 3 días | Detalle por parcela (si hay tiempo) |
-| SMAP | Humedad del suelo | 9 a 36 km | 2 a 3 días | Contexto regional |
-| GPM IMERG | Lluvia | 10 km | 30 min | Lluvia en la cuenca alta |
-| SRTM | Elevación | 30 m | Única | Pendiente y erosión (opcional) |
+| NASA POWER | Temperature, radiation, humidity, wind, rain | 50 km | Daily | Basis of the calculation: ET0, frost, heat |
+| MODIS (MOD13Q1) | NDVI | 250 m | 16 days | Vegetation history, map layer |
+| HLS (Landsat + Sentinel-2) | Reflectance for NDVI | 30 m | 2 to 3 days | Field-level detail (if time allows) |
+| SMAP | Soil moisture | 9 to 36 km | 2 to 3 days | Regional context |
+| GPM IMERG | Rain | 10 km | 30 min | Rain in the upper basin |
+| SRTM | Elevation | 30 m | Once | Slope and erosion (optional) |
 
-Las resoluciones son aproximadas; confirmar en la página de cada producto.
+Resolutions are approximate; confirm on each product's page.
 
-### Variables de NASA POWER (comunidad AG)
+### NASA POWER variables (AG community)
 
-| Parámetro | Significado | Unidad |
+| Parameter | Meaning | Unit |
 | --- | --- | --- |
-| T2M_MAX, T2M_MIN | Temperatura máxima y mínima a 2 m | °C |
-| ALLSKY_SFC_SW_DWN | Radiación solar en superficie | MJ/m² por día |
-| RH2M | Humedad relativa | % |
-| WS2M | Viento a 2 m | m/s |
-| PRECTOTCORR | Precipitación corregida | mm por día |
-| GWETROOT | Humedad del suelo en zona de raíces | 0 a 1 |
+| T2M_MAX, T2M_MIN | Maximum and minimum temperature at 2 m | °C |
+| ALLSKY_SFC_SW_DWN | Surface solar radiation | MJ/m² per day |
+| RH2M | Relative humidity | % |
+| WS2M | Wind at 2 m | m/s |
+| PRECTOTCORR | Corrected precipitation | mm per day |
+| GWETROOT | Root-zone soil wetness | 0 to 1 |
 
-Ejemplo de consulta:
+Sample query:
 
 ```
 https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M_MAX,T2M_MIN,ALLSKY_SFC_SW_DWN,RH2M,WS2M,PRECTOTCORR&community=AG&latitude=-16.36&longitude=-72.19&start=20250101&end=20251231&format=JSON
 ```
 
-Fechas en formato AAAAMMDD. El valor -999 es dato faltante.
+Dates in YYYYMMDD format. The value −999 means missing data.
 
-### Acceso
+### Access
 
-- **API de NASA POWER:** sin cuenta, responde en segundos.
-- **NASA GIBS:** mosaicos de imágenes listos para Leaflet (solo para mostrar, no para calcular).
-- **AppEEARS:** recorta MODIS, HLS o SMAP a un punto o área; requiere Earthdata Login; tarda de minutos a horas.
-- **Worldview:** explorador web de las capas de GIBS.
+- **NASA POWER API:** no account needed, answers in seconds.
+- **NASA GIBS:** image tiles ready for Leaflet (display only, not for calculation).
+- **AppEEARS:** clips MODIS, HLS or SMAP to a point or area; requires Earthdata Login; takes minutes to hours.
+- **Worldview:** web explorer for the GIBS layers.
 
-### Locales
+### Local
 
-- **Coeficientes de cultivo (Kc):** manual FAO-56, tabla 12.
-- **Suelos:** SoilGrids (ISRIC), 250 m; más un selector de textura que corrige el agricultor.
-- **Cultivos y precios:** MIDAGRI (rendimientos y precios en chacra), INIA (calendarios).
-- **Clima en tierra:** SENAMHI, para validar POWER.
-- **Agua:** AUTODEMA y ANA; en el prototipo, el agua disponible la ingresa el agricultor.
+- **Crop coefficients (Kc):** FAO-56 manual, table 12.
+- **Soils:** SoilGrids (ISRIC), 250 m, plus a texture selector the farmer can correct.
+- **Crops and prices:** MIDAGRI (farm-gate yields and prices), INIA (calendars).
+- **Ground climate:** SENAMHI, to validate POWER.
+- **Water:** AUTODEMA and ANA; in the prototype, the farmer enters the available water.
 
-### Tabla de cultivos (valores aproximados, verificar en FAO-56)
+### Crop table (approximate values, check against FAO-56)
 
-| Cultivo | Kc inicial | Kc medio | Kc final | Familia | Fija nitrógeno |
+| Crop | Initial Kc | Mid Kc | Late Kc | Family | Fixes nitrogen |
 | --- | --- | --- | --- | --- | --- |
-| Alfalfa | 0.40 | 0.95 | 0.90 | Leguminosa | Sí |
-| Papa | 0.50 | 1.15 | 0.75 | Solanácea | No |
-| Cebolla | 0.70 | 1.05 | 0.75 | Aliácea | No |
-| Maíz | 0.30 | 1.20 | 0.35 a 0.60 | Gramínea | No |
-| Frijol o haba | 0.40 | 1.15 | 0.35 | Leguminosa | Sí |
+| Alfalfa | 0.40 | 0.95 | 0.90 | Legume | Yes |
+| Potato | 0.50 | 1.15 | 0.75 | Solanaceae | No |
+| Onion | 0.70 | 1.05 | 0.75 | Alliaceae | No |
+| Maize | 0.30 | 1.20 | 0.35 to 0.60 | Grass | No |
+| Bean or broad bean | 0.40 | 1.15 | 0.35 | Legume | Yes |
 
-Columnas que faltan completar por cultivo: duración del ciclo (días), rendimiento, precio, costo, profundidad de raíz, rango de temperatura tolerable.
+Columns still to complete per crop: cycle length (days), yield, price, cost, root depth, tolerable temperature range.
 
-## 4. Motor de cálculo
+## 4. Calculation engine
 
-1. El agricultor marca su parcela: latitud y longitud.
-2. Se piden a NASA POWER unos 20 años de clima diario.
-3. Se calcula la ET0 diaria (Penman-Monteith FAO-56 con la librería `pyet`; Hargreaves como plan B).
-4. Se define cada rotación: lista de cultivos con fecha de siembra.
-5. Agua por cultivo: `ETc = Kc × ET0`, sumada en el ciclo.
-6. Riego bruto: `(ETc − lluvia efectiva) / eficiencia`. Eficiencias aproximadas: gravedad 0.45, aspersión 0.75, goteo 0.90.
-7. Otros indicadores:
-   - **Ingreso:** rendimiento × precio − costo.
-   - **Salud del suelo:** reglas (suma por leguminosa, por cambio de familia, por alternar raíces; resta por meses con campo desnudo).
-   - **Riesgo climático:** fracción de años con días fuera del rango tolerable del cultivo.
-8. Puntaje: cada indicador normalizado de 0 a 1 y ponderado con los deslizadores del agricultor.
-   `Puntaje = w_agua·A + w_ingreso·I + w_suelo·S + w_riesgo·(1 − R)`
-9. Restricción: si el riego bruto supera el agua disponible, la rotación se marca como no viable.
-10. Incertidumbre: repetir el cálculo por año y mostrar un rango, no un solo número.
+1. The farmer marks their field: latitude and longitude.
+2. About 20 years of daily climate are requested from NASA POWER.
+3. Daily ET0 is calculated (FAO-56 Penman-Monteith; Hargreaves as plan B).
+4. Each rotation is defined: list of crops with sowing date.
+5. Water per crop: `ETc = Kc × ET0`, summed over the cycle.
+6. Gross irrigation: `(ETc − effective rain) / efficiency`. Approximate efficiencies: furrow 0.45, sprinkler 0.75, drip 0.90.
+7. Other indicators:
+   - **Income:** yield × price − cost.
+   - **Soil health:** rules (points for legumes, for changing family, for alternating roots; minus points for bare months).
+   - **Climate risk:** fraction of years with days outside the crop's tolerable range.
+8. Score: each indicator normalised from 0 to 1 and weighted with the farmer's sliders.
+   `Score = w_water·A + w_income·I + w_soil·S + w_risk·(1 − R)`
+9. Constraint: if gross irrigation exceeds the available water, the rotation is marked as not viable.
+10. Uncertainty: repeat the calculation per year and show a range, not a single number.
 
-Conversión clave: 1 mm = 10 m³ por hectárea.
+Key conversion: 1 mm = 10 m³ per hectare.
 
-## 5. Tecnologías
+## 5. Technologies (initial plan)
 
-| Pieza | Uso |
+| Piece | Use |
 | --- | --- |
-| Python + requests + pandas | Descarga y cálculo |
-| pyet | Evapotranspiración de referencia |
-| xarray | Solo si se abren NetCDF o HDF |
-| FastAPI | API del backend (endpoint `/simular`) |
-| React | Interfaz: formularios, tarjetas, deslizadores |
-| Leaflet | Mapa, selección de parcela, capas de GIBS |
-| Recharts o Chart.js | Gráficos comparativos |
-| GitHub | Repositorio público |
-| Streamlit | Plan B: app completa solo con Python |
+| Python + NumPy | Download and calculation |
+| FastAPI | Backend API (`/simulate` endpoint) |
+| React (Next.js) | Interface: forms, cards, sliders |
+| Leaflet | Map, field selection, GIBS layers |
+| Recharts | Comparison charts |
+| GitHub | Public repository |
+| Streamlit | Plan B: full app in Python only |
 
-Flujo: clic en el mapa → React envía coordenadas, rotación actual, agua y prioridades → FastAPI consulta POWER → Python calcula → responde JSON → React muestra las rotaciones comparadas.
+Flow: click on the map → the app sends coordinates, current rotation, water and priorities → FastAPI queries POWER → Python calculates → returns JSON → the app shows the compared rotations.
 
-## 6. Alcance para las 48 horas
+## 6. Scope for the 48 hours
 
-**Imprescindible**
-- Clic en el mapa, clima de POWER, ET0 y agua por rotación.
-- Tres rotaciones comparadas, incluida la actual.
-- Deslizadores de prioridades y campo de agua disponible.
+**Must have**
+- Map click, POWER climate, ET0 and water per rotation.
+- Three compared rotations, including the current one.
+- Priority sliders and available water field.
 
-**Importante**
-- Capa de NDVI de GIBS en el mapa.
-- Rango de incertidumbre y texto de "qué revisar con un experto" por rotación.
-- Gráfica de POWER frente a una estación del SENAMHI.
-- Explicaciones en lenguaje simple de ET, NDVI y humedad del suelo.
+**Important**
+- GIBS NDVI layer on the map.
+- Uncertainty range and "what to check with an expert" text per rotation.
+- POWER vs SENAMHI station chart.
+- Plain-language explanations of ET, NDVI and soil moisture.
 
-**Si sobra tiempo**
-- Serie de NDVI por parcela (AppEEARS o HLS) para ver meses con campo desnudo.
+**If there is time**
+- Field-level NDVI series (AppEEARS or HLS) to see bare months.
 
-**Solo como visión**
-- Reparto de agua a nivel de comunidad o junta de usuarios.
-- Modelo de negocio.
+**Vision only**
+- Water allocation at community or users' board level.
+- Business model.
 
-## 7. Evaluación
+## 7. Judging
 
-### Rúbrica local (Arequipa), 1 a 4 por criterio
+### Local rubric (Arequipa), 1 to 4 per criterion
 
-| Criterio | Qué da el 4 | Cómo lo cubrimos |
+| Criterion | What earns a 4 | How we cover it |
 | --- | --- | --- |
-| Impacto | Problema relevante con indicadores | m³ de agua ahorrados por hectárea entre rotaciones |
-| Creatividad | Idea novedosa con componentes propios | Motor de puntaje y restricción de agua compartida |
-| Validez | Probado en entorno real | Comparación con SENAMHI, revisión de un agrónomo |
-| Pertinencia | Útil y resuelve el reto | Tres rotaciones, datos NASA, suelo, cultivo, prioridades |
-| Presentación | Propósito e importancia claros | Reto, solución, por qué importa |
-| Diversidad | Equipo multidisciplinario que usa sus fortalezas | Decir qué aportó cada integrante |
+| Impact | Relevant problem with indicators | m³ of water saved per hectare between rotations |
+| Creativity | Novel idea with original components | Scoring engine and shared-water constraint |
+| Validity | Tested in a real environment | Comparison with SENAMHI, review by an agronomist |
+| Relevance | Useful and solves the challenge | Three rotations, NASA data, soil, crop, priorities |
+| Presentation | Clear purpose and importance | Challenge, solution, why it matters |
+| Diversity | Multidisciplinary team using its strengths | Say what each member contributed |
 
-### Premios globales a los que apunta
+### Global awards we aim for
 
-Impacto Local, Mejor Uso de los Datos, Mejor Uso de la Ciencia.
+Local Impact, Best Use of Data, Best Use of Science.
 
-### Entrega global (sin verificar en la página oficial; confirmar en la guía de participantes)
+### Global submission (confirm in the participant guide)
 
-- Demo: video de hasta 30 segundos o hasta 7 diapositivas.
-- Repositorio público con el código.
-- Declarar qué datos de la NASA y de agencias socias se usaron.
-- Declarar el uso de IA, si lo hubo.
-- Todos los enlaces públicos y funcionando.
+- Demo: video of up to 30 seconds or up to 7 slides.
+- Public repository with the code.
+- Declare the NASA and partner-agency data used.
+- Declare the use of AI, if any.
+- All links public and working.
 
-## 8. Fechas
+## 8. Dates
 
-- 14 y 15 de noviembre de 2026: hackathon, presencial en la UCSM.
-- 16 de noviembre: evaluación local.
-- 17 al 23 de noviembre: selección de nominados globales.
-- Enero de 2027: anuncio de ganadores globales.
+- 14 and 15 November 2026: hackathon, in person at UCSM.
+- 16 November: local judging.
+- 17 to 23 November: selection of global nominees.
+- January 2027: announcement of global winners.
 
-## 9. Pendientes abiertos
+## 9. Open items at the start
 
-- Leer la pestaña Resources del reto.
-- Completar la tabla de cultivos con fuente por cada dato.
-- Conseguir el agua asignada por hectárea en Majes y el sistema de riego predominante.
-- Elegir la estación del SENAMHI para validar.
-- Validar las tres rotaciones con alguien de agronomía.
+- Read the Resources tab of the challenge.
+- Complete the crop table with a source for each value.
+- Get the water allocated per hectare in Majes and the predominant irrigation system.
+- Choose the SENAMHI station for validation.
+- Validate the three rotations with an agronomist.
