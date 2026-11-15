@@ -88,6 +88,7 @@ export function OnboardingClient() {
 
       <div className="onboarding-layout">
         <aside className="onboarding-story">
+          <span className="ai-mark" title="Illustration generated with ChatGPT">AI-generated image</span>
           <div className="onboarding-storyTop"><Repeat2 size={18} /><span>{es ? "PLANIFICA TU PRÓXIMA CAMPAÑA" : "PLAN YOUR NEXT SEASON"}</span></div>
           <div className="onboarding-storyCopy">
             <span className="onboarding-eyebrow">{es ? "TU PARCELA. TU PLAN." : "YOUR LAND. YOUR PLAN."}</span>

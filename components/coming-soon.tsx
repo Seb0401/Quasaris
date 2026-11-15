@@ -13,6 +13,7 @@ export async function ComingSoon({ params, section, owner }: { params: Promise<{
     <div className="ui-page">
       <header className="ui-hero">
         <div className="ui-hero-photo" aria-hidden />
+        <span className="ai-mark" title="Illustration generated with ChatGPT">AI-generated image</span>
         <div className="ui-hero-grid" aria-hidden />
         <div className="ui-hero-scan" aria-hidden />
         <div className="ui-hero-copy">
