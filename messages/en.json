@@ -15,7 +15,8 @@
     "calendario": "Calendar",
     "aprende": "What does it mean?",
     "granja": "Farm",
-    "rotaciones": "My rotations"
+    "rotaciones": "My rotations",
+    "recomendaciones": "Recommendations"
   },
   "home": {
     "start": "Start with my field",
@@ -524,7 +525,7 @@
     },
     "drawn": "My drawn field · {ha} ha",
     "drawnHint": "The farm uses the real area you marked on the map.",
-    "drawTip": "Tip: use “Draw my field” on the map so the farm has your field's real size.",
+    "drawTip": "Tip: use “Select with one tap” on the map (or draw it by hand) so the farm has your field's real size.",
     "scenario": {
       "intro": "Plan your {season} season. Pick a scenario: each one uses a real year from 21 years of NASA data as its model.",
       "basis": "Model year: NASA POWER {year}, adjusted to your field's altitude. Temperature change: {delta}.",

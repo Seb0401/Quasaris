@@ -14,6 +14,7 @@ const { PALETTE, buildPalette, cropAt, simulateYear } = require("../lib/granja-s
 const { buildPlan } = require("../lib/plan.ts");
 const { simulateMock } = require("../lib/engine-client.ts");
 const { evaluateGroup } = require("../lib/grouping.ts");
+const { buildRecommendations } = require("../lib/recommendations.ts");
 const { CROP_ICON } = require("../components/icons/farm-icons.tsx");
 const snapshot = require("../data/mock_granja.json");
 const { cropOnDay, cropHarvestMonths, cropTiming, cropsIn, CROPS, MONTH_START } = calendar;
@@ -42,6 +43,11 @@ for (const id of newIds) {
   const plan = buildPlan(snapshot, PALETTE, [preset.id], 1, 20000);
   assert.equal(plan.groups[0].rotation.id, preset.id);
   assert.ok(Number.isFinite(evaluateGroup(preset.crops, "rotation", (x) => x).score));
+  for (const locale of ["es", "en"]) {
+    const recommendations = buildRecommendations({ soil: "arenoso", irrigation: "goteo", rotation: preset, sim: snapshot, locale }, (key) => key);
+    assert.ok(Number.isFinite(recommendations.nitrogen.demandKg), `${id}: recommendations accept crop agronomy`);
+    for (const item of [...recommendations.fertilizers, ...recommendations.microbes, ...recommendations.devices]) assert.ok(item.title && item.why, `${id}: recommendation content`);
+  }
   assert.ok(cropTiming(preset.crops[0], "es"));
   for (const locale of ["es", "en"]) {
     const messages = require(`../messages/${locale}.json`);

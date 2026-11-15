@@ -119,6 +119,7 @@ export function DashboardClient() {
           style={{ transform: `translate3d(0, ${Math.min(scrollY * 0.16, 80)}px, 0) scale(1.08)` }}
           aria-hidden
         />
+        <span className="ai-mark" title="Illustration generated with ChatGPT">AI-generated image</span>
         <div className="qx-hero-grid" aria-hidden />
         <div className="qx-hero-glow" aria-hidden />
 
@@ -212,6 +213,7 @@ export function DashboardClient() {
             <div className={`qx-stage-art qx-stage-art-${stage}`}>
               <div className="qx-stage-orbit"><span /><span /><span /></div>
               <div className="qx-stage-land" />
+              <span className="ai-mark" title="Illustration generated with ChatGPT">AI-generated image</span>
               <div className="qx-stage-data qx-stage-data-one"><small>{stage === 0 ? "NDVI" : stage === 1 ? (es ? "ESCENARIOS" : "SCENARIOS") : "SCORE"}</small><strong>{stage === 0 ? "0.72" : stage === 1 ? "03" : recommended ? Math.round(recommended.score * 100) : "—"}</strong></div>
               <div className="qx-stage-data qx-stage-data-two"><small>{es ? "CONFIANZA" : "CONFIDENCE"}</small><strong>{recommended ? `${Math.round((1 - recommended.risk.median) * 100)}%` : "—"}</strong></div>
               <div className="qx-stage-sweep" />
@@ -262,6 +264,7 @@ export function DashboardClient() {
 
       <section className="qx-final-cta">
         <div className="qx-final-photo" aria-hidden />
+        <span className="ai-mark" title="Illustration generated with ChatGPT">AI-generated image</span>
         <div className="qx-final-copy">
           <span className="qx-kicker"><MapPin size={14} /> {es ? "TU PARCELA ES EL PUNTO DE PARTIDA" : "YOUR FIELD IS THE STARTING POINT"}</span>
           <h2>{es ? "Haz visible lo que viene." : "Make what comes next visible."}</h2>

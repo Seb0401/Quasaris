@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, CalendarDays, Combine, Clock3, Home, Tractor, Languages, MapPinned, Sparkles, Repeat2 } from "lucide-react";
+import { BarChart3, BookOpen, CalendarDays, Combine, Clock3, Home, Tractor, Languages, MapPinned, Sparkles, Repeat2, Sprout } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { QuasarisMark } from "@/components/brand/quasaris-mark";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -12,6 +12,7 @@ const TABS = [
   { href: "parcela", key: "parcela", icon: MapPinned },
   { href: "comparar", key: "comparar", icon: BarChart3 },
   { href: "rotaciones", key: "rotaciones", icon: Repeat2, desktopOnly: true },
+  { href: "recomendaciones", key: "recomendaciones", icon: Sprout, desktopOnly: true },
   { href: "tiempo", key: "tiempo", icon: Clock3 },
   { href: "granja", key: "granja", icon: Tractor },
   { href: "calendario", key: "calendario", icon: CalendarDays },

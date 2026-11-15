@@ -7,8 +7,9 @@ import type { Rotation } from "@/lib/contract";
 export function CropArtwork({ crop, size = 64, className = "" }: { crop: string | null; size?: number; className?: string }) {
   const src = crop && cropArtworkPath(crop);
   return (
-    <span className={className} aria-hidden="true" style={{ display: "inline-flex", width: size, height: size, flexShrink: 0, alignItems: "center", justifyContent: "center", verticalAlign: "middle" }}>
+    <span className={className} aria-hidden="true" style={{ position: "relative", display: "inline-flex", width: size, height: size, flexShrink: 0, alignItems: "center", justifyContent: "center", verticalAlign: "middle" }}>
       {src ? <Image src={src} alt="" width={256} height={256} unoptimized loading="lazy" draggable={false} style={{ width: "100%", height: "100%", objectFit: "contain" }} /> : <CropIcon crop={crop} size={size} />}
+      {src && <span className="ai-mark" title="AI-generated crop illustration" style={{ right: 0, bottom: 0, padding: "1px 3px", fontSize: 7, borderRadius: 3 }}>AI</span>}
     </span>
   );
 }

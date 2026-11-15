@@ -42,6 +42,7 @@ export function PageHeader({ icon: Icon, kicker, title, subtitle, children }: { 
   return (
     <header className="ui-hero">
       <div className="ui-hero-photo" aria-hidden />
+      <span className="ai-mark" title="Illustration generated with ChatGPT">AI-generated image</span>
       <div className="ui-hero-grid" aria-hidden />
       <div className="ui-hero-scan" aria-hidden />
       <div className="ui-hero-copy">
