@@ -6,7 +6,7 @@ NASA Space Apps Challenge 2026 · challenge **Field Shift: Adapting Farms with N
 
 **Live app:** https://quasaris-farmtwin.vercel.app
 
-![Quasaris FarmTwin home page: "Your field's future, before you plant"](docs/screenshots/home.webp)
+![Quasaris FarmTwin home page: "Your field's future, before you plant", with the 3D farm digital twin](docs/screenshots/home.webp)
 
 ## Summary
 

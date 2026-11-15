@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -27,7 +28,6 @@ import { useFarm } from "@/lib/farm-store";
 import { simulate } from "@/lib/engine-client";
 import type { RotationResult, SimulateResponse } from "@/lib/contract";
 
-type SignalMode = "ndvi" | "water";
 
 const FORMAT = new Intl.NumberFormat("es-PE", { maximumFractionDigits: 0 });
 
@@ -51,7 +51,6 @@ export function DashboardClient() {
   const [data, setData] = useState<SimulateResponse | null>(null);
   const [year, setYear] = useState(2020);
   const [stage, setStage] = useState(0);
-  const [signalMode, setSignalMode] = useState<SignalMode>("ndvi");
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -130,7 +129,7 @@ export function DashboardClient() {
 
         <div className="qx-hero-layout">
           <div className="qx-hero-copy">
-            <div className="qx-eyebrow"><Orbit size={17} /> QUASARIS / MISSION 01</div>
+            <div className="qx-eyebrow"><Orbit size={17} /> QUASARIS FARM TWIN</div>
             <h1>
               {es ? <>El futuro de tu parcela, <em>antes de sembrar.</em></> : <>Your field&apos;s future, <em>before you plant.</em></>}
             </h1>
@@ -150,29 +149,20 @@ export function DashboardClient() {
             </div>
           </div>
 
-          <div className="qx-signal-card">
+          <Link href={`/${locale}/granja`} className="qx-signal-card qx-farm-card" aria-label={es ? "Abrir el modo granja" : "Open farm mode"}>
             <header>
-              <div><span className="qx-live-dot" /><small>{es ? "SEÑAL EN VIVO" : "LIVE SIGNAL"}</small></div>
-              <span>16.326°S / 72.179°W</span>
+              <div><span className="qx-live-dot" /><small>{es ? "GEMELO DIGITAL 3D" : "3D DIGITAL TWIN"}</small></div>
+              <span>{es ? "MODO GRANJA" : "FARM MODE"}</span>
             </header>
-            <div className={`qx-satellite-frame mode-${signalMode}`}>
-              <div className="qx-field-image" />
-              <div className="qx-scan-beam" />
-              <div className="qx-crosshair"><i /><i /></div>
-              <div className="qx-map-label qx-map-label-a"><span /> LOTE 04</div>
-              <div className="qx-map-label qx-map-label-b"><span /> CANAL</div>
-              <div className="qx-floating-reading qx-reading-top"><small>NDVI</small><strong>{signalMode === "ndvi" ? "0.72" : "—"}</strong><span>{es ? "Vigor alto" : "High vigor"}</span></div>
-              <div className="qx-floating-reading qx-reading-bottom"><CloudRain size={17} /><span><small>{es ? "HUMEDAD" : "MOISTURE"}</small><strong>{signalMode === "water" ? "64%" : "Estable"}</strong></span></div>
-              <div className="qx-orbit-node"><Satellite size={15} /></div>
+            <div className="qx-satellite-frame qx-farm-frame">
+              {/* captura real del modo granja (public/images/farm-twin.webp) */}
+              <Image src="/images/farm-twin.webp" alt={es ? "Gemelo digital 3D de una chacra con parcelas sembradas, casa, animales y reservorio" : "3D digital twin of a farm with planted plots, a house, animals and a reservoir"} fill sizes="(min-width: 1050px) 520px, 92vw" priority />
             </div>
             <footer>
-              <div className="qx-mode-switch" aria-label={es ? "Capa satelital" : "Satellite layer"}>
-                <button className={signalMode === "ndvi" ? "active" : ""} onClick={() => setSignalMode("ndvi")}>NDVI</button>
-                <button className={signalMode === "water" ? "active" : ""} onClick={() => setSignalMode("water")}>{es ? "Agua" : "Water"}</button>
-              </div>
-              <span>{es ? "Actualizado · Sep 2025" : "Updated · Sep 2025"}</span>
+              <span>{es ? "Juega la próxima campaña antes de sembrar" : "Play next season before you sow"}</span>
+              <span className="qx-farm-cta">{es ? "Abrir la granja" : "Open the farm"}<ArrowUpRight size={15} /></span>
             </footer>
-          </div>
+          </Link>
         </div>
 
         <button className="qx-scroll-cue" onClick={() => document.getElementById("qx-story")?.scrollIntoView({ behavior: "smooth" })}>

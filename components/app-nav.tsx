@@ -31,7 +31,7 @@ export function AppNav() {
       <aside className="desktop-sidebar">
         <Link href={`/${locale}`} className="brand-lockup" aria-label="Quasaris">
           <QuasarisMark width={42} height={42} />
-          <span><strong>QUASARIS</strong><small>Farm Intelligence</small></span>
+          <span><strong>QUASARIS</strong><small>Farm Twin</small></span>
         </Link>
         <p className="nav-section-label">{locale === "es" ? "MISIÓN" : "MISSION"}</p>
         <nav aria-label={locale === "es" ? "Navegación principal" : "Main navigation"}>
@@ -54,7 +54,7 @@ export function AppNav() {
       </aside>
 
       <header className="mobile-header">
-        <Link href={`/${locale}`} className="brand-lockup"><QuasarisMark width={34} height={34} /><span><strong>QUASARIS</strong><small>Farm Intelligence</small></span></Link>
+        <Link href={`/${locale}`} className="brand-lockup"><QuasarisMark width={34} height={34} /><span><strong>QUASARIS</strong><small>Farm Twin</small></span></Link>
         <div className="mobile-header-actions">
           <ThemeSwitch />
           <Link href={`/${other}${rest ? `/${rest}` : ""}`} className="language-switch" aria-label={t("app.language")}>{other.toUpperCase()}</Link>
