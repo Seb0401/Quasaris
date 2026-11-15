@@ -7,7 +7,8 @@ Required declaration for the NASA Space Apps Challenge 2026. **The team must rev
 | Tool | Model | What it did |
 | --- | --- | --- |
 | **Claude Code** (Anthropic) | Claude Opus 5.5 (also Claude Fable 5.2 for one fix) | Drafted the execution plan (`PLAN.md`); scaffolded the Next.js PWA and the Python engine; implemented the FAO-56 Penman-Monteith ET0, the year-by-year rotation simulation, the SRTM-guided vertical fusion of NASA POWER cells, the data quality checks, the time machine, the 3D farm, the calendar and push alerts; built the "mission control" visual design and the step-by-step assistant (`/inicio`); ran a technical audit of the prototype; wrote tests, `docs/VALIDATION.md` and these declarations. Commits made with AI assistance carry a `Co-Authored-By: Claude` trailer. |
-| **TODO: confirm** OpenAI Codex | **TODO** | The field assistant was developed on a branch named `codex/c1-assistant` (merged in PR #2). Confirm whether Codex wrote that code and what it did. |
+| **OpenAI Codex** | **TODO:** model | Helped develop the AI field assistant on the branch `codex/c1-assistant` (merged in PR #2): chat with engine tools, voice dictation and photos. |
+| **ChatGPT** (OpenAI) | **TODO:** model | Generated the two photographs used in the app (`public/images/majes-fields.png` and `public/images/quasaris-orbit.png`). |
 | **TODO:** other AI tools or agents used by the team | **TODO** | **TODO** (for example: pitch deck, images, translations, video) |
 
 ### What the team did
@@ -49,4 +50,6 @@ Shared decisions:
 
 ## 3. Images and media
 
-**TODO:** declare any AI-generated images, video or audio in the pitch, the demo video or the app. In particular, state the origin of the two photographs used in the app, `public/images/majes-fields.png` (section headers) and `public/images/quasaris-orbit.png` (home page), added in commit `432d9a7`. The app icon and logo are hand-written SVG (`scripts/make_icons.mjs`). The demo video is a screen recording of the real app.
+The two photographs in the app are **AI-generated with ChatGPT**: `public/images/majes-fields.png` (section headers) and `public/images/quasaris-orbit.png` (home page). They are illustrations, not satellite imagery or photos of real fields; all maps and data layers come from Esri, NASA GIBS and the simulation engine.
+
+**TODO:** declare any other AI-generated images, video or audio in the pitch or the demo video. The app icon and logo are hand-written SVG (`scripts/make_icons.mjs`). The demo video is a screen recording of the real app.
