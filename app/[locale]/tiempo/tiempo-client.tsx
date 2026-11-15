@@ -11,7 +11,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { moveFarm, useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
 import { rotationColor } from "@/lib/ui";
-import { BadgeDollarSign, CalendarRange, Clock3, Droplets, Flame, History, LineChart, Pause, Play, Satellite, SkipBack, Snowflake, TriangleAlert } from "lucide-react";
+import { BadgeDollarSign, CalendarRange, Clock3, Droplets, History, LineChart, Pause, Play, Satellite, SkipBack, TriangleAlert } from "lucide-react";
 
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), {
   ssr: false,
@@ -168,10 +168,6 @@ export function TiempoClient() {
                 <small className={over ? "is-bad" : ""}>{over ? `+${n.format(y.waterM3ha - farm.waterAvailableM3ha)} ${t("tiempo.overLimit")}` : `${Math.round(ratio * 100)}% ${es ? "de tu agua disponible" : "of your available water"}`}</small>
               </div>
               <MonthStrip months={y.months} labels />
-              <div className="year-card-foot">
-                <span className={y.frostDays > 0 ? "is-cold" : ""}><Snowflake size={13} />{y.frostDays} {es ? "días de helada" : "frost days"}</span>
-                <span className={y.heatDays > 0 ? "is-hot" : ""}><Flame size={13} />{y.heatDays} {es ? "días de calor" : "heat days"}</span>
-              </div>
             </article>
           );
         })}
