@@ -132,7 +132,7 @@ export function ScoreRing({ value, size = 112, stroke = 9, color = "var(--brand)
   return (
     <div className="ui-ring" style={{ width: size, height: size }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,.08)" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" style={{ stroke: "var(--tint-3)" }} strokeWidth={stroke} />
         <circle
           className="ui-ring-arc"
           cx={size / 2}

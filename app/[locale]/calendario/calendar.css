@@ -1,0 +1,7 @@
+.calendar-layout { display: grid; gap: 16px; align-items: start; }
+.calendar-left, .calendar-right { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.calendar-summary { display: grid; gap: 16px; }
+.calendar-summary .cal-card { height: 100%; }
+.calendar-right .wheel { max-width: 320px; margin-inline: auto; }
+@media (min-width: 640px) { .calendar-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .calendar-layout { grid-template-columns: minmax(0, 2.2fr) minmax(300px, 1fr); } }

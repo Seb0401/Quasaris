@@ -21,7 +21,7 @@ from engine.et0 import penman_monteith
 from engine.power import Climate
 from engine.schema import Rotation
 
-# Eficiencia de aplicación (CONTEXTO_RETO.md §4) y ajuste por textura del suelo:
+# Eficiencia de aplicación (CHALLENGE_CONTEXT.md §4) y ajuste por textura del suelo:
 # en suelos arenosos se pierde más agua por percolación profunda con riego por gravedad.
 EFFICIENCY = {"gravedad": 0.45, "aspersion": 0.75, "goteo": 0.90}
 SOIL_FACTOR = {
@@ -191,7 +191,7 @@ def simulate_rotation(rotation: Rotation, clim: Climate, et0: np.ndarray, *, irr
 
 
 def soil_score(rotation: Rotation, typical_months: list[str]) -> float:
-    """Salud del suelo por reglas simples (0..1). Ver PLAN.md y CONTEXTO_RETO.md §4.7."""
+    """Salud del suelo por reglas simples (0..1). Ver PLAN.md y CHALLENGE_CONTEXT.md §4.7."""
     cat = catalog()
     crops = [cat[c.cropId] for c in rotation.crops]
     families = [c.family for c in crops]

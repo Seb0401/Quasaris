@@ -1,5 +1,7 @@
 "use client";
 
+import "./calendar.css";
+
 import { useEffect, useState } from "react";
 import { ArrowDown, CalendarDays, CalendarRange, CloudOff, CloudSun, Database, Info, RefreshCw, Sprout, Sun } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
@@ -14,7 +16,7 @@ import { useToday } from "@/lib/use-today";
 
 const ENGINE_URL = process.env.NEXT_PUBLIC_ENGINE_URL ?? "";
 const CACHE_KEY = "farmtwin.climate.v1";
-const cropColor = (cropId: string) => FAMILY_COLOR[CROPS[cropId]?.family] ?? "#63def2";
+const cropColor = (cropId: string) => FAMILY_COLOR[CROPS[cropId]?.family] ?? "var(--fam-other)";
 
 function useClimate(lat: number, lon: number) {
   const [result, setResult] = useState<{ key: string; data: ClimateResponse | null; cached: boolean } | null>(null);
@@ -50,7 +52,7 @@ function useClimate(lat: number, lon: number) {
 }
 
 function heat(p: number, color: string) {
-  return p <= 0 ? "rgba(255,255,255,.04)" : `color-mix(in srgb, ${color} ${Math.round(25 + p * 75)}%, transparent)`;
+  return p <= 0 ? "var(--tint)" : `color-mix(in srgb, ${color} ${Math.round(25 + p * 75)}%, transparent)`;
 }
 
 export function CalendarioClient() {
@@ -115,7 +117,9 @@ export function CalendarioClient() {
       </div>
       {!rotation && <p className="ui-alert tone-neutral"><Info size={16} />{copy.noRotation}</p>}
 
-      <div className="cal-cards">
+      <div className="calendar-layout">
+        <div className="calendar-left">
+          <div className="calendar-summary">
         <Reveal>
           <Panel kicker={es ? "CULTIVO EN ESTA FECHA" : "CROP AT THIS TIME"} icon={Sprout} className="cal-card">
             {currentCrop ? (
@@ -151,43 +155,7 @@ export function CalendarioClient() {
           </Panel>
         </Reveal>
 
-        <Reveal delay={160}>
-          <Panel kicker={now ? fmtDay.format(now).toUpperCase() : (es ? "ESTA SEMANA" : "THIS WEEK")} icon={CloudSun} title={copy.historical} className="cal-card">
-            {!climateResult ? (
-              <div className="week-skeleton"><span className="ui-skeleton" /><span className="ui-skeleton" /></div>
-            ) : !week ? (
-              <p role="status" className="ui-alert tone-warn"><CloudOff size={16} />{copy.unavailable}</p>
-            ) : (
-              <>
-                {climateResult.cached && <p className="ui-hint"><RefreshCw size={14} />{copy.cached}</p>}
-                <div className="week-stats cols-2">
-                  <div className="tone-sky"><FrostIcon size={18} /><small>{copy.frost}</small><strong>{pct.format(week.pFrost)}</strong></div>
-                  <div className="tone-amber"><HeatIcon size={18} /><small>{copy.heat}</small><strong>{pct.format(week.pHeat)}</strong></div>
-                </div>
-                {outlook && active.length > 0 && (
-                  <div className="water-insight">
-                    <div>
-                      <small>{copy.water}</small>
-                      <strong><CountUp value={outlook.waterM3ha} format={(v) => n.format(v)} /> <em>m³/ha</em></strong>
-                    </div>
-                    <p>{copy.waterNote}</p>
-                  </div>
-                )}
-                <p className="ui-source">{copy.disclaimer}</p>
-              </>
-            )}
-          </Panel>
-        </Reveal>
-      </div>
-
-      <div className="cal-main">
-        <Reveal>
-          <Panel kicker={es ? "12 MESES" : "12 MONTHS"} icon={Sprout} title={es ? "Tu rotación anual" : "Your annual rotation"}>
-            <p className="ui-hint">{es ? "Distribución de cultivos por mes" : "Crop schedule by month"}</p>
-            <RotationWheel crops={rotation?.crops ?? []} locale={locale} today={today} />
-          </Panel>
-        </Reveal>
-
+          </div>
         <Reveal delay={90}>
           <Panel
             id="annual-calendar"
@@ -244,6 +212,42 @@ export function CalendarioClient() {
             <p className="ui-source"><Database size={11} className="mr-1 inline" />{t("calendario.source")}</p>
           </Panel>
         </Reveal>
+        </div>
+        <div className="calendar-right">
+        <Reveal>
+          <Panel kicker={es ? "12 MESES" : "12 MONTHS"} icon={Sprout} title={es ? "Tu rotación anual" : "Your annual rotation"}>
+            <p className="ui-hint">{es ? "Distribución de cultivos por mes" : "Crop schedule by month"}</p>
+            <RotationWheel crops={rotation?.crops ?? []} locale={locale} today={today} />
+          </Panel>
+        </Reveal>
+        <Reveal delay={160}>
+          <Panel kicker={now ? fmtDay.format(now).toUpperCase() : (es ? "ESTA SEMANA" : "THIS WEEK")} icon={CloudSun} title={copy.historical} className="cal-card">
+            {!climateResult ? (
+              <div className="week-skeleton"><span className="ui-skeleton" /><span className="ui-skeleton" /></div>
+            ) : !week ? (
+              <p role="status" className="ui-alert tone-warn"><CloudOff size={16} />{copy.unavailable}</p>
+            ) : (
+              <>
+                {climateResult.cached && <p className="ui-hint"><RefreshCw size={14} />{copy.cached}</p>}
+                <div className="week-stats cols-2">
+                  <div className="tone-sky"><FrostIcon size={18} /><small>{copy.frost}</small><strong>{pct.format(week.pFrost)}</strong></div>
+                  <div className="tone-amber"><HeatIcon size={18} /><small>{copy.heat}</small><strong>{pct.format(week.pHeat)}</strong></div>
+                </div>
+                {outlook && active.length > 0 && (
+                  <div className="water-insight">
+                    <div>
+                      <small>{copy.water}</small>
+                      <strong><CountUp value={outlook.waterM3ha} format={(v) => n.format(v)} /> <em>m³/ha</em></strong>
+                    </div>
+                    <p>{copy.waterNote}</p>
+                  </div>
+                )}
+                <p className="ui-source">{copy.disclaimer}</p>
+              </>
+            )}
+          </Panel>
+        </Reveal>
+        </div>
       </div>
     </div>
   );
@@ -274,12 +278,12 @@ function RotationWheel({ crops, locale, today }: { crops: { cropId: string; sowM
             const isNow = month === currentMonth;
             return (
               <g key={month} className="wheel-sector" style={{ animationDelay: `${month * 45}ms` }}>
-                <path d={`M140 140 L${p[0]} ${p[1]} A132 132 0 0 1 ${q[0]} ${q[1]} Z`} fill={cropId ? cropColor(cropId) : "rgba(255,255,255,.06)"} fillOpacity={cropId ? (isNow ? 1 : 0.62) : 1} stroke="#0b2230" strokeWidth="3" />
-                <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle" fontSize="11" fontWeight={isNow ? 800 : 600} fill={cropId ? "#0a2216" : "#8aa5ad"}>{fmt.format(new Date(2025, month, 1))}</text>
+                <path d={`M140 140 L${p[0]} ${p[1]} A132 132 0 0 1 ${q[0]} ${q[1]} Z`} fill={cropId ? cropColor(cropId) : "var(--tint-2)"} fillOpacity={cropId ? (isNow ? 1 : 0.62) : 1} style={{ stroke: "var(--surface)" }} strokeWidth="3" />
+                <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle" fontSize="11" fontWeight={isNow ? 800 : 600} style={{ fill: cropId ? "var(--wheel-label)" : "var(--muted)" }}>{fmt.format(new Date(2025, month, 1))}</text>
               </g>
             );
           })}
-          <circle cx="140" cy="140" r="70" fill="#0b2230" stroke="rgba(136,214,224,.22)" strokeWidth="1.5" />
+          <circle cx="140" cy="140" r="70" style={{ fill: "var(--surface)", stroke: "var(--border-strong)" }} strokeWidth="1.5" />
         </svg>
         <div className="wheel-center">
           <span style={{ color: center ? cropColor(center.cropId) : "var(--muted)" }}><CropIcon crop={center?.cropId ?? null} size={30} /></span>

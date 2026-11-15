@@ -14,7 +14,11 @@ const nextConfig: NextConfig = {
     },
   },
   async redirects() {
-    return [{ source: "/", destination: "/en", permanent: false }];
+    return [
+      { source: "/", destination: "/en", permanent: false },
+      // el asistente de 4 pasos se fusionó con Mi parcela
+      { source: "/:locale(es|en)/inicio", destination: "/:locale/parcela", permanent: false },
+    ];
   },
   // En local el motor Python corre aparte (npm run dev:py). En Vercel lo enruta vercel.json.
   async rewrites() {

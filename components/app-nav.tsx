@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { BarChart3, BookOpen, CalendarDays, Combine, Clock3, Home, Tractor, Languages, MapPinned, Sparkles } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { QuasarisMark } from "@/components/brand/quasaris-mark";
+import { ThemeSwitch } from "@/components/theme-switch";
 
 const TABS = [
   { href: "", key: "home", icon: Home },
@@ -45,13 +46,19 @@ export function AppNav() {
         <div className="sidebar-spacer" />
         <Link href={`/${locale}/agrupaciones`} className="sidebar-secondary"><Combine size={18} />{t("group.title")}</Link>
         <Link href={`/${locale}/aprende`} className="sidebar-secondary"><BookOpen size={18} />{t("nav.aprende")}</Link>
-        <Link href={`/${other}${rest ? `/${rest}` : ""}`} className="language-switch" aria-label={t("app.language")}><Languages size={17} />{other.toUpperCase()}</Link>
+        <div className="sidebar-prefs">
+          <Link href={`/${other}${rest ? `/${rest}` : ""}`} className="language-switch" aria-label={t("app.language")}><Languages size={17} />{other.toUpperCase()}</Link>
+          <ThemeSwitch />
+        </div>
         <div className="mission-badge"><Sparkles size={16} /><span>{locale === "es" ? "Datos NASA · decisión local" : "NASA data · local decision"}</span></div>
       </aside>
 
       <header className="mobile-header">
         <Link href={`/${locale}`} className="brand-lockup"><QuasarisMark width={34} height={34} /><span><strong>QUASARIS</strong><small>Farm Intelligence</small></span></Link>
-        <Link href={`/${other}${rest ? `/${rest}` : ""}`} className="language-switch" aria-label={t("app.language")}>{other.toUpperCase()}</Link>
+        <div className="mobile-header-actions">
+          <ThemeSwitch />
+          <Link href={`/${other}${rest ? `/${rest}` : ""}`} className="language-switch" aria-label={t("app.language")}>{other.toUpperCase()}</Link>
+        </div>
       </header>
 
       <nav className="mobile-bottom-nav">

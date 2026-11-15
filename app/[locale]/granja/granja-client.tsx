@@ -432,7 +432,7 @@ function Farm() {
             <span className="farm-status-bar">
               <span style={{ width: `${reservoir * 100}%`, background: reservoir < 0.15 ? "var(--danger)" : "#5cc8f5" }} />
             </span>
-            <b className={reservoir <= 0 ? "text-[#ff8f8f]" : ""}>{pct.format(reservoir)}</b>
+            <b className={reservoir <= 0 ? "text-[var(--danger-text)]" : ""}>{pct.format(reservoir)}</b>
           </span>
           <span>
             <ProfitIcon size={14} /> S/ {n.format(snap.incomePEN)}
@@ -601,7 +601,7 @@ function Farm() {
                       </div>
                     </div>
                   </div>
-                  <p className="rounded-xl bg-[rgba(99,222,242,.07)] text-[#c8dde0] px-3 py-2">
+                  <p className="rounded-xl bg-[rgba(99,222,242,.07)] text-[var(--text-soft)] px-3 py-2">
                     <b>{t(`granja.status.${sel.status}`)}:</b> {t(`granja.why.${sel.status}`)}
                   </p>
                   <Factor
@@ -637,7 +637,7 @@ function Farm() {
               {!sel && panel === "sow" && (
                 <section className="flex flex-col gap-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <div className="flex rounded-full bg-white/[.06] p-0.5 text-xs font-semibold">
+                    <div className="flex rounded-full bg-[var(--tint-2)] p-0.5 text-xs font-semibold">
                       <button type="button" onClick={() => setTool("paint")} className={`rounded-full px-3 py-1.5 ${tool === "paint" ? "bg-[var(--brand)] text-[var(--brand-ink)]" : ""}`}>
                         <BrushIcon size={14} className="mr-1 inline" /> {t("granja.mode.paint")}
                       </button>
@@ -648,7 +648,7 @@ function Farm() {
                         <Grid2x2Plus size={14} className="mr-1 inline" /> {t("granja.mode.shape")}
                       </button>
                     </div>
-                    <button type="button" onClick={undo} className="rounded-full bg-white/[.06] px-3 py-1.5 text-xs font-semibold">
+                    <button type="button" onClick={undo} className="rounded-full bg-[var(--tint-2)] px-3 py-1.5 text-xs font-semibold">
                       <Undo2 size={14} className="mr-1 inline" /> {t("granja.undo")}
                     </button>
                     <button
@@ -657,11 +657,11 @@ function Farm() {
                         remember();
                         setGranja((s) => ({ tiles: s.tiles.map((id) => (isOn(id) ? brush : id)) }));
                       }}
-                      className="rounded-full bg-white/[.06] px-3 py-1.5 text-xs font-semibold"
+                      className="rounded-full bg-[var(--tint-2)] px-3 py-1.5 text-xs font-semibold"
                     >
                       {t("granja.fillAll")}
                     </button>
-                    <Link href={`/${locale}/agrupaciones`} className="rounded-full bg-white/[.06] px-3 py-1.5 text-xs font-semibold">
+                    <Link href={`/${locale}/agrupaciones`} className="rounded-full bg-[var(--tint-2)] px-3 py-1.5 text-xs font-semibold">
                       {t("rotaciones.create")}
                     </Link>
                   </div>
@@ -684,7 +684,7 @@ function Farm() {
                             setBrush(r.id);
                             setTool((tl) => (tl === "shape" ? "shape" : "paint"));
                           }}
-                          className={`flex flex-col items-start gap-0.5 rounded-xl border-2 bg-[rgba(3,14,22,.45)] px-2.5 py-2 text-left ${active ? "shadow-md" : "border-[var(--border)]"}`}
+                          className={`flex flex-col items-start gap-0.5 rounded-xl border-2 bg-[var(--inset)] px-2.5 py-2 text-left ${active ? "shadow-md" : "border-[var(--border)]"}`}
                           style={{ borderColor: active ? rotationColor(r.id) : undefined }}
                         >
                           <RotationIcons rotation={r} size={20} className="text-[var(--brand)]" />
@@ -827,7 +827,7 @@ function Farm() {
                       <span className="inline-flex items-center gap-1">
                         <ThermoIcon size={16} /> {t("granja.whatif.temp")}
                       </span>
-                      <span className={granja.tempDelta > 0 ? "text-[#ff8f8f]" : granja.tempDelta < 0 ? "text-[var(--sky)]" : ""}>
+                      <span className={granja.tempDelta > 0 ? "text-[var(--danger-text)]" : granja.tempDelta < 0 ? "text-[var(--sky)]" : ""}>
                         {granja.tempDelta > 0 ? "+" : ""}
                         {granja.tempDelta} °C
                       </span>
@@ -857,7 +857,7 @@ function Farm() {
                     </span>
                     <Chips small value={farm.irrigation} options={["gravedad", "aspersion", "goteo"] as Irrigation[]} label={(v) => t(`irrigation.${v}`)} onChange={(irrigation) => setFarm({ irrigation })} />
                   </div>
-                  <p className="rounded-xl bg-[rgba(99,222,242,.07)] text-[#c8dde0] px-3 py-2 text-xs">
+                  <p className="rounded-xl bg-[rgba(99,222,242,.07)] text-[var(--text-soft)] px-3 py-2 text-xs">
                     {t("granja.whatif.effect", {
                       eff: pct.format(efficiency(farm.irrigation, farm.soilTexture)),
                       water: n.format(sim.summary.waterM3),
@@ -865,7 +865,7 @@ function Farm() {
                     })}
                   </p>
                   <HazardControls events={granja.events} month={month} onChange={(events) => setGranja({ events })} />
-                  <button type="button" onClick={() => setGranja({ tempDelta: 0, waterFactor: 1, events: [] })} className="self-start rounded-full bg-white/[.06] px-4 py-2 text-xs font-semibold">
+                  <button type="button" onClick={() => setGranja({ tempDelta: 0, waterFactor: 1, events: [] })} className="self-start rounded-full bg-[var(--tint-2)] px-4 py-2 text-xs font-semibold">
                     <RotateCcw size={13} className="mr-1 inline" /> {t("granja.whatif.reset")}
                   </button>
                 </section>
@@ -910,7 +910,7 @@ function Farm() {
                         </span>
                         <span>{finished ? g.done ? <Check size={16} className="text-[var(--ok)]" /> : "—" : granja.badges.includes(g.id) ? <MedalIcon size={16} /> : null}</span>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-white/[.06]">
+                      <div className="h-1.5 overflow-hidden rounded-full bg-[var(--tint-2)]">
                         <div className="h-full rounded-full bg-[var(--brand)] transition-all" style={{ width: `${g.progress * 100}%`, opacity: finished ? 1 : 0.45 }} />
                       </div>
                     </div>
@@ -927,10 +927,10 @@ function Farm() {
                     </div>
                   )}
                   <div className="flex flex-wrap gap-2 pt-1 text-xs">
-                    <button type="button" onClick={() => setGranja({ zoneSet: false })} className="rounded-full bg-white/[.06] px-3 py-1.5">
+                    <button type="button" onClick={() => setGranja({ zoneSet: false })} className="rounded-full bg-[var(--tint-2)] px-3 py-1.5">
                       <MapPin size={13} className="mr-1 inline" /> {t("granja.changeZone")}
                     </button>
-                    <Link href={`/${locale}/comparar`} className="rounded-full bg-white/[.06] px-3 py-1.5">
+                    <Link href={`/${locale}/comparar`} className="rounded-full bg-[var(--tint-2)] px-3 py-1.5">
                       <BarChart3 size={13} className="mr-1 inline" /> {t("granja.expert")}
                     </Link>
                   </div>
@@ -959,7 +959,7 @@ function Factor({ icon, title, value, bar, bad }: { icon: React.ReactNode; title
       </div>
       <span className="text-xs">{value}</span>
       {bar !== undefined && (
-        <div className="h-1.5 overflow-hidden rounded-full bg-white/[.06]">
+        <div className="h-1.5 overflow-hidden rounded-full bg-[var(--tint-2)]">
           <div className="h-full rounded-full" style={{ width: `${Math.max(4, v * 100)}%`, background: color }} />
         </div>
       )}
@@ -992,7 +992,7 @@ function ResultRow({ label, mine, base, lowerIsBetter }: { label: string; mine: 
       <span className="text-xs text-[var(--muted)]">
         {t("granja.vsBaseline")} {n.format(base)}
       </span>
-      <span className={`text-xs font-semibold tabular-nums ${good ? "text-[var(--ok)]" : "text-[#ff8f8f]"}`}>
+      <span className={`text-xs font-semibold tabular-nums ${good ? "text-[var(--ok)]" : "text-[var(--danger-text)]"}`}>
         {diff > 0 ? "+" : ""}
         {Math.round(diff * 100)}%
       </span>

@@ -50,7 +50,7 @@ export function YearChart({ series, year, limit, unit, onPickYear }: { series: S
               </linearGradient>
             ))}
           </defs>
-          <CartesianGrid stroke="rgba(140,214,224,.09)" vertical={false} />
+          <CartesianGrid stroke="var(--tint-3)" vertical={false} />
           <XAxis dataKey="year" tick={{ fontSize: 11, fill: "var(--muted)" }} interval={3} tickLine={false} axisLine={false} />
           <YAxis tick={{ fontSize: 11, fill: "var(--muted)" }} tickFormatter={(v) => n.format(v)} width={46} tickLine={false} axisLine={false} domain={["auto", "auto"]} />
           <Tooltip content={<ChartTip series={series} unit={unit} locale={locale} />} cursor={{ stroke: "rgba(185,255,99,.35)", strokeWidth: 1 }} />
@@ -63,7 +63,7 @@ export function YearChart({ series, year, limit, unit, onPickYear }: { series: S
             <Area key={`area-${s.id}`} type="monotone" dataKey={s.id} stroke="none" fill={`url(#grad-${s.id})`} isAnimationActive animationDuration={1100} legendType="none" tooltipType="none" activeDot={false} />
           ))}
           {series.map((s) => (
-            <Line key={s.id} type="monotone" dataKey={s.id} stroke={s.color} strokeWidth={2.5} dot={false} activeDot={{ r: 5, strokeWidth: 2, stroke: "#061520" }} isAnimationActive animationDuration={1300} />
+            <Line key={s.id} type="monotone" dataKey={s.id} stroke={s.color} strokeWidth={2.5} dot={false} activeDot={{ r: 5, strokeWidth: 2, stroke: "var(--surface)" }} isAnimationActive animationDuration={1300} />
           ))}
         </ComposedChart>
       </ResponsiveContainer>

@@ -1,4 +1,4 @@
 -r requirements.txt
 uvicorn
 pytest
-truststore  # usa el almacén de certificados del sistema (p. ej. antivirus que inspecciona TLS)
+truststore  # uses the system certificate store (e.g. antivirus software that inspects TLS)

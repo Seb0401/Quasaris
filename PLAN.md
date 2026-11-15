@@ -2,7 +2,7 @@
 
 > **From Space to Soil.** Before you plant, see what would have happened, what makes sense today and what is coming.
 
-Execution plan for the NASA Space Apps Challenge 2026, Arequipa venue. Challenge: **Field Shift: Adapting Farms with NASA Data**. It complements `CONTEXTO_RETO.md`, which details the challenge, the data and the calculation engine. That detail is not repeated here: this document decides what we build, how and in what order.
+Execution plan for the NASA Space Apps Challenge 2026, Arequipa venue. Challenge: **Field Shift: Adapting Farms with NASA Data**. It complements `CHALLENGE_CONTEXT.md`, which details the challenge, the data and the calculation engine. That detail is not repeated here: this document decides what we build, how and in what order.
 
 This is the plan written at the start of the hackathon. The README describes what was finally built (for example, the 3D farm simulation and crop associations were added later).
 
@@ -18,7 +18,7 @@ FarmTwin is a **digital twin of the field** in the farmer's pocket. Using NASA d
 | **Present** | **AI field assistant (voice and photo)** | "Explain simply why you recommend this." The farmer speaks or takes a photo and gets a spoken answer, in Spanish or English. |
 | **Future** | **Live calendar and alerts** | "When do I plant, and when should I watch out for frost or heat?" Push notifications arrive according to the crop and its stage. |
 
-The rotation simulator in `CONTEXTO_RETO.md` is the **engine** behind all three features. They all use the same calculation, presented in three ways.
+The rotation simulator in `CHALLENGE_CONTEXT.md` is the **engine** behind all three features. They all use the same calculation, presented in three ways.
 
 ### Why it is innovative (arguments for the judges)
 
@@ -78,7 +78,7 @@ The rotation simulator in `CONTEXTO_RETO.md` is the **engine** behind all three 
 - A **Play** button animates the 20 years in about 15 seconds. It is the strongest moment of the 30-second video.
 
 **How it is calculated**
-The engine already calculates per year to get the uncertainty range (engine step 10 in `CONTEXTO_RETO.md`). The time machine **exposes that calculation year by year** instead of summarising it. It costs almost no extra backend work.
+The engine already calculates per year to get the uncertainty range (engine step 10 in `CHALLENGE_CONTEXT.md`). The time machine **exposes that calculation year by year** instead of summarising it. It costs almost no extra backend work.
 
 **Data:** daily NASA POWER (T2M_MAX, T2M_MIN, ALLSKY_SFC_SW_DWN, RH2M, WS2M, PRECTOTCORR, GWETROOT), MODIS NDVI through GIBS (visual) and, if time allows, the MOD13Q1 series through AppEEARS to detect truly bare months.
 
@@ -152,7 +152,7 @@ Quasaris/
 ├─ public/ (manifest, icons/)
 ├─ scripts/ (fetch_power_cache.py, validate_senamhi.py)
 ├─ docs/ (DATA_SOURCES.md, AI_USAGE.md, VALIDATION.md)
-├─ CONTEXTO_RETO.md · PLAN.md · README.md · requirements.txt · vercel.json
+├─ CHALLENGE_CONTEXT.md · PLAN.md · README.md · requirements.txt · vercel.json
 ```
 
 ---
@@ -231,7 +231,7 @@ Each person supervises one or more workstreams, reviews their agents' changes an
 | **C. AI and alerts** | Person C | **C1** assistant: AI SDK, tools, voice and photo · **C2** push, cron and calendar | `app/api/chat`, `app/api/push`, `app/api/cron`, `components/assistant`, `components/calendar` |
 | **D. Science, content and pitch** | Person D | Support agent for the crop table with sources, ES/EN explanations, `DATA_SOURCES.md` and `AI_USAGE.md` | `docs/`, `data/crops.json` (together with A) |
 
-**First prompt for each agent:** "Read `CONTEXTO_RETO.md`, `PLAN.md` (sections 5 to 7) and `lib/contract.ts`. Your task is X. Only change these files: Y. Respect the contract; if you need to change it, stop and tell us."
+**First prompt for each agent:** "Read `CHALLENGE_CONTEXT.md`, `PLAN.md` (sections 5 to 7) and `lib/contract.ts`. Your task is X. Only change these files: Y. Respect the contract; if you need to change it, stop and tell us."
 
 **Person D also:** contacts an agronomist (UCSM or INIA) to validate the rotations, gets the reference SENAMHI station (Pampa de Majes), produces the video and slides and keeps track of time.
 

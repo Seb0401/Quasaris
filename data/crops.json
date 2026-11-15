@@ -1,14 +1,14 @@
 {
-  "_note": "Valores ESTIMADOS para Majes, a validar con un agrónomo (flujo D). Kc y etapas: FAO-56 tablas 11 y 12, ajustadas. Rendimiento, precio y costo: órdenes de magnitud de referencias públicas de MIDAGRI (Arequipa); no son cifras oficiales. Temperaturas umbral: rangos agronómicos generales.",
+  "_note": "ESTIMATED values for Majes, to be validated by an agronomist. Kc and stages: FAO-56 tables 11 and 12, adjusted. Yield, price and cost: orders of magnitude from public MIDAGRI references (Arequipa); they are not official figures. Threshold temperatures: general agronomic ranges.",
   "_units": {
-    "stagesDays": "[inicial, desarrollo, media, final] en días (FAO-56 tabla 11)",
-    "yieldTha": "t/ha por campaña (alfalfa: t/ha/año de forraje verde)",
-    "pricePENt": "S/ por tonelada en chacra",
-    "costPENha": "S/ por hectárea por campaña",
-    "tFrostC": "Tmin diaria bajo la cual hay daño por helada",
-    "tHeatC": "Tmax diaria sobre la cual hay estrés por calor",
-    "rootDepthM": "profundidad efectiva de raíz",
-    "category": "grupo para la interfaz: vegetable | grain | legume | forage"
+    "stagesDays": "[initial, development, mid, late] in days (FAO-56 table 11)",
+    "yieldTha": "t/ha per season (alfalfa: t/ha/year of green forage)",
+    "pricePENt": "S/ per tonne at the farm gate",
+    "costPENha": "S/ per hectare per season",
+    "tFrostC": "daily Tmin below which frost damage occurs",
+    "tHeatC": "daily Tmax above which heat stress occurs",
+    "rootDepthM": "effective root depth",
+    "category": "group for the interface: vegetable | grain | legume | forage"
   },
   "crops": {
     "alfalfa": {
@@ -39,8 +39,8 @@
       "pricePENt": 200,
       "costPENha": 7000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (promedio con efecto de cortes ≈ 0.90)",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (average including cuttings ≈ 0.90)",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 40,
@@ -92,9 +92,9 @@
       "pricePENt": 1000,
       "costPENha": 22000,
       "sources": {
-        "kc": "FAO-56 tabla 12",
-        "stages": "FAO-56 tabla 11 (zona semiárida), ajustado",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12",
+        "stages": "FAO-56 table 11 (semi-arid zone), adjusted",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 180,
@@ -147,9 +147,9 @@
       "pricePENt": 800,
       "costPENha": 20000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (cebolla seca)",
-        "stages": "FAO-56 tabla 11 (cebolla seca, zona árida)",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (dry onion)",
+        "stages": "FAO-56 table 11 (dry onion, arid zone)",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 120,
@@ -201,9 +201,9 @@
       "pricePENt": 120,
       "costPENha": 4500,
       "sources": {
-        "kc": "FAO-56 tabla 12 (maíz para ensilaje: Kc final 0.35–0.60)",
-        "stages": "FAO-56 tabla 11, cosecha anticipada para forraje",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (maize for silage: final Kc 0.35–0.60)",
+        "stages": "FAO-56 table 11, early harvest for forage",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 200,
@@ -254,9 +254,9 @@
       "pricePENt": 1500,
       "costPENha": 9000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (haba)",
-        "stages": "FAO-56 tabla 11, ajustado a haba verde",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (faba bean)",
+        "stages": "FAO-56 table 11, adjusted to green faba bean",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 30,
@@ -307,9 +307,9 @@
       "pricePENt": 5000,
       "costPENha": 6000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (frijol seco)",
-        "stages": "FAO-56 tabla 11",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (dry bean)",
+        "stages": "FAO-56 table 11",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 30,
@@ -360,9 +360,9 @@
       "pricePENt": 4500,
       "costPENha": 9000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (quinua)",
-        "stages": "FAO-56 tabla 11 (quinua, zona árida), ajustado",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (quinoa)",
+        "stages": "FAO-56 table 11 (quinoa, arid zone), adjusted",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 100,
@@ -413,9 +413,9 @@
       "pricePENt": 3000,
       "costPENha": 20000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (ajo, similar a cebolla seca)",
-        "stages": "FAO-56 tabla 11 (cebolla seca), ajustado a ajo",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (garlic, similar to dry onion)",
+        "stages": "FAO-56 table 11 (dry onion), adjusted to garlic",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 150,
@@ -467,9 +467,9 @@
       "pricePENt": 600,
       "costPENha": 9000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (zanahoria)",
-        "stages": "FAO-56 tabla 11 (zanahoria, zona árida), ajustado",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (carrot)",
+        "stages": "FAO-56 table 11 (carrot, arid zone), adjusted",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 100,
@@ -520,9 +520,9 @@
       "pricePENt": 1800,
       "costPENha": 8000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (arveja fresca)",
-        "stages": "FAO-56 tabla 11 (arveja)",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (fresh pea)",
+        "stages": "FAO-56 table 11 (pea)",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 30,
@@ -574,9 +574,9 @@
       "pricePENt": 1300,
       "costPENha": 4500,
       "sources": {
-        "kc": "FAO-56 tabla 12 (trigo de primavera)",
-        "stages": "FAO-56 tabla 11 (trigo), ajustado",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (spring wheat)",
+        "stages": "FAO-56 table 11 (wheat), adjusted",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 120,
@@ -627,9 +627,9 @@
       "pricePENt": 1100,
       "costPENha": 4000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (cebada)",
-        "stages": "FAO-56 tabla 11 (cebada)",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (barley)",
+        "stages": "FAO-56 table 11 (barley)",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 90,
@@ -680,9 +680,9 @@
       "pricePENt": 150,
       "costPENha": 3500,
       "sources": {
-        "kc": "FAO-56 tabla 12 (avena, corte para forraje)",
-        "stages": "FAO-56 tabla 11 (avena), cosecha anticipada para forraje",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (oats, cut for forage)",
+        "stages": "FAO-56 table 11 (oats), early harvest for forage",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 80,
@@ -733,9 +733,9 @@
       "pricePENt": 500,
       "costPENha": 7000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (zapallo)",
-        "stages": "FAO-56 tabla 11 (zapallo), ajustado",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (squash)",
+        "stages": "FAO-56 table 11 (squash), adjusted",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 100,
@@ -787,9 +787,9 @@
       "pricePENt": 900,
       "costPENha": 30000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (tomate)",
-        "stages": "FAO-56 tabla 11 (tomate, zona árida)",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (tomato)",
+        "stages": "FAO-56 table 11 (tomato, arid zone)",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 180,
@@ -841,9 +841,9 @@
       "pricePENt": 7000,
       "costPENha": 18000,
       "sources": {
-        "kc": "FAO-56 tabla 12 (pimiento)",
-        "stages": "FAO-56 tabla 11 (pimiento), ajustado a páprika seca",
-        "economics": "Estimado a partir de referencias MIDAGRI Arequipa; validar"
+        "kc": "FAO-56 table 12 (pepper)",
+        "stages": "FAO-56 table 11 (pepper), adjusted to dry paprika",
+        "economics": "Estimated from MIDAGRI Arequipa references; to validate"
       },
       "agronomy": {
         "nDemandKg": 160,
@@ -869,7 +869,7 @@
       }
     }
   },
-  "_agronomyNote": "Campo 'agronomy': referencias agronómicas generales (demanda de N en kg/ha por campaña, N fijado por leguminosas, niveles de P y K, cuidados, plagas). Valores orientativos, a validar con un agrónomo o INIA.",
+  "_agronomyNote": "Field 'agronomy': general agronomic references (N demand in kg/ha per season, N fixed by legumes, P and K levels, care tasks, pests). Indicative values, to be validated by an agronomist or INIA.",
   "companions": [
     {
       "a": "maiz_chala",
