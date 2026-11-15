@@ -42,6 +42,11 @@ export const MAT = {
   paprikaRed: flat("#a8231b"),
   garlicBulb: flat("#efe7d6"),
   yellowFlower: flat("#f3d34a"),
+  avocado: flat("#365b27"),
+  grape: flat("#754694"),
+  mandarin: flat("#ef9a28"),
+  pomegranate: flat("#b9384a"),
+  artichoke: flat("#719d7d"),
   snow: new THREE.PointsMaterial({ color: "#ffffff", size: 0.12, transparent: true, opacity: 0.9 }),
   dust: new THREE.PointsMaterial({ color: "#e0b770", size: 0.1, transparent: true, opacity: 0.6 }),
 };

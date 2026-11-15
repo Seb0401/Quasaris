@@ -10,7 +10,9 @@ import { CROPS, cropName, cropSegments } from "@/lib/crop-calendar";
 import { useFarm } from "@/lib/farm-store";
 import { buildPalette, rotationColor } from "@/lib/granja-sim";
 import { useGranja } from "@/lib/granja-store";
-import { buildPlan, harvestMonth } from "@/lib/plan";
+import { buildPlan } from "@/lib/plan";
+import { CropModelNotes } from "@/components/crop-model-notes";
+import { cropHarvestMonths, cropTiming } from "@/lib/crop-calendar";
 import { activeCount, isOn, lotLabel } from "@/lib/farm-shape";
 import { recommend } from "@/lib/recommendation";
 import { useSimulation } from "@/lib/use-simulation";
@@ -23,7 +25,7 @@ export function PlanClient() {
   const farm = useFarm();
   const granja = useGranja();
   const palette = useMemo(() => buildPalette(farm.rotations), [farm.rotations]);
-  const data = useSimulation({ rotations: palette, cacheKey: "farmtwin.plan.sim.v1" });
+  const data = useSimulation({ rotations: palette, cacheKey: "farmtwin.plan.sim.v2" });
   const [source, setSource] = useState<Source>(granja.zoneSet ? "farm" : "reco");
 
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
@@ -80,6 +82,7 @@ export function PlanClient() {
           </button>
         </div>
       </header>
+      <CropModelNotes cropIds={plan.groups.flatMap((g) => g.rotation.crops.map((c) => c.cropId))} locale={locale} />
 
       {/* resumen */}
       <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -123,7 +126,7 @@ export function PlanClient() {
             {g.rotation.crops.length > 0 && (
               <div className="mt-3 flex flex-col gap-1.5">
                 {g.rotation.crops.map((rc, i) => {
-                  const hm = harvestMonth(rc.cropId, rc.sowMonth);
+                  const harvests = cropHarvestMonths(rc);
                   return (
                     <div key={i} className="flex flex-col gap-1">
                       <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
@@ -131,15 +134,15 @@ export function PlanClient() {
                           <CropIcon crop={rc.cropId} size={16} /> {cropName(rc.cropId, locale)}
                         </span>
                         {CROPS[rc.cropId]?.perennial ? (
-                          <span className="text-muted">{t("plan.perennial")}</span>
+                          <span className="text-muted">{cropTiming(rc, locale)}</span>
                         ) : (
                           <>
                             <span className="flex items-center gap-1">
                               <SproutIcon size={14} /> {t("plan.sow")} {monthName(rc.sowMonth - 1)}
                             </span>
-                            {hm !== null && (
+                            {harvests.length > 0 && (
                               <span className="flex items-center gap-1">
-                                <HarvestIcon size={14} /> {t("plan.harvest")} {monthName(hm)}
+                                <HarvestIcon size={14} /> {t("plan.harvest")} {harvests.map(monthName).join(" · ")}
                               </span>
                             )}
                           </>

@@ -1,4 +1,5 @@
 "use client";
+import { CropModelNotes } from "@/components/crop-model-notes";
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -42,7 +43,7 @@ import { LoadingOrbit, PageHeader, Panel, RangeInput } from "@/components/ui/kit
 import { CircleHelp, CloudSun, Droplets, Gamepad2, Grid2x2Plus, History, Layers, Rocket, SlidersHorizontal, Sprout, Waves, Wand2, FolderKanban } from "lucide-react";
 import { BarChart3, Check, ChevronLeft, ChevronRight, Eye, Flag, MapPin, Pause, Play, RotateCcw, SkipBack, Tractor, Undo2, Volume2, VolumeX, X } from "lucide-react";
 import { BrushIcon, CropIcon, DroughtIcon, EvapoIcon, FrostIcon, GOAL_ICON, HeatIcon, MedalIcon, ProfitIcon, RainIcon, ReservoirIcon, SoilIcon, STAGE_ICON, ThermoIcon, WaterIcon } from "@/components/icons/farm-icons";
-import { RotationIcons } from "@/components/icons/rotation-icons";
+import { RotationArtwork, CropArtwork } from "@/components/crops/crop-artwork";
 
 const FarmScene = dynamic(() => import("@/components/granja/farm-scene"), {
   ssr: false,
@@ -209,7 +210,7 @@ function Farm() {
   );
   const today = useToday();
   const season = nextSeason(today);
-  const data = useSimulation({ rotations: palette, cacheKey: "farmtwin.granja.sim.v3", fallback: fallbackGranja, extra });
+  const data = useSimulation({ rotations: palette, cacheKey: "farmtwin.granja.sim.v4", fallback: fallbackGranja, extra });
 
   const [brush, setBrush] = useState<string>("suelo_agua");
   const [month, setMonth] = useState(0);
@@ -583,7 +584,7 @@ function Farm() {
                     <div>
                       <div className="text-base font-bold">
                         <span className="inline-flex items-center gap-1.5">
-                          <CropIcon crop={sel.cropId} size={20} />
+                          <CropArtwork crop={sel.cropId} size={36} />
                           {sel.cropId ? cropName(sel.cropId, locale) : t("granja.fallow")}
                         </span>
                         {sel.stage && (
@@ -672,6 +673,7 @@ function Farm() {
                         ? t("granja.mode.paintHint")
                         : t("granja.mode.viewHint")}
                   </p>
+                  <CropModelNotes cropIds={palette.filter((r) => r.id === brush || granja.tiles.includes(r.id)).flatMap((r) => r.crops.map((c) => c.cropId))} locale={locale} />
                   <div className="farm-palette">
                     {palette.map((r) => {
                       const res = byId.get(r.id);
@@ -687,7 +689,7 @@ function Farm() {
                           className={`flex flex-col items-start gap-0.5 rounded-xl border-2 bg-[var(--inset)] px-2.5 py-2 text-left ${active ? "shadow-md" : "border-[var(--border)]"}`}
                           style={{ borderColor: active ? rotationColor(r.id) : undefined }}
                         >
-                          <RotationIcons rotation={r} size={20} className="text-[var(--brand)]" />
+                          <RotationArtwork rotation={r} size={34} />
                           <span className="line-clamp-2 text-xs font-semibold leading-tight">
                             <span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: rotationColor(r.id) }} />
                             {r.id === "descanso" ? t("granja.fallow") : r.name}

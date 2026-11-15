@@ -7,6 +7,7 @@ import { Badge, CountUp, Meter, ScoreRing } from "@/components/ui/kit";
 import { waterFit } from "@/lib/water-fit";
 import { useFarm } from "@/lib/farm-store";
 import { ScoreBreakdown } from "@/components/cards/score-breakdown";
+import { RotationArtwork } from "@/components/crops/crop-artwork";
 
 export const MONTH_COLOR: Record<MonthStatus, string> = {
   ok: "var(--ok)",
@@ -102,6 +103,7 @@ export function RotationCard({ rotation, result, color, recommended, scale, all 
   return (
     <article className={`rotation-card ${recommended ? "is-recommended" : ""}`} style={{ "--accent": color } as React.CSSProperties}>
       <div className="rotation-card-glow" aria-hidden />
+      <div className="mb-3"><RotationArtwork rotation={rotation} size={46} /></div>
       <header className="rotation-card-head">
         <div className="min-w-0">
           <div className="rotation-badges">

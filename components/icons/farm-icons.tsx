@@ -219,7 +219,32 @@ export function FallowIcon(p: IconProps) {
   );
 }
 
+export function ArtichokeIcon(p: IconProps) {
+  return <Svg {...p}><path d="M12 21v-5M6 9l6-6 6 6-2 6H8z" fill={A("#719d7d")} fillOpacity={0.5} /><path d="m6 9 6 4 6-4M8 5l4 8 4-8M8 18l4 2 4-2" /></Svg>;
+}
+
+export function AvocadoIcon(p: IconProps) {
+  return <Svg {...p}><path d="M12 3c-3 0-3 5-5 7-5 6-2 11 5 11s10-5 5-11c-2-2-2-7-5-7Z" fill={A("#78b64b")} fillOpacity={0.4} /><circle cx="12" cy="15" r="3" fill="#a7794b" /></Svg>;
+}
+
+export function GrapeIcon(p: IconProps) {
+  return <Svg {...p}><path d="M12 6V2m0 3c2-3 5-3 7-2-1 3-4 4-7 2" /><g fill={A("#a174c4")} fillOpacity={0.6}><circle cx="8" cy="9" r="3" /><circle cx="15" cy="9" r="3" /><circle cx="8" cy="15" r="3" /><circle cx="15" cy="15" r="3" /><circle cx="11.5" cy="20" r="2.5" /></g></Svg>;
+}
+
+export function MandarinIcon(p: IconProps) {
+  return <Svg {...p}><path d="M12 7V3m0 2c2-3 5-3 7-2-1 3-4 4-7 2" /><ellipse cx="12" cy="14" rx="8" ry="7" fill={A("#ef9a28")} fillOpacity={0.55} /><path d="M8 11c-2 1-2 4-1 6" /></Svg>;
+}
+
+export function PomegranateIcon(p: IconProps) {
+  return <Svg {...p}><path d="m9 7-1-4 4 2 4-2-1 4" /><circle cx="12" cy="14" r="8" fill={A("#c64c62")} fillOpacity={0.45} /><path d="M12 9v10M7 12h2m-2 4h2m6-4h2m-2 4h2" /></Svg>;
+}
+
 export const CROP_ICON: Record<string, (p: IconProps) => React.JSX.Element> = {
+  alcachofa: ArtichokeIcon,
+  palta: AvocadoIcon,
+  uva: GrapeIcon,
+  mandarina: MandarinIcon,
+  granada: PomegranateIcon,
   alfalfa: AlfalfaIcon,
   papa: PotatoIcon,
   cebolla: OnionIcon,

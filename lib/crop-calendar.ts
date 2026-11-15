@@ -5,8 +5,8 @@
 import cropsJson from "@/data/crops.json";
 import type { ClimateWeek, Irrigation, Locale, RotationCrop, SoilTexture } from "@/lib/contract";
 
-export type CropCategory = "vegetable" | "grain" | "legume" | "forage";
-export const CATEGORIES: CropCategory[] = ["vegetable", "grain", "legume", "forage"];
+export type CropCategory = "vegetable" | "grain" | "legume" | "forage" | "fruit";
+export const CATEGORIES: CropCategory[] = ["vegetable", "grain", "legume", "forage", "fruit"];
 
 type CropJson = {
   name: Record<Locale, string>;
@@ -19,6 +19,17 @@ type CropJson = {
   stagesDays: number[];
   tFrostC: number;
   tHeatC: number;
+  lifecycle?: "annual" | "orchard";
+  monthlyKc?: number[];
+  harvestMonths?: number[]; // 1..12, established orchards
+  floweringMonths?: number[];
+  harvestDays?: number[]; // 0-based days after field establishment, repeated picking
+  product?: Record<Locale, string>;
+  modelNote?: Record<Locale, string>;
+  sources?: Record<string, string>;
+  yieldTha: number;
+  pricePENt: number;
+  costPENha: number;
 };
 
 export const CROPS = cropsJson.crops as unknown as Record<string, CropJson>;
@@ -55,7 +66,42 @@ export const FAMILY_COLOR: Record<string, string> = {
   amarantacea: "var(--fam-amarantacea, #e0607e)",
   apiacea: "var(--fam-apiacea, #ff9f43)",
   cucurbitacea: "var(--fam-cucurbitacea, #3fb6a8)",
+  asteracea: "#83b5a0",
+  lauracea: "#78b64b",
+  vitacea: "#b780d8",
+  rutacea: "#edaa43",
+  litracea: "#df6679",
 };
+
+export function isOrchard(cropId: string) {
+  return CROPS[cropId]?.lifecycle === "orchard";
+}
+
+/** Orchard calendars represent an already producing stand, never its establishment year. */
+export function orchardConflict(crops: RotationCrop[], mode = "rotation") {
+  return crops.some((c) => isOrchard(c.cropId)) && (crops.length !== 1 || mode === "association");
+}
+
+/** All scheduled harvest months (0..11); an empty array means unscheduled forage cuts. */
+export function cropHarvestMonths(rc: RotationCrop): number[] {
+  const c = CROPS[rc.cropId];
+  if (!c) return [];
+  if (c.harvestMonths) return c.harvestMonths.map((m) => m - 1);
+  if (c.perennial) return [];
+  const days = c.harvestDays ?? [cycleDays(rc.cropId) - 1];
+  return [...new Set(days.map((d) => MONTH_START.findLastIndex((s) => s <= (sowDay(rc) + d) % 365)))];
+}
+
+export function cropTiming(rc: RotationCrop, locale: Locale): string {
+  const c = CROPS[rc.cropId];
+  if (!c) return "";
+  const es = locale === "es";
+  if (!c.perennial && !c.harvestDays) return "";
+  const months = cropHarvestMonths(rc);
+  if (!months.length) return es ? "Presente todo el año; cortes sin programar." : "Present year-round; cuttings are not scheduled.";
+  const fmt = new Intl.DateTimeFormat(locale, { month: "short" });
+  return `${isOrchard(rc.cropId) ? (es ? "Huerto establecido. " : "Established orchard. ") : ""}${es ? "Cosecha aprox.: " : "Approx. harvest: "}${months.map((m) => fmt.format(new Date(2025, m, 1))).join(" · ")}`;
+}
 
 export function cycleDays(cropId: string) {
   const c = CROPS[cropId];
@@ -84,6 +130,14 @@ export function cropOnDay(rc: RotationCrop, doy: number): CropDay | null {
   const total = cycleDays(rc.cropId);
   const k = (doy - sowDay(rc) + 365) % 365;
   if (k >= total) return null;
+  if (isOrchard(rc.cropId)) {
+    const month = MONTH_START.findLastIndex((s) => s <= doy);
+    const harvest = c.harvestMonths?.includes(month + 1);
+    const stage: Stage = harvest ? "late" : c.floweringMonths?.includes(month + 1) ? "dev" : "mid";
+    const starts = (c.harvestMonths ?? []).filter((m) => !(c.harvestMonths ?? []).includes(m === 1 ? 12 : m - 1));
+    const daysToHarvest = harvest ? 0 : starts.length ? Math.min(...starts.map((m) => (MONTH_START[m - 1] - doy + 365) % 365)) : null;
+    return { cropId: rc.cropId, dayInCycle: k, stage, kc: c.monthlyKc![month], daysToHarvest };
+  }
   if (c.perennial) return { cropId: rc.cropId, dayInCycle: k, stage: "mid", kc: c.kcAvg ?? c.kc.mid, daysToHarvest: null };
   const [ini, dev, mid, late] = c.stagesDays;
   let stage: Stage;
@@ -101,7 +155,8 @@ export function cropOnDay(rc: RotationCrop, doy: number): CropDay | null {
     stage = "late";
     kc = c.kc.mid + ((c.kc.end - c.kc.mid) * (k - ini - dev - mid)) / Math.max(late - 1, 1);
   }
-  return { cropId: rc.cropId, dayInCycle: k, stage, kc, daysToHarvest: total - k };
+  const nextHarvest = c.harvestDays?.find((d) => d >= k);
+  return { cropId: rc.cropId, dayInCycle: k, stage, kc, daysToHarvest: c.harvestDays ? (nextHarvest === undefined ? null : nextHarvest - k) : total - k };
 }
 
 /** Segmentos [inicio, fin) dentro del año 0..365 que ocupa un cultivo (se parte si cruza diciembre). */

@@ -5,6 +5,7 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { Stage, TileState } from "@/lib/granja-sim";
 import { GEO, MAT, rand } from "./low-poly";
+import { isOrchard } from "@/lib/crop-calendar";
 
 /**
  * Todas las plantas de la chacra con InstancedMesh: una malla por (geometría, material).
@@ -172,6 +173,37 @@ function parts(cropId: string, look: Look, stage: Stage): Part[] {
           : []),
       ];
     }
+    case "alcachofa":
+      return [
+        { g: "bush", m: leaf(look, "habaLeaf"), p: [0, 0.2, 0], s: [1.4, 0.6, 1.4] },
+        { g: "stalk", m: leaf(look), p: [0, 0.35, 0], s: [0.65, 0.45, 0.65] },
+        { g: "bulbBig", m: look === "ok" ? "artichoke" : leaf(look), p: [0, 0.67, 0], s: late ? [1.2, 1.4, 1.2] : [0.8, 1, 0.8] },
+      ];
+    case "palta":
+    case "mandarina":
+    case "granada": {
+      const fruitM: MatKey = cropId === "palta" ? "avocado" : cropId === "mandarina" ? "mandarin" : "pomegranate";
+      return [
+        { g: "trunk", m: "trunk", p: [0, 0.4, 0], s: [0.55, 1, 0.55] },
+        { g: "crownRound", m: leaf(look, "leafDark"), p: [0, 1, 0], s: [0.65, 0.7, 0.65] },
+        ...(stage === "flower" ? [{ g: "flower", m: "whiteFlower", p: [0.2, 1.15, 0.3] } as Part] : []),
+        ...(late ? [
+          { g: "fruit", m: fruitM, p: [0.28, 0.85, 0.3], s: [1.3, cropId === "palta" ? 1.8 : 1.3, 1.3] },
+          { g: "fruit", m: fruitM, p: [-0.3, 1.1, 0.16], s: [1.2, 1.4, 1.2] },
+          { g: "fruit", m: fruitM, p: [0.1, 1.3, -0.28] },
+        ] as Part[] : []),
+      ];
+    }
+    case "uva":
+      return [
+        { g: "trunk", m: "trunk", p: [0, 0.4, 0], s: [0.4, 1, 0.4] },
+        { g: "bush", m: leaf(look, "leafLight"), p: [0, 0.85, 0], s: [1.6, 0.55, 1.2] },
+        ...(stage === "flower" ? [{ g: "flower", m: "whiteFlower", p: [0.2, 0.8, 0.15] } as Part] : []),
+        ...(late ? [
+          { g: "panicle", m: "grape", p: [0.23, 0.57, 0.14], r: [Math.PI, 0, 0] },
+          { g: "panicle", m: "grape", p: [-0.18, 0.6, -0.15], r: [Math.PI, 0, 0] },
+        ] as Part[] : []),
+      ];
     default: // frijol
       return [
         { g: "bushSmall", m: late ? leaf(look, "leafYellow") : leaf(look), p: [0, 0.2, 0] },
@@ -237,7 +269,7 @@ export function PlantField({
 
   // escala animada por casilla (crecimiento suave)
   const scales = useRef<number[]>([]);
-  const targets = tiles.map((t) => (t.cropId ? 0.25 + 0.75 * Math.min(1, t.growth * 1.4) : 0));
+  const targets = tiles.map((t) => (t.cropId ? isOrchard(t.cropId) ? 1 : 0.25 + 0.75 * Math.min(1, t.growth * 1.4) : 0));
   const meshes = useRef<(THREE.InstancedMesh | null)[]>([]);
 
   const write = () => {

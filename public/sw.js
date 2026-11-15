@@ -3,7 +3,7 @@
  * - Estáticos (_next/static, íconos, teselas GIBS): caché primero.
  * - /api/*: siempre red (el cliente guarda su propio respaldo en localStorage).
  */
-const VERSION = "farmtwin-v2";
+const VERSION = "farmtwin-v3-crop-artwork";
 const SHELL = ["/en", "/es", "/en/parcela", "/en/comparar", "/es/parcela", "/es/comparar", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -32,7 +32,7 @@ self.addEventListener("fetch", (event) => {
   if (url.origin === self.location.origin && url.pathname.startsWith("/api/")) return;
 
   const cacheFirst =
-    (url.origin === self.location.origin && (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/"))) ||
+    (url.origin === self.location.origin && (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/") || url.pathname.startsWith("/images/crops/"))) ||
     url.hostname === "gibs.earthdata.nasa.gov";
 
   if (cacheFirst) {

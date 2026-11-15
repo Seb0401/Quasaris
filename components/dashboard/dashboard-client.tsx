@@ -135,8 +135,8 @@ export function DashboardClient() {
             </h1>
             <p>{es ? "Veintiún años de señales satelitales convertidos en una decisión agrícola clara, trazable y local." : "Twenty-one years of satellite signals transformed into a clear, traceable and local farming decision."}</p>
             <div className="qx-hero-actions">
-              <Link href={`/${locale}/parcela`} className="qx-action-primary">
-                <span>{es ? "Explorar mi parcela" : "Explore my field"}</span><ArrowUpRight size={19} />
+              <Link href={`/${locale}/onboarding`} className="qx-action-primary">
+                <span>{es ? "Crear mi primera rotación" : "Create my first rotation"}</span><ArrowUpRight size={19} />
               </Link>
               <button className="qx-action-ghost" onClick={() => document.getElementById("qx-story")?.scrollIntoView({ behavior: "smooth" })}>
                 <Play size={15} fill="currentColor" /> {es ? "Ver cómo funciona" : "See how it works"}

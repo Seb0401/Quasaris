@@ -13,6 +13,9 @@ import { cropName, cropOnDay, CROPS, cropSegments, cycleDays, dayOfYear, FAMILY_
 import { useFarm } from "@/lib/farm-store";
 import { rotationColor } from "@/lib/ui";
 import { useToday } from "@/lib/use-today";
+import { CropModelNotes } from "@/components/crop-model-notes";
+import { cropTiming } from "@/lib/crop-calendar";
+import { CropArtwork } from "@/components/crops/crop-artwork";
 
 const ENGINE_URL = process.env.NEXT_PUBLIC_ENGINE_URL ?? "";
 const CACHE_KEY = "farmtwin.climate.v1";
@@ -107,6 +110,7 @@ export function CalendarioClient() {
         <HeroStat icon={Sun} label={es ? "HOY" : "TODAY"}><span className="capitalize">{now ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(now) : "—"}</span></HeroStat>
         <HeroStat icon={Sprout} label={es ? "EN EL CAMPO" : "IN THE FIELD"} tone="lime">{currentCrop ? cropName(currentCrop.cropId, locale) : "—"}</HeroStat>
       </PageHeader>
+      <CropModelNotes cropIds={rotation?.crops.map((c) => c.cropId) ?? []} locale={locale} />
 
       <div className="rotation-tabs" role="tablist" aria-label={es ? "Seleccionar rotación" : "Select rotation"}>
         {farm.rotations.map((r, i) => (
@@ -124,10 +128,10 @@ export function CalendarioClient() {
           <Panel kicker={es ? "CULTIVO EN ESTA FECHA" : "CROP AT THIS TIME"} icon={Sprout} className="cal-card">
             {currentCrop ? (
               <div className="crop-now" style={{ "--accent": cropColor(currentCrop.cropId) } as React.CSSProperties}>
-                <span className="crop-now-icon"><CropIcon crop={currentCrop.cropId} size={38} /></span>
+                <span className="crop-now-icon"><CropArtwork crop={currentCrop.cropId} size={52} /></span>
                 <div className="min-w-0">
                   <h3>{active.map((c) => cropName(c.cropId, locale)).join(" · ")}</h3>
-                  <p>{CROPS[currentCrop.cropId]?.perennial ? copy.allYear : t(`calendario.stage.${currentCrop.stage}`)}</p>
+                  <p>{CROPS[currentCrop.cropId]?.perennial ? cropTiming({ cropId: currentCrop.cropId, sowMonth: 1 }, locale) : t(`calendario.stage.${currentCrop.stage}`)}</p>
                 </div>
               </div>
             ) : (
@@ -145,10 +149,10 @@ export function CalendarioClient() {
         <Reveal delay={80}>
           <Panel kicker={es ? "PRÓXIMA ACCIÓN" : "NEXT ACTION"} icon={CalendarRange} className="cal-card cal-next">
             <div className="crop-now" style={{ "--accent": nextSowing ? cropColor(nextSowing.cropId) : "#63def2" } as React.CSSProperties}>
-              <span className="crop-now-icon">{nextSowing ? <CropIcon crop={nextSowing.cropId} size={38} /> : <CalendarRange size={32} />}</span>
+                <span className="crop-now-icon">{nextSowing ? <CropArtwork crop={nextSowing.cropId} size={52} /> : <CalendarRange size={32} />}</span>
               <div className="min-w-0">
                 <h3>{nextText}</h3>
-                <p>{nextSowing ? <>{copy.sow}: <span className="capitalize">{fmtMonthLong.format(new Date(2025, nextSowing.sowMonth - 1, 1))}</span> · {es ? `en unos ${nextSowing.inDays} días` : `in about ${nextSowing.inDays} days`}</> : copy.allYear}</p>
+                <p>{nextSowing ? <>{copy.sow}: <span className="capitalize">{fmtMonthLong.format(new Date(2025, nextSowing.sowMonth - 1, 1))}</span> · {es ? `en unos ${nextSowing.inDays} días` : `in about ${nextSowing.inDays} days`}</> : rotation?.crops[0] ? cropTiming(rotation.crops[0], locale) : copy.noRotation}</p>
               </div>
             </div>
             <a href="#annual-calendar" className="ui-btn ui-btn-ghost ui-btn-sm self-start">{es ? "Ver calendario" : "View calendar"}<ArrowDown size={14} /></a>
@@ -178,7 +182,7 @@ export function CalendarioClient() {
                     <div key={`${rc.cropId}-${i}`} className="cal-row">
                       <div className="cal-label-col">
                         <span className="cal-label"><CropIcon crop={rc.cropId} size={16} style={{ color }} />{cropName(rc.cropId, locale)}{CROPS[rc.cropId]?.fixesNitrogen && <em title={es ? "Fija nitrógeno" : "Fixes nitrogen"}>N</em>}</span>
-                        {view === "cycle" && <small className="cal-detail">{!known ? copy.unknown : CROPS[rc.cropId].perennial ? (es ? "Todo el año" : "Year-round") : `${copy.sow}: ${fmtMonth.format(new Date(2025, rc.sowMonth - 1, 1))} · ${cycleDays(rc.cropId)} ${copy.days}`}</small>}
+                        {view === "cycle" && <small className="cal-detail">{!known ? copy.unknown : CROPS[rc.cropId].perennial ? cropTiming(rc, locale) : `${copy.sow}: ${fmtMonth.format(new Date(2025, rc.sowMonth - 1, 1))} · ${cycleDays(rc.cropId)} ${copy.days}${CROPS[rc.cropId].harvestDays ? ` · ${cropTiming(rc, locale)}` : ""}`}</small>}
                       </div>
                       <div className="cal-track">
                         {cropSegments(rc).map((s, j) => (
