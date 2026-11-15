@@ -38,12 +38,12 @@
     }
   },
   "units": {
-    "sand": "% del peso del suelo; escala GeoTIFF 10",
-    "silt": "% del peso del suelo; escala GeoTIFF 10",
-    "clay": "% del peso del suelo; escala GeoTIFF 10",
-    "wv0033": "% de contenido volumétrico; escala GeoTIFF 10",
-    "wv1500": "% de contenido volumétrico; escala GeoTIFF 10",
-    "availableWater0to30cm": "mm de agua estimada entre 33 y 1500 kPa en 0–30 cm"
+    "sand": "% of soil weight; GeoTIFF scale factor 10",
+    "silt": "% of soil weight; GeoTIFF scale factor 10",
+    "clay": "% of soil weight; GeoTIFF scale factor 10",
+    "wv0033": "% volumetric content; GeoTIFF scale factor 10",
+    "wv1500": "% volumetric content; GeoTIFF scale factor 10",
+    "availableWater0to30cm": "mm of estimated water between 33 and 1500 kPa in 0–30 cm"
   },
   "texture": {
     "sand": {
@@ -350,9 +350,9 @@
       "p90": 44.55,
       "max": 59.3
     },
-    "method": "Q0.5(wv0033) - Q0.5(wv1500), ponderado por espesor de las capas 0–5, 5–15 y 15–30 cm",
-    "caveat": "Estimación de retención potencial; no representa humedad actual ni agua disponible en el reservorio."
+    "method": "Q0.5(wv0033) - Q0.5(wv1500), weighted by the thickness of the 0–5, 5–15 and 15–30 cm layers",
+    "caveat": "Estimate of potential water retention; it does not represent current soil moisture or water available in the reservoir."
   },
-  "spatialSummary": "Los estadísticos resumen los píxeles válidos del AOI; no son mediciones puntuales de cada predio.",
-  "resolutionCaveat": "SoilGrids se usa como contexto regional a 250 m. Verificar y corregir con muestras de campo antes de recomendaciones parcelarias."
+  "spatialSummary": "The statistics summarise the valid pixels of the area of interest; they are not point measurements of each farm.",
+  "resolutionCaveat": "SoilGrids is used as regional context at 250 m. Verify and correct with field samples before field-level recommendations."
 }
