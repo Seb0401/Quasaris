@@ -8,7 +8,7 @@ import { HistoryGrid } from "@/components/timemachine/history-grid";
 import { YearChart, type Series } from "@/components/timemachine/water-chart";
 import { Badge, CountUp, HeroStat, LoadingOrbit, Meter, PageHeader, Panel, Segmented } from "@/components/ui/kit";
 import { Reveal } from "@/components/motion/reveal";
-import { setFarm, useFarm } from "@/lib/farm-store";
+import { moveFarm, useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
 import { rotationColor } from "@/lib/ui";
 import { BadgeDollarSign, CalendarRange, Clock3, Droplets, Flame, History, LineChart, Pause, Play, Satellite, SkipBack, Snowflake, TriangleAlert } from "lucide-react";
@@ -214,7 +214,7 @@ export function TiempoClient() {
               <button key={m} type="button" onClick={() => setMonth(m)} className={m === month ? "active" : ""}>{fmtMonth.format(new Date(2025, m - 1, 1))}</button>
             ))}
           </div>
-          <ParcelMap compact lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} ndviTime={ndviDate(current, month)} />
+          <ParcelMap compact lat={farm.lat} lon={farm.lon} onPick={moveFarm} ndviTime={ndviDate(current, month)} />
         </Panel>
       </Reveal>
     </div>

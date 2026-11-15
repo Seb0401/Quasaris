@@ -39,7 +39,7 @@ type Props = {
   children?: React.ReactNode;
   /** contorno de la parcela; con onBoundary se puede dibujar sobre el mapa */
   boundary?: LatLon[];
-  onBoundary?: (pts: LatLon[] | undefined) => void;
+  onBoundary?: (pts: LatLon[] | undefined, areaHa: number | undefined) => void;
 };
 
 type Base = "satellite" | "hybrid" | "terrain";
@@ -119,6 +119,33 @@ export default function ParcelMap({
   const [map, setMap] = useState<LeafletMap | null>(null);
   const [draft, setDraft] = useState<LatLon[] | null>(null); // dibujando el contorno
   const drawing = draft !== null;
+
+  // al dibujar, el doble clic no debe acercar el mapa
+  useEffect(() => {
+    if (!map) return;
+    if (drawing) map.doubleClickZoom.disable();
+    else map.doubleClickZoom.enable();
+  }, [map, drawing]);
+
+  const finishDraw = (pts: LatLon[]) => {
+    if (pts.length < 3) return;
+    const [cla, clo] = centroid(pts);
+    onBoundary?.(pts, polygonAreaHa(pts));
+    onPick(cla, clo);
+    setDraft(null);
+  };
+  const addVertex = (la: number, lo: number) =>
+    setDraft((d) => {
+      const pts = d ?? [];
+      const last = pts[pts.length - 1];
+      // un doble clic (o un toque repetido) no agrega el mismo punto dos veces
+      if (last && map) {
+        const a = map.latLngToContainerPoint(last);
+        const b = map.latLngToContainerPoint([la, lo]);
+        if (a.distanceTo(b) < 8) return pts;
+      }
+      return [...pts, [la, lo]];
+    });
   const date = new Intl.DateTimeFormat(es ? "es" : "en", {
     month: "short",
     year: "numeric",
@@ -210,9 +237,19 @@ export default function ParcelMap({
         )}
         {drawing && draft.length >= 3 && <Polygon positions={draft} pathOptions={{ color: "#b9ff63", weight: 2, fillOpacity: 0.12 }} />}
         {drawing && draft.length === 2 && <Polyline positions={draft} pathOptions={{ color: "#b9ff63", weight: 2 }} />}
-        {drawing && draft.map((pt, i) => <CircleMarker key={i} center={pt} radius={6} pathOptions={{ color: "#0a2230", weight: 2, fillColor: i === 0 ? "#ffffff" : "#b9ff63", fillOpacity: 1 }} />)}
+        {drawing &&
+          draft.map((pt, i) => (
+            <CircleMarker
+              key={i}
+              center={pt}
+              radius={i === 0 && draft.length >= 3 ? 9 : 6}
+              bubblingMouseEvents={false}
+              eventHandlers={{ click: () => i === 0 && finishDraw(draft) }} // tocar el primer punto cierra el contorno
+              pathOptions={{ color: "#0a2230", weight: 2, fillColor: i === 0 ? "#ffffff" : "#b9ff63", fillOpacity: 1 }}
+            />
+          ))}
         {!drawing && <Marker position={[lat, lon]} icon={PIN} draggable eventHandlers={markerEvents} />}
-        <ClickHandler onPick={(la, lo) => (drawing ? setDraft((d) => [...(d ?? []), [la, lo]]) : onPick(la, lo))} />
+        <ClickHandler onPick={(la, lo) => (drawing ? addVertex(la, lo) : onPick(la, lo))} />
       </MapContainer>
 
       {search && <SearchBox es={es} onPick={onPick} />}
@@ -461,12 +498,7 @@ export default function ParcelMap({
             type="button"
             className="ok"
             disabled={draft.length < 3}
-            onClick={() => {
-              const [cla, clo] = centroid(draft);
-              onBoundary?.(draft);
-              onPick(cla, clo);
-              setDraft(null);
-            }}
+            onClick={() => finishDraw(draft)}
           >
             <Check size={15} />
             {es ? "Listo" : "Done"}
@@ -475,7 +507,7 @@ export default function ParcelMap({
             <button
               type="button"
               onClick={() => {
-                onBoundary?.(undefined);
+                onBoundary?.(undefined, undefined);
                 setDraft(null);
               }}
               aria-label={es ? "Borrar contorno" : "Delete outline"}
@@ -509,7 +541,9 @@ function SearchBox({ es, onPick }: { es: boolean; onPick: (lat: number, lon: num
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const ref = useRef<HTMLInputElement>(null);
   const abort = useRef<AbortController | null>(null);
-  const coords = q.match(/^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/);
+  const m = q.match(/^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/);
+  // solo coordenadas válidas (lat ±90, lon ±180)
+  const coords = m && Math.abs(Number(m[1])) <= 90 && Math.abs(Number(m[2])) <= 180 ? m : null;
   const term = q.trim();
   const hits = coords ? [] : ZONES.filter((z) => !term || norm(z.name).includes(norm(term)));
   const canSearch = !coords && term.length >= 3;
@@ -562,6 +596,7 @@ function SearchBox({ es, onPick }: { es: boolean; onPick: (lat: number, lon: num
           ref={ref}
           value={q}
           onChange={(e) => {
+            abort.current?.abort(); // una respuesta vieja no debe llenar la lista de otra búsqueda
             setQ(e.target.value);
             setRemote(null);
             setStatus("idle");
@@ -576,6 +611,7 @@ function SearchBox({ es, onPick }: { es: boolean; onPick: (lat: number, lon: num
           <button
             type="button"
             onClick={() => {
+              abort.current?.abort();
               setQ("");
               setRemote(null);
               setStatus("idle");

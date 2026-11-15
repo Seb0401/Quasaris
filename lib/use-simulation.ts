@@ -26,7 +26,9 @@ export function useSimulation({ debounceMs = 250, rotations, cacheKey, fallback,
 
   useEffect(() => {
     let cancelled = false;
-    const req = { ...farm, rotations: rotations ?? farm.rotations, locale, ...extra };
+    // el contorno no le sirve al motor: fuera de la petición y de la llave de caché
+    const { boundary: _b, areaHa: _a, ...base } = farm; // eslint-disable-line @typescript-eslint/no-unused-vars
+    const req = { ...base, rotations: rotations ?? farm.rotations, locale, ...extra };
     const key = JSON.stringify(req);
     const timer = setTimeout(() => {
       let p = inflight.get(key);

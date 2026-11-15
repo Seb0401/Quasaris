@@ -6,12 +6,12 @@ import { useState } from "react";
 import { ArrowRight, BadgeDollarSign, ChevronDown, ChevronUp, Droplet, Droplets, Layers, Leaf, MapPin, Scale, ShieldAlert, Sprout, Waves } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { CountUp, Meter, RangeInput } from "@/components/ui/kit";
-import { setFarm, useFarm } from "@/lib/farm-store";
+import { moveFarm, setFarm, useFarm } from "@/lib/farm-store";
 import type { Irrigation, Priorities, SoilTexture } from "@/lib/contract";
 import { IRRIGATION_EFFICIENCY, effectiveEfficiency } from "@/lib/ui";
 import { getMajesSoilGridsReference } from "@/lib/soilgrids";
 import { useIsMobile } from "@/lib/use-media";
-import { polygonAreaHa } from "@/lib/geo";
+import { saveBoundary } from "@/lib/granja-store";
 
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), { ssr: false, loading: () => <div className="map-skeleton ui-skeleton h-full" /> });
 
@@ -65,7 +65,7 @@ export function ParcelaClient() {
   return (
     <div className="map-view">
       <h1 className="sr-only">{t("parcela.title")}</h1>
-      <ParcelMap fill search lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} boundary={farm.boundary} onBoundary={(pts) => setFarm({ boundary: pts, areaHa: pts ? polygonAreaHa(pts) : undefined })}>
+      <ParcelMap fill search lat={farm.lat} lon={farm.lon} onPick={moveFarm} boundary={farm.boundary} onBoundary={saveBoundary}>
         <aside className={`map-panel ${open ? "open" : ""}`} aria-label={t("parcela.title")}>
           <button type="button" className="map-panel-head" onClick={() => setOpen(!open)} aria-expanded={open}>
             <span className="map-panel-icon">

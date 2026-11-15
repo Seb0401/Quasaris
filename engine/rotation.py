@@ -156,6 +156,9 @@ def simulate_rotation(rotation: Rotation, clim: Climate, et0: np.ndarray, *, irr
             income += revenue_potential * climate_factor * water_factor - pl.crop.cost_pen_ha * pl.share
             losses.append((revenue_potential, 1 - climate_factor))
 
+        if rotation.mode == "association":
+            # los cultivos comparten los mismos días: contar cada noche de helada o día de calor una sola vez
+            frost_total, heat_total = int(frost_by_day.sum()), int(heat_by_day.sum())
         total_rev = sum(r for r, _ in losses) or 1.0
         climate_loss = sum(r * loss for r, loss in losses) / total_rev
 

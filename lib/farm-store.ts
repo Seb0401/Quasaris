@@ -57,6 +57,24 @@ export function setFarm(patch: Partial<FarmState>) {
   listeners.forEach((l) => l());
 }
 
+/** Distancia aproximada en km (suficiente para decidir si el contorno sigue siendo de esta parcela). */
+function km(a: [number, number], b: [number, number]) {
+  const dLat = (a[0] - b[0]) * 111.32;
+  const dLon = (a[1] - b[1]) * 111.32 * Math.cos((a[0] * Math.PI) / 180);
+  return Math.hypot(dLat, dLon);
+}
+
+/** Mueve la parcela. Si se aleja más de 1 km del contorno dibujado, ese contorno deja de valer y se borra. */
+export function moveFarm(lat: number, lon: number) {
+  load();
+  const b = state.boundary;
+  if (b?.length) {
+    const c: [number, number] = [b.reduce((s, p) => s + p[0], 0) / b.length, b.reduce((s, p) => s + p[1], 0) / b.length];
+    if (km(c, [lat, lon]) > 1) return setFarm({ lat, lon, boundary: undefined, areaHa: undefined });
+  }
+  setFarm({ lat, lon });
+}
+
 function subscribe(l: () => void) {
   listeners.add(l);
   return () => listeners.delete(l);

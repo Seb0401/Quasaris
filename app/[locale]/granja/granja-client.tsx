@@ -6,9 +6,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { useLocale, useT } from "@/components/i18n-provider";
 import type { Irrigation, SimulateRequest, SimulateResponse, SoilTexture } from "@/lib/contract";
 import { cropName, efficiency } from "@/lib/crop-calendar";
-import { setFarm, useFarm } from "@/lib/farm-store";
-import { FARM_SIZES, resizeFarm, resizeFarmToArea, setGranja, useGranja } from "@/lib/granja-store";
-import { polygonAreaHa } from "@/lib/geo";
+import { moveFarm, setFarm, useFarm } from "@/lib/farm-store";
+import { FARM_SIZES, resizeFarm, resizeFarmToArea, saveBoundary, setGranja, useGranja } from "@/lib/granja-store";
 import {
   BASELINE_ID,
   LENS_RAMP,
@@ -112,14 +111,10 @@ function ZoneStep() {
             <ParcelMap
               lat={farm.lat}
               lon={farm.lon}
-              onPick={(lat, lon) => setFarm({ lat, lon })}
+              onPick={moveFarm}
               compact
               boundary={farm.boundary}
-              onBoundary={(pts) => {
-                const areaHa = pts ? polygonAreaHa(pts) : undefined;
-                setFarm({ boundary: pts, areaHa });
-                if (areaHa) resizeFarmToArea(areaHa);
-              }}
+              onBoundary={saveBoundary}
             />
           </Panel>
         </Reveal>
@@ -419,6 +414,16 @@ function Farm() {
               {monthAlerts.length > 1 && <small> +{monthAlerts.length - 1}</small>}
             </span>
           </button>
+          <button type="button" onClick={() => setDismissed(toastKey)} aria-label={t("granja.ui.close")} className="farm-toast-x">
+            <X size={13} />
+          </button>
+        </div>
+      )}
+      {!topAlert && snap.events.length > 0 && dismissed !== toastKey && (
+        <div className="farm-toast sev-low" role="status">
+          <span className="farm-toast-main">
+            <span>{t(`granja.event.${snap.events[0].kind}`, { n: snap.events[0].tiles })}</span>
+          </span>
           <button type="button" onClick={() => setDismissed(toastKey)} aria-label={t("granja.ui.close")} className="farm-toast-x">
             <X size={13} />
           </button>

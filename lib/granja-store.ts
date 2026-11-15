@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { FarmEvent } from "@/lib/granja-events";
+import { setFarm } from "@/lib/farm-store";
 
 /** Estado del modo granja (persistido en el celular). La zona, el agua y el riego viven en farm-store. */
 export type GranjaState = {
@@ -89,6 +90,12 @@ export function resizeFarmToArea(areaHa: number) {
     haPerTile: areaHa / n,
     tiles: Array.from({ length: n }, (_, i) => s.tiles[i] ?? "actual"),
   }));
+}
+
+/** Guarda el contorno dibujado y su área, y ajusta la granja a ese tamaño real. */
+export function saveBoundary(pts: [number, number][] | undefined, areaHa: number | undefined) {
+  setFarm({ boundary: pts, areaHa });
+  if (areaHa) resizeFarmToArea(areaHa);
 }
 
 export function useGranja(): GranjaState {
