@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { I18nProvider } from "@/components/i18n-provider";
@@ -39,11 +40,10 @@ export default async function LocaleLayout({ children, params }: { children: Rea
 
   return (
     <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
-      <head>
-        {/* aplica el tema guardado antes de pintar (ver lib/theme.ts) */}
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
       <body className="font-sans overflow-x-clip">
+        {/* aplica el tema guardado antes de pintar (ver lib/theme.ts). Con next/script y beforeInteractive
+            Next lo inyecta en el HTML inicial; un <script> renderizado por React da un error en consola. */}
+        <Script id="farmtwin-theme" strategy="beforeInteractive">{THEME_SCRIPT}</Script>
         <I18nProvider locale={locale}>
           <AppNav />
           <main className="app-main">{children}</main>
