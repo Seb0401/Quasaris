@@ -14,8 +14,8 @@ export function EngineStatusBanner() {
   if (status.state === "ok") return null;
   const key = status.reason === "invalid" ? "app.engineInvalid" : status.using === "cache" ? "app.engineOfflineCache" : "app.engineOfflineExample";
   return (
-    <div role="status" className="engine-status-banner sticky top-0 z-[1001] mx-auto flex max-w-3xl items-start gap-2 border-b border-warn/40 bg-[#2a2213] px-4 py-2 text-sm text-warn">
-      <TriangleAlert size={16} className="mt-0.5 shrink-0" aria-hidden />
+    <div role="status" className="engine-status-banner sticky top-0 z-[1001] mx-auto flex max-w-3xl items-start gap-2 rounded-xl border border-warn/50 bg-warn/15 px-4 py-2 text-sm text-foreground backdrop-blur">
+      <TriangleAlert size={16} className="mt-0.5 shrink-0 text-warn" aria-hidden />
       <span>{t(key)}</span>
     </div>
   );
