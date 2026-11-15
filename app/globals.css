@@ -1522,3 +1522,10 @@
 @keyframes qxFarmFloat { from { translate: 0 0; } to { translate: 0 -10px; } }
 .qx-farm-card header, .qx-farm-card footer { padding-left: 12%; padding-right: 12%; }
 @media (prefers-reduced-motion: reduce) { .qx-farm-card .qx-farm-frame img { animation: none; } }
+/* modelo más grande: la tarjeta invade el espacio entre columnas */
+@media (min-width: 1050px) {
+  .qx-signal-card.qx-farm-card, :root[data-theme="light"] .qx-signal-card.qx-farm-card { width: calc(100% + 170px); max-width: 860px; margin-left: -150px; justify-self: start; }
+}
+@media (max-width: 1049px) {
+  .qx-signal-card.qx-farm-card, :root[data-theme="light"] .qx-signal-card.qx-farm-card { width: 112%; max-width: none; margin-left: -6%; }
+}
