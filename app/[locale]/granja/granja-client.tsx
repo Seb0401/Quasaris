@@ -503,7 +503,7 @@ function Farm() {
                         )}
                       </div>
                       <div className="text-xs text-[var(--muted)]">
-                        {t("granja.tile")} {selected! + 1} · <span style={{ color: rotationColor(sel.rotationId) }}>●</span> {palette.find((p) => p.id === sel.rotationId)?.name}
+                        {t("granja.tile")} {selected! + 1} · <span aria-hidden className="inline-block h-2 w-2 rounded-full align-middle" style={{ background: rotationColor(sel.rotationId) }} /> {palette.find((p) => p.id === sel.rotationId)?.name}
                       </div>
                     </div>
                   </div>

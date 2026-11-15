@@ -1,5 +1,7 @@
 "use client";
 
+import { Camera, Mic } from "lucide-react";
+
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type FileUIPart, type InferUITools, type UIMessage } from "ai";
 import Link from "next/link";
@@ -162,7 +164,7 @@ export function Assistant() {
               <li key={message.id} ref={index === messages.length - 1 ? lastReply : undefined}
                 className={`w-fit max-w-full rounded-xl border border-border px-4 py-3 ${mine ? "self-end bg-brand/10" : "bg-surface"}`}>
                 <p className="text-xs font-semibold text-muted">{mine ? t("assistant.you") : "FarmTwin"}</p>
-                {hasPhoto && <p className="mt-1 text-xs text-muted">📷 {t("assistant.attached")}</p>}
+                {hasPhoto && <p className="mt-1 flex items-center gap-1.5 text-xs text-muted"><Camera size={13} aria-hidden /> {t("assistant.attached")}</p>}
                 {mine
                   ? <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-relaxed">{reply}</p>
                   : <MarkdownReply>{reply || t("assistant.waiting")}</MarkdownReply>}
@@ -197,7 +199,7 @@ export function Assistant() {
         {mediaError && <p role="alert" className="text-sm text-danger">{t(mediaError)}</p>}
         {photo && (
           <div className="flex items-center gap-2 text-sm">
-            <span>📷 {t("assistant.attached")}</span>
+            <span className="inline-flex items-center gap-1.5"><Camera size={14} aria-hidden /> {t("assistant.attached")}</span>
             <button type="button" className={secondary} onClick={() => setPhoto(undefined)}>{t("assistant.remove")}</button>
           </div>
         )}
@@ -218,11 +220,11 @@ export function Assistant() {
                 if (recognizer.current) recognizer.current.stop();
                 else startVoice();
               }}>
-              🎙️ {t(listening ? "assistant.listening" : "assistant.hold")}
+              <Mic size={16} aria-hidden className="mr-1.5 inline" /> {t(listening ? "assistant.listening" : "assistant.hold")}
             </button>
           )}
           <label className={`${secondary} cursor-pointer focus-within:outline focus-within:outline-brand has-disabled:opacity-50`}>
-            📷 {t(preparing ? "assistant.preparingPhoto" : "assistant.attach")}
+            <Camera size={16} aria-hidden className="mr-1.5 inline" /> {t(preparing ? "assistant.preparingPhoto" : "assistant.attach")}
             <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={blocked}
               onChange={async (event) => {
                 const file = event.target.files?.[0];
