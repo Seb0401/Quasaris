@@ -93,7 +93,40 @@
     "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells",
     "soilWetness": "Natural soil moisture (NASA POWER GWETROOT): {pct} on average, {min}–{max} by month.",
     "shortfall": "You're short {m3} m³/ha",
-    "yearsFit": "Enough in {n} of {total} years"
+    "yearsFit": "Enough in {n} of {total} years",
+    "subtitle": "We tested each of your rotations against {n} years of real NASA weather on your field ({from}–{to}). Start with our pick, then see where each one wins.",
+    "steps": {
+      "pick": "Our pick and its fit score",
+      "duel": "Where each rotation wins",
+      "detail": "Full detail of each one"
+    },
+    "fit": {
+      "label": "fit score",
+      "short": "fit",
+      "title": "What does {score} out of 100 mean?",
+      "intro": "It is how well this rotation matches your priorities compared with your other rotations. Each part below scores from 0 to 100% and counts as much as you said it matters. 100 would mean the best option in everything you care about.",
+      "why": "Why a fit score of {score}?",
+      "part": {
+        "water": "Saves water",
+        "income": "Earns more",
+        "soil": "Cares for the soil",
+        "risk": "Low climate risk"
+      },
+      "how": {
+        "water": "{v} vs. your other rotations",
+        "income": "{v} vs. your other rotations",
+        "soil": "soil health {v}",
+        "risk": "{v} safe from frost, heat and water shortage"
+      },
+      "weight": {
+        "high": "matters a lot",
+        "med": "matters",
+        "low": "matters little",
+        "off": "ignored"
+      },
+      "penalty": "Your water is not enough for it in most years, so its {raw} points are multiplied by 0.6: {score}.",
+      "change": "Change what matters to you"
+    }
   },
   "month": {
     "ok": "Good",
