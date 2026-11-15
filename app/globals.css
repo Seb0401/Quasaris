@@ -628,6 +628,24 @@
 .month-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .month-legend i { width: 10px; height: 10px; border-radius: 3px; }
 
+/* comparar: gestión de rotaciones y diferencias en lenguaje simple */
+.rot-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px; padding: 16px 18px; border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--border)); border-radius: var(--radius); background: linear-gradient(120deg, var(--nav-active-bg), transparent 70%), var(--glass); box-shadow: var(--shadow); }
+.rot-cta-icon { display: grid; flex-shrink: 0; width: 46px; height: 46px; place-items: center; border-radius: 14px; color: var(--brand-ink); background: var(--brand); }
+.rot-cta-copy { flex: 1; min-width: 220px; }
+.rot-cta-copy b { display: block; font-size: 16px; }
+.rot-cta-copy p { margin: 3px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.rot-cta .ui-btn { min-height: 46px; }
+.delta-plain { gap: 6px; }
+.delta-plain > span em { margin-left: auto; padding: 2px 7px; border-radius: 99px; background: var(--tint-2); font-size: 9.5px; font-style: normal; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.delta-plain.tone-good > span em { color: var(--ok-text); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.delta-plain.tone-bad > span em { color: var(--danger-text); background: color-mix(in srgb, var(--danger) 14%, transparent); }
+.delta-plain strong { display: block; font-size: 15px; font-weight: 650; letter-spacing: -.01em; line-height: 1.3; }
+.delta.delta-plain.tone-good strong, .delta.delta-plain.tone-bad strong { color: var(--foreground); }
+.delta-plain small { color: var(--muted); font-size: 11.5px; font-weight: 500; letter-spacing: 0; line-height: 1.45; text-transform: none; }
+.delta.delta-plain.tone-good small, .delta.delta-plain.tone-bad small { color: var(--muted); }
+.delta-note { margin: 10px 0 0; color: var(--muted); font-size: 11.5px; line-height: 1.5; }
+@media (max-width: 520px) { .rot-cta .ui-btn { width: 100%; } .delta-grid { grid-template-columns: 1fr; } }
+
 /* -------------------------------------------------------------------- máquina del tiempo */
 
 .time-console { position: sticky; top: 72px; z-index: 800; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px 16px; padding: 14px 16px; border: 1px solid var(--border-strong); border-radius: 20px; background: var(--console-bg); box-shadow: var(--panel-shadow); backdrop-filter: blur(20px); }

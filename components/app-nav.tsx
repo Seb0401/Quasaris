@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, BookOpen, CalendarDays, Combine, Clock3, Home, Tractor, Languages, MapPinned, Sparkles } from "lucide-react";
+import { BarChart3, BookOpen, CalendarDays, Combine, Clock3, Home, Tractor, Languages, MapPinned, Sparkles, Repeat2 } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { QuasarisMark } from "@/components/brand/quasaris-mark";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -11,6 +11,7 @@ const TABS = [
   { href: "", key: "home", icon: Home },
   { href: "parcela", key: "parcela", icon: MapPinned },
   { href: "comparar", key: "comparar", icon: BarChart3 },
+  { href: "rotaciones", key: "rotaciones", icon: Repeat2, desktopOnly: true },
   { href: "tiempo", key: "tiempo", icon: Clock3 },
   { href: "granja", key: "granja", icon: Tractor },
   { href: "calendario", key: "calendario", icon: CalendarDays },
@@ -63,7 +64,7 @@ export function AppNav() {
 
       <nav className="mobile-bottom-nav">
         <ul>
-          {TABS.map((tab) => {
+          {TABS.filter((tab) => !("desktopOnly" in tab)).map((tab) => {
             const Icon = tab.icon;
             const active = tab.href ? rest.startsWith(tab.href) : rest === "";
             return <li key={tab.key}><Link href={`/${locale}${tab.href ? `/${tab.href}` : ""}`} className={active ? "active" : ""} aria-label={label(tab.key)}><Icon size={21} /><span>{short(tab.key)}</span></Link></li>;

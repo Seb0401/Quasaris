@@ -79,7 +79,7 @@ export function RotationCard({ rotation, result, color, recommended, scale, all 
       value: <CountUp value={result.income.median} format={(v) => `S/ ${n.format(v)}`} />,
       meter: result.income.median / scale.income,
       color: "#f6b94c",
-      note: es ? `entre S/ ${n.format(result.income.p10)} y S/ ${n.format(result.income.p90)} por ha` : `between S/ ${n.format(result.income.p10)} and S/ ${n.format(result.income.p90)} per ha`,
+      note: es ? `Ganancia por hectárea al año · año malo S/ ${n.format(result.income.p10)} · año bueno S/ ${n.format(result.income.p90)}` : `Profit per hectare per year · bad year S/ ${n.format(result.income.p10)} · good year S/ ${n.format(result.income.p90)}`,
     },
     {
       icon: Leaf,
@@ -91,11 +91,11 @@ export function RotationCard({ rotation, result, color, recommended, scale, all 
     },
     {
       icon: ShieldAlert,
-      label: es ? "Riesgo climático" : "Climate risk",
+      label: es ? "Cosecha que se pierde" : "Harvest lost",
       value: <CountUp value={result.risk.median * 100} format={(v) => `${Math.round(v)}%`} />,
       meter: result.risk.median,
       color: "#ff8a7a",
-      note: es ? "pérdida típica por helada o calor" : "typical loss from frost or heat",
+      note: es ? "En un año normal, por clima o falta de agua" : "In a normal year, to weather or lack of water",
     },
   ];
 
