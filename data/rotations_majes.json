@@ -1,5 +1,5 @@
 {
-  "_note": "Rotaciones de ejemplo para la demo en Majes. A validar con un agrónomo (CONTEXTO_RETO.md §2).",
+  "_note": "Rotaciones de ejemplo para la demo en Majes. A validar con un agrónomo (CONTEXTO_RETO.md §2). Cada una cabe en 365 días sin cultivos cruzados con las duraciones de crops.json: Cebolla (150 d) + Papa (145 d) deja 70 días de descanso (dic–feb); Cebolla + Haba (110 d) + Avena forrajera (90 d) deja 15 días.",
   "rotations": [
     {
       "id": "actual",
@@ -9,22 +9,21 @@
     },
     {
       "id": "ingreso",
-      "name": "Cebolla · Papa · Maíz chala",
+      "name": "Cebolla · Papa",
       "isCurrent": false,
       "crops": [
         { "cropId": "cebolla", "sowMonth": 3 },
-        { "cropId": "papa", "sowMonth": 8 },
-        { "cropId": "maiz_chala", "sowMonth": 12 }
+        { "cropId": "papa", "sowMonth": 8 }
       ]
     },
     {
       "id": "suelo_agua",
-      "name": "Cebolla · Haba · Maíz chala",
+      "name": "Cebolla · Haba · Avena forrajera",
       "isCurrent": false,
       "crops": [
         { "cropId": "cebolla", "sowMonth": 3 },
         { "cropId": "haba", "sowMonth": 8 },
-        { "cropId": "maiz_chala", "sowMonth": 12 }
+        { "cropId": "avena", "sowMonth": 12 }
       ]
     }
   ]

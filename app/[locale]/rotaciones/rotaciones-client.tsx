@@ -84,7 +84,8 @@ export function RotacionesClient() {
                       <select value={rc.sowMonth} disabled={Boolean(CROPS[rc.cropId]?.perennial)} onChange={(e) => update(r.id, (x) => ({ ...x, crops: x.crops.map((c, k) => (k === i ? { ...c, sowMonth: Number(e.target.value) } : c)) }))} aria-label={t("rotaciones.sowMonth")} className="ui-select capitalize">
                         {months.map((m, k) => <option key={k} value={k + 1}>{t("rotaciones.sow")} {m}</option>)}
                       </select>
-                      <button type="button" onClick={() => update(r.id, (x) => ({ ...x, crops: x.crops.filter((_, k) => k !== i) }))} aria-label={t("rotaciones.removeCrop")} className="time-btn crop-remove"><X size={15} /></button>
+                      {/* una rotación sin cultivos no se puede comparar: el último cultivo no se quita (para eso está "Borrar rotación") */}
+                      <button type="button" disabled={r.crops.length <= 1} onClick={() => update(r.id, (x) => (x.crops.length <= 1 ? x : { ...x, crops: x.crops.filter((_, k) => k !== i) }))} aria-label={t("rotaciones.removeCrop")} className="time-btn crop-remove disabled:opacity-30 disabled:cursor-not-allowed"><X size={15} /></button>
                     </div>
                   ))}
                   {r.crops.length < MAX_CROPS && (

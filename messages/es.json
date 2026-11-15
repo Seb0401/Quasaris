@@ -4,7 +4,10 @@
     "tagline": "Del espacio al suelo",
     "subtitle": "Antes de sembrar, mira lo que habría pasado, lo que conviene hoy y lo que viene.",
     "language": "Idioma",
-    "offline": "Sin conexión: mostrando lo último guardado"
+    "offline": "Sin conexión: mostrando lo último guardado",
+    "engineInvalid": "No se pudo calcular con estos datos (revisa el agua, las prioridades o las rotaciones). Los números en pantalla son de ejemplo, no de tu parcela.",
+    "engineOfflineCache": "El motor no responde: estás viendo el último resultado calculado con estos mismos datos.",
+    "engineOfflineExample": "El motor no responde: los números en pantalla son de ejemplo (Majes), no de tu parcela."
   },
   "nav": {
     "home": "Inicio",
@@ -151,6 +154,7 @@
     "why.bestIncome": "Es la rotación con mayor ingreso esperado.",
     "why.bestSoil": "Es la rotación que más cuida tu suelo.",
     "why.balanced": "Equilibra agua, ingreso y suelo.",
+    "why.fallow": "Descanso: el lote queda sin cultivo, no gasta agua pero tampoco produce.",
     "evidence.power20y": "21 años de clima diario de NASA POWER (2005–2025) en tu parcela.",
     "evidence.et0": "Demanda de agua calculada con Penman-Monteith FAO-56 y coeficientes de cultivo FAO.",
     "evidence.fusion": "Clima ajustado a la altitud real de tu parcela (relieve SRTM de NASA) combinando dos celdas de NASA POWER.",

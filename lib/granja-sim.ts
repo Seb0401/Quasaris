@@ -75,6 +75,8 @@ export type YearSummary = {
   incomePEN: number;
   soil: number; // promedio ponderado 0..1
   bareTileMonths: number;
+  /** Casilla·meses con el cultivo seco porque se vació el reservorio. */
+  dryTileMonths: number;
   baseline: { waterM3: number; incomePEN: number };
   distinctRotations: number;
 };
@@ -147,6 +149,7 @@ export function simulateYear(
   let income = 0;
   let dryFrom = 12;
   let bare = 0;
+  let dry = 0;
 
   for (let m = 0; m < 12; m++) {
     const harvests: MonthSnapshot["harvests"] = [];
@@ -190,6 +193,7 @@ export function simulateYear(
         }
       }
       if (status === "bare" && on[i]) bare++;
+      if (status === "dry" && on[i]) dry++;
       if (r) {
         const share = incomeShare(r)[m];
         if (share > 0 && y) {
@@ -256,6 +260,7 @@ export function simulateYear(
       incomePEN: income,
       soil,
       bareTileMonths: bare,
+      dryTileMonths: dry,
       baseline: { waterM3: (base?.waterM3ha ?? 0) * totalHa, incomePEN: (base?.incomePEN ?? 0) * totalHa },
       distinctRotations: new Set(tiles.filter((t) => t !== "descanso" && isOn(t))).size,
     },
@@ -268,11 +273,15 @@ export type Goal = { id: string; done: boolean; progress: number };
 
 export function evaluateGoals(s: YearSummary, tilesCount: number): Goal[] {
   const saving = s.baseline.waterM3 > 0 ? 1 - s.waterM3 / s.baseline.waterM3 : 0;
-  const bareShare = s.bareTileMonths / Math.max(tilesCount * 12, 1);
+  // Un cultivo seco no cubre ni cuida el suelo: esos meses cuentan como suelo desnudo
+  // y la medalla de suelo sano exige que ninguna casilla se haya secado.
+  const dried = s.dryTileMonths ?? 0;
+  const bareShare = (s.bareTileMonths + dried) / Math.max(tilesCount * 12, 1);
+  const dryShare = dried / Math.max(tilesCount * 12, 1);
   return [
     { id: "waterFits", done: s.waterM3 <= s.capacityM3, progress: Math.min(1, s.capacityM3 / Math.max(s.waterM3, 1)) },
     { id: "save20", done: saving >= 0.2, progress: Math.max(0, Math.min(1, saving / 0.2)) },
-    { id: "healthySoil", done: s.soil >= 0.7, progress: Math.min(1, s.soil / 0.7) },
+    { id: "healthySoil", done: s.soil >= 0.7 && dried === 0, progress: Math.min(1, s.soil / 0.7) * (1 - dryShare) },
     { id: "coveredSoil", done: bareShare <= 0.1, progress: Math.max(0, Math.min(1, 1 - (bareShare - 0.1) / 0.4)) },
     { id: "beatIncome", done: s.incomePEN >= s.baseline.incomePEN && s.baseline.incomePEN > 0, progress: s.baseline.incomePEN > 0 ? Math.max(0, Math.min(1, s.incomePEN / s.baseline.incomePEN)) : 0 },
     { id: "diversity", done: s.distinctRotations >= 3, progress: Math.min(1, s.distinctRotations / 3) },

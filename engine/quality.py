@@ -351,6 +351,15 @@ def clean_power(payload: dict) -> CleanSeries:
     for p in SPIKE:
         _outliers(series[p], month, p, reps[p])
 
+    # Una variable opcional sin ningún valor válido (p. ej. GWETROOT sobre el mar o un lago, donde
+    # POWER devuelve -999 en todo) se trata como ausente: no se inventa ni descarta la celda.
+    for p in OPTIONAL:
+        if p in series and np.isnan(series[p]).all():
+            del series[p]
+            present.remove(p)
+            report.absent_optional.append(p)
+            report.warnings.append(f"{p}: sin ningún valor válido; se trata como ausente")
+
     gap_masks = {p: _impute(series[p], doy, month, reps[p]) for p in present}
 
     # Años poco confiables: fracción de días rellenados en las variables clave (la peor manda).
