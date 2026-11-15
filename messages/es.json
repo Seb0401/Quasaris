@@ -471,7 +471,10 @@
     "ui": {
       "layers": "Capas",
       "close": "Cerrar"
-    }
+    },
+    "drawn": "Mi terreno dibujado · {ha} ha",
+    "drawnHint": "La granja usa el área real que marcaste en el mapa.",
+    "drawTip": "Consejo: usa «Dibujar mi terreno» en el mapa para que la granja tenga el tamaño real de tu chacra."
   },
   "rotaciones": {
     "title": "Mis rotaciones",

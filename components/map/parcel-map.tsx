@@ -2,10 +2,15 @@
 
 import "leaflet/dist/leaflet.css";
 import L, { type Map as LeafletMap } from "leaflet";
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import { CircleMarker, MapContainer, Marker, Polygon, Polyline, TileLayer, useMapEvents } from "react-leaflet";
 import { Component, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Check,
+  Globe,
+  MapPin,
+  PenLine,
+  Trash2,
+  Undo2,
   Layers,
   LocateFixed,
   Minus,
@@ -16,6 +21,7 @@ import {
 } from "lucide-react";
 import { useLocale } from "@/components/i18n-provider";
 import { GIBS_LAYERS, gibsUrl, smapDate } from "@/lib/gibs";
+import { centroid, polygonAreaHa, type LatLon } from "@/lib/geo";
 
 type Props = {
   lat: number;
@@ -31,6 +37,9 @@ type Props = {
   search?: boolean;
   /** paneles flotantes propios de la página, encima del mapa */
   children?: React.ReactNode;
+  /** contorno de la parcela; con onBoundary se puede dibujar sobre el mapa */
+  boundary?: LatLon[];
+  onBoundary?: (pts: LatLon[] | undefined, areaHa: number | undefined) => void;
 };
 
 type Base = "satellite" | "hybrid" | "terrain";
@@ -85,6 +94,8 @@ function ClickHandler({ onPick }: { onPick: Props["onPick"] }) {
   return null;
 }
 
+const nf = (es: boolean) => new Intl.NumberFormat(es ? "es" : "en", { maximumFractionDigits: 2 });
+
 function ParcelMapInner({
   lat,
   lon,
@@ -96,6 +107,8 @@ function ParcelMapInner({
   search = false,
   className = "",
   children,
+  boundary,
+  onBoundary,
 }: Props) {
   const es = useLocale() === "es";
   const [base, setBase] = useState<Base>("hybrid");
@@ -104,6 +117,35 @@ function ParcelMapInner({
   const [layersOpen, setLayersOpen] = useState(false);
   const [locating, setLocating] = useState(false);
   const [map, setMap] = useState<LeafletMap | null>(null);
+  const [draft, setDraft] = useState<LatLon[] | null>(null); // dibujando el contorno
+  const drawing = draft !== null;
+
+  // al dibujar, el doble clic no debe acercar el mapa
+  useEffect(() => {
+    if (!map) return;
+    if (drawing) map.doubleClickZoom.disable();
+    else map.doubleClickZoom.enable();
+  }, [map, drawing]);
+
+  const finishDraw = (pts: LatLon[]) => {
+    if (pts.length < 3) return;
+    const [cla, clo] = centroid(pts);
+    onBoundary?.(pts, polygonAreaHa(pts));
+    onPick(cla, clo);
+    setDraft(null);
+  };
+  const addVertex = (la: number, lo: number) =>
+    setDraft((d) => {
+      const pts = d ?? [];
+      const last = pts[pts.length - 1];
+      // un doble clic (o un toque repetido) no agrega el mismo punto dos veces
+      if (last && map) {
+        const a = map.latLngToContainerPoint(last);
+        const b = map.latLngToContainerPoint([la, lo]);
+        if (a.distanceTo(b) < 8) return pts;
+      }
+      return [...pts, [la, lo]];
+    });
   const date = new Intl.DateTimeFormat(es ? "es" : "en", {
     month: "short",
     year: "numeric",
@@ -190,13 +232,24 @@ function ParcelMapInner({
             zIndex={5}
           />
         )}
-        <Marker
-          position={[lat, lon]}
-          icon={PIN}
-          draggable
-          eventHandlers={markerEvents}
-        />
-        <ClickHandler onPick={onPick} />
+        {boundary && boundary.length >= 3 && !drawing && (
+          <Polygon positions={boundary} pathOptions={{ color: "#b9ff63", weight: 2.5, fillColor: "#b9ff63", fillOpacity: 0.15, dashArray: "6 4" }} />
+        )}
+        {drawing && draft.length >= 3 && <Polygon positions={draft} pathOptions={{ color: "#b9ff63", weight: 2, fillOpacity: 0.12 }} />}
+        {drawing && draft.length === 2 && <Polyline positions={draft} pathOptions={{ color: "#b9ff63", weight: 2 }} />}
+        {drawing &&
+          draft.map((pt, i) => (
+            <CircleMarker
+              key={i}
+              center={pt}
+              radius={i === 0 && draft.length >= 3 ? 9 : 6}
+              bubblingMouseEvents={false}
+              eventHandlers={{ click: () => i === 0 && finishDraw(draft) }} // tocar el primer punto cierra el contorno
+              pathOptions={{ color: "#0a2230", weight: 2, fillColor: i === 0 ? "#ffffff" : "#b9ff63", fillOpacity: 1 }}
+            />
+          ))}
+        {!drawing && <Marker position={[lat, lon]} icon={PIN} draggable eventHandlers={markerEvents} />}
+        <ClickHandler onPick={(la, lo) => (drawing ? addVertex(la, lo) : onPick(la, lo))} />
       </MapContainer>
 
       {search && <SearchBox es={es} onPick={onPick} />}
@@ -421,6 +474,50 @@ function ParcelMapInner({
         )}
       </div>
 
+      {onBoundary && !drawing && (
+        <button type="button" className="gm-chip gm-draw-btn" onClick={() => setDraft([])}>
+          <PenLine size={14} />
+          {boundary?.length ? (es ? "Redibujar terreno" : "Redraw field") : es ? "Dibujar mi terreno" : "Draw my field"}
+        </button>
+      )}
+      {drawing && (
+        <div className="gm-drawbar" role="toolbar" aria-label={es ? "Dibujar terreno" : "Draw field"}>
+          <span>
+            <b>{draft.length < 3 ? (es ? "Toca las esquinas de tu terreno" : "Tap the corners of your field") : `${nf(es).format(polygonAreaHa(draft))} ha`}</b>
+            <small>
+              {draft.length} {es ? "puntos" : "points"}
+            </small>
+          </span>
+          <button type="button" onClick={() => setDraft((d) => (d ?? []).slice(0, -1))} disabled={!draft.length} aria-label={es ? "Deshacer punto" : "Undo point"}>
+            <Undo2 size={15} />
+          </button>
+          <button type="button" onClick={() => setDraft(null)} aria-label={es ? "Cancelar" : "Cancel"}>
+            <X size={15} />
+          </button>
+          <button
+            type="button"
+            className="ok"
+            disabled={draft.length < 3}
+            onClick={() => finishDraw(draft)}
+          >
+            <Check size={15} />
+            {es ? "Listo" : "Done"}
+          </button>
+          {boundary?.length ? (
+            <button
+              type="button"
+              onClick={() => {
+                onBoundary?.(undefined, undefined);
+                setDraft(null);
+              }}
+              aria-label={es ? "Borrar contorno" : "Delete outline"}
+            >
+              <Trash2 size={15} />
+            </button>
+          ) : null}
+        </div>
+      )}
+
       {/* coordenadas, discretas, como la escala de Google Maps */}
       <div className="gm-coords">
         {lat.toFixed(4)}, {lon.toFixed(4)}
@@ -431,77 +528,111 @@ function ParcelMapInner({
   );
 }
 
-function SearchBox({
-  es,
-  onPick,
-}: {
-  es: boolean;
-  onPick: (lat: number, lon: number) => void;
-}) {
+type Place = { name: string; sub: string; lat: number; lon: number };
+
+/**
+ * Búsqueda: zonas locales al escribir; cualquier lugar con OpenStreetMap (Nominatim) solo al confirmar
+ * (Enter o el botón), como pide su política de uso: nada de autocompletar contra su servidor.
+ */
+function SearchBox({ es, onPick }: { es: boolean; onPick: (lat: number, lon: number) => void }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const [remote, setRemote] = useState<Place[] | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const ref = useRef<HTMLInputElement>(null);
-  const coords = q.match(
-    /^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/,
-  );
-  const hits = coords
-    ? []
-    : ZONES.filter((z) => !q.trim() || norm(z.name).includes(norm(q.trim())));
+  const abort = useRef<AbortController | null>(null);
+  const m = q.match(/^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/);
+  // solo coordenadas válidas (lat ±90, lon ±180)
+  const coords = m && Math.abs(Number(m[1])) <= 90 && Math.abs(Number(m[2])) <= 180 ? m : null;
+  const term = q.trim();
+  const hits = coords ? [] : ZONES.filter((z) => !term || norm(z.name).includes(norm(term)));
+  const canSearch = !coords && term.length >= 3;
+
   const go = (lat: number, lon: number) => {
     onPick(lat, lon);
     setOpen(false);
     ref.current?.blur();
   };
+
+  const searchOsm = async () => {
+    abort.current?.abort();
+    const ctrl = new AbortController();
+    abort.current = ctrl;
+    setStatus("loading");
+    setOpen(true);
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=${es ? "es" : "en"}&q=${encodeURIComponent(term)}`;
+      const res = await fetch(url, { signal: ctrl.signal, headers: { Accept: "application/json" } });
+      if (!res.ok) throw new Error(String(res.status));
+      const rows = (await res.json()) as { display_name: string; lat: string; lon: string }[];
+      setRemote(
+        rows.map((r) => {
+          const [name, ...rest] = r.display_name.split(", ");
+          return { name, sub: rest.slice(0, 3).join(", "), lat: Number(r.lat), lon: Number(r.lon) };
+        }),
+      );
+      setStatus("idle");
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") setStatus("error");
+    }
+  };
+
+  const showList = open && (coords || hits.length > 0 || canSearch || remote !== null || status !== "idle");
+
   return (
-    <div className={`gm-search ${open ? "open" : ""}`}>
+    <div className={`gm-search ${showList ? "open" : ""}`}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           if (coords) go(Number(coords[1]), Number(coords[2]));
-          else if (hits[0]) {
+          else if (hits.length === 1 && term) {
             setQ(hits[0].name);
             go(hits[0].lat, hits[0].lon);
-          }
+          } else if (canSearch) void searchOsm();
         }}
       >
         <Search size={17} />
         <input
           ref={ref}
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={(e) => {
+            abort.current?.abort(); // una respuesta vieja no debe llenar la lista de otra búsqueda
+            setQ(e.target.value);
+            setRemote(null);
+            setStatus("idle");
+          }}
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
-          placeholder={
-            es
-              ? "Busca una zona o pega coordenadas"
-              : "Search a zone or paste coordinates"
-          }
-          aria-label={es ? "Buscar zona" : "Search zone"}
+          placeholder={es ? "Busca un lugar o pega coordenadas" : "Search a place or paste coordinates"}
+          aria-label={es ? "Buscar lugar" : "Search place"}
+          enterKeyHint="search"
         />
         {q && (
           <button
             type="button"
-            onClick={() => setQ("")}
+            onClick={() => {
+              abort.current?.abort();
+              setQ("");
+              setRemote(null);
+              setStatus("idle");
+            }}
             aria-label={es ? "Borrar" : "Clear"}
           >
             <X size={15} />
           </button>
         )}
       </form>
-      {open && (coords || hits.length > 0) && (
+      {showList && (
         <ul className="gm-search-list">
-          {coords ? (
+          {coords && (
             <li>
-              <button
-                type="button"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => go(Number(coords[1]), Number(coords[2]))}
-              >
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => go(Number(coords[1]), Number(coords[2]))}>
                 <LocateFixed size={15} />
                 {es ? "Ir a" : "Go to"} {coords[1]}, {coords[2]}
               </button>
             </li>
-          ) : (
+          )}
+          {remote === null &&
             hits.map((z) => (
               <li key={z.name}>
                 <button
@@ -515,12 +646,44 @@ function SearchBox({
                   <Navigation size={14} />
                   <span>
                     {z.name}
-                    <small>Arequipa</small>
+                    <small>{es ? "Zona agrícola · Arequipa" : "Farming area · Arequipa"}</small>
                   </span>
                 </button>
               </li>
-            ))
+            ))}
+          {remote?.map((p, i) => (
+            <li key={`${p.lat}-${p.lon}-${i}`}>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  setQ(p.name);
+                  go(p.lat, p.lon);
+                }}
+              >
+                <MapPin size={14} />
+                <span>
+                  {p.name}
+                  <small>{p.sub}</small>
+                </span>
+              </button>
+            </li>
+          ))}
+          {remote?.length === 0 && <li className="gm-search-note">{es ? "Sin resultados. Prueba con otro nombre." : "No results. Try another name."}</li>}
+          {status === "loading" && <li className="gm-search-note">{es ? "Buscando…" : "Searching…"}</li>}
+          {status === "error" && <li className="gm-search-note">{es ? "No se pudo buscar. Revisa tu conexión." : "Search failed. Check your connection."}</li>}
+          {canSearch && remote === null && status === "idle" && (
+            <li>
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => void searchOsm()} className="gm-search-osm">
+                <Globe size={14} />
+                <span>
+                  {es ? `Buscar «${term}» en todo el mapa` : `Search “${term}” everywhere`}
+                  <small>OpenStreetMap</small>
+                </span>
+              </button>
+            </li>
           )}
+          {remote !== null && <li className="gm-search-note">© OpenStreetMap</li>}
         </ul>
       )}
     </div>

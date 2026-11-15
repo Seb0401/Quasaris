@@ -37,7 +37,7 @@ export function RotacionesClient() {
 
       <div className="rotation-editor-grid">
         {farm.rotations.map((r, index) => {
-          const overlap = overlapDays(r);
+          const overlap = r.mode === "association" ? 0 : overlapDays(r);
           const bare = bareMonths(r);
           const color = rotationColor(index);
           return (
@@ -47,6 +47,7 @@ export function RotacionesClient() {
                 <div className="rotation-editor-head">
                   <i style={{ background: color }} />
                   <input value={r.name} onChange={(e) => update(r.id, (x) => ({ ...x, name: e.target.value.slice(0, 40) }))} aria-label={t("rotaciones.name")} className="ui-input rotation-name-input" />
+                  {r.mode === "association" && <Badge tone="brand" icon={Combine}>{t("group.mode.association")}</Badge>}
                   {r.isCurrent ? (
                     <Badge tone="sky" icon={Star}>{t("comparar.current")}</Badge>
                   ) : (
@@ -90,7 +91,7 @@ export function RotacionesClient() {
                 </div>
 
                 {r.crops.length > 0 && (() => {
-                  const ev = evaluateGroup(r.crops, "rotation", (id) => cropName(id, locale));
+                  const ev = evaluateGroup(r.crops, r.mode ?? "rotation", (id) => cropName(id, locale));
                   const pro = ev.pros[0];
                   const con = ev.cons[0];
                   return (

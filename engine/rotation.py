@@ -16,7 +16,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from engine.crops import Crop, catalog
+from engine.crops import Crop, catalog, companion_effect
 from engine.et0 import penman_monteith
 from engine.power import Climate
 from engine.schema import Rotation
@@ -32,6 +32,13 @@ SOIL_FACTOR = {
 FROST_PENALTY = 0.03  # pérdida de rendimiento por día de helada en el ciclo
 HEAT_PENALTY = 0.01  # por día de calor extremo
 MIN_YIELD_FACTOR = 0.3
+# Asociaciones (cultivos juntos en el mismo lote). Referencias generales, a validar con INIA:
+# - cada cultivo ocupa una parte igual del lote y el Kc del lote es el promedio ponderado;
+#   donde se superponen, la cobertura es más densa y transpira algo más (+10 %).
+# - LER (uso equivalente de la tierra): una buena pareja rinde más que por separado (milpa ~1,2-1,4
+#   en la literatura); usamos 1 + 0,08 × efecto medio de la pareja (−2..+2) → 0,84..1,16, conservador.
+INTERCROP_KC = 1.10
+LER_PER_POINT = 0.08
 MONTH_START = np.cumsum([0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30])  # índice 0-based del día 1 de cada mes
 MONTH_OF_DAY = np.repeat(np.arange(12), [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
 
@@ -41,14 +48,49 @@ class Placement:
     crop: Crop
     days: np.ndarray  # índices 0..364 que ocupa
     kc: np.ndarray  # Kc en esos días
+    share: float = 1.0  # parte del lote que ocupa (asociación)
+    ler: float = 1.0  # bonificación o castigo de rendimiento por la pareja
 
 
 def efficiency(irrigation: str, soil: str) -> float:
     return min(0.95, EFFICIENCY[irrigation] * SOIL_FACTOR[soil][irrigation])
 
 
+def association_ler(crop_ids: list[str]) -> float:
+    """LER del grupo según el efecto medio de sus parejas (data/crops.json → companions)."""
+    pairs = [(a, b) for i, a in enumerate(crop_ids) for b in crop_ids[i + 1 :]]
+    if not pairs:
+        return 1.0
+    return 1 + LER_PER_POINT * sum(companion_effect(a, b) for a, b in pairs) / len(pairs)
+
+
+def place_association(rotation: Rotation) -> tuple[list[Placement], np.ndarray, np.ndarray]:
+    """Asociación: todos los cultivos comparten el lote, cada uno en una parte igual."""
+    cat = catalog()
+    n = max(len(rotation.crops), 1)
+    share = 1 / n
+    ler = association_ler([c.cropId for c in rotation.crops])
+    placements = []
+    kc_year = np.zeros(365)
+    present = np.zeros(365)
+    owner = np.full(365, -1)
+    for i, rc in enumerate(rotation.crops):
+        crop = cat[rc.cropId]
+        curve = crop.kc_curve()
+        start = 0 if crop.perennial else int(MONTH_START[rc.sowMonth - 1])
+        days = (start + np.arange(curve.size)) % 365
+        placements.append(Placement(crop, days, curve, share=share, ler=ler))
+        np.add.at(kc_year, days, share * curve)
+        np.add.at(present, days, 1)
+        owner[days] = i
+    kc_year = np.where(present >= 2, kc_year * INTERCROP_KC, kc_year)
+    return placements, kc_year, owner
+
+
 def place(rotation: Rotation) -> tuple[list[Placement], np.ndarray, np.ndarray]:
     """Devuelve (cultivos ubicados, Kc diario de 365 días, índice de cultivo por día o −1 si está desnudo)."""
+    if rotation.mode == "association":
+        return place_association(rotation)
     cat = catalog()
     placements = []
     kc_year = np.zeros(365)
@@ -110,10 +152,13 @@ def simulate_rotation(rotation: Rotation, clim: Climate, et0: np.ndarray, *, irr
             frost_total += nf
             heat_total += nh
             climate_factor = max(MIN_YIELD_FACTOR, 1 - FROST_PENALTY * nf - HEAT_PENALTY * nh)
-            revenue_potential = pl.crop.yield_t_ha * pl.crop.price_pen_t
-            income += revenue_potential * climate_factor * water_factor - pl.crop.cost_pen_ha
+            revenue_potential = pl.crop.yield_t_ha * pl.crop.price_pen_t * pl.share * pl.ler
+            income += revenue_potential * climate_factor * water_factor - pl.crop.cost_pen_ha * pl.share
             losses.append((revenue_potential, 1 - climate_factor))
 
+        if rotation.mode == "association":
+            # los cultivos comparten los mismos días: contar cada noche de helada o día de calor una sola vez
+            frost_total, heat_total = int(frost_by_day.sum()), int(heat_by_day.sum())
         total_rev = sum(r for r, _ in losses) or 1.0
         climate_loss = sum(r * loss for r, loss in losses) / total_rev
 

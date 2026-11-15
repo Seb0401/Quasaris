@@ -11,7 +11,7 @@ import { RotationIcons } from "@/components/icons/rotation-icons";
 import { LoadingOrbit, PageHeader } from "@/components/ui/kit";
 import type { Irrigation, Priorities, SoilTexture } from "@/lib/contract";
 import { efficiency } from "@/lib/crop-calendar";
-import { MAJES, setFarm, useFarm } from "@/lib/farm-store";
+import { MAJES, moveFarm, setFarm, useFarm } from "@/lib/farm-store";
 import { recommend } from "@/lib/recommendation";
 import { useSimulation } from "@/lib/use-simulation";
 
@@ -125,7 +125,7 @@ export function InicioClient() {
 
             {step === 0 && (
               <div className="wizard-body">
-                <ParcelMap lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} compact />
+                <ParcelMap lat={farm.lat} lon={farm.lon} onPick={moveFarm} compact />
                 <div className="wizard-actions-row">
                   <button type="button" onClick={locate} disabled={locating} className="ui-btn ui-btn-ghost"><LocateFixed size={16} className={locating ? "animate-spin" : ""} />{es ? "Usar mi ubicación" : "Use my location"}</button>
                   <button type="button" onClick={() => setFarm(MAJES)} className="ui-btn ui-btn-ghost"><MapPin size={16} />{t("wizard.field.useMajes")}</button>

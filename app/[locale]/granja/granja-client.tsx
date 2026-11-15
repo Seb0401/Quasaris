@@ -6,8 +6,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { useLocale, useT } from "@/components/i18n-provider";
 import type { Irrigation, SimulateRequest, SimulateResponse, SoilTexture } from "@/lib/contract";
 import { cropName, efficiency } from "@/lib/crop-calendar";
-import { setFarm, useFarm } from "@/lib/farm-store";
-import { FARM_SIZES, resizeFarm, setGranja, useGranja } from "@/lib/granja-store";
+import { moveFarm, setFarm, useFarm } from "@/lib/farm-store";
+import { FARM_SIZES, resizeFarm, resizeFarmToArea, saveBoundary, setGranja, useGranja } from "@/lib/granja-store";
 import {
   BASELINE_ID,
   LENS_RAMP,
@@ -108,11 +108,26 @@ function ZoneStep() {
       <div className="parcel-layout">
         <Reveal className="parcel-map-col">
           <Panel kicker={es ? "PASO 1" : "STEP 1"} icon={MapPin} title={es ? "Elige tu zona" : "Pick your zone"}>
-            <ParcelMap lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })} compact />
+            <ParcelMap
+              lat={farm.lat}
+              lon={farm.lon}
+              onPick={moveFarm}
+              compact
+              boundary={farm.boundary}
+              onBoundary={saveBoundary}
+            />
           </Panel>
         </Reveal>
         <Reveal delay={90}>
           <Panel kicker={es ? "PASO 2" : "STEP 2"} icon={Tractor} title={t("granja.size")}>
+            {farm.areaHa ? (
+              <button type="button" onClick={() => resizeFarmToArea(farm.areaHa!)} className={`option-card mb-2 w-full ${Math.abs(ha - farm.areaHa) < 0.01 ? "active" : ""}`}>
+                <b>{t("granja.drawn", { ha: new Intl.NumberFormat(es ? "es" : "en", { maximumFractionDigits: 2 }).format(farm.areaHa) })}</b>
+                <small>{t("granja.drawnHint")}</small>
+              </button>
+            ) : (
+              <p className="ui-hint mb-2">{t("granja.drawTip")}</p>
+            )}
             <div className="option-cards cols-4">
               {FARM_SIZES.map((s) => (
                 <button key={s.ha} type="button" onClick={() => resizeFarm(s.ha)} className={`option-card ${Math.abs(ha - s.ha) < 0.01 ? "active" : ""}`}>
@@ -399,6 +414,16 @@ function Farm() {
               {monthAlerts.length > 1 && <small> +{monthAlerts.length - 1}</small>}
             </span>
           </button>
+          <button type="button" onClick={() => setDismissed(toastKey)} aria-label={t("granja.ui.close")} className="farm-toast-x">
+            <X size={13} />
+          </button>
+        </div>
+      )}
+      {!topAlert && snap.events.length > 0 && dismissed !== toastKey && (
+        <div className="farm-toast sev-low" role="status">
+          <span className="farm-toast-main">
+            <span>{t(`granja.event.${snap.events[0].kind}`, { n: snap.events[0].tiles })}</span>
+          </span>
           <button type="button" onClick={() => setDismissed(toastKey)} aria-label={t("granja.ui.close")} className="farm-toast-x">
             <X size={13} />
           </button>

@@ -471,7 +471,10 @@
     "ui": {
       "layers": "Layers",
       "close": "Close"
-    }
+    },
+    "drawn": "My drawn field · {ha} ha",
+    "drawnHint": "The farm uses the real area you marked on the map.",
+    "drawTip": "Tip: use “Draw my field” on the map so the farm has your field's real size."
   },
   "rotaciones": {
     "title": "My rotations",

@@ -134,3 +134,27 @@ def test_escenario_mas_calor_pide_mas_agua_y_trae_clima():
     jul_hot = hot.source.climateByYear[0].months[6]
     assert jul_hot.tmax == pytest.approx(jul_base.tmax + 2, abs=0.11)
     assert len(base.source.climateByYear) == 21
+
+
+# --- asociaciones (cultivos juntos en el mismo lote) ---
+
+
+def test_association_ler_follows_companions():
+    from engine.rotation import association_ler
+
+    assert association_ler(["maiz_chala", "frijol"]) > 1.1  # milpa
+    assert association_ler(["cebolla", "haba"]) < 0.9  # el ajo/cebolla frena a la leguminosa
+    assert association_ler(["papa"]) == 1.0
+
+
+def test_association_shares_the_field():
+    milpa = Rotation(id="milpa", name="Milpa", isCurrent=False, mode="association", crops=[{"cropId": "maiz_chala", "sowMonth": 9}, {"cropId": "frijol", "sowMonth": 9}])
+    seq = milpa.model_copy(update={"id": "seq", "mode": "rotation"})
+    _, kc_assoc, _ = place(milpa)
+    _, kc_seq, _ = place(seq)
+    # juntos piden más que el cultivo más exigente solo, pero mucho menos que la suma de ambos
+    assert kc_assoc.max() < kc_seq.max() * 1.15
+    res = run(req(rotations=[ROTATIONS[0], milpa.model_dump(), seq.model_dump()]))
+    by_id = {r.id: r for r in res.rotations}
+    assert by_id["milpa"].water.median < by_id["seq"].water.median * 1.2
+    assert by_id["milpa"].income.median != by_id["seq"].income.median

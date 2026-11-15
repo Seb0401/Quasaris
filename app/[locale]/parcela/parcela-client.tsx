@@ -6,11 +6,12 @@ import { useState } from "react";
 import { ArrowRight, BadgeDollarSign, ChevronDown, ChevronUp, Droplet, Droplets, Layers, Leaf, MapPin, Scale, ShieldAlert, Sprout, Waves } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { CountUp, Meter, RangeInput } from "@/components/ui/kit";
-import { setFarm, useFarm } from "@/lib/farm-store";
+import { moveFarm, setFarm, useFarm } from "@/lib/farm-store";
 import type { Irrigation, Priorities, SoilTexture } from "@/lib/contract";
 import { IRRIGATION_EFFICIENCY, effectiveEfficiency } from "@/lib/ui";
 import { getMajesSoilGridsReference } from "@/lib/soilgrids";
 import { useIsMobile } from "@/lib/use-media";
+import { saveBoundary } from "@/lib/granja-store";
 
 const ParcelMap = dynamic(() => import("@/components/map/parcel-map"), { ssr: false, loading: () => <div className="map-skeleton ui-skeleton h-full" /> });
 
@@ -47,6 +48,7 @@ export function ParcelaClient() {
   const [section, setSection] = useState<Section>("resources");
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const soilNumber = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+  const ha = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
 
   const efficiency = effectiveEfficiency(farm.irrigation, farm.soilTexture);
   const usefulWater = farm.waterAvailableM3ha * efficiency;
@@ -63,7 +65,7 @@ export function ParcelaClient() {
   return (
     <div className="map-view">
       <h1 className="sr-only">{t("parcela.title")}</h1>
-      <ParcelMap fill search lat={farm.lat} lon={farm.lon} onPick={(lat, lon) => setFarm({ lat, lon })}>
+      <ParcelMap fill search lat={farm.lat} lon={farm.lon} onPick={moveFarm} boundary={farm.boundary} onBoundary={saveBoundary}>
         <aside className={`map-panel ${open ? "open" : ""}`} aria-label={t("parcela.title")}>
           <button type="button" className="map-panel-head" onClick={() => setOpen(!open)} aria-expanded={open}>
             <span className="map-panel-icon">
@@ -72,6 +74,7 @@ export function ParcelaClient() {
             <span className="min-w-0 flex-1 text-left">
               <b>{t("parcela.title")}</b>
               <small>
+                {farm.areaHa ? `${ha.format(farm.areaHa)} ha · ` : ""}
                 {n.format(farm.waterAvailableM3ha)} m³/ha · {t(`irrigation.${farm.irrigation}`)} · {t(`soil.${farm.soilTexture}`)}
               </small>
             </span>
@@ -245,7 +248,15 @@ export function ParcelaClient() {
           )}
 
           <div className="map-panel-foot">
-            <p>{es ? "Toca el mapa o arrastra el pin para mover tu parcela." : "Tap the map or drag the pin to move your field."}</p>
+            <p>
+              {farm.areaHa
+                ? es
+                  ? `Tu terreno dibujado mide ${ha.format(farm.areaHa)} ha. La granja usará ese tamaño.`
+                  : `Your drawn field is ${ha.format(farm.areaHa)} ha. Farm mode will use that size.`
+                : es
+                  ? "Toca el mapa o arrastra el pin. Con «Dibujar mi terreno» marcas sus esquinas."
+                  : "Tap the map or drag the pin. Use “Draw my field” to mark its corners."}
+            </p>
             <Link href={`/${locale}/comparar`} className="ui-btn">
               {t("parcela.continue")}
               <ArrowRight size={17} />
