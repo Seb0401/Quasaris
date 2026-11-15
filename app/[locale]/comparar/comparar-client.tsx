@@ -9,6 +9,7 @@ import { CountUp, HeroStat, LoadingOrbit, PageHeader, Panel, ScoreRing } from "@
 import { useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
 import { rotationColor } from "@/lib/ui";
+import { waterFit } from "@/lib/water-fit";
 import type { Rotation, RotationResult } from "@/lib/contract";
 
 type Row = { rotation: Rotation; result: RotationResult; color: string };
@@ -103,6 +104,8 @@ export function CompararClient() {
 
 /** El resultado en una frase, con el puntaje y las diferencias contra lo que siembras hoy. */
 function Verdict({ best, current, anyViable }: { best: Row; current: Row; anyViable: boolean }) {
+  const farm = useFarm();
+  const fit = waterFit(best.result, farm.waterAvailableM3ha);
   const t = useT();
   const locale = useLocale();
   const es = locale === "es";
@@ -126,7 +129,7 @@ function Verdict({ best, current, anyViable }: { best: Row; current: Row; anyVia
             <h2>{best.rotation.name}</h2>
             <p>{t(`explain.${best.result.explain.whyKey}`)}</p>
             {!anyViable && (
-              <p className="verdict-warning"><TriangleAlert size={16} />{es ? "Ninguna rotación alcanza con el agua que indicaste. Esta es la que mejor equilibra tus prioridades; prueba con más agua o riego por goteo." : "No rotation fits the water you entered. This one best balances your priorities; try more water or drip irrigation."}</p>
+              <p className="verdict-warning"><TriangleAlert size={16} />{t("comparar.shortfall", { m3: n.format(fit.shortfallM3ha) })} · {t("comparar.yearsFit", { n: fit.yearsFit, total: fit.years })}. {es ? "Es la opción que mejor equilibra tus prioridades; con riego por goteo o reduciendo el área sembrada podría alcanzar." : "It best balances your priorities; drip irrigation or a smaller planted area could make it fit."}</p>
             )}
           </div>
         </div>

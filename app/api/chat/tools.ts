@@ -77,6 +77,8 @@ export function chatTools(initialFarm: SimulateRequest, signal: AbortSignal) {
             soil: rotation.soil,
             risk: rotation.risk,
             viable: rotation.viable,
+            shortfallM3ha: Math.max(0, Math.round(rotation.water.median - waterAvailableM3ha)),
+            yearsWithEnoughWater: `${rotation.byYear.filter((y) => y.waterM3ha <= waterAvailableM3ha).length} of ${rotation.byYear.length}`,
             score: source.power === "mock" ? undefined : rotation.score,
             why: explain(rotation.explain.whyKey),
             evidence: source.power === "mock" ? [] : rotation.explain.evidence.map(explain).filter(Boolean),

@@ -91,7 +91,9 @@
     "review": "Qué revisar con un experto",
     "months": "Año típico",
     "fusion": "Clima a {elev} m de altitud (SRTM) · fusión de {n} celdas NASA POWER",
-    "soilWetness": "Humedad natural del suelo (NASA POWER GWETROOT): {pct} en promedio, {min}–{max} según el mes."
+    "soilWetness": "Humedad natural del suelo (NASA POWER GWETROOT): {pct} en promedio, {min}–{max} según el mes.",
+    "shortfall": "Te faltan {m3} m³/ha",
+    "yearsFit": "Alcanza en {n} de {total} años"
   },
   "month": {
     "ok": "Bien",
@@ -195,7 +197,8 @@
     "ndviTitle": "Vegetación vista desde el espacio",
     "ndviHint": "NDVI mensual de NASA MODIS: más verde significa más vegetación activa.",
     "ndviLow": "Suelo desnudo",
-    "ndviHigh": "Vegetación densa"
+    "ndviHigh": "Vegetación densa",
+    "shortfallYear": "Te faltan {m3} m³/ha"
   },
   "calendario": {
     "title": "Mi calendario",
@@ -520,7 +523,7 @@
         "title": "Cuánto regar",
         "short": "Lo que pide el cultivo, menos la lluvia, más lo que pierde el sistema de riego.",
         "text": "Lo que pide el cultivo menos la lluvia que aprovecha es tu riego neto. Pero ningún sistema es perfecto: con gravedad se pierde casi la mitad del agua y con goteo muy poca. Ese total es el riego bruto.",
-        "how": "Comparamos el riego bruto de cada rotación con tu agua disponible. Si no alcanza, la marcamos como \"no viable\". 1 mm de agua = 10 m³ por hectárea.",
+        "how": "Comparamos el riego bruto de cada rotación con tu agua disponible. Si no alcanza, te mostramos cuántos m³/ha te faltan y en cuántos de los 21 años habría alcanzado. 1 mm de agua = 10 m³ por hectárea.",
         "source": "Eficiencias: gravedad 45 %, aspersión 75 %, goteo 90 %"
       },
       "ndvi": {
@@ -594,8 +597,8 @@
     "kicker": "Recomendación para tu parcela",
     "switch": "Te conviene cambiar a",
     "keep": "Tu rotación actual ya es la mejor opción",
-    "noneViable": "Con tu agua, ninguna rotación alcanza",
-    "noneText": "La mejor opción necesita {need} m³/ha y tienes {have} m³/ha. Estas son tus alternativas:",
+    "noneViable": "Te faltan {m3} m³/ha para la mejor opción",
+    "noneText": "La mejor opción necesita {need} m³/ha y tienes {have} m³/ha. Con tu agua habría alcanzado en {n} de {total} años. Estas son tus alternativas:",
     "tryDrip": "Con riego por goteo esa rotación necesitaría unos {m3} m³/ha.",
     "reduceArea": "Con el agua que tienes puedes regar bien el {pct} de tu chacra; el resto, en descanso o con cultivo de cobertura.",
     "water": "Agua",

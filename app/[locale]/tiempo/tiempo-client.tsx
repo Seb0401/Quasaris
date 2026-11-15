@@ -157,7 +157,7 @@ export function TiempoClient() {
             <article key={rot.id} className="year-card" style={{ "--accent": color } as React.CSSProperties}>
               <header>
                 <h3><i style={{ background: color }} />{rot.name}</h3>
-                {over ? <Badge tone="danger">{es ? "Falta agua" : "Short on water"}</Badge> : <Badge tone="ok">{t("tiempo.withinLimit")}</Badge>}
+                {over ? <Badge tone="danger">{t("tiempo.shortfallYear", { m3: n.format(y.waterM3ha - farm.waterAvailableM3ha) })}</Badge> : <Badge tone="ok">{t("tiempo.withinLimit")}</Badge>}
               </header>
               <div className="year-card-stats">
                 <div><small><BadgeDollarSign size={13} />{t("comparar.income")}</small><strong><CountUp value={y.incomePEN} format={(v) => `S/ ${n.format(v)}`} duration={600} /></strong></div>

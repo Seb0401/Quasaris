@@ -91,7 +91,9 @@
     "review": "Check with an expert",
     "months": "Typical year",
     "fusion": "Climate at {elev} m altitude (SRTM) · blend of {n} NASA POWER cells",
-    "soilWetness": "Natural soil moisture (NASA POWER GWETROOT): {pct} on average, {min}–{max} by month."
+    "soilWetness": "Natural soil moisture (NASA POWER GWETROOT): {pct} on average, {min}–{max} by month.",
+    "shortfall": "You're short {m3} m³/ha",
+    "yearsFit": "Enough in {n} of {total} years"
   },
   "month": {
     "ok": "Good",
@@ -195,7 +197,8 @@
     "ndviTitle": "Vegetation seen from space",
     "ndviHint": "Monthly NASA MODIS NDVI: greener means more active vegetation.",
     "ndviLow": "Bare soil",
-    "ndviHigh": "Dense vegetation"
+    "ndviHigh": "Dense vegetation",
+    "shortfallYear": "You're short {m3} m³/ha"
   },
   "calendario": {
     "title": "My calendar",
@@ -520,7 +523,7 @@
         "title": "How much to irrigate",
         "short": "What the crop needs, minus rain, plus what the irrigation system loses.",
         "text": "What the crop needs minus the rain it can use is your net irrigation. No system is perfect: furrow irrigation loses almost half the water, drip very little. That total is gross irrigation.",
-        "how": "We compare each rotation's gross irrigation with your available water. If it isn't enough, it's marked \"not viable\". 1 mm of water = 10 m³ per hectare.",
+        "how": "We compare each rotation's gross irrigation with your available water. If it isn't enough, we show how many m³/ha you are short and in how many of the 21 years it would have been enough. 1 mm of water = 10 m³ per hectare.",
         "source": "Efficiencies: furrow 45%, sprinkler 75%, drip 90%"
       },
       "ndvi": {
@@ -594,8 +597,8 @@
     "kicker": "Recommendation for your field",
     "switch": "You should switch to",
     "keep": "Your current rotation is already the best option",
-    "noneViable": "With your water, no rotation fits",
-    "noneText": "The best option needs {need} m³/ha and you have {have} m³/ha. These are your alternatives:",
+    "noneViable": "You're short {m3} m³/ha for the best option",
+    "noneText": "The best option needs {need} m³/ha and you have {have} m³/ha. Your water would have been enough in {n} of {total} years. These are your alternatives:",
     "tryDrip": "With drip irrigation that rotation would need about {m3} m³/ha.",
     "reduceArea": "With your water you can properly irrigate {pct} of your farm; leave the rest fallow or with a cover crop.",
     "water": "Water",
