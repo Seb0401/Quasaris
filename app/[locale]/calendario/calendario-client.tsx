@@ -14,7 +14,7 @@ import { useToday } from "@/lib/use-today";
 
 const ENGINE_URL = process.env.NEXT_PUBLIC_ENGINE_URL ?? "";
 const CACHE_KEY = "farmtwin.climate.v1";
-const cropColor = (cropId: string) => FAMILY_COLOR[CROPS[cropId]?.family] ?? "#63def2";
+const cropColor = (cropId: string) => FAMILY_COLOR[CROPS[cropId]?.family] ?? "var(--fam-other)";
 
 function useClimate(lat: number, lon: number) {
   const [result, setResult] = useState<{ key: string; data: ClimateResponse | null; cached: boolean } | null>(null);
@@ -50,7 +50,7 @@ function useClimate(lat: number, lon: number) {
 }
 
 function heat(p: number, color: string) {
-  return p <= 0 ? "rgba(255,255,255,.04)" : `color-mix(in srgb, ${color} ${Math.round(25 + p * 75)}%, transparent)`;
+  return p <= 0 ? "var(--tint)" : `color-mix(in srgb, ${color} ${Math.round(25 + p * 75)}%, transparent)`;
 }
 
 export function CalendarioClient() {
@@ -274,12 +274,12 @@ function RotationWheel({ crops, locale, today }: { crops: { cropId: string; sowM
             const isNow = month === currentMonth;
             return (
               <g key={month} className="wheel-sector" style={{ animationDelay: `${month * 45}ms` }}>
-                <path d={`M140 140 L${p[0]} ${p[1]} A132 132 0 0 1 ${q[0]} ${q[1]} Z`} fill={cropId ? cropColor(cropId) : "rgba(255,255,255,.06)"} fillOpacity={cropId ? (isNow ? 1 : 0.62) : 1} stroke="#0b2230" strokeWidth="3" />
-                <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle" fontSize="11" fontWeight={isNow ? 800 : 600} fill={cropId ? "#0a2216" : "#8aa5ad"}>{fmt.format(new Date(2025, month, 1))}</text>
+                <path d={`M140 140 L${p[0]} ${p[1]} A132 132 0 0 1 ${q[0]} ${q[1]} Z`} fill={cropId ? cropColor(cropId) : "var(--tint-2)"} fillOpacity={cropId ? (isNow ? 1 : 0.62) : 1} style={{ stroke: "var(--surface)" }} strokeWidth="3" />
+                <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle" fontSize="11" fontWeight={isNow ? 800 : 600} style={{ fill: cropId ? "var(--wheel-label)" : "var(--muted)" }}>{fmt.format(new Date(2025, month, 1))}</text>
               </g>
             );
           })}
-          <circle cx="140" cy="140" r="70" fill="#0b2230" stroke="rgba(136,214,224,.22)" strokeWidth="1.5" />
+          <circle cx="140" cy="140" r="70" style={{ fill: "var(--surface)", stroke: "var(--border-strong)" }} strokeWidth="1.5" />
         </svg>
         <div className="wheel-center">
           <span style={{ color: center ? cropColor(center.cropId) : "var(--muted)" }}><CropIcon crop={center?.cropId ?? null} size={30} /></span>

@@ -7,6 +7,7 @@ import { AppNav } from "@/components/app-nav";
 import { SwRegister } from "@/components/sw-register";
 import { AssistantDrawer } from "@/components/assistant/assistant-drawer";
 import { getMessages, isLocale, locales } from "@/lib/i18n";
+import { THEME_SCRIPT } from "@/lib/theme";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -37,7 +38,11 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   if (!isLocale(locale)) notFound();
 
   return (
-    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* aplica el tema guardado antes de pintar (ver lib/theme.ts) */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="font-sans overflow-x-clip">
         <I18nProvider locale={locale}>
           <AppNav />

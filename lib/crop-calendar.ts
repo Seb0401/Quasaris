@@ -46,14 +46,15 @@ export function cropsIn(category: CropCategory | "all"): string[] {
 }
 
 /** Color de cada familia botánica (líneas de tiempo de rotaciones y calendario). */
+/** Variables CSS con respaldo: cada tema define su versión legible en app/globals.css. */
 export const FAMILY_COLOR: Record<string, string> = {
-  leguminosa: "#b9ff63",
-  solanacea: "#e39a5d",
-  aliacea: "#b69cff",
-  graminea: "#f6b94c",
-  amarantacea: "#e0607e",
-  apiacea: "#ff9f43",
-  cucurbitacea: "#3fb6a8",
+  leguminosa: "var(--fam-leguminosa, #b9ff63)",
+  solanacea: "var(--fam-solanacea, #e39a5d)",
+  aliacea: "var(--fam-aliacea, #b69cff)",
+  graminea: "var(--fam-graminea, #f6b94c)",
+  amarantacea: "var(--fam-amarantacea, #e0607e)",
+  apiacea: "var(--fam-apiacea, #ff9f43)",
+  cucurbitacea: "var(--fam-cucurbitacea, #3fb6a8)",
 };
 
 export function cycleDays(cropId: string) {

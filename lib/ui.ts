@@ -1,7 +1,8 @@
 import type { Irrigation, SoilTexture } from "@/lib/contract";
 
 /** Un color por rotación, el mismo en todas las pantallas (la actual siempre va primero). */
-export const ROTATION_COLORS = ["#5cc8f5", "#b9ff63", "#f6b94c", "#b69cff", "#ff8a7a"] as const;
+/** Variables CSS: cada tema (oscuro o claro) define su versión legible en app/globals.css. */
+export const ROTATION_COLORS = ["var(--rot-1)", "var(--rot-2)", "var(--rot-3)", "var(--rot-4)", "var(--rot-5)"] as const;
 
 export function rotationColor(index: number) {
   return ROTATION_COLORS[index % ROTATION_COLORS.length];
