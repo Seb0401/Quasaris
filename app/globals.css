@@ -1550,3 +1550,44 @@
 .map-view .gm-autobar { top: 66px; left: 50%; right: auto; transform: translateX(-50%); }
 @media (min-width: 1050px) { .map-view .gm-autobar { top: 74px; left: calc(50% + 190px); } }
 @media (max-width: 600px) { .map-view .gm-autobar, .gm-autobar { left: 8px; right: 8px; transform: none; } }
+
+/* ---------------------------------------------------------------- recomendaciones */
+.reco-profile { display: grid; gap: 14px; padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--glass); box-shadow: var(--shadow); }
+.reco-profile-head { display: flex; align-items: flex-start; gap: 12px; }
+.reco-profile-head b { display: block; font-size: 16px; }
+.reco-profile-head p { margin: 3px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.reco-profile-head a { color: var(--brand-text); font-weight: 700; }
+.reco-profile-icon { display: grid; flex-shrink: 0; width: 40px; height: 40px; place-items: center; border-radius: 12px; color: var(--brand-ink); background: var(--brand); }
+.reco-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.reco-chips li { --tone: var(--brand-text); display: flex; align-items: flex-start; gap: 9px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--inset); font-size: 13px; font-weight: 600; line-height: 1.35; }
+.reco-chips li svg { flex-shrink: 0; margin-top: 2px; color: var(--tone); }
+.reco-chips li small { display: block; color: var(--text-label); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.reco-chips li.tone-ok { --tone: var(--ok-text); }
+.reco-chips li.tone-warn { --tone: var(--warn-text); }
+.reco-chips li.tone-danger { --tone: var(--danger-text); }
+.reco-rotations { display: flex; flex-wrap: wrap; gap: 8px; }
+.reco-rotations button { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 7px 13px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-soft); background: var(--inset); font-size: 13px; font-weight: 600; cursor: pointer; }
+.reco-rotations button i { width: 9px; height: 9px; border-radius: 50%; }
+.reco-rotations button:hover { border-color: var(--border-strong); color: var(--foreground); }
+.reco-rotations button.active { border-color: var(--brand); color: var(--foreground); background: var(--nav-active-bg); }
+.reco-nitrogen { display: grid; gap: 7px; margin-top: 16px; padding: 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--inset); }
+.reco-n-row { display: flex; justify-content: space-between; gap: 10px; color: var(--text-soft); font-size: 13px; }
+.reco-n-row strong { color: var(--foreground); white-space: nowrap; }
+.reco-nitrogen p { margin: 4px 0 0; font-size: 12.5px; font-weight: 600; line-height: 1.45; }
+.reco-nitrogen p.is-bad { color: var(--warn-text); }
+.reco-nitrogen p.is-good { color: var(--ok-text); }
+.reco-panel { --tone: var(--ok); }
+.reco-panel.tone-brand { --tone: var(--brand); }
+.reco-panel.tone-sky { --tone: var(--sky); }
+.reco-sub { margin: -4px 0 14px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.reco-grid { display: grid; gap: 12px; }
+.reco-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 15px; border: 1px solid var(--border); border-left: 3px solid color-mix(in srgb, var(--tone) 45%, var(--border)); border-radius: 14px; background: var(--inset); }
+.reco-card.is-high { border-left-color: var(--tone); }
+.reco-card header { display: flex; align-items: flex-start; gap: 10px; }
+.reco-card header b { font-size: 14px; line-height: 1.35; }
+.reco-icon { display: grid; flex-shrink: 0; width: 32px; height: 32px; place-items: center; border-radius: 10px; color: var(--tone); background: color-mix(in srgb, var(--tone) 14%, transparent); }
+.reco-card > p { margin: 0; color: var(--text-soft); font-size: 13px; line-height: 1.55; }
+.reco-card .reco-how { padding: 8px 10px; border-radius: 10px; background: var(--tint); color: var(--foreground); }
+.reco-how span { display: block; margin-bottom: 2px; color: var(--text-label); font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.reco-note { align-items: flex-start; line-height: 1.5; }
+@media (min-width: 900px) { .reco-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ChevronDown, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Repeat2, Satellite, ShieldAlert, Sparkles, Target, TriangleAlert } from "lucide-react";
+import { ArrowRight, ChevronDown, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Repeat2, Satellite, ShieldAlert, Sparkles, Sprout, Target, TriangleAlert } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
 import { ScoreBreakdown } from "@/components/cards/score-breakdown";
@@ -75,6 +75,15 @@ export function CompararClient() {
       {best && current && <Verdict best={best} current={current} rows={rows} anyViable={viable.length > 0} all={rows.map((r) => r.result)} />}
 
       {current && <Reveal><ImprovePlan rows={rows} current={current} /></Reveal>}
+
+      <section className="rot-cta">
+        <span className="rot-cta-icon"><Sprout size={22} /></span>
+        <div className="rot-cta-copy">
+          <b>{es ? "Abonos, microorganismos y dispositivos para tu parcela" : "Fertilisers, microorganisms and devices for your field"}</b>
+          <p>{es ? "Recomendaciones según tu suelo, tu zona y los cultivos de cada rotación." : "Recommendations based on your soil, your area and the crops in each rotation."}</p>
+        </div>
+        <Link href={`/${locale}/recomendaciones`} className="ui-btn"><Sprout size={16} />{es ? "Ver recomendaciones" : "See recommendations"}</Link>
+      </section>
 
       <Reveal>
         <Panel id="cmp-duel" kicker={es ? "CARA A CARA" : "HEAD TO HEAD"} icon={BarChart3} title={es ? "¿En qué gana cada rotación?" : "Where does each rotation win?"} actions={<div className="duel-legend">{rows.map((r) => <span key={r.rotation.id}><i style={{ background: r.color }} />{r.rotation.name}</span>)}</div>}>
