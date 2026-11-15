@@ -25,12 +25,12 @@ FarmTwin supports the judgment of the farmer and the local agronomist. It does n
 | **My field** | Full-screen satellite map with NASA NDVI and SMAP layers, place search (local zones, coordinates or OpenStreetMap), and a tool to draw the field outline and measure its area. Floating panels for water, irrigation, soil (ISRIC SoilGrids) and priorities. |
 | **Compare** | At least 3 rotations (including the current one) with water, income, soil health, climate risk, typical months, "not viable with your water" and what to check with an expert. |
 | **Time machine** | What each rotation would have produced in every year from 2005 to 2025, with animated playback, a per-year chart, a 21-year strip and that month's NDVI. |
-| **Farm** | A 3D digital twin of the farm. The farmer paints crops on plots, plays a full year month by month and sees growth, water stress, frost, heat waves and alerts. Supports intercropping (associations such as the *milpa*). |
+| **Farm** | A 3D digital twin of the farm for the **next season**. The island takes the shape of the drawn field (square plots inside the outline) and can be reshaped by adding or removing edge plots. The farmer paints crops, picks a scenario (typical year, dry year, El Niño or +1.5 °C, each modelled on a real NASA POWER year) and plays the season month by month. On-screen alert cards say how often each risk happened in the 21 real years, which plots are affected and what to change, with a one-tap "Apply change". Supports intercropping (associations such as the *milpa* and the three sisters). |
 | **Calendar** | Crop cycles and stages, weekly frost and heat risk, this week's irrigation and push alerts. |
 | **Assistant** | AI chat with voice dictation and photo upload. It answers with numbers that come only from the engine through tool calls. |
-| **My rotations / Groupings** | Build custom rotations or crop associations and compare them on every screen. |
+| **My rotations / Groupings** | Build custom rotations or crop associations from 16 crops grown around Arequipa and compare them on every screen. |
 | **My plan** | A printable farm plan (PDF) with the chosen rotation, calendar and risks. |
-| **What does it mean?** | Plain-language explanations of evapotranspiration, NDVI, soil moisture, frost risk and water balance. |
+| **What does it mean?** | Ten plain-language ideas (water, seen from space, risk and decisions), each one a short expandable card. |
 
 ## How it works
 
@@ -116,7 +116,8 @@ app/api/             chat (assistant + tools), push/subscribe, push/test, cron/a
 app/manifest.ts      PWA manifest              public/sw.js   service worker (offline and push)
 components/          map/, cards/, timemachine/, calendar/, granja/
 lib/                 contract.ts, engine-client.ts, farm-store.ts, granja-store.ts, granja-sim.ts,
-                     crop-calendar.ts, push-server.ts, gibs.ts, geo.ts, i18n.ts
+                     granja-fixes.ts, farm-shape.ts, crop-calendar.ts, grouping.ts, push-server.ts,
+                     gibs.ts, geo.ts, i18n.ts
 messages/            Spanish and English UI text
 api/py/index.py      FastAPI: /api/py/health · /api/py/simulate · /api/py/climate
 engine/              schema, power (POWER + SRTM fusion), quality, elevation, et0, crops,

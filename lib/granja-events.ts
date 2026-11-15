@@ -25,6 +25,10 @@ export type FarmAlert = {
   tiles: number[];
   crops: string[];
   fromEvent: boolean; // true si lo activó el agricultor
+  /** en cuántos de los 21 años reales aparece este riesgo con esta chacra */
+  odds?: { hits: number; total: number };
+  /** no pasa en el escenario elegido, pero sí en bastantes años reales */
+  possible?: boolean;
 };
 
 export const EVENT_FROST_C = -3;

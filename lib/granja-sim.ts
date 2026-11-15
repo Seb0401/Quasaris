@@ -7,7 +7,9 @@ import paletteJson from "@/data/rotations_palette.json";
 import type { Locale, MonthStatus, Rotation, SimulateResponse } from "@/lib/contract";
 import { CROPS, MONTH_START, cropOnDay, cycleDays, sowDay } from "@/lib/crop-calendar";
 import { localizeRotations } from "@/lib/rotation-utils";
-import { HEAT_WATER_FACTOR, hazardDamage, type FarmAlert, type FarmEvent } from "@/lib/granja-events";
+import { ENSO_YEARS, HEAT_WATER_FACTOR, hazardDamage, type FarmAlert, type FarmEvent } from "@/lib/granja-events";
+import { isOn } from "@/lib/farm-shape";
+import type { Scenario } from "@/lib/granja-store";
 
 export const PALETTE = paletteJson.rotations as Rotation[];
 export const BASELINE_ID = "actual";
@@ -98,7 +100,7 @@ function incomeShare(r: Rotation): number[] {
   return share;
 }
 
-function cropAt(r: Rotation, month: number): { cropId: string | null; growth: number; mix?: TileState["mix"] } {
+export function cropAt(r: Rotation, month: number): { cropId: string | null; growth: number; mix?: TileState["mix"] } {
   const doy = MONTH_START[month] + 14;
   if (r.mode === "association") {
     const here = r.crops.flatMap((rc) => {
@@ -129,7 +131,9 @@ export function simulateYear(
   const byId = new Map(data.rotations.map((r) => [r.id, r]));
   const rot = new Map(palette.map((r) => [r.id, r]));
   const yearOf = (id: string) => byId.get(id)?.byYear.find((y) => y.year === year);
-  const totalHa = tiles.length * haPerTile;
+  const on = tiles.map(isOn);
+  const nOn = Math.max(on.filter(Boolean).length, 1);
+  const totalHa = nOn * haPerTile;
   const capacity = waterAvailableM3ha * totalHa;
   // sequía / recorte de agua: desde su mes, la dotación del resto del año se reduce
   const drought = farmEvents.find((e) => e.kind === "drought");
@@ -165,7 +169,7 @@ export function simulateYear(
     const famShare = new Map<string, number>();
     active.forEach((a) => {
       const f = a.cropId ? CROPS[a.cropId]?.family : undefined;
-      if (f) famShare.set(f, (famShare.get(f) ?? 0) + 1 / Math.max(tiles.length, 1));
+      if (f) famShare.set(f, (famShare.get(f) ?? 0) + 1 / nOn);
     });
 
     const tileStates: TileState[] = tiles.map((id, i) => {
@@ -185,7 +189,7 @@ export function simulateYear(
           if (status !== "dry") status = ev.kind === "heavyRain" ? "disease" : ev.kind === "pests" ? "pest" : "climate_risk";
         }
       }
-      if (status === "bare") bare++;
+      if (status === "bare" && on[i]) bare++;
       if (r) {
         const share = incomeShare(r)[m];
         if (share > 0 && y) {
@@ -215,9 +219,9 @@ export function simulateYear(
         continue;
       }
       const hit = idx((t) => t.cropId !== null && (t.status === "disease" || t.status === "pest" || t.status === "climate_risk"));
-      alerts.push({ month: m, kind: ev.kind, severity: hit.length > tiles.length / 2 ? "high" : hit.length ? "med" : "low", tiles: hit, crops: cropsOf(hit), fromEvent: true });
+      alerts.push({ month: m, kind: ev.kind, severity: hit.length > nOn / 2 ? "high" : hit.length ? "med" : "low", tiles: hit, crops: cropsOf(hit), fromEvent: true });
       if (ev.kind === "heavyRain") {
-        const bareTiles = idx((t) => t.cropId === null);
+        const bareTiles = idx((t) => t.cropId === null).filter((i) => on[i]);
         if (bareTiles.length) alerts.push({ month: m, kind: "erosion", severity: "med", tiles: bareTiles, crops: [], fromEvent: true });
       }
     }
@@ -225,7 +229,7 @@ export function simulateYear(
     const real = idx((t) => t.status === "climate_risk" && !monthEvents.some((e) => e.kind === "frost" || e.kind === "heat"));
     if (real.length) alerts.push({ month: m, kind: "climate", severity: real.length > 2 ? "high" : "med", tiles: real, crops: cropsOf(real), fromEvent: false });
     const peak = idx((t) => t.status === "water_stress");
-    if (peak.length > tiles.length * 0.6 && m < dryFrom) alerts.push({ month: m, kind: "waterPeak", severity: "low", tiles: peak, crops: [], fromEvent: false });
+    if (peak.length > nOn * 0.6 && m < dryFrom) alerts.push({ month: m, kind: "waterPeak", severity: "low", tiles: peak, crops: [], fromEvent: false });
   }
 
   // plagas por monocultivo: una alerta al año si una misma rotación ocupa la mayor parte de la chacra
@@ -233,8 +237,8 @@ export function simulateYear(
   const counts = new Map<string, number>();
   sown.forEach((id) => counts.set(id, (counts.get(id) ?? 0) + 1));
   const topRot = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
-  const topShare = topRot ? topRot[1] / Math.max(tiles.length, 1) : 0;
-  if (topRot && topShare >= 0.6 && tiles.length > 1) {
+  const topShare = topRot ? topRot[1] / nOn : 0;
+  if (topRot && topShare >= 0.6 && nOn > 1) {
     const ids = tiles.flatMap((id, i) => (id === topRot[0] ? [i] : []));
     const crops = Array.from(new Set((rot.get(topRot[0])?.crops ?? []).map((c) => c.cropId)));
     alerts.push({ month: -1, kind: "monoculture", severity: topShare >= 0.8 ? "high" : "med", tiles: ids, crops, fromEvent: false });
@@ -242,7 +246,7 @@ export function simulateYear(
   alerts.sort((a, b) => a.month - b.month);
 
   const base = yearOf(BASELINE_ID);
-  const soil = tiles.reduce((a, id) => a + (byId.get(id)?.soil ?? 0), 0) / Math.max(tiles.length, 1);
+  const soil = tiles.reduce((a, id, i) => a + (on[i] ? (byId.get(id)?.soil ?? 0) : 0), 0) / nOn;
   return {
     months,
     alerts,
@@ -253,7 +257,7 @@ export function simulateYear(
       soil,
       bareTileMonths: bare,
       baseline: { waterM3: (base?.waterM3ha ?? 0) * totalHa, incomePEN: (base?.incomePEN ?? 0) * totalHa },
-      distinctRotations: new Set(tiles.filter((t) => t !== "descanso")).size,
+      distinctRotations: new Set(tiles.filter((t) => t !== "descanso" && isOn(t))).size,
     },
   };
 }
@@ -273,6 +277,69 @@ export function evaluateGoals(s: YearSummary, tilesCount: number): Goal[] {
     { id: "beatIncome", done: s.incomePEN >= s.baseline.incomePEN && s.baseline.incomePEN > 0, progress: s.baseline.incomePEN > 0 ? Math.max(0, Math.min(1, s.incomePEN / s.baseline.incomePEN)) : 0 },
     { id: "diversity", done: s.distinctRotations >= 3, progress: Math.min(1, s.distinctRotations / 3) },
   ];
+}
+
+// ---------- campaña futura: escenarios y probabilidades ----------
+
+/**
+ * Año real (de los 21 de NASA POWER) con que se arma cada escenario de la próxima campaña:
+ * típico = el de demanda de agua mediana, seco = el de mayor demanda, El Niño = el Niño más reciente
+ * y fuerte del registro, más calor = el típico con +1,5 °C (el motor suma la temperatura).
+ */
+export function scenarioYear(data: SimulateResponse, scenario: Scenario): number {
+  const base = data.rotations.find((r) => r.id === BASELINE_ID) ?? data.rotations[0];
+  const ys = [...(base?.byYear ?? [])].sort((a, b) => a.waterM3ha - b.waterM3ha);
+  if (!ys.length) return 2016;
+  const driest = ys[ys.length - 1].year;
+  if (scenario === "dry") return driest;
+  if (scenario === "nino") {
+    // el año El Niño de mayor demanda de agua, distinto del año seco para que los escenarios no se repitan
+    const ninos = ys.filter((y) => ENSO_YEARS[y.year] === "nino" && y.year !== driest);
+    return ninos.at(-1)?.year ?? driest;
+  }
+  return ys[Math.floor(ys.length / 2)].year;
+}
+
+/** Primer año de la próxima campaña (la que el agricultor está por sembrar). */
+export function nextSeason(today: Date | null) {
+  return (today ?? new Date(2026, 10, 1)).getFullYear() + 1;
+}
+
+export type Odds = { hits: number; total: number; tiles: number[]; month: number };
+
+/**
+ * Qué tan seguido aparece cada riesgo con esta chacra: se simula la misma distribución en cada uno
+ * de los 21 años reales y se cuenta en cuántos aparece. Llave: "climate-6" (helada o calor en julio)
+ * o "dry" (el reservorio se vacía en algún mes; month = el mes más común).
+ */
+export function riskOdds(data: SimulateResponse, tiles: string[], haPerTile: number, waterAvailableM3ha: number, palette: Rotation[]): Map<string, Odds> {
+  const base = data.rotations.find((r) => r.id === BASELINE_ID) ?? data.rotations[0];
+  const years = base?.byYear.map((y) => y.year) ?? [];
+  const odds = new Map<string, Odds>();
+  const dryMonths: number[] = [];
+  for (const year of years) {
+    const { alerts } = simulateYear(data, tiles, haPerTile, year, waterAvailableM3ha, palette, []);
+    const seen = new Set<string>();
+    for (const a of alerts) {
+      if (a.kind !== "climate" && a.kind !== "dry" && a.kind !== "waterPeak") continue;
+      const key = a.kind === "dry" ? "dry" : `${a.kind}-${a.month}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      if (a.kind === "dry") dryMonths.push(a.month);
+      const o = odds.get(key) ?? { hits: 0, total: years.length, tiles: [], month: a.month };
+      o.hits++;
+      if (a.tiles.length > o.tiles.length) o.tiles = a.tiles;
+      odds.set(key, o);
+    }
+  }
+  const dry = odds.get("dry");
+  if (dry) dry.month = [...dryMonths].sort((a, b) => a - b)[Math.floor(dryMonths.length / 2)];
+  return odds;
+}
+
+/** Llave de probabilidad de una alerta (o null si no se mide en los 21 años). */
+export function oddsKey(a: FarmAlert) {
+  return a.kind === "dry" ? "dry" : a.kind === "climate" || a.kind === "waterPeak" ? `${a.kind}-${a.month}` : null;
 }
 
 /** Años con eventos notables para el selector (a partir de la rotación de referencia). */
