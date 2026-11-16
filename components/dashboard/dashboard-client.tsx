@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ImpactSection, ImpactVisual } from "@/components/dashboard/impact";
+import { ImpactSection } from "@/components/dashboard/impact";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -150,8 +151,20 @@ export function DashboardClient() {
             </div>
           </div>
 
-          {/* problemática → solución (components/dashboard/impact.tsx) */}
-          <ImpactVisual locale={locale} />
+          {/* la granja 3D completa, sin recuadro, como protagonista (public/images/farm-twin.webp) */}
+          <Link href={`/${locale}/granja`} className="qx-signal-card qx-farm-card" aria-label={es ? "Abrir el modo granja" : "Open farm mode"}>
+            <header>
+              <div><span className="qx-live-dot" /><small>{es ? "GEMELO DIGITAL 3D" : "3D DIGITAL TWIN"}</small></div>
+              <span>{es ? "MODO GRANJA" : "FARM MODE"}</span>
+            </header>
+            <div className="qx-satellite-frame qx-farm-frame">
+              <Image src="/images/farm-twin.webp" alt={es ? "Gemelo digital 3D de una chacra con parcelas sembradas, casa, animales y reservorio" : "3D digital twin of a farm with planted plots, a house, animals and a reservoir"} fill sizes="(min-width: 1050px) 860px, 100vw" priority />
+            </div>
+            <footer>
+              <span>{es ? "Juega la próxima campaña antes de sembrar" : "Play next season before you sow"}</span>
+              <span className="qx-farm-cta">{es ? "Abrir la granja" : "Open the farm"}<ArrowUpRight size={15} /></span>
+            </footer>
+          </Link>
         </div>
 
         <button className="qx-scroll-cue" onClick={() => document.getElementById("qx-story")?.scrollIntoView({ behavior: "smooth" })}>
