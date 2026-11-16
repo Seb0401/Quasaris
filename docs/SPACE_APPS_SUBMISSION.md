@@ -59,7 +59,7 @@ Yes. We used SI tools to accelerate development, never to choose the challenge o
 
 - **Code:** Claude Code (Anthropic) and OpenAI Codex helped write and review code for the web app, the simulation engine, tests and documentation. Commits made with AI assistance carry a `Co-Authored-By` trailer in the repository, and `docs/AI_USAGE.md` describes who did what.
 - **Images:** two background illustrations (an orbital view and a sunset field) were generated with ChatGPT, and 21 small crop illustrations with OpenAI's image generation tool. All carry a visible AI mark in the app (and in the demo video, for the two backgrounds). All maps and data layers are real imagery (Esri, NASA GIBS) and real data.
-- **Video and audio:** the demo video is a screen recording of the real app, edited and animated with code written with Claude's help; its music was synthesized by code written with Claude's help. Both are acknowledged in the video's metadata.
+- **Video and audio:** the demo video is a screen recording of the real app, edited and animated with code written with Claude's help; its music was synthesized by code written with Claude's help, and its voiceover is AI-generated speech (a Microsoft neural text-to-speech voice reading the team's script). All of this is acknowledged in the video's metadata.
 - **Inside the product:** an LLM field assistant explains results in plain words but can only quote numbers produced by the deterministic engine.
 
 ## NASA Data

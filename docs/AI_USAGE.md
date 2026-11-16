@@ -66,6 +66,6 @@ The Majes crop integration and illustrated crop picker were also developed with 
 
 The app icon and logo are hand-written SVG (`scripts/make_icons.mjs`).
 
-**Demo video** (`FarmTwin_demo_SpaceApps_30s.mp4`): the app footage is a screen recording of the real app. The same two ChatGPT illustrations appear as backgrounds in the opening and the closing scenes and carry a visible "AI-generated image" mark on screen. The editing and animation were done with code written with Claude's help. The music is original and was synthesized by Python code written with Claude's help (no samples, no AI music generator). The video file's metadata (title, comment) states all of this.
+**Demo video** (`FarmTwin_demo_SpaceApps_30s.mp4`): the app footage is a screen recording of the real app. The same two ChatGPT illustrations appear as backgrounds in the opening and the closing scenes and carry a visible "AI-generated image" mark on screen. The editing and animation were done with code written with Claude's help. The music is original and was synthesized by Python code written with Claude's help (no samples, no AI music generator). The voiceover is **AI-generated speech**: a Microsoft neural text-to-speech voice (en-US Andrew) reading the script the team wrote; there is no human voice in the video. The video file's metadata (title, comment) states all of this.
 
 **Pitch deck:** built as an HTML page with Claude's help. It uses public-domain NASA imagery (Blue Marble, MODIS Terra) and screenshots of the real app.
