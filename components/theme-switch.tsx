@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useLocale } from "@/components/i18n-provider";
 import { THEME_KEY } from "@/lib/theme";
@@ -7,6 +8,16 @@ import { THEME_KEY } from "@/lib/theme";
 /** Botón sol / luna. El tema vive en el atributo data-theme de <html>; el oscuro es el predeterminado. */
 export function ThemeSwitch() {
   const es = useLocale() === "es";
+
+  // En desarrollo, Strict Mode remonta <html> y le quita el data-theme que puso el script en línea:
+  // se vuelve a aplicar antes de pintar. En producción no cambia nada.
+  useLayoutEffect(() => {
+    try {
+      if (localStorage.getItem(THEME_KEY) === "light") document.documentElement.dataset.theme = "light";
+    } catch {
+      /* sin almacenamiento */
+    }
+  }, []);
 
   const toggle = () => {
     const root = document.documentElement;
