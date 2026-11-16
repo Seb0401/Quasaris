@@ -28,13 +28,16 @@ https://quasaris-farmtwin.vercel.app
 
 **The problem.** Food security depends on stability: people need enough food *at all times*. Climate change breaks exactly that. Irrigated agriculture covers less than 20% of the world's cropland but produces about 40% of its food and uses 70% of the fresh water withdrawn (FAO), so every drought reaches the food supply. Our pilot, the Majes irrigation district in Arequipa, Peru, shows it: the region grows about 70% of Peru's onion and Majes is the country's first dairy district, yet the Condoroma reservoir was at 46% in November 2026, irrigation water was cut by 10%, and SENAMHI gives a 42–60% chance of below-normal rain because of El Niño. Farmers still decide what to plant by habit, without knowing whether the water will last the whole season, and crops dry out halfway.
 
-**What FarmTwin does.** It is a decision-support tool that combines the four ingredients the challenge asks for (NASA Earth observations, local soil, crop characteristics and farmer priorities) in five steps:
+**What FarmTwin does.** It is a decision-support tool that combines the four ingredients the challenge asks for (NASA Earth observations, local soil, crop characteristics and farmer priorities) in six steps:
 
 1. **My field.** The farmer finds the field on a satellite map. One tap recognises the field's outline from the satellite image (or the farmer draws it by hand). They enter the water allocation, irrigation system, soil texture and what matters most to them (save water, earn more, care for the soil, lower risk). MODIS NDVI and SMAP root-zone soil moisture can be shown as map layers.
 2. **Compare rotations.** The current rotation and the alternatives (including legumes, cover crops and crop associations such as maize, bean and squash) are simulated over 2005–2025. For each one FarmTwin shows water demand, income, soil health and climate risk as a range across 21 years, not a single number, plus a fit score explained part by part, the years in which the water would have been enough, and a plain-language action plan.
 3. **Time machine.** Replays every rotation year by year, month by month, next to monthly MODIS NDVI, so the farmer sees how it would have gone in the years they lived (for example, the 2016 El Niño drought).
 4. **3D farm.** A digital twin shaped like the real field. The farmer paints crops on plots, picks a past year or a future scenario (typical, dry, El Niño, +1.5 °C) and plays the season. Alert cards explain each risk (frost, heat, water shortage, empty reservoir, pests) with its probability and propose a fix with an "Apply" button. Plans can be saved and compared across past and future years.
 5. **Calendar and alerts.** Crop cycles, the rotation wheel, weekly frost and heat risk, this week's irrigation need and push notifications.
+6. **Recommendations.** Fertilisers, beneficial microorganisms and field devices chosen for the farmer's soil, zone (altitude from SRTM, natural dryness from NASA POWER root-zone wetness, frost history) and crops: the rotation's nitrogen balance with legume fixation, organic matter by soil type, Rhizobium inoculants, mycorrhizae and biological pest control matched to each crop's pests, plus a flow meter, moisture sensors, drip irrigation and pest traps. Each card says why it applies and how to do it.
+
+FarmTwin covers 21 crops grown around Majes, from alfalfa, onion, potato and quinoa to artichoke and four fruit crops (avocado, table grape, mandarin, pomegranate).
 
 An AI field assistant answers questions in plain words, but it may only quote numbers returned by the simulation engine.
 
@@ -53,7 +56,7 @@ An AI field assistant answers questions in plain words, but it may only quote nu
 Yes. We used SI tools to accelerate development, never to choose the challenge or the idea:
 
 - **Code:** Claude Code (Anthropic) and OpenAI Codex helped write and review code for the web app, the simulation engine, tests and documentation. Commits made with AI assistance carry a `Co-Authored-By` trailer in the repository, and `docs/AI_USAGE.md` describes who did what.
-- **Images:** two background illustrations (an orbital view and a sunset field) were generated with ChatGPT. They carry a visible "AI-generated image" mark in the app and in the demo video. All maps and data layers are real imagery (Esri, NASA GIBS) and real data.
+- **Images:** two background illustrations (an orbital view and a sunset field) were generated with ChatGPT, and 21 small crop illustrations with OpenAI's image generation tool. All carry a visible AI mark in the app (and in the demo video, for the two backgrounds). All maps and data layers are real imagery (Esri, NASA GIBS) and real data.
 - **Video and audio:** the demo video is a screen recording of the real app, edited and animated with code written with Claude's help; its music was synthesized by code written with Claude's help. Both are acknowledged in the video's metadata.
 - **Inside the product:** an LLM field assistant explains results in plain words but can only quote numbers produced by the deterministic engine.
 
@@ -78,7 +81,8 @@ We did not use data from the Space Agency Partners. Other data, resources and to
 - Esri World Imagery, World Topo Map and reference labels: base maps (display only).
 - OpenStreetMap / Nominatim: place search (display only, attribution shown).
 - Open-source software: Next.js, React, three.js, React Three Fiber, Leaflet, Python, FastAPI, NumPy, Vercel AI SDK, lucide icons. Licences listed in the repository's dependencies.
-- Two illustrations generated with ChatGPT (marked "AI-generated image").
+- Two illustrations generated with ChatGPT (marked "AI-generated image") and 21 crop illustrations generated with OpenAI's image tool (marked "AI").
+- General agronomy references for the Recommendations screen (crop nutrient demand, legume nitrogen fixation, pests, diseases and bio-inputs used in Peru); products must be registered with SENASA and doses confirmed by an agronomist.
 
 ---
 

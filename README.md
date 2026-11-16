@@ -20,6 +20,20 @@ The app is organised around **past, present and future**:
 
 FarmTwin supports the judgment of the farmer and the local agronomist. It does not replace it.
 
+## For the judges
+
+| Document | What it answers |
+| --- | --- |
+| [`docs/SPACE_APPS_SUBMISSION.md`](docs/SPACE_APPS_SUBMISSION.md) | The project as submitted: summary, detailed description, NASA data and references |
+| [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) | How every number is computed: climate fusion, FAO-56 water, income, risk, soil health, fit score, farm scenarios, recommendations |
+| [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) | Which NASA and other datasets we use, how and where in the code |
+| [`docs/VALIDATION.md`](docs/VALIDATION.md) | What is verified (FAO-56 examples, independent study, automated checks) and what is still pending |
+| [`docs/AI_USAGE.md`](docs/AI_USAGE.md) | Declaration of AI use: tools, what each member did, AI inside the product, AI-generated media |
+| [`docs/MAJES_CROPS_IMPLEMENTATION.md`](docs/MAJES_CROPS_IMPLEMENTATION.md) · [`docs/CROP_DATASET_ANALYSIS.md`](docs/CROP_DATASET_ANALYSIS.md) · [`docs/CROP_ARTWORK.md`](docs/CROP_ARTWORK.md) | The 21-crop catalogue for Majes: profiles, sources, limits and illustrations |
+| [`CHALLENGE_CONTEXT.md`](CHALLENGE_CONTEXT.md) · [`PLAN.md`](PLAN.md) | The challenge brief, local context and the plan written at the start of the hackathon |
+
+**Evidence at a glance:** live app at https://quasaris-farmtwin.vercel.app (deployed from every push to `main`) · 42 engine tests passing, including FAO-56 worked examples · independent comparison with Purdue *AguaRiego* for Pampa de Majes · screenshots of every screen below · AI-assisted commits marked with a `Co-Authored-By` trailer.
+
 ## Product tour
 
 Six steps, from the satellite view to a plan the farmer can act on. All screenshots come from the live app.
@@ -102,7 +116,7 @@ Field (lat, lon) ──► SRTM: real altitude ──► pick the 2 NASA POWER c
 
 - **Engine:** Python (FastAPI) in `engine/` and `api/py/`, deployed as a Vercel Python function.
 - **App:** Next.js 16 (App Router) PWA with offline mode and push notifications.
-- **Data and validation:** [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) · [`docs/VALIDATION.md`](docs/VALIDATION.md) · AI use: [`docs/AI_USAGE.md`](docs/AI_USAGE.md)
+- **Method, data and validation:** [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) (every formula and constant) · [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) · [`docs/VALIDATION.md`](docs/VALIDATION.md) · AI use: [`docs/AI_USAGE.md`](docs/AI_USAGE.md)
 
 ## Technology
 
@@ -182,7 +196,8 @@ engine/              schema, power (POWER + SRTM fusion), quality, elevation, et
                      rotation, simulate, tests/
 data/                crops.json, rotations_majes.json, mock_simulate.json, power_cache/,
                      soilgrids/, senamhi/
-docs/                DATA_SOURCES.md, AI_USAGE.md, VALIDATION.md, screenshots/
+docs/                METHODOLOGY.md, DATA_SOURCES.md, VALIDATION.md, AI_USAGE.md,
+                     SPACE_APPS_SUBMISSION.md, crop catalogue notes, screenshots/
 ```
 
 ## Deployment
