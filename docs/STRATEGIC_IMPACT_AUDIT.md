@@ -1,616 +1,618 @@
-# Quasaris FarmTwin — Auditoría estratégica, científica y de impacto
+# Quasaris FarmTwin — Strategic, scientific and impact audit
 
-**Fecha:** 15 de noviembre de 2026, America/Lima.\
-**Perspectiva:** mentoría crítica para NASA Space Apps; no constituye evaluación oficial de NASA ni validación agronómica.\
-**Versión examinada:** commit `3ddfaffa95a7313e090a6f273a1e24fb3936fc7e`, árbol inicialmente limpio.\
-**Alcance autorizado:** investigación, lectura, reproducción y este informe. No se modificaron la aplicación, el motor ni los datasets. Las correcciones descritas son propuestas.
+**Date:** 15 November 2026, America/Lima.\
+**Perspective:** critical mentoring for NASA Space Apps; it is not an official NASA evaluation nor an agronomic validation.\
+**Version examined:** commit `3ddfaffa95a7313e090a6f273a1e24fb3936fc7e`, initially clean tree.\
+**Authorised scope:** research, reading, reproduction and this report. The application, the engine and the datasets were not modified. The corrections described are proposals.
 
-## 1. Veredicto ejecutivo
+> Translated from the original Spanish. The findings describe the commit named above; later commits may have addressed some of them.
 
-**Quasaris tiene una base útil para comparar demanda de riego bajo clima histórico, pero todavía no justifica recomendar a un agricultor qué sembrar.** La reproducibilidad del software es buena; la validez de la decisión agrícola sigue abierta. Presentarlo mañana como explorador acompañado por un técnico es defendible, con límites visibles. Presentarlo como un digital twin validado que predice ganancias, salud del suelo o ahorro real de agua no lo es.
+## 1. Executive verdict
 
-La evidencia más determinante es reproducible:
+**Quasaris has a useful basis for comparing irrigation demand under historical climate, but it does not yet justify recommending to a farmer what to plant.** The software's reproducibility is good; the validity of the agricultural decision remains open. Presenting it tomorrow as an explorer used together with a technician is defensible, with visible limits. Presenting it as a validated digital twin that predicts profits, soil health or real water savings is not.
 
-- Los 36 tests Python pasan; también TypeScript, lint y build. El motor reproduce exactamente el snapshot de demostración.
-- Las dos alternativas predeterminadas tienen calendarios incompatibles en una misma hectárea: **43 y 20 días de solapamiento**, respectivamente. La primera requiere 405 días-cultivo y la segunda 370 dentro de un año de 365 días. Cambiar únicamente las fechas no resuelve la primera.
-- Durante el solapamiento, el motor conserva el mayor Kc diario, pero contabiliza ingresos de todos los cultivos. Duplicar una alfalfa en la misma parcela eleva el margen de S/11.000 a S/22.000/ha sin aumentar la demanda de agua. El ranking acepta esa alternativa.
-- Con los valores predeterminados —aspersión, suelo arenoso, 15.000 m³/ha/año— ninguna rotación cubre su demanda mediana. La alternativa de menor demanda necesita 17.322 m³/ha/año y solo cabe en el presupuesto en 2 de 21 años simulados.
-- La disminución modelada frente a alfalfa es **1.030 m³/ha/año, 5,6%**, para esa alternativa inválida. No demuestra ahorro realizable.
-- El fallback puede mostrar resultados de otra configuración como si correspondieran a la actual. El snapshot declara `source.power="cache"`, por lo que las advertencias condicionadas a `"mock"` no lo identifican como demostración.
+The most decisive evidence is reproducible:
 
-Estos resultados proceden de [rotation.py](../engine/rotation.py), [simulate.py](../engine/simulate.py), [engine-client.ts](../lib/engine-client.ts) y reproducciones de esta auditoría, detalladas en §2 y §15.
+- The 36 Python tests pass; so do TypeScript, lint and build. The engine exactly reproduces the demo snapshot.
+- The two default alternatives have incompatible calendars on the same hectare: **43 and 20 days of overlap**, respectively. The first requires 405 crop-days and the second 370 within a 365-day year. Changing only the dates does not fix the first.
+- During the overlap, the engine keeps the higher daily Kc but counts income from all crops. Duplicating an alfalfa on the same plot raises the margin from S/11,000 to S/22,000/ha without increasing water demand. The ranking accepts that alternative.
+- With the default values (sprinkler, sandy soil, 15,000 m³/ha/year), no rotation covers its median demand. The lowest-demand alternative needs 17,322 m³/ha/year and only fits the budget in 2 of the 21 simulated years.
+- The modelled reduction against alfalfa is **1,030 m³/ha/year, 5.6%**, for that invalid alternative. It does not show achievable savings.
+- The fallback can show results from another configuration as if they belonged to the current one. The snapshot declares `source.power="cache"`, so the warnings conditioned on `"mock"` do not identify it as a demo.
 
-**El problema regional existe; la formulación actual simplifica demasiado al productor.** La [ANA documentó restricciones de siembra por disponibilidad hídrica en 2015][S08]; [AUTODEMA documentó problemas de drenaje en B-3 en 2025][S10]. Esto no demuestra un déficit uniforme ni una dotación actual de 15.000 m³/ha para cada agricultor. Tampoco permite tratar a un ganadero con alfalfa establecida como si pudiera cambiar libremente a horticultura.
+These results come from [rotation.py](../engine/rotation.py), [simulate.py](../engine/simulate.py), [engine-client.ts](../lib/engine-client.ts) and reproductions made in this audit, detailed in §2 and §15.
 
-**Decisión estratégica:** conservar Majes como territorio, delimitar el piloto a productores con una superficie anual realmente disponible para cambiar de secuencia, y trabajar inicialmente con un técnico. El producto debe responder primero: **«¿Esta secuencia cabe en mi parcela, mi calendario y mi agua?»**
+**The regional problem exists; the current framing oversimplifies the producer.** The [ANA documented planting restrictions due to water availability in 2015][S08]; [AUTODEMA documented drainage problems in B-3 in 2025][S10]. This does not show a uniform deficit nor a current allocation of 15,000 m³/ha for every farmer. Nor does it allow treating a livestock farmer with established alfalfa as if they could freely switch to vegetables.
 
-## 2. Qué hace Quasaris hoy realmente
+**Strategic decision:** keep Majes as the territory, limit the pilot to producers with an annual area that is really available to change sequence, and work initially with a technician. The product should first answer: **"Does this sequence fit my field, my calendar and my water?"**
 
-### 2.1 Evidencia y alcance de inspección
+## 2. What Quasaris really does today
 
-Se leyeron `README.md`, `PLAN.md`, `CONTEXTO_RETO.md`, los tres documentos científicos solicitados y los módulos de cálculo, contratos, datos, clientes, calendario, agrupaciones, modo granja, mapas, asistente, service worker, plan y configuración de despliegue. **No existe `CHALLENGE_CONTEXT.md`; su equivalente es `CONTEXTO_RETO.md`.**
+### 2.1 Evidence and scope of the inspection
 
-La evaluación de la interfaz se basa en sus componentes, textos y compilación; no incluye observación de agricultores, pruebas táctiles en Android ni una sesión interactiva completa de navegador. Se verificó por GET que el endpoint público `/api/py/health` respondía 200 y declaraba Python 3.12.16. Eso no verifica el resto del servicio ni demuestra que producción corresponda exactamente al commit local.
+We read `README.md`, `PLAN.md`, `CONTEXTO_RETO.md`, the three requested scientific documents and the calculation, contract, data, client, calendar, groupings, farm mode, maps, assistant, service worker, plan and deployment configuration modules. **`CHALLENGE_CONTEXT.md` did not exist; its equivalent was `CONTEXTO_RETO.md`.**
 
-Una consulta de simulación externa fue rechazada por la revisión automática de permisos por exportar configuraciones locales a un endpoint público. No se ejecutó ni se intentó por otra vía. Las simulaciones se reprodujeron **localmente**, con el código y los datos del repositorio. No se enviaron notificaciones, mensajes ni consultas al proveedor LLM.
+The interface evaluation is based on its components, texts and build; it does not include observation of farmers, touch tests on Android or a full interactive browser session. A GET request confirmed that the public endpoint `/api/py/health` answered 200 and declared Python 3.12.16. That does not verify the rest of the service nor show that production matches the local commit exactly.
 
-### 2.2 Inventario con estado de evidencia
+An external simulation request was rejected by the automatic permission review because it exported local configurations to a public endpoint. It was not run nor attempted another way. The simulations were reproduced **locally**, with the repository's code and data. No notifications, messages or requests to the LLM provider were sent.
 
-| Componente | Evidencia observada | Clasificación y límite |
+### 2.2 Inventory with evidence status
+
+| Component | Observed evidence | Classification and limit |
 | --- | --- | --- |
-| POWER histórico | Cuatro archivos, 2005–2025, siete variables; dos celdas participan en el caso base | Implementado y reproducido. No validado contra estación local |
-| FAO-56 ET0 | Funciones vectorizadas, tests de los ejemplos 8 y 18 | Implementado y probado numéricamente; exactitud local pendiente |
-| Interpolación por altitud | SRTM y ponderación de dos celdas | Implementada y probada algebraicamente; método climático no validado |
-| Comparación de rotaciones | Agua, margen, índice de suelo, riesgo y score | Implementada; alternativas predeterminadas agronómicamente inválidas |
-| Time machine | Resultados por año y mes, gráficos y mapas sincronizados | Implementada; replay de hipótesis, no rendimientos observados |
-| Calendario | Ciclos aproximados y climatología semanal; texto advierte que no es pronóstico | Implementado; cálculo semanal probado parcialmente |
-| Alertas push | Suscripciones, Blob, VAPID y cron diario | Código y configuración presentes. Entrega real y utilidad no verificadas |
-| Modo granja 3D | Reparto por casillas, acumulaciones, escenarios y eventos | Implementado; mezcla resultados del motor con reglas adicionales no calibradas |
-| Agrupaciones | Compatibilidad, N, plagas, raíces y LER por reglas | Implementado como heurística; sin validación agronómica local |
-| SoilGrids | Resumen regional cacheado, cuantiles, cobertura y advertencias | Implementado. No es extracción específica de cada parcela ni balance de suelo |
-| MODIS NDVI / SMAP | Teselas NASA GIBS | Visualización. No alimentan agua, rendimiento ni recomendaciones |
-| Asistente | Tool calling, dictado, foto y cambios de prioridades/agua | Implementado en código. Sin evaluación de respuestas en esta auditoría |
-| Offline | localStorage y service worker | Implementado parcialmente; correspondencia solicitud–resultado defectuosa |
-| Plan imprimible | `window.print()` y resumen por grupos | Implementado; PDF depende de imprimir/guardar desde el navegador |
-| SENAMHI | Script de comparación y procedimiento de descarga | Preparado, sin CSV ni resultados locales de validación encontrados |
-| Pronóstico meteorológico, HLS parcelario, asignación colectiva de agua | Referencias en planes | Planificados, no implementados en el cálculo actual |
-| Uso por agricultores e impacto | Sin registros, entrevistas o ensayos documentados | No demostrado; no equivale a afirmar que nadie haya abierto la app |
+| Historical POWER | Four files, 2005–2025, seven variables; two cells take part in the base case | Implemented and reproduced. Not validated against a local station |
+| FAO-56 ET0 | Vectorised functions, tests of examples 8 and 18 | Implemented and numerically tested; local accuracy pending |
+| Altitude interpolation | SRTM and two-cell weighting | Implemented and algebraically tested; climate method not validated |
+| Rotation comparison | Water, margin, soil index, risk and score | Implemented; default alternatives agronomically invalid |
+| Time machine | Results per year and month, synchronised charts and maps | Implemented; replay of hypotheses, not observed yields |
+| Calendar | Approximate cycles and weekly climatology; text warns it is not a forecast | Implemented; weekly calculation partly tested |
+| Push alerts | Subscriptions, Blob, VAPID and daily cron | Code and configuration present. Real delivery and usefulness not verified |
+| 3D farm mode | Allocation per tile, accumulations, scenarios and events | Implemented; mixes engine results with additional uncalibrated rules |
+| Groupings | Compatibility, N, pests, roots and LER by rules | Implemented as a heuristic; no local agronomic validation |
+| SoilGrids | Cached regional summary, quantiles, coverage and warnings | Implemented. Not a field-specific extraction nor a soil balance |
+| MODIS NDVI / SMAP | NASA GIBS tiles | Visualisation. They do not feed water, yield or recommendations |
+| Assistant | Tool calling, dictation, photo and changes to priorities/water | Implemented in code. Answers not evaluated in this audit |
+| Offline | localStorage and service worker | Partly implemented; request–result matching is faulty |
+| Printable plan | `window.print()` and summary by groups | Implemented; the PDF depends on printing/saving from the browser |
+| SENAMHI | Comparison script and download procedure | Prepared; no CSV or local validation results found |
+| Weather forecast, field-level HLS, collective water allocation | References in plans | Planned, not implemented in the current calculation |
+| Use by farmers and impact | No documented records, interviews or trials | Not shown; this is not the same as claiming nobody has opened the app |
 
-### 2.3 Qué se comprobó ejecutando
+### 2.3 What was checked by running it
 
-El `python` del PATH era un alias de Windows sin runtime utilizable. Se preparó Python 3.12.10 portable y dependencias en una carpeta temporal, sin alterar `requirements*.txt`. Las dependencias Python tienen límites inferiores abiertos; la instalación de hoy no representa un entorno congelado de producción.
+The `python` on the PATH was a Windows alias with no usable runtime. A portable Python 3.12.10 and dependencies were prepared in a temporary folder, without changing `requirements*.txt`. The Python dependencies have open lower bounds; today's installation does not represent a frozen production environment.
 
-| Comprobación | Resultado | Qué demuestra |
+| Check | Result | What it shows |
 | --- | --- | --- |
-| `python -B -m pytest engine/tests -q -p no:cacheprovider` | **36 passed**, 1 deprecation warning de Starlette/httpx | Ejemplos numéricos, contratos y comportamientos cubiertos |
-| `npm run typecheck` | Pasa | Compatibilidad estática TypeScript |
-| `npm run lint` | Pasa | Reglas configuradas de ESLint |
-| `node scripts/test-crop-calendar.cjs` | Pasa | Casos existentes del calendario |
-| `npm run build` | Pasa; 45 páginas generadas | Compilación y prerender del frontend |
-| Caso base `run(SimulateRequest(...))` | Igualdad exacta con `mock_simulate.json` | Reproducibilidad del snapshot |
-| Diagnósticos adicionales en memoria | Solapamientos, duplicación, agua cero, goteo y fallback | Fallos que los tests existentes no detectan |
+| `python -B -m pytest engine/tests -q -p no:cacheprovider` | **36 passed**, 1 Starlette/httpx deprecation warning | Numerical examples, contracts and covered behaviours |
+| `npm run typecheck` | Passes | Static TypeScript compatibility |
+| `npm run lint` | Passes | Configured ESLint rules |
+| `node scripts/test-crop-calendar.cjs` | Passes | Existing calendar cases |
+| `npm run build` | Passes; 45 pages generated | Frontend build and prerender |
+| Base case `run(SimulateRequest(...))` | Exact match with `mock_simulate.json` | Reproducibility of the snapshot |
+| Additional in-memory diagnostics | Overlaps, duplication, zero water, drip and fallback | Failures the existing tests do not detect |
 
-**Pasar tests demuestra conformidad con esos tests, no precisión agronómica.** El test de fusión comprueba que los pesos suman uno y que la altitud queda encerrada; no compara temperaturas calculadas con temperaturas observadas.
+**Passing tests shows conformity with those tests, not agronomic accuracy.** The fusion test checks that the weights add up to one and that the altitude is bracketed; it does not compare calculated temperatures with observed temperatures.
 
-### 2.4 Resultados reproducidos: únicamente resultados del modelo
+### 2.4 Reproduced results: model results only
 
-Entrada: latitud −16,36; longitud −72,19; 2005–2025; suelo `arenoso`; riego `aspersion`; presupuesto **anual** 15.000 m³/ha; cuatro prioridades de 0,5; rotaciones de `data/rotations_majes.json`. La eficiencia efectiva es `0,75 × 0,95 = 0,7125`.
+Input: latitude −16.36; longitude −72.19; 2005–2025; soil `arenoso` (sandy); irrigation `aspersion` (sprinkler); **annual** budget 15,000 m³/ha; four priorities of 0.5; rotations from `data/rotations_majes.json`. The effective efficiency is `0.75 × 0.95 = 0.7125`.
 
-| Rotación | Agua bruta mediana [p10–p90], m³/ha/año | Margen mediano [p10–p90], S/ha/año | Años con demanda ≤ presupuesto | Solapamiento |
+| Rotation | Median gross water [p10–p90], m³/ha/year | Median margin [p10–p90], S/ha/year | Years with demand ≤ budget | Overlap |
 | --- | --- | --- | --- | --- |
-| Alfalfa permanente | 18.352 [16.577–19.144] | 7.712 [7.104–9.288] | 0/21 | 0 días |
-| Cebolla · Papa · Maíz chala | 19.318 [17.566–20.290] | 14.221 [11.312–20.277] | 0/21 | 43 días |
-| Cebolla · Haba · Maíz chala | 17.322 [15.453–18.167] | 19.496 [17.032–25.907] | 2/21 | 20 días |
+| Permanent alfalfa | 18,352 [16,577–19,144] | 7,712 [7,104–9,288] | 0/21 | 0 days |
+| Onion · Potato · Forage maize | 19,318 [17,566–20,290] | 14,221 [11,312–20,277] | 0/21 | 43 days |
+| Onion · Faba bean · Forage maize | 17,322 [15,453–18,167] | 19,496 [17,032–25,907] | 2/21 | 20 days |
 
-Estos márgenes usan precios, costos, rendimientos y penalizaciones asumidos; no son ingresos históricos de Majes. La misma tabla no permite comparar directamente forraje autoconsumido con dinero de una cosecha vendida.
+These margins use assumed prices, costs, yields and penalties; they are not historical incomes in Majes. The same table does not allow forage used on the farm to be compared directly with money from a sold harvest.
 
-Al cambiar **solo** el sistema a goteo, las medianas de demanda pasan a 14.529, 15.293 y 13.713 m³/ha/año; caben en 18/21, 8/21 y 21/21 años. Esto es una consecuencia de dividir por eficiencias fijas. No incluye inversión, energía, mantenimiento ni verificación de uniformidad, y las alternativas mantienen sus calendarios inválidos.
+When **only** the system is changed to drip, the median demands become 14,529, 15,293 and 13,713 m³/ha/year; they fit in 18/21, 8/21 and 21/21 years. This is a consequence of dividing by fixed efficiencies. It does not include investment, energy, maintenance or a uniformity check, and the alternatives keep their invalid calendars.
 
-## 3. Alineación con el reto NASA
+## 3. Alignment with the NASA challenge
 
-### 3.1 Qué pudo verificarse oficialmente
+### 3.1 What could be officially verified
 
-El [resumen oficial indexado de Field Shift][S01] pide una herramienta que combine observaciones NASA, información local de suelo, características de cultivos y prioridades para explorar rotaciones que apoyen salud del suelo y adaptación. Quasaris tiene relación directa con ese objetivo.
+The [official indexed summary of Field Shift][S01] asks for a tool that combines NASA observations, local soil information, crop characteristics and priorities to explore rotations that support soil health and adaptation. Quasaris is directly related to that goal.
 
-La página oficial completa y las guías de entrega/evaluación no pudieron descargarse íntegramente por fallos de acceso/TLS. Se revisó el texto completo y sus recursos en la [reproducción de la sede HackAthlone][S02], que remite a NASA como autoridad final. Esa reproducción emplea lenguaje opcional para comparar tres estrategias y para SI/AI, mapas y otras posibilidades. **No convertir esas sugerencias en requisitos oficiales verificados.**
+The full official page and the submission/judging guides could not be fully downloaded because of access/TLS failures. The full text and its resources were reviewed in the [HackAthlone venue's copy][S02], which refers to NASA as the final authority. That copy uses optional language for comparing three strategies and for SI/AI, maps and other possibilities. **Do not turn those suggestions into verified official requirements.**
 
-No se verificaron los puntajes, ponderaciones ni la rúbrica particular de Arequipa. `CONTEXTO_RETO.md` es evidencia de lo que el equipo cree que se evaluará, no de lo que NASA o la sede hayan publicado. La existencia de las cinco categorías habituales aparece en [una sede 2026 publicada en el dominio oficial][S03]; no prueba una escala global concreta.
+The scores, weightings and the particular Arequipa rubric were not verified. `CONTEXTO_RETO.md` is evidence of what the team believes will be judged, not of what NASA or the venue has published. The existence of the five usual categories appears on [a 2026 venue published on the official domain][S03]; it does not prove a specific global scale.
 
-### 3.2 Evaluación del producto frente al objetivo
+### 3.2 Evaluation of the product against the goal
 
-| Dimensión | Evaluación de mentoría, no puntuación oficial |
+| Dimension | Mentoring assessment, not an official score |
 | --- | --- |
-| NASA Earth observations | Uso sustantivo: POWER cambia ET0 y demanda entre años. SRTM participa en el cálculo. NDVI y SMAP son contexto visual |
-| Información local de suelo | Integración débil: textura manual modifica eficiencia; SoilGrids se muestra al lado, sin gobernar almacenamiento, salinidad o aptitud |
-| Características de cultivos | Integradas: Kc, duración, umbrales y familia. Falta trazabilidad por parámetro y viabilidad de la secuencia |
-| Prioridades del agricultor | Sliders y perfiles funcionan. No representan restricciones obligatorias de forraje, caja, contrato o calendario |
-| Salud del suelo | Interpretación por reglas; no una simulación ni validación de cambios de suelo |
-| Adaptación | Explora años históricos y perturbaciones. No estima un futuro climático validado |
-| Impact | Problema pertinente; beneficiario y cambio de decisión aún no demostrados |
-| Creativity | Replay histórico e interpretación local pueden diferenciar. Un dashboard agrícola con AI no basta |
-| Validity | Buen punto de partida computacional; debilidades críticas en factibilidad y calibración |
-| Relevance | Alta al objetivo general, condicionada a mejorar el vínculo con suelo y decisiones reales |
-| Presentation | Demostración visual rica, pero narrativa demasiado amplia y con riesgo de sobreafirmar |
+| NASA Earth observations | Substantive use: POWER changes ET0 and demand between years. SRTM takes part in the calculation. NDVI and SMAP are visual context |
+| Local soil information | Weak integration: the manual texture changes efficiency; SoilGrids is shown alongside, without governing storage, salinity or suitability |
+| Crop characteristics | Integrated: Kc, duration, thresholds and family. Traceability per parameter and sequence feasibility are missing |
+| Farmer priorities | Sliders and profiles work. They do not represent mandatory constraints of forage, cash, contracts or calendar |
+| Soil health | Interpretation by rules; not a simulation nor a validation of soil changes |
+| Adaptation | Explores historical years and perturbations. It does not estimate a validated climate future |
+| Impact | Relevant problem; beneficiary and change of decision not yet shown |
+| Creativity | Historical replay and local interpretation can set it apart. An agricultural dashboard with AI is not enough |
+| Validity | Good computational starting point; critical weaknesses in feasibility and calibration |
+| Relevance | High for the general goal, conditional on improving the link with soil and real decisions |
+| Presentation | Rich visual demo, but the story is too broad and risks overclaiming |
 
-### 3.3 Entrega: confirmado, pendiente y prudente
+### 3.3 Submission: confirmed, pending and prudent
 
-La [respuesta de un Navigator en `nasa/spaceapps`, discusión 1973][S04] confirma para 2026: demo de hasta 30 segundos o hasta 7 slides, explicación del uso de NASA y AI, acceso público, entrega en inglés o subtítulos ingleses, y cierre el **15 de noviembre a las 23:59, hora local**. La [página 2026 indexada][S05] coincide en el cierre. Para Arequipa/Lima, trabajar con America/Lima; no asumir que la evaluación local del día 16 amplía ese plazo.
+The [answer from a Navigator in `nasa/spaceapps`, discussion 1973][S04] confirms for 2026: a demo of up to 30 seconds or up to 7 slides, an explanation of the use of NASA data and AI, public access, submission in English or with English subtitles, and closing on **15 November at 23:59, local time**. The [indexed 2026 page][S05] agrees on the closing time. For Arequipa/Lima, work with America/Lima; do not assume that the local judging on the 16th extends that deadline.
 
-Antes de entregar, una persona debe revisar la guía/formulario oficiales disponibles desde su navegador: campos obligatorios, licencias, referencias, política AI y condiciones locales. No se certifica cumplimiento completo de guías inaccesibles. El repositorio público es una buena evidencia técnica, pero no se establece aquí que sea el único formato admisible para el enlace final.
+Before submitting, a person must review the official guide/form available from their browser: required fields, licences, references, AI policy and local conditions. Full compliance with inaccessible guides is not certified. The public repository is good technical evidence, but it is not established here that it is the only acceptable format for the final link.
 
-`docs/AI_USAGE.md` contiene TODO y nombres de modelos que esta auditoría no autentica. Debe reflejar lo realmente utilizado, contrastado con registros del equipo, incluyendo imágenes generadas. Una fotografía ilustrativa generada no constituye trabajo de campo.
+`docs/AI_USAGE.md` contains TODOs and model names that this audit does not authenticate. It must reflect what was really used, checked against the team's records, including generated images. A generated illustrative photograph is not fieldwork.
 
-## 4. Evaluación del marco del mentor
+## 4. Evaluation against the mentor's framework
 
-| Principio | Situación actual | Evidencia necesaria o corrección |
+| Principle | Current situation | Evidence needed or correction |
 | --- | --- | --- |
-| Nivel 1: análisis | Alcanzado como prototipo computacional | Mantener reproducción y procedencia |
-| Nivel 2: objetivo | Parcial: comparar rotaciones es una tarea, pero falta definir quién puede cambiar qué | Delimitar productor, superficie disponible y restricciones |
-| Nivel 3: impacto | No demostrado | Medir comprensión, cambio de decisión y después resultados de campo |
-| Beneficiario claro | «Agricultor de Majes» agrupa sistemas distintos | Elegir productor con lote anual flexible, acompañado por técnico |
-| Objetivo práctico | El ranking ofrece una respuesta, pero puede recomendar secuencias imposibles | Factibilidad antes de preferencia |
-| Democratización NASA | API accesible, castellano y explicaciones son útiles | Comprobar comprensión, conectividad y unidades utilizadas localmente |
-| Justificación científica | ET0 sólido en su formulación; cadena posterior débil | Separar ecuaciones, hipótesis y evidencia local |
-| Investigación/fieldwork | No se encontró documentación de contacto real | Registrar revisión agronómica e entrevistas auténticas |
-| Diagrama de proceso | Pipeline documentado | Mostrar dato → supuesto → comparación → decisión, con límites (§14) |
-| Uso NASA significativo | POWER es esencial; otras capas no cambian resultados | Explicar la contribución de cada fuente sin inflar su papel |
-| Bibliografía | Documentación inicial útil, muchas fuentes genéricas | Añadir fecha, tabla, unidades y ámbito por parámetro |
-| AI funcional | Puede explicar y ajustar un escenario | Medir fidelidad; corregir procedencia y contrato de asociaciones |
-| Responsabilidades | `AI_USAGE.md` identifica áreas, aún por confirmar | Asignar responsables humanos de datos, agronomía, UX y pitch |
-| Pitch en inglés | No se verificó un artefacto final | Ensayar una decisión y sus límites, sin catálogo de pantallas |
+| Level 1: analysis | Reached as a computational prototype | Keep reproduction and provenance |
+| Level 2: goal | Partial: comparing rotations is a task, but who can change what is not defined | Define the producer, available area and constraints |
+| Level 3: impact | Not shown | Measure understanding, change of decision and then field results |
+| Clear beneficiary | "Majes farmer" groups different systems | Choose a producer with a flexible annual plot, supported by a technician |
+| Practical goal | The ranking gives an answer, but it can recommend impossible sequences | Feasibility before preference |
+| Democratising NASA | Accessible API, Spanish and explanations are useful | Check understanding, connectivity and the units used locally |
+| Scientific justification | ET0 is sound in its formulation; the later chain is weak | Separate equations, hypotheses and local evidence |
+| Research/fieldwork | No documentation of real contact was found | Record agronomic review and genuine interviews |
+| Process diagram | Pipeline documented | Show data → assumption → comparison → decision, with limits (§14) |
+| Meaningful NASA use | POWER is essential; other layers do not change results | Explain each source's contribution without inflating its role |
+| Bibliography | Useful initial documentation, many generic sources | Add date, table, units and scope per parameter |
+| Functional AI | Can explain and adjust a scenario | Measure faithfulness; fix provenance and the associations contract |
+| Responsibilities | `AI_USAGE.md` identifies areas, still to be confirmed | Assign human owners for data, agronomy, UX and pitch |
+| English pitch | No final artefact was verified | Rehearse one decision and its limits, not a catalogue of screens |
 
-Este marco es una guía de madurez, no tres categorías oficiales de NASA. No se exige probar ahorro de campo durante 48 horas; sí distinguir impacto potencial y observado. Tampoco hay razón para añadir agentes AI si una explicación determinista resuelve la misma tarea.
+This framework is a maturity guide, not three official NASA categories. Proving field savings within 48 hours is not required; distinguishing potential from observed impact is. Nor is there any reason to add AI agents if a deterministic explanation solves the same task.
 
-## 5. Realidad de la agricultura en Majes
+## 5. The reality of farming in Majes
 
-### 5.1 Hay un problema documentado, pero tiene varias causas
+### 5.1 There is a documented problem, but it has several causes
 
-La nota de la [ANA de enero de 2015][S08] registra una recomendación temporal de no instalar cultivos de alta demanda y una distribución acordada del sistema regulado. Prueba que ajustar siembras a disponibilidad puede ser pertinente; no establece la situación de noviembre de 2026.
+The [ANA note of January 2015][S08] records a temporary recommendation not to plant high-demand crops and an agreed distribution of the regulated system. It shows that adjusting plantings to availability can be relevant; it does not establish the situation in November 2026.
 
-La [ANA documentó en 2019 problemas de distribución, presión y caudales][S09]. [AUTODEMA informó en 2025 sobre drenaje y filtraciones en B-3][S10]. La disponibilidad anual, los turnos, la presión de entrega y el drenaje son restricciones distintas. Un total anual por hectárea no describe por sí solo si el agua llega cuando el cultivo la necesita.
+The [ANA documented distribution, pressure and flow problems in 2019][S09]. [AUTODEMA reported drainage and seepage in B-3 in 2025][S10]. Annual availability, turns, delivery pressure and drainage are different constraints. An annual total per hectare does not by itself describe whether the water arrives when the crop needs it.
 
-El esquema institucional relevante distingue operación de infraestructura mayor y asesoría de AUTODEMA, administración/distribución de organizaciones de usuarios y funciones de ANA/ALA. El productor necesita verificar su entrega y programación concretas. No se debe atribuir toda decisión de distribución a una sola institución ni asumir que un pixel POWER representa el agua de Condoroma o del sistema Colca–Siguas.
+The relevant institutional set-up distinguishes the operation of major infrastructure and advice by AUTODEMA, administration/distribution by water user organisations, and the functions of ANA/ALA. The producer needs to check their specific delivery and schedule. Every distribution decision should not be attributed to a single institution, nor should a POWER pixel be assumed to represent the water of Condoroma or the Colca–Siguas system.
 
-### 5.2 Alfalfa, leche y libertad real para cambiar cultivos
+### 5.2 Alfalfa, milk and the real freedom to change crops
 
-El [estudio de producción lechera publicado por UNMSM en 2001][S11] describe la vinculación alfalfa–maíz chala–ganadería y experiencias con sistemas de alimentación. Es evidencia histórica de esa estructura, no un censo actual.
+The [dairy production study published by UNMSM in 2001][S11] describes the alfalfa–forage maize–livestock link and experiences with feeding systems. It is historical evidence of that structure, not a current census.
 
-La [intervención INIA en Majes de 2020][S12] confirma trabajo con alfalfa, maíz y la Junta de Usuarios. La [nota municipal de 2023 sobre una planta láctea][S13] documenta una cadena organizada de productores. No es defendible modelar el valor de la alfalfa únicamente como venta de toneladas cuando puede alimentar un hato.
+The [INIA intervention in Majes in 2020][S12] confirms work with alfalfa, maize and the Users' Board. The [2023 municipal note about a dairy plant][S13] documents an organised chain of producers. Modelling the value of alfalfa only as the sale of tonnes is not defensible when it can feed a herd.
 
-**Inferencia que requiere entrevistas:** un ganadero puede preferir estabilidad de forraje, continuidad de leche y menor necesidad de capital a una horticultura con mayor margen aparente. Reemplazar alfalfa establecida implica además costos de retiro/implantación, transición, trabajo, equipos y riesgo de mercado. El motor no representa esos costos ni la nutrición animal.
+**Inference that requires interviews:** a livestock farmer may prefer stable forage, continuous milk and lower capital needs to vegetables with a higher apparent margin. Replacing established alfalfa also involves removal/establishment, transition, labour, equipment and market risk costs. The engine does not represent those costs nor animal nutrition.
 
-La [nota de AGROIDEAS de 2026][S14] documenta reconversión en el distrito hacia uva y antecedentes de cultivos tradicionales. No justifica extrapolar su rentabilidad a todos los usuarios. Un viñedo o un cultivo perenne contratado no es superficie disponible para una rotación anual.
+The [2026 AGROIDEAS note][S14] documents conversion in the district towards grapes and a background of traditional crops. It does not justify extrapolating its profitability to all users. A vineyard or a contracted perennial crop is not area available for an annual rotation.
 
-**Distinción territorial:** la irrigación Pampa de Majes/El Pedregal no es intercambiable con todo el valle de Majes o Aplao. Fuentes regionales o del valle deben delimitarse antes de trasladar clima, suelos, cultivos o cifras de población al piloto.
+**Territorial distinction:** the Pampa de Majes/El Pedregal irrigation district is not interchangeable with the whole Majes or Aplao valley. Regional or valley sources must be delimited before transferring climate, soils, crops or population figures to the pilot.
 
-### 5.3 ¿Son plausibles 15.000 m³/ha y la eficiencia elegida?
+### 5.3 Are 15,000 m³/ha and the chosen efficiency plausible?
 
-La [resolución ANA/TNRCH de 2016 sobre asignación en bloques][S15] contiene antecedentes con distintos módulos y volúmenes, incluido 13.500 m³/ha/año para determinadas áreas pendientes de incorporación y asignaciones medidas en distintos puntos. Es un antecedente histórico, **no acreditación de la dotación de una parcela en 2026**.
+The [2016 ANA/TNRCH resolution on block allocation][S15] contains background with different modules and volumes, including 13,500 m³/ha/year for certain areas pending incorporation and allocations measured at different points. It is historical background, **not proof of a field's allocation in 2026**.
 
-Como conversión aritmética, 15.000 m³/ha distribuidos continuamente durante 365 días equivalen a unos 0,476 L/s/ha. Esa conversión no incorpora turnos ni pérdidas y no prueba un derecho o entrega efectiva. Se necesita: documento/registro, periodo, superficie de referencia, punto de medición y programación mensual o por turno.
+As an arithmetic conversion, 15,000 m³/ha spread continuously over 365 days equals about 0.476 L/s/ha. That conversion does not include turns or losses and does not prove a right or actual delivery. What is needed: document/record, period, reference area, measurement point and monthly or per-turn schedule.
 
-Las eficiencias 0,45/0,75/0,90 son hipótesis de aplicación. Su plausibilidad genérica no valida la eficiencia efectiva de una instalación. El multiplicador adicional por textura que reduce aspersión a 0,7125 carece de fuente local identificable. Sin aforo, uniformidad y condiciones de operación, el contraste con el presupuesto tiene incertidumbre no cuantificada.
+The efficiencies 0.45/0.75/0.90 are application hypotheses. Their generic plausibility does not validate the effective efficiency of an installation. The additional texture multiplier that lowers sprinkler to 0.7125 has no identifiable local source. Without gauging, uniformity and operating conditions, the comparison with the budget has unquantified uncertainty.
 
-### 5.4 Suelo, salinidad y drenaje
+### 5.4 Soil, salinity and drainage
 
-El resumen SoilGrids del repositorio sugiere textura arenosa para una región extensa, pero no acredita que todos los lotes sean equivalentes. La evidencia de drenaje en B-3 obliga a admitir heterogeneidad. No se verificó una prevalencia actual de salinidad en toda la irrigación: **no afirmar que todos los suelos de Majes sean salinos**.
+The repository's SoilGrids summary suggests a sandy texture for a large region, but it does not prove that all plots are equivalent. The drainage evidence in B-3 forces us to admit heterogeneity. A current prevalence of salinity across the whole irrigation district was not verified: **do not claim that all Majes soils are saline**.
 
-No hay en el motor conductividad eléctrica, sodicidad, calidad del agua, nivel freático, requerimiento de lavado ni drenaje. La [FAO-56, capítulo 8][S19], contempla relaciones entre agua disponible, estrés y salinidad que aquí no están implementadas. Ahorrar riego bruto sin considerar esos procesos no garantiza mejorar el suelo. El [INIA ofrece análisis de suelos, aguas y foliares][S16]; el producto puede facilitar la conversación, no sustituir esos análisis.
+The engine has no electrical conductivity, sodicity, water quality, water table, leaching requirement or drainage. [FAO-56, chapter 8][S19], covers relationships between available water, stress and salinity that are not implemented here. Saving gross irrigation without considering those processes does not guarantee better soil. [INIA offers soil, water and leaf analyses][S16]; the product can ease that conversation, not replace those analyses.
 
-### 5.5 Información y asesoría que ya existen
+### 5.5 Information and advice that already exist
 
-[AUTODEMA informó en 2024 que asesoraba automatización de riego desde 2023 en aproximadamente 14 parcelas][S17], utilizando estaciones agroclimáticas, Kc y programación. No hay base para afirmar que los productores carezcan de asesoría o que Quasaris sea el primer acceso a datos para riego.
+[AUTODEMA reported in 2024 that it had advised on irrigation automation since 2023 on about 14 plots][S17], using agroclimatic stations, Kc and scheduling. There is no basis for claiming that producers lack advice or that Quasaris is the first access to data for irrigation.
 
-[AguaRiego, del Instituto Nexus/Purdue][S18], ya permite comparar cultivos y sistemas de riego en Arequipa, incluido Majes. Es el antecedente funcional más relevante encontrado. No se verificó su adopción actual ni su disponibilidad operativa en todos los dispositivos.
+[AguaRiego, from the Nexus Institute/Purdue][S18], already allows crops and irrigation systems to be compared in Arequipa, including Majes. It is the most relevant functional precedent found. Its current adoption and operational availability on all devices were not verified.
 
-**Diferenciación defendible por construir:** comparación histórica año a año de secuencias localmente factibles, con presupuesto documentado y explicación de restricciones. Ser más visual no basta para superar una tabla existente que un técnico ya comprende.
+**Defensible differentiation to build:** a year-by-year historical comparison of locally feasible sequences, with a documented budget and an explanation of constraints. Being more visual is not enough to beat an existing table that a technician already understands.
 
-**Conclusión territorial:** Majes es un piloto razonable para decisiones de secuencia y agua en lotes anuales flexibles. El uso genérico «reemplaza alfalfa por una rotación más rentable» está insuficientemente justificado. No se recomienda cambiar de región para ocultar esa debilidad; se recomienda seleccionar mejor el caso de uso y su población.
+**Territorial conclusion:** Majes is a reasonable pilot for sequence and water decisions on flexible annual plots. The generic use "replace alfalfa with a more profitable rotation" is insufficiently justified. Changing region to hide that weakness is not recommended; selecting the use case and its population better is.
 
-## 6. Auditoría de credibilidad científica
+## 6. Scientific credibility audit
 
-### 6.1 NASA POWER: resolución y significado
+### 6.1 NASA POWER: resolution and meaning
 
-[NASA POWER documenta 0,5° × 0,625° para meteorología y 1° × 1° para radiación solar][S06]. Por tanto, describir todas las entradas como una celda uniforme de unos 50 km es incompleto. [Las variables meteorológicas provienen de reanálisis/asimilación y representan la rejilla del modelo][S07], no mediciones de la parcela. La serie diaria es apropiada para explorar variabilidad regional; no resuelve microclimas internos.
+[NASA POWER documents 0.5° × 0.625° for meteorology and 1° × 1° for solar radiation][S06]. Describing all inputs as one uniform cell of about 50 km is therefore incomplete. [The meteorological variables come from reanalysis/assimilation and represent the model grid][S07], not measurements of the field. The daily series is appropriate for exploring regional variability; it does not resolve internal microclimates.
 
-Conservar 2005–2025 como muestra histórica explícita es razonable. La distribución empírica de esos 21 años no es automáticamente la distribución de la próxima campaña, especialmente bajo tendencias, dependencia temporal y cambios de manejo.
+Keeping 2005–2025 as an explicit historical sample is reasonable. The empirical distribution of those 21 years is not automatically the distribution of the next season, especially under trends, temporal dependence and changes in management.
 
-### 6.2 SRTM y la «fusión vertical»
+### 6.2 SRTM and the "vertical fusion"
 
-El cálculo implementa `w=(z_parcela−z_baja)/(z_alta−z_baja)` y mezcla **todas** las variables entre dos celdas. En el caso base usa elevaciones 835,38 y 1.940,88 m, con pesos aproximadamente 0,481 y 0,519 para 1.409 m.
+The calculation implements `w=(z_field−z_low)/(z_high−z_low)` and blends **all** variables between two cells. In the base case it uses elevations of 835.38 and 1,940.88 m, with weights of about 0.481 and 0.519 for 1,409 m.
 
-**Defendible:** emplear elevación en la presión atmosférica de FAO-56 y como covariable para investigar un ajuste térmico. [SRTM es información de elevación, con productos de unos 30/90 m][S20].
+**Defensible:** using elevation in the FAO-56 atmospheric pressure and as a covariate to investigate a temperature adjustment. [SRTM is elevation information, with products of about 30/90 m][S20].
 
-**No demostrado:** que escoger celdas geográficamente distintas por su altitud corrija humedad, radiación, viento, precipitación y extremos locales. Costa y sierra no son dos estaciones de un mismo perfil vertical. No se encontró una calibración que demuestre que la mezcla mejora a la celda original.
+**Not shown:** that choosing geographically different cells by their altitude corrects local humidity, radiation, wind, precipitation and extremes. Coast and highlands are not two stations on the same vertical profile. No calibration was found showing that the blend improves on the original cell.
 
-Además, `elevation.py:20` redondea coordenadas a dos decimales para cachear: puede reutilizar una elevación entre puntos separados aproximadamente un kilómetro. La granularidad del cache no conserva precisión de 90 m. Si SRTM falla, se usa altitud de celda; la respuesta/UI no identifica inequívocamente el origen de esa altitud.
+In addition, `elevation.py:20` rounds coordinates to two decimals for caching: it can reuse one elevation between points about a kilometre apart. The cache granularity does not keep 90 m precision. If SRTM fails, the cell altitude is used; the response/UI does not clearly identify the origin of that altitude.
 
-**Remedio:** denominarlo ajuste experimental, comparar alternativas con una estación y conservar la opción sin ajuste como baseline. Validar temperatura antes de sostener que el ajuste mejora heladas; no extender una corrección térmica a todas las variables sin evidencia.
+**Remedy:** call it an experimental adjustment, compare alternatives with a station and keep the option without adjustment as a baseline. Validate temperature before claiming that the adjustment improves frost estimates; do not extend a temperature correction to all variables without evidence.
 
-### 6.3 ET0 FAO-56 y lluvia efectiva
+### 6.3 FAO-56 ET0 and effective rain
 
-[FAO-56, capítulo 2][S21], sustenta Penman–Monteith como método de referencia. `et0.py` implementa sus términos principales, radiación y conversión de unidades; los ejemplos publicados pasan. El uso de RH media para estimar presión de vapor corresponde a una aproximación descrita en [capítulo 3][S22]; el ejemplo de Bruselas pasa `ea` directamente y no valida ese camino específico con POWER.
+[FAO-56, chapter 2][S21], supports Penman–Monteith as the reference method. `et0.py` implements its main terms, radiation and unit conversion; the published examples pass. Using mean RH to estimate vapour pressure corresponds to an approximation described in [chapter 3][S22]; the Brussels example passes `ea` directly and does not validate that specific path with POWER.
 
-El motor calcula `ETc=Kc×ET0`, resta lluvia efectiva mensual y divide por eficiencia. La conversión 1 mm = 10 m³/ha es correcta. La lluvia efectiva usa una fórmula USDA-SCS simplificada; **no llamarla ecuación propia de FAO-56** sin una fuente específica.
+The engine calculates `ETc=Kc×ET0`, subtracts monthly effective rain and divides by efficiency. The conversion 1 mm = 10 m³/ha is correct. Effective rain uses a simplified USDA-SCS formula; **do not call it an FAO-56 equation** without a specific source.
 
-No hay balance diario de agua en suelo, almacenamiento inicial, escorrentía, drenaje, riego por turno o déficit por etapa. La demanda es una aproximación de planificación. Que exista una función Hargreaves no significa que sea un fallback operacional: `compute_et0()` llama directamente a Penman–Monteith; la limpieza exige radiación y las otras entradas.
+There is no daily soil water balance, initial storage, runoff, drainage, irrigation by turns or deficit by stage. The demand is a planning approximation. The existence of a Hargreaves function does not mean it is an operational fallback: `compute_et0()` calls Penman–Monteith directly; the cleaning requires radiation and the other inputs.
 
-### 6.4 Kc, etapas y alfalfa frente a Purdue
+### 6.4 Kc, stages and alfalfa against Purdue
 
-Las curvas por etapas son una base reconocible, pero las fechas comienzan siempre el día 1 del mes y las duraciones no cambian con variedad, manejo o temperatura. [FAO-56, capítulo 6][S23], distingue etapas, condiciones estándar y efectos de cortes. Un Kc anual constante de 0,90 puede ser una hipótesis de planificación, pero no es un promedio local medido ni basta para representar cada corte.
+Stage curves are a recognisable basis, but the dates always start on day 1 of the month and the durations do not change with variety, management or temperature. [FAO-56, chapter 6][S23], distinguishes stages, standard conditions and the effects of cuttings. A constant annual Kc of 0.90 can be a planning hypothesis, but it is not a measured local average nor enough to represent each cutting.
 
-El PDF de [AguaRiego, tabla 11, página numerada 14][S18], se descargó y leyó: para alfalfa informa **10.701 m³/ha en 12 meses**. La documentación local consigna 13.219 y +24%. La versión auditada devuelve 18.352 brutos; al multiplicar por 0,7125 se obtienen aproximadamente **13.076 netos**, es decir **+22,2%** frente a esa referencia. La pequeña diferencia de redondeo no explica la distancia con Purdue.
+The PDF of [AguaRiego, table 11, numbered page 14][S18], was downloaded and read: for alfalfa it reports **10,701 m³/ha in 12 months**. The local documentation records 13,219 and +24%. The audited version returns 18,352 gross; multiplying by 0.7125 gives about **13,076 net**, that is **+22.2%** against that reference. The small rounding difference does not explain the distance from Purdue.
 
-La comparación es **modelo contra modelo**, con entradas y supuestos diferentes. La explicación documental «probablemente por Kc constante y humedad» es una hipótesis, no una atribución comprobada. No se verificó en el manual que su tratamiento de cortes sea exactamente el supuesto por `VALIDATION.md`. Se requiere descomponer clima, Kc, cortes y lluvia para explicarla.
+The comparison is **model against model**, with different inputs and assumptions. The documented explanation "probably because of constant Kc and humidity" is a hypothesis, not a proven attribution. It was not verified in the manual that its treatment of cuttings is exactly the one assumed by `VALIDATION.md`. Breaking down climate, Kc, cuttings and rain is required to explain it.
 
-El p10–p90 neto actual es aproximadamente 11.811–13.640 m³/ha: no incluye 10.701. Por tanto, el rango interanual mostrado no cubre ni demuestra haber incorporado esa discrepancia entre métodos. **No usar la frase del documento que sugiere que mostrar un rango ya resuelve esta incertidumbre.**
+The current net p10–p90 is about 11,811–13,640 m³/ha: it does not include 10,701. The interannual range shown therefore neither covers nor shows that it has incorporated that discrepancy between methods. **Do not use the sentence in the document suggesting that showing a range already resolves this uncertainty.**
 
-Sensibilidad local, cambiando solo `kcAvg` en memoria:
+Local sensitivity, changing only `kcAvg` in memory:
 
-| Kc constante supuesto | Demanda bruta mediana, m³/ha/año |
+| Assumed constant Kc | Median gross demand, m³/ha/year |
 | --- | --- |
-| 0,80 | 16.199 |
-| 0,90 | 18.352 |
-| 1,00 | 20.496 |
+| 0.80 | 16,199 |
+| 0.90 | 18,352 |
+| 1.00 | 20,496 |
 
-Son perturbaciones ilustrativas, no un intervalo de confianza. El cambio de más de 2.100 m³/ha por ±0,10 en Kc supera la diferencia de 1.030 entre las alternativas actuales. No se ha demostrado que la dirección de la ventaja sobreviva a la incertidumbre de parámetros.
+These are illustrative perturbations, not a confidence interval. The change of more than 2,100 m³/ha for ±0.10 in Kc exceeds the difference of 1,030 between the current alternatives. It has not been shown that the direction of the advantage survives parameter uncertainty.
 
-### 6.5 Calendarios y contabilidad de superficie: defecto crítico
+### 6.5 Calendars and area accounting: critical defect
 
-`place()` en [rotation.py:90](../engine/rotation.py#L90) toma el máximo Kc en los días compartidos. [La contabilización económica:156](../engine/rotation.py#L156) añade todos los cultivos a superficie completa.
+`place()` in [rotation.py:90](../engine/rotation.py#L90) takes the maximum Kc on shared days. [The economic accounting:156](../engine/rotation.py#L156) adds all crops at full area.
 
-| Ejemplo | Ocupación | Implicación |
+| Example | Occupation | Implication |
 | --- | --- | --- |
-| Ingreso | 150 + 145 + 110 = 405 días-cultivo; 362 días ocupados | 43 días de doble ocupación |
-| Suelo/agua | 150 + 110 + 110 = 370; 350 días ocupados | 20 días de doble ocupación |
+| Income | 150 + 145 + 110 = 405 crop-days; 362 occupied days | 43 days of double occupation |
+| Soil/water | 150 + 110 + 110 = 370; 350 occupied days | 20 days of double occupation |
 
-En «Ingreso», los 43 días se descomponen en **23 papa–maíz en diciembre y 20 maíz–cebolla en marzo**, por la continuación del maíz al año siguiente. No son 43 días únicamente entre papa y maíz, como induce a entender README. El editor advierte, pero el servidor y el ranking no rechazan.
+In "Income", the 43 days break down into **23 potato–maize days in December and 20 maize–onion days in March**, because the maize continues into the following year. They are not 43 days only between potato and maize, as the README suggests. The editor warns, but the server and the ranking do not reject it.
 
-El uso circular del calendario también evalúa una siembra de diciembre con enero–marzo del mismo año de replay, no con los días cronológicamente posteriores de la campaña siguiente. Es una aproximación anual periódica; no una simulación continua de campañas ni una reconstrucción observada.
+The circular use of the calendar also evaluates a December sowing with January–March of the same replay year, not with the chronologically later days of the following season. It is a periodic annual approximation, not a continuous simulation of seasons nor an observed reconstruction.
 
-**Remedio P0:** impedir que una rotación secuencial inválida genere recomendación. No «arreglar» el agua sumando Kc de cultivos que no pueden compartir esa hectárea. Revisar duración, número de campañas o superficie; una asociación real necesita otro diseño y evidencia.
+**P0 remedy:** prevent an invalid sequential rotation from producing a recommendation. Do not "fix" the water by adding the Kc of crops that cannot share that hectare. Review duration, number of seasons or area; a real association needs another design and evidence.
 
-### 6.6 Agua disponible y «viable»
+### 6.6 Available water and "viable"
 
-`simulate.py:83` define `viable` como demanda **mediana anual** ≤ presupuesto. No evalúa fiabilidad mínima, turnos, capacidad de entrega ni otras restricciones. `waterFit()` sí cuenta años que caben y es mejor evidencia para el usuario.
+`simulate.py:83` defines `viable` as **annual median** demand ≤ budget. It does not evaluate minimum reliability, turns, delivery capacity or other constraints. `waterFit()` does count the years that fit and is better evidence for the user.
 
-`rotation.py` reparte el presupuesto entre 12 y marca estrés mensual cuando la demanda supera 120% de esa parte. Esto no representa automáticamente la distribución real. En el modo granja, una capacidad anual dibujada como reservorio y una demanda acumulada tampoco acreditan almacenamiento físico ni una fecha real de agotamiento.
+`rotation.py` splits the budget into 12 and marks monthly stress when demand exceeds 120% of that share. This does not automatically represent the real distribution. In farm mode, an annual capacity drawn as a reservoir and an accumulated demand do not prove physical storage or a real date of depletion either.
 
-Usar «compatible con el presupuesto anual introducido en X/21 años históricos, bajo estos supuestos» en lugar de «viable». Si el presupuesto no está documentado, mostrar una sensibilidad y estado de información incompleta, sin convertir 15.000 en dotación local confirmada.
+Use "compatible with the annual budget entered in X/21 historical years, under these assumptions" instead of "viable". If the budget is not documented, show a sensitivity and an incomplete-information status, without turning 15,000 into a confirmed local allocation.
 
-### 6.7 Rendimiento, costos y margen
+### 6.7 Yield, costs and margin
 
-`incomePEN` es una estimación de margen: rendimiento fijo × precio fijo × factores − costo fijo. No es ingreso bruto ni utilidad empresarial completa. Las referencias «MIDAGRI Arequipa» de `crops.json` no identifican tablas, fechas, variedad, presentación del producto o sistema de manejo.
+`incomePEN` is a margin estimate: fixed yield × fixed price × factors − fixed cost. It is not gross income nor complete business profit. The "MIDAGRI Arequipa" references in `crops.json` do not identify tables, dates, variety, product presentation or management system.
 
-La pérdida se calcula con 3% por día de frío y 1% por día de calor, con un piso del 30%; la restricción hídrica también conserva al menos 30% del rendimiento. No se encontró calibración por cultivo, etapa, duración del evento o severidad. Con agua disponible cero, la alfalfa conserva **27 t/ha/año modeladas** y arroja margen −S/1.600, frente a −S/7.000 si no hubiese producción. No está validado que esa producción pueda sostenerse con la lluvia/reserva presentes.
+The loss is calculated with 3% per frost day and 1% per heat day, with a floor of 30%; the water constraint also keeps at least 30% of the yield. No calibration by crop, stage, event duration or severity was found. With zero available water, alfalfa keeps **27 t/ha/year modelled** and gives a margin of −S/1,600, against −S/7,000 if there were no production. It is not validated that this production could be sustained with the rain/storage present.
 
-Con agua abundante y sin eventos térmicos por sus umbrales, los tres márgenes son constantes durante los 21 años: S/11.000, S/31.700 y S/27.700. Un intervalo económico que colapsa a un punto no significa certeza: evidencia que el modelo no varía precios, costos, productividad o mercado.
+With abundant water and no temperature events beyond their thresholds, the three margins are constant over the 21 years: S/11,000, S/31,700 and S/27,700. An economic interval that collapses to a point does not mean certainty: it shows that the model does not vary prices, costs, productivity or market.
 
-El goteo cambia agua y rendimiento penalizado, pero no agrega costo de instalación, energía ni operación. El valor del forraje para leche queda fuera. **Retirar la rentabilidad del papel de recomendación principal hasta validar la definición económica y los insumos.**
+Drip changes water and penalised yield, but does not add installation, energy or operating costs. The value of forage for milk is left out. **Remove profitability from the main recommendation role until the economic definition and inputs are validated.**
 
-### 6.8 Riesgo: un porcentaje con significado equivocado
+### 6.8 Risk: a percentage with the wrong meaning
 
-`risk_by_year` toma el máximo entre pérdida climática estimada y fracción de déficit anual. La mediana de ese valor **no es la probabilidad de helada, de pérdida ni de fracaso**. En el caso base, ninguna de las tres rotaciones registra días sobre sus umbrales de daño por frío/calor en los 21 años, pero la alfalfa muestra «riesgo» mediano de 18,3%: proviene del déficit hídrico.
+`risk_by_year` takes the maximum of the estimated climate loss and the annual deficit fraction. The median of that value **is not the probability of frost, of loss or of failure**. In the base case, none of the three rotations records days beyond their cold/heat damage thresholds in the 21 years, yet alfalfa shows a median "risk" of 18.3%: it comes from the water deficit.
 
-La pantalla Comparar lo rotula «Riesgo climático». Es una discordancia semántica material. Separar frecuencia histórica de eventos, magnitud del déficit y penalización hipotética. La climatología del calendario, con umbrales generales de 2 °C y 30 °C, tiene una definición distinta; su UI ya lo explica correctamente y conviene preservar esa advertencia.
+The Compare screen labels it "Climate risk". That is a material semantic mismatch. Separate the historical frequency of events, the size of the deficit and the hypothetical penalty. The calendar's climatology, with general thresholds of 2 °C and 30 °C, has a different definition; its UI already explains it correctly and that warning should be kept.
 
-El score tampoco tiene interpretación absoluta: `simulate.py` normaliza agua e ingreso entre las alternativas presentes, combina pesos y aplica un factor 0,6 a la opción que excede el presupuesto mediano. Añadir otra alternativa puede cambiar la escala y el ranking aunque los resultados agrícolas de las anteriores permanezcan iguales. El déficit influye además en margen y riesgo, por lo que los cuatro sliders no son dimensiones independientes. Un «90/100» no acredita 90% de fiabilidad, idoneidad ni éxito. Mostrar los trade-offs y las restricciones antes del score; no usarlo como evidencia científica de superioridad.
+The score has no absolute meaning either: `simulate.py` normalises water and income among the alternatives present, combines weights and applies a factor of 0.6 to the option that exceeds the median budget. Adding another alternative can change the scale and the ranking even if the agricultural results of the previous ones stay the same. The deficit also influences margin and risk, so the four sliders are not independent dimensions. A "90/100" does not prove 90% reliability, suitability or success. Show the trade-offs and constraints before the score; do not use it as scientific evidence of superiority.
 
-### 6.9 Suelo y nitrógeno
+### 6.9 Soil and nitrogen
 
-`soil_score()` suma puntos por leguminosas, familias, perennes y raíces, y resta por meses desnudos. No actualiza carbono, nutrientes, salinidad, infiltración o erosión. Un valor de 0,80 no demuestra «80% de salud» ni una mejora de cinco puntos medible en campo.
+`soil_score()` adds points for legumes, families, perennials and roots, and subtracts points for bare months. It does not update carbon, nutrients, salinity, infiltration or erosion. A value of 0.80 does not show "80% health" nor a five-point improvement measurable in the field.
 
-`evaluateGroup()` suma demanda y fijación de N de fichas y muestra `fixed−demand`. No representa extracción en cosecha, residuos devueltos, mineralización, nodulación, fertilización ni pérdidas; en asociaciones tampoco hace un balance físico por densidad/superficie equivalente. La capacidad de fijar N de una leguminosa no garantiza un aporte neto de esa cantidad al siguiente cultivo, especialmente retirando forraje.
+`evaluateGroup()` adds up the N demand and fixation from the crop records and shows `fixed−demand`. It does not represent removal at harvest, returned residues, mineralisation, nodulation, fertilisation or losses; in associations it does not make a physical balance by density/equivalent area either. A legume's ability to fix N does not guarantee a net contribution of that amount to the next crop, especially when forage is removed.
 
-Preservar explicaciones cualitativas de diversificación y cobertura. Renombrar como indicadores de manejo por reglas, no salud medida ni plan de fertilización.
+Keep the qualitative explanations of diversification and cover. Rename them as rule-based management indicators, not measured health nor a fertilisation plan.
 
-### 6.10 Asociaciones e intercropping
+### 6.10 Associations and intercropping
 
-El modelo asigna partes iguales a cada cultivo, promedia Kc, aumenta 10% cuando coinciden y multiplica rendimientos por una tabla de compatibilidad. No es una estimación empírica local de Land Equivalent Ratio. Los valores de companion planting y sus castigos no tienen referencias específicas por combinación.
+The model gives equal shares to each crop, averages Kc, increases it by 10% when they coincide and multiplies yields by a compatibility table. It is not a local empirical estimate of the Land Equivalent Ratio. The companion planting values and their penalties have no specific references per combination.
 
-Una asociación con densidades y patrones espaciales reales no es equivalente a dividir una hectárea en fracciones y aplicar un bonus. Tampoco debe validar una rotación imposible cambiando el selector de modo. Mantenerla como exploración didáctica o retirarla de la demostración principal hasta revisión local.
+An association with real densities and spatial patterns is not equivalent to dividing a hectare into fractions and applying a bonus. Nor should it validate an impossible rotation by changing the mode selector. Keep it as a teaching exploration or remove it from the main demo until a local review.
 
-### 6.11 NDVI, SMAP, SoilGrids y GWETROOT
+### 6.11 NDVI, SMAP, SoilGrids and GWETROOT
 
-- El catálogo [WMTS GIBS][S24] se consultó directamente: las capas usadas existen. La mensual NDVI usa `GoogleMapsCompatible_Level7`; no es la serie MOD13Q1 de 250 m mencionada en el contexto inicial. [Los metadatos NASA vinculan la visualización mensual con MOD13A3/MOD13C2][S25]. No atribuir resolución de 250 m a esta capa. Tiles ampliados no aportan nueva información parcelaria.
-- SMAP L4 es un producto de modelo/asimilación de escala regional; [NSIDC documenta una malla de 9 km y productos de tres horas][S26]. GIBS ofrece aquí una visualización instantánea diaria de 12z, no un sensor por casilla de la granja.
-- `smapDate()` convierte fechas anteriores a la misión en **2015-04-15**. El mapa puede mostrar suelo de 2015 al explorar 2005; debe indicar «sin datos para esta fecha». `ndviDate()` reemplaza abril de 2025 por mayo sin explicar la sustitución. El catálogo confirma el hueco de abril y también huecos SMAP.
-- [SoilGrids ofrece predicciones de 250 m con incertidumbre][S27]. `getMajesSoilGridsReference()` devuelve el mismo resumen de 8.906 celdas para cualquier punto dentro del AOI. La mediana regional de cuantiles por pixel no es el intervalo de predicción de la parcela ni el intervalo de confianza de la media regional.
-- [POWER distingue wetness de contenido volumétrico][S28]. Mostrar `GWETROOT≈0,33` como «33% de humedad del suelo» no acredita agua disponible para las raíces, sequedad de la parcela ni necesidad inmediata de riego. El umbral 0,4 del código no tiene calibración local. El valor no entra al balance y no demuestra la afirmación «sin riego el suelo queda seco» mediante un experimento contrafactual.
+- The [GIBS WMTS][S24] catalogue was queried directly: the layers used exist. The monthly NDVI uses `GoogleMapsCompatible_Level7`; it is not the 250 m MOD13Q1 series mentioned in the initial context. [NASA metadata links the monthly visualisation with MOD13A3/MOD13C2][S25]. Do not attribute 250 m resolution to this layer. Zoomed-in tiles add no new field-level information.
+- SMAP L4 is a regional-scale model/assimilation product; [NSIDC documents a 9 km grid and three-hourly products][S26]. GIBS offers here a daily instantaneous 12z visualisation, not a sensor per farm tile.
+- `smapDate()` turns dates before the mission into **2015-04-15**. The map can show 2015 soil when exploring 2005; it should say "no data for this date". `ndviDate()` replaces April 2025 with May without explaining the substitution. The catalogue confirms the April gap and also SMAP gaps.
+- [SoilGrids offers 250 m predictions with uncertainty][S27]. `getMajesSoilGridsReference()` returns the same summary of 8,906 cells for any point inside the AOI. The regional median of per-pixel quantiles is not the field's prediction interval nor the confidence interval of the regional mean.
+- [POWER distinguishes wetness from volumetric content][S28]. Showing `GWETROOT≈0.33` as "33% soil moisture" does not prove water available to the roots, dryness of the field or an immediate need to irrigate. The 0.4 threshold in the code has no local calibration. The value does not enter the balance and does not demonstrate the claim "without irrigation the soil stays dry" through a counterfactual experiment.
 
-### 6.12 Escenarios futuros y 3D
+### 6.12 Future scenarios and 3D
 
-`scenarioYear()` selecciona años históricos por demanda de la alfalfa: mediano, máximo o un año de una lista ENSO, excluyendo el máximo para que las opciones sean distintas. «Año de mayor demanda» no equivale necesariamente a sequía hidrológica o menor entrega. La selección ENSO no valida una respuesta local causal ni probabilidades de la próxima campaña.
+`scenarioYear()` selects historical years by alfalfa demand: median, maximum or a year from an ENSO list, excluding the maximum so the options are different. "Year of highest demand" is not necessarily the same as a hydrological drought or lower delivery. The ENSO selection does not validate a causal local response nor probabilities for the next season.
 
-Sumar +1,5 °C a Tmax/Tmin es una prueba de sensibilidad; no una proyección regional con horizonte y escenario de emisiones. La visualización 3D distribuye resultados por cultivo/superficie, no resuelve humedad, viento o suelo observados para cada casilla.
+Adding +1.5 °C to Tmax/Tmin is a sensitivity test, not a regional projection with a horizon and an emissions scenario. The 3D view distributes results by crop/area; it does not resolve observed humidity, wind or soil for each tile.
 
-Hay además lógica científica adicional en [granja-sim.ts](../lib/granja-sim.ts): vuelve a penalizar resultados económicos ya afectados por agua; multiplica el margen neto por daño, alterando implícitamente costos; reparte el ingreso de cultivos en cuotas iguales y aplica daños inventariados en `granja-events.ts`. Los resultados pueden diferir del comparador por razones que el usuario no ve. «Todo usa el mismo motor» es insuficiente como garantía de consistencia.
+There is also additional scientific logic in [granja-sim.ts](../lib/granja-sim.ts): it penalises again economic results already affected by water; multiplies the net margin by damage, implicitly altering costs; splits crop income into equal shares and applies damages listed in `granja-events.ts`. The results can differ from the comparator for reasons the user does not see. "Everything uses the same engine" is not enough as a guarantee of consistency.
 
-### 6.13 Calidad, procedencia e incertidumbre
+### 6.13 Quality, provenance and uncertainty
 
-La limpieza reconoce centinelas, rangos, coherencia y huecos: merece conservarse. En las dos celdas del caso base, no se descartaron datos ni años. Eso no demuestra ausencia de sesgo.
+The cleaning recognises sentinels, ranges, coherence and gaps: it deserves to be kept. In the two cells of the base case, no data or years were discarded. That does not show the absence of bias.
 
-Aspectos pendientes:
+Pending aspects:
 
-1. El filtro de outliers térmicos frente al mes completo puede suprimir extremos reales; no toda rareza es error. Se necesita trazabilidad y validación de eventos.
-2. Lluvia y GWETROOT no forman parte de `CORE` al excluir años. Si todos los años fueran malos, `get_climate()` los conserva; `quality` y `excluded_years` no se transmiten en `Source`. El usuario no recibe esa advertencia.
-3. `_nearest_cached()` no limita distancia: sin datos vecinos podría recurrir a Majes para otra región. Los metadatos de celdas existen, pero faltan dominio admitido y estado explícito de no representatividad.
-4. La caché POWER conserva valores y metadatos básicos, pero no todo el payload original, versión, fecha de descarga, unidades y hash de procedencia. [NASA avisa que el archivo POWER se actualiza][S06].
-5. p10–p90 representa variación entre años con los mismos parámetros. No incluye error climático, Kc, eficiencia, fechas, precios o estructura del modelo, ni es un intervalo de confianza del ahorro.
+1. The temperature outlier filter against the whole month can suppress real extremes; not every rarity is an error. Traceability and validation of events are needed.
+2. Rain and GWETROOT are not part of `CORE` when excluding years. If all years were bad, `get_climate()` keeps them; `quality` and `excluded_years` are not passed on in `Source`. The user does not receive that warning.
+3. `_nearest_cached()` does not limit distance: without neighbouring data it could fall back to Majes for another region. The cell metadata exists, but an accepted domain and an explicit non-representativeness status are missing.
+4. The POWER cache keeps values and basic metadata, but not the full original payload, version, download date, units and provenance hash. [NASA warns that the POWER archive is updated][S06].
+5. p10–p90 represents variation between years with the same parameters. It does not include climate error, Kc, efficiency, dates, prices or model structure, nor is it a confidence interval for the savings.
 
-### 6.14 Asistente, contratos y offline
+### 6.14 Assistant, contracts and offline
 
-Las instrucciones del asistente exigen herramientas antes de cifras y distinguen modelos de observaciones. Es una protección útil, pero un prompt no garantiza fidelidad ni elimina alucinaciones.
+The assistant's instructions require tools before figures and distinguish models from observations. It is a useful safeguard, but a prompt does not guarantee faithfulness nor eliminate hallucinations.
 
-Dos fallos concretos:
+Two specific failures:
 
-- [engine-client.ts:9](../lib/engine-client.ts#L9): `simulateMock()` conserva `source` del snapshot (`cache`), filtra por id y solo recalcula `viable`. Puede presentar el agua y margen de alfalfa con el nombre de una rotación editada que conserve ese id. El asistente solo suprime score/evidencia cuando `power=="mock"`; esa condición no se cumple en este fallback.
-- [tools.ts:23](../app/api/chat/tools.ts#L23): el schema Zod de rotación no contiene `mode`. La validación elimina ese campo y una asociación puede llegar al backend como rotación secuencial, divergiendo del comparador.
+- [engine-client.ts:9](../lib/engine-client.ts#L9): `simulateMock()` keeps the snapshot's `source` (`cache`), filters by id and only recalculates `viable`. It can present the water and margin of alfalfa under the name of an edited rotation that keeps that id. The assistant only suppresses score/evidence when `power=="mock"`; that condition is not met in this fallback.
+- [tools.ts:23](../app/api/chat/tools.ts#L23): the Zod rotation schema does not contain `mode`. Validation removes that field and an association can reach the backend as a sequential rotation, diverging from the comparator.
 
-Se confirmó localmente el segundo caso cargando el schema real: una entrada con `mode="association"` salió del parse sin el campo `mode`. Fue una prueba de contrato en memoria, sin llamada al LLM.
+The second case was confirmed locally by loading the real schema: an input with `mode="association"` came out of the parse without the `mode` field. It was an in-memory contract test, without calling the LLM.
 
-Diagnóstico local del fallback: petición de un cultivo personalizado, coordenadas 0/0, goteo y agua cero, con red simulada como caída y un resultado previo de Majes. `simulate()` devolvió las tres rotaciones originales y 18.352 m³/ha para alfalfa con etiqueta `cache`. No se consultó ninguna red durante ese diagnóstico.
+Local diagnosis of the fallback: a request with a custom crop, coordinates 0/0, drip and zero water, with the network simulated as down and a previous Majes result. `simulate()` returned the three original rotations and 18,352 m³/ha for alfalfa labelled `cache`. No network was queried during that diagnosis.
 
-La promesa útil offline es **consultar un resultado previamente calculado para las mismas entradas**. No prometer recalcular escenarios nuevos sin motor. El calendario ya cachea por coordenadas: es una implementación más prudente, aunque su respuesta climática aún carece de metadatos completos de calidad.
+The useful offline promise is **to look up a previously calculated result for the same inputs**. Do not promise to recalculate new scenarios without the engine. The calendar already caches by coordinates: that is a more prudent implementation, although its climate response still lacks full quality metadata.
 
-## 7. Análisis de utilidad para el agricultor
+## 7. Usefulness analysis for the farmer
 
-### 7.1 Qué tarea merece existir
+### 7.1 Which task deserves to exist
 
-El flujo mínimo de valor es: **introducir una superficie que realmente puede cambiar de cultivo, reconocer las restricciones, comparar su secuencia actual con opciones plausibles y ver qué las impide o favorece**. Debe terminar en una pregunta que el agricultor pueda resolver con su técnico o su organización de riego, no únicamente en un score.
+The minimum value flow is: **enter an area that can really change crops, recognise the constraints, compare the current sequence with plausible options and see what prevents or favours them**. It should end in a question the farmer can resolve with their technician or their irrigation organisation, not only in a score.
 
-La interfaz actual ofrece un asistente de cuatro pasos, castellano, explicaciones, resultados comparados y un plan imprimible: reduce fricción. Sin embargo, presupone conocer m³/ha, usa alfalfa como situación inicial y ofrece una cifra por defecto cuando el usuario desconoce su agua. No pregunta primero si dispone de un lote anual, debe alimentar ganado, tiene contrato o puede financiar una transición.
+The current interface offers a four-step wizard, Spanish, explanations, compared results and a printable plan: it reduces friction. However, it assumes knowledge of m³/ha, uses alfalfa as the starting situation and offers a default figure when the user does not know their water. It does not first ask whether they have an annual plot, must feed livestock, have a contract or can finance a transition.
 
-Las seis pestañas principales, indicadores 0–100 y mapas ampliables crean trabajo cognitivo que no se ha medido. La raíz `/` redirige a `/en` en `next.config.ts`, aunque README declara español por defecto. Es un detalle reversible de acceso local, de menor gravedad que la validez del cálculo.
+The six main tabs, 0–100 indicators and zoomable maps create cognitive work that has not been measured. The root `/` redirects to `/en` in `next.config.ts`, although the README declares Spanish as the default. It is a reversible detail of local access, less serious than the validity of the calculation.
 
-### 7.2 Escenarios hipotéticos, no entrevistas
+### 7.2 Hypothetical scenarios, not interviews
 
-Los casos siguientes son ejercicios de diseño basados en restricciones plausibles. Las superficies y situaciones ilustran decisiones; no son observaciones ni representan una muestra de Majes.
+The following cases are design exercises based on plausible constraints. The areas and situations illustrate decisions; they are not observations and do not represent a sample of Majes.
 
-| Caso | Decisión auténtica | Aporte actual de Quasaris | Información que falta | Motivo para volver |
+| Case | Authentic decision | Current contribution of Quasaris | Missing information | Reason to come back |
 | --- | --- | --- | --- | --- |
-| Ganadero con 5 ha y alfalfa establecida para su hato | Mantener suficiente forraje y decidir qué fracción de un lote que se renovará podría destinar a otra secuencia | Orden de magnitud de demanda y comparación histórica | Requerimiento alimentario, materia seca, calidad, cortes, compra de forraje, edad del alfalfar, leche, costos de renovación y agua entregada | Hoy, débil para recomendar cambio. Podría volver con su técnico si el sistema conserva un mínimo de forraje y compara una fracción realmente disponible |
-| Productora de cebolla con 1 ha de cultivo anual, capital limitado y ventana de venta | Elegir un segundo cultivo que termine antes de la próxima siembra y cuyo pico de demanda pueda atender | Calendario y agua por mes/año ayudan a discutir opciones | Variedad, días reales, preparación entre cultivos, trabajo, insumos, comprador, precio fechado y calendario de entregas | Plausible antes de cada campaña si la comparación es válida y guarda sus restricciones |
-| Productor con 2 ha y entrega irregular por presión/caudal | Saber si la restricción es entrega de agua, manejo o elección de cultivo antes de invertir | Puede mostrar demanda teórica y revelar datos faltantes | Aforo, horas/turnos, presión, uniformidad, almacenamiento y drenaje; el modelo actual no los diagnostica | Hoy, razón débil. Volvería para revisar una programación documentada con el técnico, no porque el mapa diagnostique su instalación |
-| Productor con uva establecida y compromiso comercial | Evaluar manejo de un perenne existente, no sustituirlo por una rotación anual | El producto actual aporta poco a su decisión principal | Fenología del perenne, contrato, riego real, manejo e inversión | No es el beneficiario inicial recomendado |
+| Livestock farmer with 5 ha and alfalfa established for the herd | Keep enough forage and decide what fraction of a plot due for renewal could go to another sequence | Order of magnitude of demand and historical comparison | Feed requirement, dry matter, quality, cuttings, forage purchases, age of the alfalfa stand, milk, renewal costs and delivered water | Today, weak for recommending a change. Could come back with their technician if the system keeps a minimum of forage and compares a really available fraction |
+| Onion grower with 1 ha of annual crop, limited capital and a sales window | Choose a second crop that ends before the next sowing and whose demand peak can be met | Calendar and water per month/year help discuss options | Variety, real days, preparation between crops, labour, inputs, buyer, dated price and delivery calendar | Plausible before each season if the comparison is valid and keeps its constraints |
+| Producer with 2 ha and irregular delivery due to pressure/flow | Know whether the constraint is water delivery, management or crop choice before investing | Can show theoretical demand and reveal missing data | Gauging, hours/turns, pressure, uniformity, storage and drainage; the current model does not diagnose them | Today, a weak reason. Would come back to review a documented schedule with the technician, not because the map diagnoses their installation |
+| Producer with established grapes and a commercial commitment | Evaluate management of an existing perennial, not replace it with an annual rotation | The current product adds little to their main decision | Perennial phenology, contract, real irrigation, management and investment | Not the recommended initial beneficiary |
 
-El segundo caso es el mejor ajuste inmediato. El primero es importante en Majes, pero requiere conservar el vínculo ganadería–forraje; el tercero demuestra que «falta agua» no siempre se arregla cambiando cultivos. El cuarto marca una frontera útil del producto.
+The second case is the best immediate fit. The first is important in Majes, but requires keeping the livestock–forage link; the third shows that "lack of water" is not always fixed by changing crops. The fourth marks a useful boundary of the product.
 
-### 7.3 Qué conservar y qué simplificar en la experiencia
+### 7.3 What to keep and what to simplify in the experience
 
-- **Comparación:** mantener agua y calendario a la vista; mostrar restricciones incumplidas antes del ganador. El score no debería tapar una imposibilidad.
-- **Time machine:** conservar como evidencia de sensibilidad interanual, con la frase «esto habría calculado el modelo con ese clima y estos supuestos». No «lo que habría ganado tu chacra».
-- **Calendario:** útil para ver ocupación y preparación; no debe ocultar cultivos incompatibles mostrando solo el de mayor Kc. Mantener las advertencias actuales de climatología y fechas aproximadas.
-- **3D:** puede facilitar aprendizaje o explicar reparto espacial. No se encontró evidencia de que mejore la decisión frente a una comparación sencilla. Llevarlo a una ruta secundaria y evaluar si justifica su carga en un teléfono con pocos recursos.
-- **Asistente:** centrarlo en «explica esta diferencia», «qué dato me falta» y «qué cambia bajo este presupuesto». Fotos y voz requieren evaluación independiente; describir una imagen no valida la agronomía.
-- **Conectividad:** permitir consultar la última comparación identificada con fecha, entradas y versión. Prohibir presentar entradas nuevas como recalculadas si se conserva un resultado anterior.
+- **Comparison:** keep water and calendar in view; show unmet constraints before the winner. The score should not hide an impossibility.
+- **Time machine:** keep it as evidence of interannual sensitivity, with the sentence "this is what the model would have calculated with that climate and these assumptions". Not "what your farm would have earned".
+- **Calendar:** useful for seeing occupation and preparation; it should not hide incompatible crops by showing only the one with the highest Kc. Keep the current warnings about climatology and approximate dates.
+- **3D:** can ease learning or explain spatial allocation. No evidence was found that it improves the decision compared with a simple comparison. Move it to a secondary route and evaluate whether it justifies its load on a low-resource phone.
+- **Assistant:** focus it on "explain this difference", "what data am I missing" and "what changes under this budget". Photos and voice require independent evaluation; describing an image does not validate the agronomy.
+- **Connectivity:** allow looking up the last identified comparison with its date, inputs and version. Prohibit presenting new inputs as recalculated if a previous result is kept.
 
-La retención de uso debe corresponder a momentos reales de planificación o revisión de agua. No hace falta inventar una razón para abrir diariamente una herramienta de decisión precampaña.
+Retention should match real moments of planning or water review. There is no need to invent a reason to open a pre-season decision tool every day.
 
-## 8. Debilidades principales y supuestos engañosos
+## 8. Main weaknesses and misleading assumptions
 
-**Escala de severidad:** crítica = puede invalidar la recomendación o atribuir datos a la situación equivocada; alta = puede cambiar una decisión relevante o una afirmación científica; media = limita interpretación/uso y puede volverse alta si se exagera.
+**Severity scale:** critical = can invalidate the recommendation or attribute data to the wrong situation; high = can change a relevant decision or a scientific claim; medium = limits interpretation/use and can become high if exaggerated.
 
-| Debilidad | Severidad | Evidencia | Consecuencia | Remedio recomendado |
+| Weakness | Severity | Evidence | Consequence | Recommended remedy |
 | --- | --- | --- | --- | --- |
-| Calendarios imposibles y doble contabilidad | **Crítica / P0** | §6.5; 405 y 370 días-cultivo; diagnóstico duplicado | Un ganador puede no ser cultivable ni tener el margen mostrado | Validación obligatoria en servidor; excluir de ranking; revisar ejemplos con agrónomo |
-| Fallback de otra configuración y demo etiquetada `cache` | **Crítica / P0** | §6.14; diagnóstico offline | El usuario o AI atribuye resultados a otra parcela, rotación o presupuesto | Identidad de solicitud, versión y procedencia; demo explícita; impedir nueva recomendación sin cálculo válido |
-| Beneficiario sin restricciones de forraje/contrato/capital | **Alta / P0 para posicionamiento** | §5 y §7; no existen esos campos | Recomendación impracticable aunque el agua fuera correcta | Delimitar superficie anual flexible; preguntar restricciones obligatorias |
-| 15.000 m³/ha tratado como agua propia suficiente para decidir | **Alta / P0** | Default estimado; ninguna alternativa mediana cabe | Se confunde escenario de ejemplo con entrega real | Periodo anual explícito, fuente y punto de entrega; si falta, mostrar comparación hipotética |
-| «Riesgo climático» mezcla déficit y pérdida | **Alta / P0** | §6.8; 18,3% con cero eventos por umbrales | Interpretación errónea de probabilidad | Renombrar/separar magnitud y frecuencia; explicar denominador |
-| Márgenes sin precios/costos locales ni incertidumbre económica | **Alta / P0 para afirmaciones** | `crops.json`; agua cero; goteo sin inversión | Ganancias y retornos de inversión engañosos | Etiqueta de margen hipotético; evitar decisión económica; revisar parámetros y costos |
-| Ajuste de todas las variables solo por elevación | **Alta / P0 para afirmaciones; validación P2** | §6.2; ausencia SENAMHI | Precisión aparente de agua y extremos | Declararlo experimental y comparar con estaciones antes de asegurar mejora |
-| p10–p90 presentado como incertidumbre total | **Alta / P0** | §6.4 y §6.13 | Rango estrecho puede generar confianza injustificada | Decir «variabilidad histórica con parámetros fijos» y listar incertidumbre restante |
-| Suelo/N y LER con apariencia de medición | **Alta si prescriptivo / P0 para etiquetas** | §6.9–6.10 | Fertilidad, fertilización o mejora de suelo no sustentadas | Indicadores cualitativos por reglas; sin kg disponibles ni salud medida |
-| Discordancia entre granja, comparador y asistente | **Alta / P0 si entra en demo** | Penalización económica repetida y `mode` eliminado | Una misma pregunta obtiene cifras incompatibles | Demostrar un único cálculo; reparar contrato y contabilidad antes de usar esas rutas |
-| Futuro confundido con replay y reservorio anual ilustrativo | **Alta si se promete forecast / P0** | §6.12 | Fecha de sequía/agotamiento sin respaldo | Identificar año y perturbación; evitar alertas operativas basadas en analogía |
-| Fechas de imágenes sustituidas y escalas mezcladas | **Media-alta / P0 si se muestran como evidencia** | §6.11 | Aparente observación de un año/parcelación inexistente | Fecha efectiva visible, ausencia de datos y resolución/producto correctos |
-| Falta de validación de clima, manejo y comprensión | **Alta / P0: declarar; P1/P2: medir** | No se encontraron resultados locales | No es defendible la precisión de recomendaciones | Ensayo corto de comprensión y roadmap científico preregistrado |
-| Complejidad de navegación y carga 3D | **Media / P1** | Inspección de componentes; sin usuarios | Puede entorpecer la tarea en campo | Prueba comparativa de flujo sencillo y 3D; priorizar el que ayude |
-| Calidad/fallback regional sin límites transmitidos | **Alta fuera del piloto / P0: restringir alcance** | §6.13 | Extrapolación silenciosa a zonas no representadas | Rechazar fuera de dominio si no hay datos válidos; transmitir QA y fuente efectiva |
-| Documentos y declaración AI incompletos | **Alta para credibilidad/entrega / P0** | TODO y discrepancia 13.219 vs 13.076 | Un juez no puede rastrear afirmaciones | Conciliar documentación con versión auditada y registros reales |
+| Impossible calendars and double counting | **Critical / P0** | §6.5; 405 and 370 crop-days; duplicate diagnosis | A winner may not be growable nor have the margin shown | Mandatory server-side validation; exclude from ranking; review examples with an agronomist |
+| Fallback from another configuration and a demo labelled `cache` | **Critical / P0** | §6.14; offline diagnosis | The user or the AI attributes results to another field, rotation or budget | Request identity, version and provenance; explicit demo; prevent a new recommendation without a valid calculation |
+| Beneficiary without forage/contract/capital constraints | **High / P0 for positioning** | §5 and §7; those fields do not exist | Impractical recommendation even if the water were right | Limit to a flexible annual area; ask for mandatory constraints |
+| 15,000 m³/ha treated as the farmer's own water, enough to decide | **High / P0** | Estimated default; no alternative fits at the median | An example scenario is confused with real delivery | Explicit annual period, source and delivery point; if missing, show a hypothetical comparison |
+| "Climate risk" mixes deficit and loss | **High / P0** | §6.8; 18.3% with zero threshold events | Misinterpretation as a probability | Rename/separate size and frequency; explain the denominator |
+| Margins without local prices/costs or economic uncertainty | **High / P0 for claims** | `crops.json`; zero water; drip without investment | Misleading profits and returns on investment | Label as a hypothetical margin; avoid economic decisions; review parameters and costs |
+| Adjusting all variables by elevation alone | **High / P0 for claims; validation P2** | §6.2; no SENAMHI | Apparent precision of water and extremes | Declare it experimental and compare with stations before claiming an improvement |
+| p10–p90 presented as total uncertainty | **High / P0** | §6.4 and §6.13 | A narrow range can create unjustified confidence | Say "historical variability with fixed parameters" and list the remaining uncertainty |
+| Soil/N and LER that look like measurements | **High if prescriptive / P0 for labels** | §6.9–6.10 | Unsupported fertility, fertilisation or soil improvement | Qualitative rule-based indicators; no available kg nor measured health |
+| Mismatch between farm, comparator and assistant | **High / P0 if in the demo** | Repeated economic penalty and `mode` removed | The same question gets incompatible figures | Demonstrate a single calculation; fix the contract and accounting before using those routes |
+| Future confused with replay, and an illustrative annual reservoir | **High if a forecast is promised / P0** | §6.12 | Drought/depletion date without support | Identify the year and the perturbation; avoid operational alerts based on analogy |
+| Substituted image dates and mixed scales | **Medium-high / P0 if shown as evidence** | §6.11 | Apparent observation of a year/parcel that does not exist | Visible effective date, absence of data and correct resolution/product |
+| Lack of validation of climate, management and understanding | **High / P0: declare; P1/P2: measure** | No local results were found | The precision of recommendations is not defensible | Short understanding trial and a pre-registered scientific roadmap |
+| Navigation complexity and 3D load | **Medium / P1** | Inspection of components; no users | Can hinder the task in the field | Comparative test of a simple flow and 3D; prioritise the one that helps |
+| Regional quality/fallback without transmitted limits | **High outside the pilot / P0: restrict scope** | §6.13 | Silent extrapolation to unrepresented areas | Reject out-of-domain requests if there is no valid data; transmit QA and the effective source |
+| Incomplete documents and AI declaration | **High for credibility/submission / P0** | TODOs and the 13,219 vs 13,076 discrepancy | A judge cannot trace the claims | Reconcile documentation with the audited version and real records |
 
-## 9. Fortalezas existentes que merece la pena preservar
+## 9. Existing strengths worth keeping
 
-1. **Separación entre motor determinista y LLM.** Permite auditar cálculos y mantener a la AI como intérprete. Requiere corregir fallbacks y contratos para cumplir la promesa.
-2. **Datos POWER incluidos y caso reproducible.** Los resultados no dependen de generar cifras narrativas en la interfaz; el snapshot coincidió exactamente con el motor.
-3. **ET0 con ejemplos de referencia y unidades coherentes.** Es la parte con mejor apoyo metodológico; no necesita sustituirse por AI.
-4. **Variabilidad por año y mes ya calculada.** Permite explicar presupuestos y comparaciones sin añadir otro dataset inmediatamente.
-5. **`waterFit()` y trazas por año.** La frecuencia empírica de compatibilidad presupuestaria comunica más que un «sí/no» basado en mediana.
-6. **Textos del calendario que reconocen límites.** Distinguen historia, umbrales generales y demanda aproximada de una instrucción operativa. Extender ese estándar al resto del producto.
-7. **Advertencias y revisión con experto ya contempladas.** Hay infraestructura para hacer explícito lo desconocido; debe aparecer en el momento de decidir.
-8. **Castellano, plan imprimible y persistencia local.** Pueden facilitar trabajo acompañado y conectividad limitada; su utilidad debe comprobarse con personas.
-9. **Capacidad de demostrar un flujo real compilable.** La ambición técnica ya es suficiente para la demo. El cuello de botella es científico y de enfoque.
+1. **Separation between a deterministic engine and the LLM.** It allows calculations to be audited and keeps the AI as an interpreter. Fallbacks and contracts must be fixed to keep that promise.
+2. **POWER data included and a reproducible case.** The results do not depend on generating narrative figures in the interface; the snapshot matched the engine exactly.
+3. **ET0 with reference examples and coherent units.** It is the part with the best methodological support; it does not need to be replaced with AI.
+4. **Variability by year and month already calculated.** It allows budgets and comparisons to be explained without adding another dataset right away.
+5. **`waterFit()` and per-year traces.** The empirical frequency of budget compatibility communicates more than a median-based "yes/no".
+6. **Calendar texts that acknowledge limits.** They distinguish history, general thresholds and approximate demand from an operational instruction. Extend that standard to the rest of the product.
+7. **Warnings and expert review already in place.** There is infrastructure to make the unknown explicit; it should appear at the moment of deciding.
+8. **Spanish, printable plan and local persistence.** They can ease supported work and limited connectivity; their usefulness must be checked with people.
+9. **Ability to demonstrate a real flow that builds.** The technical ambition is already enough for the demo. The bottleneck is scientific and one of focus.
 
-## 10. Modelo de impacto e indicadores medibles
+## 10. Impact model and measurable indicators
 
-### 10.1 Separar cuatro niveles de evidencia
+### 10.1 Separate four levels of evidence
 
-| Nivel | Afirmación admisible | Situación de Quasaris |
+| Level | Admissible claim | Quasaris status |
 | --- | --- | --- |
-| **A. Technical output** | El modelo calcula una demanda y una diferencia bajo entradas declaradas | Demostrado para casos reproducidos; algunos escenarios son inválidos |
-| **B. Decision-support outcome** | Una persona comprende la diferencia e identifica qué limita su decisión | No medido |
-| **C. Potential impact** | Una decisión factible podría reducir extracción, exposición a déficit o errores de planificación | Hipótesis; requiere condiciones locales |
-| **D. Demonstrated impact** | Se midió agua aplicada, margen u otro resultado después de actuar, con comparación adecuada | Sin evidencia aportada o encontrada |
+| **A. Technical output** | The model calculates a demand and a difference under declared inputs | Shown for reproduced cases; some scenarios are invalid |
+| **B. Decision-support outcome** | A person understands the difference and identifies what limits their decision | Not measured |
+| **C. Potential impact** | A feasible decision could reduce withdrawals, exposure to deficit or planning errors | Hypothesis; requires local conditions |
+| **D. Demonstrated impact** | Applied water, margin or another result was measured after acting, with an adequate comparison | No evidence provided or found |
 
-La cifra 1.030 m³/ha/año pertenece a A, y además requiere invalidar/revisar su calendario antes de usarla como candidato para C. No pertenece a D. El 5,6% tampoco permite prometer «20% de ahorro»; la medalla `save20` es una condición del juego, no un resultado logrado.
+The figure of 1,030 m³/ha/year belongs to A, and its calendar must also be invalidated/reviewed before using it as a candidate for C. It does not belong to D. The 5.6% does not allow a promise of "20% savings" either; the `save20` medal is a game condition, not an achieved result.
 
-### 10.2 Indicadores con definición y estado
+### 10.2 Indicators with definition and status
 
-| Indicador | Cómo medirlo | Estado y límite |
+| Indicator | How to measure it | Status and limit |
 | --- | --- | --- |
-| Diferencia modelada de demanda | Para cada año, `W_actual(y)−W_alternativa(y)`; luego mediana y distribución de esas diferencias pareadas | Hoy solo hay cifras de alternativas inválidas. Diferencia de medianas no siempre equivale a mediana de diferencias |
-| Compatibilidad anual histórica | Años con demanda ≤ presupuesto / años válidos; informar ambos enteros | Reproducido: 0/21, 0/21 y 2/21 con defaults. No es garantía futura |
-| Compatibilidad de entregas | Meses/turnos con demanda atendible considerando entrega y almacenamiento | No implementado ni medido |
-| Sensibilidad de la comparación | Repetir con rangos documentados de Kc, eficiencia, fechas y presupuesto; detectar cambios de signo/ganador | Diagnóstico Kc ilustrativo en §6.4; no incertidumbre calibrada |
-| Frecuencia de eventos térmicos | Número de años con evento definido durante etapas relevantes / años válidos | El modelo actual usa umbrales simplificados; validar contra observaciones |
-| Diferencia económica | Margen con precios, costos y rendimientos locales fechados y análisis de sensibilidad | No usar el p10–p90 climático como riesgo de mercado |
-| Comprensión | Personas que identifican presupuesto, alternativa inviable y significado histórico / participantes | Sin medición inicial |
-| Tiempo de comparación | Tiempo hasta una respuesta correcta en tarea definida; reportar mediana y errores | Sin medición; no medir solo clicks |
-| Alcance | Participantes reales que completan una comparación, con consentimiento y definición de usuario | No se encontró registro verificable |
-| Hectáreas del piloto | Superficie de lotes participantes elegibles, sin duplicación y con autorización | No documentadas; no usar extensión del mapa como cobertura atendida |
-| Agua aplicada real | Aforo/medidor × duración, normalizado por ha y campaña; comparar contra baseline pertinente | No medida por Quasaris |
-| Rendimiento y margen observados | Pesos/ventas, costos completos y uso del forraje, con fecha y comparación | No medidos por Quasaris |
+| Modelled difference in demand | For each year, `W_current(y)−W_alternative(y)`; then the median and distribution of those paired differences | Today there are only figures for invalid alternatives. A difference of medians is not always the median of differences |
+| Historical annual compatibility | Years with demand ≤ budget / valid years; report both integers | Reproduced: 0/21, 0/21 and 2/21 with defaults. Not a future guarantee |
+| Delivery compatibility | Months/turns with demand that can be met considering delivery and storage | Not implemented nor measured |
+| Sensitivity of the comparison | Repeat with documented ranges of Kc, efficiency, dates and budget; detect changes of sign/winner | Illustrative Kc diagnosis in §6.4; not calibrated uncertainty |
+| Frequency of temperature events | Number of years with a defined event during relevant stages / valid years | The current model uses simplified thresholds; validate against observations |
+| Economic difference | Margin with dated local prices, costs and yields and a sensitivity analysis | Do not use the climatic p10–p90 as market risk |
+| Understanding | People who identify the budget, the non-viable alternative and the historical meaning / participants | No initial measurement |
+| Time to compare | Time to a correct answer in a defined task; report the median and errors | Not measured; do not measure clicks only |
+| Reach | Real participants who complete a comparison, with consent and a user definition | No verifiable record was found |
+| Pilot hectares | Area of eligible participating plots, without duplication and with authorisation | Not documented; do not use the map's extent as area served |
+| Real applied water | Gauge/meter × duration, normalised per ha and season; compare against a relevant baseline | Not measured by Quasaris |
+| Observed yield and margin | Weights/sales, full costs and forage use, with date and comparison | Not measured by Quasaris |
 
-### 10.3 Cuántos podrían beneficiarse
+### 10.3 How many could benefit
 
-No hay denominador verificado de agricultores elegibles, hectáreas flexibles ni capacidad de acompañamiento. **No es posible defender hoy una cifra de beneficiarios potenciales del piloto.** Tampoco convertir familias de una nota institucional en usuarios o socios de Quasaris.
+There is no verified denominator of eligible farmers, flexible hectares or support capacity. **A figure for potential pilot beneficiaries cannot be defended today.** Nor should families from an institutional note be turned into Quasaris users or partners.
 
-La estimación debe construirse con un registro consentido:
+The estimate must be built from a consented register:
 
-`beneficiarios potenciales = productores del ámbito × fracción con decisión elegible × acceso viable al servicio`.
+`potential beneficiaries = producers in the area × fraction with an eligible decision × viable access to the service`.
 
-`hectáreas utilizables en el piloto = suma de superficie anual flexible de participantes que aceptan probarlo`.
+`usable hectares in the pilot = sum of the flexible annual area of participants who agree to try it`.
 
-Para escalar, usar adopción y retención observadas, no asignarles porcentajes inventados. Un técnico u organización puede facilitar varias comparaciones; primero hay que comprobar su capacidad y disposición, sin presentarlo como alianza acordada.
+To scale, use observed adoption and retention, not invented percentages. A technician or organisation can facilitate several comparisons; their capacity and willingness must be checked first, without presenting it as an agreed partnership.
 
-Una reducción de demanda bruta o agua aplicada en parcela tampoco es automáticamente ahorro consumptivo a escala de cuenca: importan evapotranspiración, retornos, drenaje y reasignación. Publicar por separado la unidad y el punto de medición.
+A reduction in gross demand or water applied on a field is not automatically a consumptive saving at basin scale either: evapotranspiration, return flows, drainage and reallocation matter. Publish the unit and the measurement point separately.
 
-## 11. Oportunidades de mejora ordenadas por valor y factibilidad
+## 11. Improvement opportunities ordered by value and feasibility
 
-Las horas son estimaciones de mentoría para una persona familiarizada con el código; no compromisos ni constancia de tiempo disponible. La fecha de esta auditoría coincide con el día de cierre publicado. Priorizar un flujo verificable y su explicación, y no intentar completar todo el roadmap esta noche.
+The hours are mentoring estimates for a person familiar with the code; they are not commitments nor a record of available time. The date of this audit coincides with the published closing day. Prioritise one verifiable flow and its explanation, and do not try to complete the whole roadmap tonight.
 
-| Orden | Cambio propuesto | Valor para agricultor / reto | Esfuerzo estimado | Riesgo y prioridad |
+| Order | Proposed change | Value for the farmer / challenge | Estimated effort | Risk and priority |
 | --- | --- | --- | --- | --- |
-| 1 | **Filtro obligatorio de factibilidad antes del ranking**; excluir calendarios inválidos y revisar tres candidatos | Evita aconsejar una secuencia imposible; fortalece el núcleo del reto | 2–4 h software; revisión agronómica depende de disponibilidad | Bajo-medio si se rechaza lo inválido; **P0** |
-| 2 | Corregir identidad de caché/fallback, fuente demo y prohibir recomendación nueva con cálculo viejo | Evita confianza falsa con mala conectividad y AI | 2–4 h | Medio por varios clientes; **P0** |
-| 3 | Hacer explícitos periodo/fuente de agua, demanda bruta y X/21 años; si falta dotación, solo escenario | Convierte el resultado en comparación interpretable | 1–3 h | Bajo si reutiliza cálculos; **P0** |
-| 4 | Corregir etiquetas de riesgo, margen, suelo, replay y fecha efectiva de imágenes | Reduce afirmaciones engañosas inmediatamente | 1–2 h | Bajo; **P0** |
-| 5 | Elegir un único caso elegible y producir demo/pitch con evidencia y límites | Explica objetivo y potencial impacto | 1–2 h más revisión del equipo | Bajo; **P0** |
-| 6 | Alinear `mode` y contabilidad entre comparador/assistant/granja o limitar demo al flujo consistente | Evita contradicciones visibles | 1–3 h para contrato; contabilidad 3D puede requerir más | Medio; **P0 si se muestran** |
-| 7 | Revisión corta con un agrónomo y prueba de comprensión con agricultores disponibles | Aporta evidencia de decisión y detecta supuestos irreales | Sesiones de 20–30 min más análisis; captación incierta | Bajo, con consentimiento; **P1** |
-| 8 | Dos o tres escenarios de sensibilidad de parámetros, claramente hipotéticos | Revela si una ventaja es robusta | 2–4 h si se reutiliza motor; revisión científica adicional | Medio; **P1** |
-| 9 | Llevar 3D y asociaciones a recorrido secundario; acceso inicial en español | Reduce fricción y aclara propósito | 1–3 h | Bajo; **P1** |
-| 10 | Calibrar clima y agua, economía local y decisiones con seguimiento | Hace defendible el servicio fuera del hackathon | Semanas y al menos una campaña para resultados agrícolas | Alto si se simplifica; **P2** |
+| 1 | **Mandatory feasibility filter before the ranking**; exclude invalid calendars and review three candidates | Avoids advising an impossible sequence; strengthens the core of the challenge | 2–4 h software; agronomic review depends on availability | Low-medium if invalid ones are rejected; **P0** |
+| 2 | Fix cache/fallback identity and the demo source, and prohibit a new recommendation with an old calculation | Avoids false confidence with poor connectivity and AI | 2–4 h | Medium because of several clients; **P0** |
+| 3 | Make the water period/source, gross demand and X/21 years explicit; if the allocation is missing, show only a scenario | Turns the result into an interpretable comparison | 1–3 h | Low if calculations are reused; **P0** |
+| 4 | Fix the labels for risk, margin, soil, replay and the effective date of images | Reduces misleading claims immediately | 1–2 h | Low; **P0** |
+| 5 | Choose a single eligible case and produce the demo/pitch with evidence and limits | Explains the goal and the potential impact | 1–2 h plus team review | Low; **P0** |
+| 6 | Align `mode` and accounting between comparator/assistant/farm or limit the demo to the consistent flow | Avoids visible contradictions | 1–3 h for the contract; 3D accounting may need more | Medium; **P0 if shown** |
+| 7 | Short review with an agronomist and an understanding test with available farmers | Provides decision evidence and detects unrealistic assumptions | 20–30 min sessions plus analysis; uncertain recruitment | Low, with consent; **P1** |
+| 8 | Two or three parameter sensitivity scenarios, clearly hypothetical | Reveals whether an advantage is robust | 2–4 h if the engine is reused; additional scientific review | Medium; **P1** |
+| 9 | Move 3D and associations to a secondary path; initial access in Spanish | Reduces friction and clarifies the purpose | 1–3 h | Low; **P1** |
+| 10 | Calibrate climate and water, local economics and decisions with follow-up | Makes the service defensible beyond the hackathon | Weeks and at least one season for agricultural results | High if simplified; **P2** |
 
-**No priorizar ahora:** más agentes, sensores, índices, un dashboard adicional, predicción de plagas, otra capa de mapas, optimización colectiva o un gran modelo de cultivos. Cada incorporación añade dependencias de validación sin resolver la contabilidad y el caso de uso actuales.
+**Do not prioritise now:** more agents, sensors, indices, an extra dashboard, pest prediction, another map layer, collective optimisation or a large crop model. Each addition adds validation dependencies without resolving the current accounting and use case.
 
-Una mejora poco espectacular pero valiosa es permitir el estado **«con esta información no se puede elegir»** y devolver dos datos concretos que faltan. No toda consulta necesita un ganador.
+An unspectacular but valuable improvement is to allow the status **"with this information a choice cannot be made"** and return two specific missing data points. Not every query needs a winner.
 
-## 12. Prioridades inmediatas de implementación
+## 12. Immediate implementation priorities
 
-Esta sección propone trabajo posterior. Nada de lo siguiente se implementó durante la auditoría.
+This section proposes later work. None of the following was implemented during the audit.
 
-### P0 — Esencial antes de presentar una recomendación
+### P0 — Essential before presenting a recommendation
 
-1. **Bloquear calendarios incompatibles en el motor y excluirlos del ranking.** La advertencia del editor no es suficiente. Revisar superficie, secuencia, preparación entre campañas y cruce de año. Evitar duplicaciones; mantener asociaciones como modo separado. Criterio de cierre: el caso duplicado no produce recomendación y los ejemplos demostrados tienen cronología justificada.
-2. **Restablecer correspondencia entre entradas y resultados.** Guardar huella de solicitud y versión junto al resultado; identificar cuándo es demo, cache válido o resultado desactualizado. El cambio de agua/cultivo offline debe producir «sin nuevo cálculo», no conservar cifras silenciosamente. Incluir fallback del asistente.
-3. **Mostrar con honestidad el presupuesto y los indicadores.** Año/campaña, m³/ha/año, lugar de entrega, eficiencia asumida y X/N años. Margen hipotético, índice de manejo por reglas y sensibilidad histórica; ninguna cifra presentada como observación o pronóstico.
-4. **Declarar lo no validado y restringir el uso.** Presupuesto, parámetros económicos, curvas locales y fusión climática siguen pendientes. No afirmar validación SENAMHI, «AI sin alucinaciones», salud del suelo medida o ahorro realizado. Suspender recomendación fuera de ámbito si solo existe caché de Majes.
-5. **Cerrar la evidencia de entrega.** Revisar `AI_USAGE.md`, documentar fuentes por resultado, enlaces públicos, un caso reproducible y guía oficial desde navegador humano. Verificar que el flujo mostrado usa entradas y fuente correctas.
+1. **Block incompatible calendars in the engine and exclude them from the ranking.** The editor's warning is not enough. Review area, sequence, preparation between seasons and year crossing. Avoid duplications; keep associations as a separate mode. Closing criterion: the duplicated case produces no recommendation and the demonstrated examples have a justified chronology.
+2. **Restore the match between inputs and results.** Store a request fingerprint and version with the result; identify when it is a demo, a valid cache or an outdated result. Changing water/crops offline should produce "no new calculation", not silently keep figures. Include the assistant's fallback.
+3. **Show the budget and the indicators honestly.** Year/season, m³/ha/year, delivery point, assumed efficiency and X/N years. Hypothetical margin, rule-based management index and historical sensitivity; no figure presented as an observation or a forecast.
+4. **Declare what is not validated and restrict use.** Budget, economic parameters, local curves and climate fusion are still pending. Do not claim SENAMHI validation, "AI without hallucinations", measured soil health or achieved savings. Suspend recommendations outside the scope if only the Majes cache exists.
+5. **Close the submission evidence.** Review `AI_USAGE.md`, document sources per result, public links, one reproducible case and the official guide from a human's browser. Verify that the flow shown uses the correct inputs and source.
 
-**Si solo quedan 1–2 horas:** no crear otro modelo ni reformular todo el UI. Retirar del discurso y del ranking las alternativas inválidas, identificar la demostración como exploratoria y preparar un caso base trazable. Si no se consigue revisar alternativas, explicar esa limitación sin prometer rotaciones listas para sembrar. La sugerencia de mostrar tres comparaciones no justifica inventar tres calendarios agronómicos.
+**If only 1–2 hours remain:** do not create another model nor rework the whole UI. Remove invalid alternatives from the story and the ranking, identify the demo as exploratory and prepare a traceable base case. If the alternatives cannot be reviewed, explain that limitation without promising rotations ready to plant. The suggestion to show three comparisons does not justify inventing three agronomic calendars.
 
-### P1 — Valioso si hay tiempo y acceso real a personas
+### P1 — Valuable if there is time and real access to people
 
-- Revisar dos secuencias candidatas con un técnico, conservando el cultivo actual real del participante. No asumir que debe ser alfalfa ni cambiar duraciones solo para que quepan.
-- Medir comprensión y tiempo con el protocolo de §13, guardando respuestas, errores y versión de la aplicación.
-- Presentar una sensibilidad sencilla de presupuesto/eficiencia y retirar el ganador si cambia con supuestos plausibles sin resolver.
-- Uniformar semántica del calendario/alertas y el resto de pantallas. El presupuesto anual no es una orden de riego semanal.
-- Asegurar acceso inicial en español, plan breve y comparación legible en teléfono; 3D opcional.
+- Review two candidate sequences with a technician, keeping the participant's real current crop. Do not assume it must be alfalfa nor change durations just so they fit.
+- Measure understanding and time with the §13 protocol, storing answers, errors and the app version.
+- Present a simple budget/efficiency sensitivity and withdraw the winner if it changes under plausible unresolved assumptions.
+- Make the semantics of the calendar/alerts and the other screens uniform. The annual budget is not a weekly irrigation order.
+- Ensure initial access in Spanish, a short plan and a readable comparison on a phone; 3D optional.
 
-### P2 — Desarrollo posterior y validación real
+### P2 — Later development and real validation
 
-- Balance temporal de entregas, almacenamiento y suelo únicamente si el caso de uso lo exige y hay datos.
-- Calibración con estaciones y validación independiente de demanda/riego; fichas agronómicas locales trazables.
-- Economía del sistema productivo, incluyendo forraje y costos de transición; evaluación de asociaciones por ensayo específico.
-- Seguimiento de decisiones, adopción, agua aplicada y margen observado durante campaña.
-- HLS u otra evidencia parcelaria solo cuando se formule una pregunta que no pueda resolverse con los insumos actuales.
+- Temporal balance of deliveries, storage and soil only if the use case requires it and there is data.
+- Calibration with stations and independent validation of demand/irrigation; traceable local agronomic records.
+- Economics of the production system, including forage and transition costs; evaluation of associations through a specific trial.
+- Follow-up of decisions, adoption, applied water and observed margin during a season.
+- HLS or other field-level evidence only when a question is formulated that cannot be answered with the current inputs.
 
-## 13. Roadmap de validación científica y de campo
+## 13. Scientific and field validation roadmap
 
-### 13.1 Experimento económico y rápido: ¿ayuda a comprender una decisión?
+### 13.1 Cheap and quick experiment: does it help understand a decision?
 
-**Diseño propuesto, aún no realizado:** reclutar cinco agricultores con lotes anuales elegibles y dos técnicos/agronómos, sin prometerles una recomendación productiva. Una sesión puede hacerse con una organización existente solo si acepta colaborar; no declarar esa colaboración antes de obtenerla.
+**Proposed design, not yet carried out:** recruit five farmers with eligible annual plots and two technicians/agronomists, without promising them a productive recommendation. A session can be held with an existing organisation only if it agrees to collaborate; do not declare that collaboration before obtaining it.
 
-1. Registrar el caso actual, presupuesto conocido o desconocido, restricciones y decisión pendiente. Solicitar consentimiento y anonimizar los resultados compartidos.
-2. Pedir al técnico que revise las dos alternativas y el calendario antes de mostrarlas. Si ninguna es factible, usar esa conclusión como resultado válido del ejercicio.
-3. Dar una tarea idéntica con una tabla/resumen simple y con el comparador; alternar el orden entre participantes para reducir aprendizaje. No exigir cambios reales de siembra.
-4. Preguntar: «¿Cuál cabe en el agua indicada?», «¿qué dato falta?», «¿esto predice el año próximo?», «¿por qué una opción no se puede sembrar así?». Medir respuesta correcta, tiempo, ayuda requerida y error potencialmente perjudicial.
-5. Mostrar una variación hipotética de agua, por ejemplo −20%, explicando que es un stress test. Comprobar si distingue cambio recalculado de un resultado guardado.
-6. Preguntar qué decisión tomaría después y qué confirmaría con su técnico. Documentar la intención como intención, no como acción o ahorro.
+1. Record the current case, the known or unknown budget, constraints and the pending decision. Ask for consent and anonymise the shared results.
+2. Ask the technician to review the two alternatives and the calendar before showing them. If none is feasible, use that conclusion as a valid result of the exercise.
+3. Give an identical task with a simple table/summary and with the comparator; alternate the order between participants to reduce learning effects. Do not require real changes in planting.
+4. Ask: "Which one fits the water indicated?", "What data is missing?", "Does this predict next year?", "Why can one option not be planted like that?". Measure correct answers, time, help required and potentially harmful errors.
+5. Show a hypothetical variation of water, for example −20%, explaining that it is a stress test. Check whether they distinguish a recalculated change from a saved result.
+6. Ask what decision they would take next and what they would confirm with their technician. Document the intention as an intention, not as an action or a saving.
 
-**Criterio de iteración propuesto:** aspirar a al menos 4 de 5 respuestas correctas en la tarea crítica y a ningún error grave de interpretación entre los participantes. Es una meta interna de usabilidad, no una estimación poblacional ni validación estadística. Con cinco personas informar enteros, errores y contexto; no proclamar eficacia general.
+**Proposed iteration criterion:** aim for at least 4 of 5 correct answers in the critical task and no serious interpretation error among the participants. It is an internal usability target, not a population estimate nor a statistical validation. With five people, report integers, errors and context; do not proclaim general effectiveness.
 
-Se necesita un teléfono, un caso preparado, hoja de registro y tiempo de participantes. Comparar 3D frente al resumen solo si queda una pregunta de diseño pendiente; no hacerles recorrer todas las funciones para confirmar que «les gustó».
+It needs a phone, a prepared case, a record sheet and participants' time. Compare 3D against the summary only if a design question remains open; do not make them go through every feature to confirm that "they liked it".
 
-### 13.2 Validación climática: semanas, no una cifra para la diapositiva
+### 13.2 Climate validation: weeks, not a figure for the slide
 
-- Obtener series autorizadas de SENAMHI/AUTODEMA, con metadata de estación, coordenadas, elevación, traslados, instrumentos, unidades y hora de lectura. El [mapa de estaciones SENAMHI][S29] es un punto de acceso, no evidencia de que la descarga ya se haya hecho.
-- Confirmar identidad y ubicación histórica de Pampa de Majes: existen referencias con coordenadas/altitudes diferentes. No mezclar una estación convencional, una automática y una tabla histórica sin comprobación.
-- Comparar celda original, ajuste por lapse rate y mezcla actual usando las mismas fechas. Informar sesgo, MAE, RMSE y extremos por estación del año; no escoger el método solo por un promedio anual.
-- Separar periodo de ajuste y periodo independiente de prueba. Conservar los datos faltantes y comprobar sensibilidad al filtro de extremos.
-- El script actual calcula ET0 Hargreaves en ambos lados a partir de temperatura. Eso ayuda a evaluar temperatura y su transformación; **no valida radiación, viento, humedad ni Penman–Monteith**. Para estos componentes se necesitan variables observadas adecuadas o referencias independientes con límites declarados.
+- Obtain authorised series from SENAMHI/AUTODEMA, with station metadata, coordinates, elevation, relocations, instruments, units and reading time. The [SENAMHI station map][S29] is an access point, not evidence that the download has already been done.
+- Confirm the identity and historical location of Pampa de Majes: there are references with different coordinates/altitudes. Do not mix a conventional station, an automatic one and a historical table without checking.
+- Compare the original cell, the lapse-rate adjustment and the current blend using the same dates. Report bias, MAE, RMSE and extremes by season; do not choose the method only by an annual average.
+- Separate a fitting period from an independent test period. Keep the missing data and check sensitivity to the extremes filter.
+- The current script calculates Hargreaves ET0 on both sides from temperature. That helps evaluate temperature and its transformation; **it does not validate radiation, wind, humidity or Penman–Monteith**. Those components need suitable observed variables or independent references with declared limits.
 
-### 13.3 Validación agronómica y del agua
+### 13.3 Agronomic and water validation
 
-Primero construir una ficha por cultivo: variedad, destino, duración observada, siembra/cosecha, cortes, sistema de riego, Kc y fuente, rendimiento y unidad. Después comparar modelo con una referencia independiente configurada de forma equivalente; Purdue/CROPWAT es comparación de métodos, no medición.
+First build a record per crop: variety, use, observed duration, sowing/harvest, cuttings, irrigation system, Kc and source, yield and unit. Then compare the model with an independent reference configured equivalently; Purdue/CROPWAT is a comparison of methods, not a measurement.
 
-Para un piloto de campo, acordar de antemano qué se observará en parcelas voluntarias durante al menos una campaña: aforo o medidor, duración y turno, lluvia, superficie realmente regada, fechas, rendimiento y manejo. Registrar por separado demanda estimada y agua aplicada; un agricultor que aplica más agua no demuestra que ETc esté subestimada.
+For a field pilot, agree in advance what will be observed on volunteer plots during at least one season: gauge or meter, duration and turn, rain, area actually irrigated, dates, yield and management. Record estimated demand and applied water separately; a farmer who applies more water does not show that ETc is underestimated.
 
-No reducir riego experimentalmente solo para demostrar ahorro. El ensayo productivo y sus criterios deben aprobarlos las personas responsables del cultivo. Si se compara con una campaña anterior, ajustar o al menos describir clima, área y manejo; preferir parcelas comparables cuando sea viable. Un antes/después aislado no identifica causalidad.
+Do not reduce irrigation experimentally just to show savings. The productive trial and its criteria must be approved by the people responsible for the crop. If comparing with a previous season, adjust for or at least describe climate, area and management; prefer comparable plots when feasible. An isolated before/after does not identify causality.
 
-Fijar tolerancias de error y criterios de rechazo **antes** de ver los resultados, con el agrónomo. No adoptar un porcentaje arbitrario como prueba universal de precisión. Si la incertidumbre de demanda es mayor que la ventaja entre dos estrategias, devolver «no distinguibles con la evidencia disponible».
+Set error tolerances and rejection criteria **before** seeing the results, with the agronomist. Do not adopt an arbitrary percentage as a universal proof of accuracy. If the uncertainty of demand is greater than the advantage between two strategies, return "not distinguishable with the available evidence".
 
-### 13.4 Validación económica y de adopción
+### 13.4 Economic and adoption validation
 
-Obtener precios realmente recibidos, costos de campaña, mano de obra, agua/energía, financiamiento, inversión y depreciación relevantes. Diferenciar venta de producto, autoconsumo forrajero y efecto sobre leche. Probar escenarios de precios, rendimientos y transición, sin denominar «esperanza» a un valor sin distribución justificada.
+Obtain prices actually received, season costs, labour, water/energy, financing, investment and relevant depreciation. Distinguish product sales, forage used on the farm and the effect on milk. Test price, yield and transition scenarios, without calling a value without a justified distribution an "expectation".
 
-Registrar quién completó una comparación, quién regresó para una nueva decisión y por qué. Diferenciar acceso facilitado por un técnico y uso autónomo. Verificar utilidad frente a la práctica actual, que puede ser consejo técnico o una tabla existente. La viabilidad comercial y el costo de soporte/datos aún son preguntas, no logros.
+Record who completed a comparison, who came back for a new decision and why. Distinguish access facilitated by a technician from autonomous use. Check usefulness against current practice, which may be technical advice or an existing table. Commercial viability and the cost of support/data are still questions, not achievements.
 
-### 13.5 Responsabilidades propuestas
+### 13.5 Proposed responsibilities
 
-La tabla de miembros en `AI_USAGE.md` requiere confirmación del equipo. Para cerrar evidencia, se necesitan responsabilidades claras, aunque una persona cubra más de una:
+The member table in `AI_USAGE.md` requires confirmation by the team. To close the evidence, clear responsibilities are needed, even if one person covers more than one:
 
-| Responsabilidad humana | Entregable verificable |
+| Human responsibility | Verifiable deliverable |
 | --- | --- |
-| Ciencia y datos | Registro de fuentes, parámetros, estaciones, sesgos y límites de la versión |
-| Motor/backend | Factibilidad, invariantes de superficie/agua, contratos y pruebas de errores críticos |
-| Frontend/offline/assistant | Correspondencia de entradas, estados de fuente y consistencia de cifras |
-| Investigación local | Consentimientos, revisión agronómica, casos y registro de sesiones auténticas |
-| Presentación/entrega | Inglés, demo, referencias, AI disclosure y revisión de enlaces/plazos |
+| Science and data | Record of sources, parameters, stations, biases and limits of the version |
+| Engine/backend | Feasibility, area/water invariants, contracts and tests for critical errors |
+| Frontend/offline/assistant | Matching of inputs, source states and consistency of figures |
+| Local research | Consents, agronomic review, cases and record of genuine sessions |
+| Presentation/submission | English, demo, references, AI disclosure and review of links/deadlines |
 
-Un agrónomo o una institución citados como posibles revisores **no son parte del equipo ni aliados confirmados** sin su participación expresa.
+An agronomist or an institution cited as a possible reviewer **is not part of the team nor a confirmed partner** without their express participation.
 
-## 14. Posicionamiento recomendado y pitch en inglés
+## 14. Recommended positioning and English pitch
 
-### 14.1 Una decisión, una población y un objetivo
+### 14.1 One decision, one population and one goal
 
-**Problema:** al planificar un lote anual en Majes, un productor puede comparar alternativas cuyo calendario o demanda no encajan con sus recursos, mientras la información climática regional exige interpretación técnica.
+**Problem:** when planning an annual plot in Majes, a producer can compare alternatives whose calendar or demand does not fit their resources, while regional climate information requires technical interpretation.
 
-**Beneficiario primario:** productor de la irrigación Pampa de Majes con superficie anual disponible para cambiar de secuencia, inicialmente acompañado por su técnico. No todo agricultor, ganadero o fruticultor del distrito.
+**Primary beneficiary:** a producer in the Pampa de Majes irrigation district with annual area available to change sequence, initially supported by their technician. Not every farmer, livestock farmer or fruit grower in the district.
 
-**Objetivo medible:** permitir comparar la secuencia actual y alternativas revisadas, reconocer incompatibilidades y entender en cuántos años históricos su presupuesto anual habría cubierto la demanda modelada. La reducción de agua aplicada es una hipótesis posterior, no la métrica ya conseguida.
+**Measurable goal:** allow the current sequence and reviewed alternatives to be compared, incompatibilities to be recognised, and the number of historical years in which their annual budget would have covered the modelled demand to be understood. The reduction in applied water is a later hypothesis, not a metric already achieved.
 
-**Demostración central:** un caso de 1 ha claramente identificado como ejemplo; fecha/periodo y procedencia del presupuesto visibles; secuencia y calendario; demanda histórica y años que caben; una restricción que explica por qué no se puede recomendar. Una variación de presupuesto debe recalcular o indicar que no hay nuevo cálculo disponible.
+**Central demonstration:** a 1 ha case clearly identified as an example; visible date/period and provenance of the budget; sequence and calendar; historical demand and years that fit; a constraint that explains why it cannot be recommended. A change in the budget must recalculate or say that no new calculation is available.
 
-**NASA indispensable:** POWER proporciona clima para ET0 y sensibilidad interanual. SRTM aporta elevación y un ajuste experimental que debe declararse. MODIS/SMAP no son necesarios para demostrar la decisión actual y no deben presentarse como validación del resultado.
+**Essential NASA data:** POWER provides climate for ET0 and interannual sensitivity. SRTM provides elevation and an experimental adjustment that must be declared. MODIS/SMAP are not needed to demonstrate the current decision and should not be presented as validation of the result.
 
-**Evidencia fuerte:** ejemplos FAO, suite reproducida, snapshot idéntico y trazas anuales. **Límites que mencionar:** resolución regional, calendarios y parámetros pendientes, ausencia de validación de campo, incertidumbre incompleta y ausencia de forecast.
+**Strong evidence:** FAO examples, reproduced test suite, identical snapshot and annual traces. **Limits to mention:** regional resolution, pending calendars and parameters, no field validation, incomplete uncertainty and no forecast.
 
-### 14.2 Pitch breve apto para el estado actual
+### 14.2 Short pitch suited to the current state
 
 > Farmers in Majes need crop plans that fit their land and water. Quasaris replays NASA POWER weather to compare modeled irrigation demand across historical years. Our prototype exposes trade-offs and missing information, but its example calendars still need agronomic review. We have reproduced the calculations; we have not demonstrated field water savings. Our next step is a locally reviewed comparison with farmers and technicians.
 
-Este texto deliberadamente reconoce el estado actual. No usar una versión que declare calendarios validados, productores atendidos o agua ahorrada hasta contar con esas evidencias. Ensayarlo en voz alta y ajustar duración al límite de la demo; no asumir que todo texto cabe por su número de palabras.
+This text deliberately acknowledges the current state. Do not use a version that claims validated calendars, producers served or water saved until that evidence exists. Rehearse it out loud and adjust its length to the demo limit; do not assume any text fits just because of its word count.
 
-### 14.3 Guion visual para 30 segundos
+### 14.3 Visual script for 30 seconds
 
-| Tiempo orientativo | Qué mostrar | Qué debe entender el juez |
+| Approximate time | What to show | What the judge should understand |
 | --- | --- | --- |
-| 0–5 s | Productor/caso objetivo y decisión de una hectárea; imagen ilustrativa identificada si se usa | A quién ayuda y qué decide |
-| 5–15 s | Comparación y ocupación del calendario, con presupuesto y fuente | La alternativa necesita ser factible antes de competir |
-| 15–23 s | Un resultado por año y cambio de presupuesto realmente recalculado | NASA cambia el análisis; historia no es forecast |
-| 23–30 s | Evidencia, límite principal y siguiente prueba | Software reproducible; impacto de campo todavía pendiente |
+| 0–5 s | The target producer/case and a one-hectare decision; an illustrative image, labelled, if used | Who it helps and what they decide |
+| 5–15 s | Comparison and calendar occupation, with budget and source | An alternative must be feasible before it competes |
+| 15–23 s | One result per year and a budget change that is really recalculated | NASA data changes the analysis; history is not a forecast |
+| 23–30 s | Evidence, the main limit and the next test | Reproducible software; field impact still pending |
 
-Si aún no se corrigieron los fallos, grabar el carácter exploratorio y la detección de incompatibilidad. No simular una corrección que no existe. Para el enlace ampliado, preparar evidencia de configuración, ecuaciones y prueba de comprensión si se logra realizar.
+If the failures have not been fixed yet, record the exploratory nature and the detection of incompatibility. Do not simulate a fix that does not exist. For the extended link, prepare evidence of configuration, equations and the understanding test if it can be carried out.
 
-### 14.4 Diagrama de proceso recomendado
+### 14.4 Recommended process diagram
 
 ```mermaid
 flowchart TD
-    A[Productor y tecnico: lote y decision real] --> B[Calendario, agua documentada y restricciones]
-    B --> C{Secuencia factible en esa superficie?}
-    C -- No --> D[Explicar incompatibilidad y revisar alternativas]
+    A[Producer and technician: plot and real decision] --> B[Calendar, documented water and constraints]
+    B --> C{Is the sequence feasible on that area?}
+    C -- No --> D[Explain the incompatibility and review alternatives]
     D --> B
-    C -- Si --> E[Clima historico NASA POWER y elevacion SRTM]
-    E --> F[ET0 FAO-56, Kc y demanda de riego estimada]
-    F --> G[Comparacion por ano, presupuesto y sensibilidad]
-    G --> H[Explicacion y limites; decision con criterio local]
-    H --> I[Piloto consentido: medir comprension y despues resultados]
+    C -- Yes --> E[NASA POWER historical climate and SRTM elevation]
+    E --> F[FAO-56 ET0, Kc and estimated irrigation demand]
+    F --> G[Comparison by year, budget and sensitivity]
+    G --> H[Explanation and limits; decision with local judgment]
+    H --> I[Consented pilot: measure understanding and then results]
 ```
 
-El filtro y el piloto del diagrama son el diseño recomendado; **el filtro obligatorio aún no existe en la versión auditada**. Los precios y el índice de suelo no deben aparecer como mediciones satelitales en este flujo. La AI, si se utiliza, explica resultados entre G y H; no inventa datos ni valida la decisión.
+The filter and the pilot in the diagram are the recommended design; **the mandatory filter does not yet exist in the audited version**. Prices and the soil index should not appear as satellite measurements in this flow. The AI, if used, explains results between G and H; it does not invent data nor validate the decision.
 
-## 15. Evidencia, fuentes y citas
+## 15. Evidence, sources and citations
 
-### 15.1 Reproducción local y huellas de datos
+### 15.1 Local reproduction and data fingerprints
 
-Comandos ejecutados: `npm run typecheck`, `npm run lint`, `node scripts/test-crop-calendar.cjs`, `npm run build` y `python -B -m pytest engine/tests -q -p no:cacheprovider`, este último con el ejecutable portable temporal. No se regeneraron mocks ni se ejecutó `npm run mock`.
+Commands run: `npm run typecheck`, `npm run lint`, `node scripts/test-crop-calendar.cjs`, `npm run build` and `python -B -m pytest engine/tests -q -p no:cacheprovider`, the last one with the temporary portable executable. No mocks were regenerated and `npm run mock` was not run.
 
-Runtime de pruebas: Python 3.12.10; NumPy 2.5.4; Pydantic 2.14.3; FastAPI 0.163.1; pytest 9.2.0; Node 26.13.1; Next 16.4.6. Instalar versiones actuales permitidas por los requirements permitió probar este entorno, no certificar todas las combinaciones admitidas ni el despliegue.
+Test runtime: Python 3.12.10; NumPy 2.5.4; Pydantic 2.14.3; FastAPI 0.163.1; pytest 9.2.0; Node 26.13.1; Next 16.4.6. Installing the current versions allowed by the requirements made it possible to test this environment, not to certify every admitted combination nor the deployment.
 
-Ejemplo mínimo para repetir el caso base y verificar el snapshot, en un entorno Python con las dependencias declaradas:
+Minimal example to repeat the base case and check the snapshot, in a Python environment with the declared dependencies:
 
 ```python
 import json
@@ -638,9 +640,9 @@ for r in result.rotations:
           sum(y.waterM3ha <= 15000 for y in r.byYear), len(r.byYear))
 ```
 
-El punto piloto usa elevación cacheada de 1.409 m y celdas incluidas. No requiere consultar el endpoint público. Para los diagnósticos se cambiaron entradas en memoria: goteo; agua 0 y 100.000; y una rotación con dos entradas idénticas de alfalfa. Para sensibilidad Kc se usó una copia del catálogo con `dataclasses.replace()` y `unittest.mock.patch()` dentro del proceso; los JSON no se editaron.
+The pilot point uses a cached elevation of 1,409 m and the included cells. It does not require querying the public endpoint. For the diagnostics, inputs were changed in memory: drip; water 0 and 100,000; and a rotation with two identical alfalfa entries. For the Kc sensitivity, a copy of the catalogue was used with `dataclasses.replace()` and `unittest.mock.patch()` inside the process; the JSON files were not edited.
 
-| Archivo | SHA-256 |
+| File | SHA-256 |
 | --- | --- |
 | `data/crops.json` | `2f3630afdbe667ac0c76f42dd5df8af5973a01280df511f109b183002e30071d` |
 | `data/rotations_majes.json` | `cb12046b433eaa342d6a37ad3fdeec8048671e13aff51d7ca4eeae6377299495` |
@@ -650,75 +652,75 @@ El punto piloto usa elevación cacheada de 1.409 m y celdas incluidas. No requie
 | POWER `-16.5_-71.875_2005_2025.json` | `b87d7dfaa7c63e0ece90ec3f1481c2e92e4ca308cf04989cee8625166fa13c7b` |
 | POWER `-16.5_-72.500_2005_2025.json` | `62a6d84abed8bd0080ec65ed0abf129b9cec03ae47960f3f07a3b88b41f77cf2` |
 
-Puntos principales de inspección:
+Main inspection points:
 
-- [Motor de rotación y contabilidad](../engine/rotation.py), [orquestación y score](../engine/simulate.py), [clima y fallback geográfico](../engine/power.py), [elevación](../engine/elevation.py), [ET0](../engine/et0.py), [calidad](../engine/quality.py).
-- [Contrato Python](../engine/schema.py), [contrato TypeScript](../lib/contract.ts), [tests numéricos](../engine/tests/test_engine.py), [tests de contrato](../engine/tests/test_contract.py), [tests de calidad](../engine/tests/test_quality.py).
-- [Cultivos](../data/crops.json), [rotaciones](../data/rotations_majes.json), [snapshot](../data/mock_simulate.json), [resumen SoilGrids](../data/soilgrids/majes.json).
-- [Cliente/fallback](../lib/engine-client.ts), [hook de simulación](../lib/use-simulation.ts), [asistente y schemas](../app/api/chat/tools.ts), [prompt](../app/api/chat/route.ts), [modo granja](../lib/granja-sim.ts), [heurísticas de agrupaciones](../lib/grouping.ts).
-- [Calendario](../lib/crop-calendar.ts), [comparación](../app/[locale]/comparar/comparar-client.tsx), [fuentes de mapas](../lib/gibs.ts), [alertas](../lib/push-server.ts), [service worker](../public/sw.js), [plan](../lib/plan.ts).
-- [Fuentes declaradas](DATA_SOURCES.md), [validación declarada](VALIDATION.md), [AI disclosure](AI_USAGE.md), [script SENAMHI](../scripts/validate_senamhi.py), [configuración Next](../next.config.ts) y [Vercel](../vercel.json).
+- [Rotation engine and accounting](../engine/rotation.py), [orchestration and score](../engine/simulate.py), [climate and geographic fallback](../engine/power.py), [elevation](../engine/elevation.py), [ET0](../engine/et0.py), [quality](../engine/quality.py).
+- [Python contract](../engine/schema.py), [TypeScript contract](../lib/contract.ts), [numerical tests](../engine/tests/test_engine.py), [contract tests](../engine/tests/test_contract.py), [quality tests](../engine/tests/test_quality.py).
+- [Crops](../data/crops.json), [rotations](../data/rotations_majes.json), [snapshot](../data/mock_simulate.json), [SoilGrids summary](../data/soilgrids/majes.json).
+- [Client/fallback](../lib/engine-client.ts), [simulation hook](../lib/use-simulation.ts), [assistant and schemas](../app/api/chat/tools.ts), [prompt](../app/api/chat/route.ts), [farm mode](../lib/granja-sim.ts), [grouping heuristics](../lib/grouping.ts).
+- [Calendar](../lib/crop-calendar.ts), [comparison](../app/[locale]/comparar/comparar-client.tsx), [map sources](../lib/gibs.ts), [alerts](../lib/push-server.ts), [service worker](../public/sw.js), [plan](../lib/plan.ts).
+- [Declared sources](DATA_SOURCES.md), [declared validation](VALIDATION.md), [AI disclosure](AI_USAGE.md), [SENAMHI script](../scripts/validate_senamhi.py), [Next configuration](../next.config.ts) and [Vercel](../vercel.json).
 
-### 15.2 Registro de fuentes externas
+### 15.2 Register of external sources
 
-Consultadas el 15 de noviembre de 2026. **Lectura íntegra**, **extracto indexado** y **consulta pendiente** se distinguen para no dar por verificadas páginas inaccesibles. Una nota de prensa prueba lo reportado por su institución, no es por sí sola una evaluación independiente de resultados. No se extrapolan sus beneficiarios o porcentajes a Quasaris.
+Consulted on 15 November 2026. **Full reading**, **indexed extract** and **pending consultation** are distinguished so that inaccessible pages are not taken as verified. A press release proves what its institution reported; it is not by itself an independent evaluation of results. Their beneficiaries or percentages are not extrapolated to Quasaris.
 
-| ID | Fuente y acceso | Afirmación que respalda / límite |
+| ID | Source and access | Claim it supports / limit |
 | --- | --- | --- |
-| S01 | [NASA Space Apps, Field Shift][S01]. Resumen oficial indexado; descarga íntegra fallida | Objetivo central. También se intentó la URL original `.../adapting-farms-with-nasa-data/` |
-| S02 | [HackAthlone, reproducción del enunciado y recursos][S02]. Texto completo accesible | Lectura detallada provisional; la sede reconoce autoridad final de NASA |
-| S03 | [Sede Ajmer 2026 en dominio oficial][S03]. Extracto indexado | Nombres de cinco criterios; no escala o ponderación global |
-| S04 | [Navigator, discusión 1973 de nasa/spaceapps][S04]. Lectura íntegra | Demo, inglés, NASA/AI y cierre; no sustituye toda la guía |
-| S05 | [Página oficial 2026][S05]. Extracto indexado | Fechas de apertura/cierre de proyecto |
-| S06 | [NASA POWER, Data Services][S06]. Lectura accesible | Resoluciones diferenciadas y cambios de archivo |
-| S07 | [NASA POWER, meteorología][S07]. Lectura accesible | Reanálisis, escala de rejilla y variables |
-| S08 | [ANA, restricción temporal de cultivos, 20/01/2015][S08]. Lectura íntegra | Antecedente de limitación y coordinación hídrica |
-| S09 | [ANA, filtraje y distribución en Majes][S09]. Extracto indexado; página bloqueada | Problemas de presión/caudal, sin extrapolar prevalencia actual |
-| S10 | [AUTODEMA, drenaje B-3, 10/02/2025][S10]. Lectura íntegra | Problema localizado de drenaje/filtración |
-| S11 | [UNMSM, producción lechera en Majes][S11]. Extractos indexados | Contexto histórico forrajero; no censo actual |
-| S12 | [INIA, drones en maíz y alfalfa, 06/05/2020][S12]. Extracto oficial indexado | Existencia de intervención e información previa; no validación de Quasaris |
-| S13 | [Municipalidad de Majes, planta láctea, 2023][S13]. Extracto indexado | Cadena local organizada; sin afirmar alianza |
-| S14 | [AGROIDEAS/MIDAGRI, reconversión en Majes, 2026][S14]. Extracto indexado | Diversidad de sistemas y transición a perennes; ámbito distrital |
-| S15 | [ANA/TNRCH, resolución de asignación, 30/06/2016][S15]. PDF accesible | Antecedentes de módulos/volúmenes y puntos de medición; no dotación vigente individual |
-| S16 | [INIA, laboratorios de suelo/agua/foliares][S16]. Extracto indexado | Existencia de servicios de análisis |
-| S17 | [AUTODEMA, asesoramiento de riego, 28/02/2024][S17]. Lectura íntegra | Asesoría, estaciones y automatización ya existentes |
-| S18 | [Purdue/Nexus, Manual AguaRiego][S18]. PDF descargado; tablas 3, 4 y 11 examinadas | Antecedente funcional y referencia modelada de 10.701 m³/ha/año |
-| S19 | [FAO-56, capítulo 8][S19]. Lectura accesible | Balance/estrés, agua disponible y salinidad |
-| S20 | [USGS, archivo SRTM][S20]. Extracto oficial indexado | Productos de elevación y resoluciones; no método de ajuste climático |
-| S21 | [Allen et al., FAO-56, capítulo 2, 1998][S21]. Lectura accesible | Método ET0 de referencia |
-| S22 | [FAO-56, capítulo 3][S22]. Lectura accesible | Variables meteorológicas y aproximaciones |
-| S23 | [FAO-56, capítulo 6][S23]. Lectura accesible | Kc, etapas y cortes; requiere adaptación local |
-| S24 | [NASA GIBS, WMTSCapabilities EPSG:3857][S24]. XML descargado y consultado | Identificadores, matrices, fechas y huecos efectivos |
-| S25 | [NASA Earthdata, metadatos de visualización mensual MODIS][S25]. Extracto de repositorio oficial indexado | Identidad de producto mensual MOD13A3/MOD13C2; no MOD13Q1 |
-| S26 | [NSIDC, guía SMAP L4 v7][S26]. Extracto oficial indexado | Escala temporal/espacial y root zone; no sensor de parcela |
-| S27 | [ISRIC, documentación SoilGrids][S27]. Extractos de documentación oficial | Resolución e interpretación de cuantiles |
-| S28 | [NASA POWER, hidrología][S28]. Lectura accesible | Diferencia entre wetness y humedad volumétrica |
-| S29 | [SENAMHI, mapa de estaciones][S29]. Referencia del repositorio; extracción no realizada | Acceso para futura validación; sin series ni contraste completado |
+| S01 | [NASA Space Apps, Field Shift][S01]. Official indexed summary; full download failed | Central goal. The original URL `.../adapting-farms-with-nasa-data/` was also tried |
+| S02 | [HackAthlone, copy of the brief and resources][S02]. Full text accessible | Provisional detailed reading; the venue recognises NASA's final authority |
+| S03 | [Ajmer 2026 venue on the official domain][S03]. Indexed extract | Names of five criteria; no global scale or weighting |
+| S04 | [Navigator, nasa/spaceapps discussion 1973][S04]. Full reading | Demo, English, NASA/AI and closing time; does not replace the whole guide |
+| S05 | [Official 2026 page][S05]. Indexed extract | Project opening/closing dates |
+| S06 | [NASA POWER, Data Services][S06]. Accessible reading | Differentiated resolutions and archive changes |
+| S07 | [NASA POWER, meteorology][S07]. Accessible reading | Reanalysis, grid scale and variables |
+| S08 | [ANA, temporary crop restriction, 20/01/2015][S08]. Full reading | Precedent of water limitation and coordination |
+| S09 | [ANA, filtering and distribution in Majes][S09]. Indexed extract; page blocked | Pressure/flow problems, without extrapolating current prevalence |
+| S10 | [AUTODEMA, B-3 drainage, 10/02/2025][S10]. Full reading | Localised drainage/seepage problem |
+| S11 | [UNMSM, dairy production in Majes][S11]. Indexed extracts | Historical forage context; not a current census |
+| S12 | [INIA, drones in maize and alfalfa, 06/05/2020][S12]. Official indexed extract | Existence of an intervention and prior information; not a validation of Quasaris |
+| S13 | [Municipality of Majes, dairy plant, 2023][S13]. Indexed extract | Organised local chain; no partnership claimed |
+| S14 | [AGROIDEAS/MIDAGRI, conversion in Majes, 2026][S14]. Indexed extract | Diversity of systems and transition to perennials; district scope |
+| S15 | [ANA/TNRCH, allocation resolution, 30/06/2016][S15]. Accessible PDF | Background on modules/volumes and measurement points; not a current individual allocation |
+| S16 | [INIA, soil/water/leaf laboratories][S16]. Indexed extract | Existence of analysis services |
+| S17 | [AUTODEMA, irrigation advice, 28/02/2024][S17]. Full reading | Existing advice, stations and automation |
+| S18 | [Purdue/Nexus, AguaRiego manual][S18]. PDF downloaded; tables 3, 4 and 11 examined | Functional precedent and modelled reference of 10,701 m³/ha/year |
+| S19 | [FAO-56, chapter 8][S19]. Accessible reading | Balance/stress, available water and salinity |
+| S20 | [USGS, SRTM archive][S20]. Official indexed extract | Elevation products and resolutions; not a climate adjustment method |
+| S21 | [Allen et al., FAO-56, chapter 2, 1998][S21]. Accessible reading | Reference ET0 method |
+| S22 | [FAO-56, chapter 3][S22]. Accessible reading | Meteorological variables and approximations |
+| S23 | [FAO-56, chapter 6][S23]. Accessible reading | Kc, stages and cuttings; requires local adaptation |
+| S24 | [NASA GIBS, WMTSCapabilities EPSG:3857][S24]. XML downloaded and queried | Identifiers, matrices, dates and effective gaps |
+| S25 | [NASA Earthdata, MODIS monthly visualisation metadata][S25]. Indexed extract from an official repository | Identity of the monthly product MOD13A3/MOD13C2; not MOD13Q1 |
+| S26 | [NSIDC, SMAP L4 v7 guide][S26]. Official indexed extract | Temporal/spatial scale and root zone; not a field sensor |
+| S27 | [ISRIC, SoilGrids documentation][S27]. Extracts from official documentation | Resolution and interpretation of quantiles |
+| S28 | [NASA POWER, hydrology][S28]. Accessible reading | Difference between wetness and volumetric moisture |
+| S29 | [SENAMHI, station map][S29]. Repository reference; extraction not done | Access for future validation; no series nor completed comparison |
 
-Las [guías oficiales de entrega][S30] y [evaluación][S31] se intentaron consultar y quedaron inaccesibles. Son documentos pendientes de comprobación humana, no fuentes leídas que acrediten todos sus requisitos.
+The official [submission][S30] and [judging][S31] guides were attempted and remained inaccessible. They are documents pending human checking, not sources read that prove all their requirements.
 
-## 16. Go/no-go de la propuesta de valor actual
+## 16. Go/no-go for the current value proposition
 
-| Uso o afirmación | Decisión |
+| Use or claim | Decision |
 | --- | --- |
-| Exploración educativa de demanda histórica, con supuestos visibles | **GO condicionado** a procedencia correcta y advertencias |
-| Comparación precampaña acompañada, con calendarios revisados y presupuesto documentado | **GO para piloto limitado después de cerrar P0**, sin prometer precisión o ahorro de campo |
-| Ranking actual de las tres rotaciones como recomendación de siembra | **NO-GO**: dos calendarios inválidos y recursos locales sin verificar |
-| Forecast de la próxima campaña, diagnóstico de suelo parcelario o promesa de ganancias | **NO-GO**: no está sustentado por el método ni la validación |
-| Escalamiento autónomo a todo Majes u otras regiones | **NO-GO todavía**: sin población elegible, calibración local ni validación de adopción |
-| Presentación al hackathon como prototipo honesto con hallazgos y límites | **GO condicionado** al cumplimiento oficial de entrega; admitir los problemas sin ocultarlos |
+| Educational exploration of historical demand, with visible assumptions | **Conditional GO**, subject to correct provenance and warnings |
+| Supported pre-season comparison, with reviewed calendars and a documented budget | **GO for a limited pilot after closing P0**, without promising precision or field savings |
+| The current ranking of the three rotations as a planting recommendation | **NO-GO**: two invalid calendars and unverified local resources |
+| Forecast of the next season, field-level soil diagnosis or a promise of profits | **NO-GO**: not supported by the method or the validation |
+| Autonomous scaling to all of Majes or other regions | **NO-GO for now**: no eligible population, local calibration or adoption validation |
+| Presenting it at the hackathon as an honest prototype with findings and limits | **Conditional GO**, subject to official submission compliance; admit the problems without hiding them |
 
-**Si se presentara mañana a un agricultor real de Majes, ¿qué problema significativo resolvería, con cuánta confianza y por qué lo elegiría?**
+**If it were presented tomorrow to a real Majes farmer, what significant problem would it solve, with how much confidence, and why would they choose it?**
 
-Hoy puede ayudarle, preferiblemente con un técnico, a **hacer visible la relación entre una secuencia propuesta, la demanda estimada de riego y un presupuesto hipotético a través de años históricos**. Puede servir para formular mejor la pregunta y detectar información faltante. La confianza es alta en que esta versión reproduce sus propios cálculos; la precisión parcelaria, la ventaja de cambiar de cultivo y las ganancias no están acreditadas. Con las alternativas actuales y el fallback defectuoso, no merece todavía confianza para decidir una siembra.
+Today it can help them, preferably with a technician, to **make visible the relationship between a proposed sequence, the estimated irrigation demand and a hypothetical budget across historical years**. It can help formulate the question better and detect missing information. Confidence is high that this version reproduces its own calculations; field-level precision, the advantage of changing crops and the profits are not proven. With the current alternatives and the faulty fallback, it does not yet deserve confidence for deciding a planting.
 
-Tendría una razón para elegirlo si una comparación breve y localmente factible le permite entender algo que su práctica actual o asesoría no le muestran con la misma claridad. Esa ventaja debe demostrarse con usuarios y frente a herramientas existentes; el 3D y la marca NASA no la prueban.
+They would have a reason to choose it if a short, locally feasible comparison let them understand something their current practice or advice does not show them as clearly. That advantage must be shown with users and against existing tools; the 3D view and the NASA brand do not prove it.
 
-**¿Cuál es el cambio único más valioso ahora?**
+**What is the single most valuable change now?**
 
-**Introducir una validación obligatoria de factibilidad antes de recomendar: ninguna secuencia que no quepa en la misma superficie y calendario debe entrar al ranking.** El primer entregable es rechazar solapamientos secuenciales y reemplazar los ejemplos por opciones revisadas localmente. Su propósito es transformar «esta rotación tiene mejor score» en «estas son las opciones que realmente puedes considerar y estas son sus restricciones».
+**Introduce a mandatory feasibility check before recommending: no sequence that does not fit on the same area and calendar should enter the ranking.** The first deliverable is to reject sequential overlaps and replace the examples with locally reviewed options. Its purpose is to turn "this rotation has a better score" into "these are the options you can really consider and these are their constraints".
 
-Este es el cambio prioritario del núcleo de decisión; el problema de procedencia offline sigue siendo otro bloqueo P0 y no queda justificado por resolver el calendario. Hasta cerrar ambos, la presentación debe conservar carácter exploratorio. Quasaris puede merecer continuidad si demuestra que mejora una decisión real; aún no ha demostrado ese resultado.
+This is the priority change to the decision core; the offline provenance problem remains another P0 blocker and is not justified by solving the calendar. Until both are closed, the presentation should keep its exploratory character. Quasaris may deserve continuity if it shows that it improves a real decision; it has not yet shown that result.
 
 [S01]: https://www.spaceappschallenge.org/2026/challenges/field-shift-adapting-farms-with-nasa-data/
 [S02]: https://hackathlone.com/challenges/adapting-farms-with-nasa-data
