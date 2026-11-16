@@ -45,3 +45,6 @@ next-env.d.ts
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# logo source files (the ones the app uses are copied into public/brand/)
+/QUASARIS_logos_PNG/
