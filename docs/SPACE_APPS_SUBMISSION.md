@@ -26,6 +26,8 @@ https://quasaris-farmtwin.vercel.app
 
 ## Detailed Project Description
 
+*(Images: the project page accepts pasted or uploaded JPG, PNG or GIF images up to 10 MB inside the text fields. Paste `FarmTwin_workflow.png` after the "How it works" paragraph and one or two app screenshots after "What FarmTwin does".)*
+
 **The problem.** Food security depends on stability: people need enough food *at all times*. Climate change breaks exactly that. Irrigated agriculture covers less than 20% of the world's cropland but produces about 40% of its food and uses 70% of the fresh water withdrawn (FAO), so every drought reaches the food supply. Our pilot, the Majes irrigation district in Arequipa, Peru, shows it: the region grows about 70% of Peru's onion and Majes is the country's first dairy district, yet the Condoroma reservoir was at 46% in November 2026, irrigation water was cut by 10%, and SENAMHI gives a 42–60% chance of below-normal rain because of El Niño. Farmers still decide what to plant by habit, without knowing whether the water will last the whole season, and crops dry out halfway.
 
 **What FarmTwin does.** It is a decision-support tool that combines the four ingredients the challenge asks for (NASA Earth observations, local soil, crop characteristics and farmer priorities) in six steps:
@@ -83,16 +85,3 @@ We did not use data from the Space Agency Partners. Other data, resources and to
 - Open-source software: Next.js, React, three.js, React Three Fiber, Leaflet, Python, FastAPI, NumPy, Vercel AI SDK, lucide icons. Licences listed in the repository's dependencies.
 - Two illustrations generated with ChatGPT (marked "AI-generated image") and 21 crop illustrations generated with OpenAI's image tool (marked "AI").
 - General agronomy references for the Recommendations screen (crop nutrient demand, legume nitrogen fixation, pests, diseases and bio-inputs used in Peru); products must be registered with SENASA and doses confirmed by an agronomist.
-
----
-
-## Submission checklist
-
-- [ ] All five members are **confirmed participants of the same Local Event** (Arequipa). Waitlisted members must ask the Local Lead.
-- [ ] Demo video uploaded and the link tested in a private window (no login).
-- [ ] Every required field filled in, in English.
-- [ ] Project image uploaded (JPG or PNG, up to 10 MB): `FarmTwin-video/submission/` has two ready-made images.
-- [ ] Check "Terms and Conditions" and "Confirm All Work is Original", then **Submit for Judging** before 23:59.
-- [ ] No images, video or voices of people under 18 in the demo or the app.
-- [ ] Optional: request a FortiGuard web filter classification for quasaris-farmtwin.vercel.app so judges' networks do not block it.
-- [ ] After submitting, each member downloads the participant certificate from their profile.
