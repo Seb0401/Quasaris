@@ -5,6 +5,7 @@ import type { MonthStatus, Rotation, RotationResult } from "@/lib/contract";
 import { BadgeDollarSign, CheckCircle2, ChevronDown, Clock3, Crown, Droplets, Leaf, ShieldAlert, XCircle } from "lucide-react";
 import { Badge, CountUp, Meter, ScoreRing } from "@/components/ui/kit";
 import { waterFit } from "@/lib/water-fit";
+import { about, rangeSentence, shareOfWater, waterVsYours, yearsBadge } from "@/lib/plain";
 import { useFarm } from "@/lib/farm-store";
 import { ScoreBreakdown } from "@/components/cards/score-breakdown";
 import { RotationArtwork } from "@/components/crops/crop-artwork";
@@ -62,16 +63,17 @@ export function RotationCard({ rotation, result, color, recommended, scale, all 
 
   const fit = waterFit(result, scale.waterLimit);
   const overWater = fit.shortfallM3ha;
-  const yearsFitText = t("comparar.yearsFit", { n: fit.yearsFit, total: fit.years });
+  const yearsFitText = `${yearsBadge(fit.yearsFit, fit.years, locale)} (${fit.yearsFit}/${fit.years})`;
+  const share = shareOfWater(result.water.median, scale.waterLimit);
   const rows = [
     {
       icon: Droplets,
-      label: t("comparar.water"),
-      value: <CountUp value={result.water.median} format={(v) => `${n.format(v)} m³/ha`} />,
+      label: es ? "Agua (de la que tienes)" : "Water (of what you have)",
+      value: <CountUp value={share} format={(v) => `${Math.round(v)}%`} />,
       meter: result.water.median / scale.water,
       marker: scale.waterLimit / scale.water,
       color: "#5cc8f5",
-      note: overWater > 0 ? `${t("comparar.shortfall", { m3: n.format(overWater) })} · ${yearsFitText}` : yearsFitText,
+      note: `${waterVsYours(result.water.median, scale.waterLimit, locale)} · ${yearsFitText} · ${es ? "cerca de" : "about"} ${about(result.water.median, locale)} m³/ha`,
       bad: overWater > 0,
     },
     {
@@ -80,7 +82,7 @@ export function RotationCard({ rotation, result, color, recommended, scale, all 
       value: <CountUp value={result.income.median} format={(v) => `S/ ${n.format(v)}`} />,
       meter: result.income.median / scale.income,
       color: "#f6b94c",
-      note: es ? `Ganancia por hectárea al año · año malo S/ ${n.format(result.income.p10)} · año bueno S/ ${n.format(result.income.p90)}` : `Profit per hectare per year · bad year S/ ${n.format(result.income.p10)} · good year S/ ${n.format(result.income.p90)}`,
+      note: `${es ? "Ganancia estimada por hectárea al año." : "Estimated profit per hectare a year."} ${rangeSentence(result.income, (v) => `S/ ${about(v, locale)}`, locale)}`,
     },
     {
       icon: Leaf,
@@ -109,7 +111,7 @@ export function RotationCard({ rotation, result, color, recommended, scale, all 
           <div className="rotation-badges">
             {rotation.isCurrent && <Badge tone="sky">{t("comparar.current")}</Badge>}
             {recommended && <Badge tone="brand" icon={Crown}>{es ? "Recomendada" : "Recommended"}</Badge>}
-            {result.viable ? <Badge tone={fit.yearsFit === fit.years ? "ok" : "warn"} icon={CheckCircle2}>{yearsFitText}</Badge> : <Badge tone="danger" icon={XCircle}>{t("comparar.shortfall", { m3: n.format(fit.shortfallM3ha) })}</Badge>}
+            {result.viable ? <Badge tone={fit.yearsFit === fit.years ? "ok" : "warn"} icon={CheckCircle2}>{yearsFitText}</Badge> : <Badge tone="danger" icon={XCircle}>{t("comparar.shortfall", { pct: Math.max(1, share - 100) })}</Badge>}
           </div>
           <h3><i style={{ background: color }} />{rotation.name}</h3>
         </div>

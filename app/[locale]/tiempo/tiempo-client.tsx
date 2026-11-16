@@ -159,7 +159,7 @@ export function TiempoClient() {
             <article key={rot.id} className="year-card" style={{ "--accent": color } as React.CSSProperties}>
               <header>
                 <h3><i style={{ background: color }} />{rot.name}</h3>
-                {over ? <Badge tone="danger">{t("tiempo.shortfallYear", { m3: n.format(y.waterM3ha - farm.waterAvailableM3ha) })}</Badge> : <Badge tone="ok">{t("tiempo.withinLimit")}</Badge>}
+                {over ? <Badge tone="danger">{t("tiempo.shortfallYear", { pct: Math.max(1, Math.round(ratio * 100) - 100) })}</Badge> : <Badge tone="ok">{t("tiempo.withinLimit")}</Badge>}
               </header>
               <div className="year-card-stats">
                 <div><small><BadgeDollarSign size={13} />{t("comparar.income")}</small><strong><CountUp value={y.incomePEN} format={(v) => `S/ ${n.format(v)}`} duration={600} /></strong></div>
@@ -167,7 +167,7 @@ export function TiempoClient() {
               </div>
               <div className="year-card-water">
                 <Meter value={Math.min(1, ratio / 1.4)} marker={1 / 1.4} color={over ? "var(--danger)" : "#5cc8f5"} height={8} />
-                <small className={over ? "is-bad" : ""}>{over ? `+${n.format(y.waterM3ha - farm.waterAvailableM3ha)} ${t("tiempo.overLimit")}` : `${Math.round(ratio * 100)}% ${es ? "de tu agua disponible" : "of your available water"}`}</small>
+                <small className={over ? "is-bad" : ""}>{over ? (es ? `Ese año necesitaba el ${Math.round(ratio * 100)}% de tu agua: ${n.format(y.waterM3ha - farm.waterAvailableM3ha)} ${t("tiempo.overLimit")}` : `That year it needed ${Math.round(ratio * 100)}% of your water: ${n.format(y.waterM3ha - farm.waterAvailableM3ha)} ${t("tiempo.overLimit")}`) : (es ? `Ese año usó el ${Math.round(ratio * 100)}% de tu agua` : `That year it used ${Math.round(ratio * 100)}% of your water`)}</small>
               </div>
               <MonthStrip months={y.months} labels />
             </article>

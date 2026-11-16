@@ -12,6 +12,7 @@ import { useFarm } from "@/lib/farm-store";
 import { useSimulation } from "@/lib/use-simulation";
 import { rotationColor } from "@/lib/ui";
 import { waterFit } from "@/lib/water-fit";
+import { about, marginPct, scoreWord, shareOfWater, waterVsYours, yearsSentence } from "@/lib/plain";
 import type { Rotation, RotationResult } from "@/lib/contract";
 import { CropModelNotes } from "@/components/crop-model-notes";
 
@@ -91,7 +92,7 @@ export function CompararClient() {
       <Reveal>
         <Panel id="cmp-duel" kicker={es ? "CARA A CARA" : "HEAD TO HEAD"} icon={BarChart3} title={es ? "¿En qué gana cada rotación?" : "Where does each rotation win?"} actions={<div className="duel-legend">{rows.map((r) => <span key={r.rotation.id}><i style={{ background: r.color }} />{r.rotation.name}</span>)}</div>}>
           <div className="duel-grid">
-            <Duel rows={rows} icon={Droplets} title={t("comparar.water")} hint={es ? "Por hectárea al año · menos es mejor" : "Per hectare per year · lower is better"} pick={(r) => r.water.median} format={(v) => `${n.format(v)} m³/ha`} lowerIsBetter limit={farm.waterAvailableM3ha} limitLabel={es ? "Tu agua" : "Your water"} />
+            <Duel rows={rows} icon={Droplets} title={t("comparar.water")} hint={es ? "Cuánto de tu agua usa · menos es mejor" : "How much of your water it uses · lower is better"} pick={(r) => shareOfWater(r.water.median, farm.waterAvailableM3ha)} format={(v) => `${Math.round(v)}%`} lowerIsBetter limit={100} limitLabel={es ? "Tu agua" : "Your water"} />
             <Duel rows={rows} icon={BadgeDollarSign} title={t("comparar.income")} hint={es ? "Ganancia por hectárea al año · más es mejor" : "Profit per hectare per year · higher is better"} pick={(r) => r.income.median} format={(v) => `S/ ${n.format(v)}`} />
             <Duel rows={rows} icon={Leaf} title={t("comparar.soilHealth")} hint={es ? "Más es mejor" : "Higher is better"} pick={(r) => r.soil * 100} format={(v) => `${Math.round(v)}/100`} max={100} />
             <Duel rows={rows} icon={ShieldAlert} title={es ? "Cosecha que se pierde" : "Harvest lost"} hint={es ? "En un año normal · menos es mejor" : "In a normal year · lower is better"} pick={(r) => r.risk.median * 100} format={(v) => `${Math.round(v)}%`} lowerIsBetter max={100} />
@@ -125,7 +126,6 @@ function Verdict({ best, current, rows, anyViable, all }: { best: Row; current: 
   const t = useT();
   const locale = useLocale();
   const es = locale === "es";
-  const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const same = best === current;
   // si ya siembra la mejor, se compara con la siguiente opción para que las cifras digan algo
   const runnerUp = same ? [...rows].filter((r) => r !== best).sort((a, b) => b.result.score - a.result.score)[0] : undefined;
@@ -136,13 +136,13 @@ function Verdict({ best, current, rows, anyViable, all }: { best: Row; current: 
       <section className="verdict" id="cmp-pick" style={{ "--accent": best.color } as React.CSSProperties}>
         <div className="verdict-aurora" aria-hidden />
         <div className="verdict-main">
-          <ScoreRing value={Math.round(best.result.score * 100)} size={150} stroke={11} color={best.color} label={t("comparar.fit.label")} />
+          <ScoreRing value={Math.round(best.result.score * 100)} size={150} stroke={11} color={best.color} label={scoreWord(Math.round(best.result.score * 100), locale)} />
           <div className="verdict-copy">
             <span className="ui-kicker"><Crown size={14} /> {anyViable ? (es ? "NUESTRA RECOMENDACIÓN" : "OUR RECOMMENDATION") : (es ? "LA MÁS CERCANA" : "THE CLOSEST OPTION")}</span>
             <h2>{best.rotation.name}</h2>
             <p>{t(`explain.${best.result.explain.whyKey}`)}</p>
             {!anyViable && (
-              <p className="verdict-warning"><TriangleAlert size={16} />{t("comparar.shortfall", { m3: n.format(fit.shortfallM3ha) })} · {t("comparar.yearsFit", { n: fit.yearsFit, total: fit.years })}. {es ? "Es la opción que mejor equilibra tus prioridades; con riego por goteo o reduciendo el área sembrada podría alcanzar." : "It best balances your priorities; drip irrigation or a smaller planted area could make it fit."}</p>
+              <p className="verdict-warning"><TriangleAlert size={16} />{waterVsYours(best.result.water.median, farm.waterAvailableM3ha, locale)}. {yearsSentence(fit.yearsFit, fit.years, locale)} {es ? "Aun así es la que mejor cumple lo que te importa; con riego por goteo o sembrando un área más pequeña podría alcanzar." : "Even so, it is the one that best fits what matters to you; with drip irrigation or a smaller planted area it could fit."}</p>
             )}
             <details className="score-toggle">
               <summary>{t("comparar.fit.title", { score: Math.round(best.result.score * 100) })}<ChevronDown size={15} /></summary>
@@ -160,7 +160,7 @@ function Verdict({ best, current, rows, anyViable, all }: { best: Row; current: 
                   : (es ? `Si cambias desde lo que siembras hoy (${base.rotation.name}):` : `If you switch from what you grow today (${base.rotation.name}):`)}
               </span>
               <div className="delta-grid">
-                {plainDeltas(best.result, base.result, es, n).map(({ icon: Icon, key, label, tone, statement, detail }) => (
+                {plainDeltas(best.result, base.result, es, locale, farm.waterAvailableM3ha).map(({ icon: Icon, key, label, tone, statement, detail }) => (
                   <div key={key} className={`delta delta-plain tone-${tone}`}>
                     <span><Icon size={15} />{label}<em>{tone === "good" ? (es ? "mejora" : "better") : tone === "bad" ? (es ? "empeora" : "worse") : (es ? "igual" : "same")}</em></span>
                     <strong>{statement}</strong>
@@ -168,7 +168,12 @@ function Verdict({ best, current, rows, anyViable, all }: { best: Row; current: 
                   </div>
                 ))}
               </div>
-              <p className="delta-note">{es ? "Todas las cifras son por hectárea y por año: el valor típico de 21 años reales de clima. Precios y rendimientos son estimados; revísalos con tu técnico." : "All figures are per hectare and per year: the typical value over 21 real years of climate. Prices and yields are estimates; check them with your technician."}</p>
+              <p className="delta-note">
+                <b>{es ? "¿Qué tan seguro es esto? " : "How sure is this? "}</b>
+                {es
+                  ? `Son estimados con el clima real de los últimos ${fit.years} años. De un año a otro, el agua cambia cerca de ±${marginPct(best.result.water)}% y la ganancia cerca de ±${marginPct(best.result.income)}%. Los precios y las cosechas son aproximados: confírmalos con tu técnico antes de decidir.`
+                  : `These are estimates from the real weather of the last ${fit.years} years. From one year to the next, water moves by about ±${marginPct(best.result.water)}% and profit by about ±${marginPct(best.result.income)}%. Prices and harvests are approximate: confirm them with your technician before deciding.`}
+              </p>
             </>
           ) : (
             <p className="delta-note">{es ? "Solo tienes una rotación. Agrega otra en «Gestionar mis rotaciones» para ver qué cambiaría." : "You only have one rotation. Add another in “Manage my rotations” to see what would change."}</p>
@@ -183,8 +188,9 @@ function Verdict({ best, current, rows, anyViable, all }: { best: Row; current: 
 type Plain = { key: string; icon: typeof Droplets; label: string; tone: "good" | "bad" | "neutral"; statement: string; detail: string };
 
 /** Cuatro diferencias contadas como frases que entiende quien trabaja la chacra. */
-function plainDeltas(next: RotationResult, base: RotationResult, es: boolean, n: Intl.NumberFormat): Plain[] {
+function plainDeltas(next: RotationResult, base: RotationResult, es: boolean, locale: "es" | "en", have: number): Plain[] {
   const pct = (a: number, b: number) => (b === 0 ? 0 : Math.round((Math.abs(a - b) / b) * 100));
+  const s = (v: number) => shareOfWater(v, have);
   const out: Plain[] = [];
 
   const dw = next.water.median - base.water.median;
@@ -193,10 +199,10 @@ function plainDeltas(next: RotationResult, base: RotationResult, es: boolean, n:
     key: "water", icon: Droplets, label: es ? "Agua" : "Water",
     tone: wSame ? "neutral" : dw < 0 ? "good" : "bad",
     statement: wSame ? (es ? "Usa casi la misma agua" : "Uses about the same water")
-      : dw < 0 ? (es ? `Ahorras ${n.format(-dw)} m³ por hectárea al año` : `You save ${n.format(-dw)} m³ per hectare per year`)
-      : (es ? `Necesitas ${n.format(dw)} m³ más por hectárea al año` : `You need ${n.format(dw)} m³ more per hectare per year`),
-    detail: wSame ? (es ? `Alrededor de ${n.format(next.water.median)} m³ por hectárea` : `About ${n.format(next.water.median)} m³ per hectare`)
-      : (es ? `${n.format(base.water.median)} → ${n.format(next.water.median)} m³ · ${pct(next.water.median, base.water.median)}% ${dw < 0 ? "menos" : "más"}` : `${n.format(base.water.median)} → ${n.format(next.water.median)} m³ · ${pct(next.water.median, base.water.median)}% ${dw < 0 ? "less" : "more"}`),
+      : dw < 0 ? (es ? `Usa ${pct(next.water.median, base.water.median)}% menos agua` : `Uses ${pct(next.water.median, base.water.median)}% less water`)
+      : (es ? `Usa ${pct(next.water.median, base.water.median)}% más agua` : `Uses ${pct(next.water.median, base.water.median)}% more water`),
+    detail: wSame ? (es ? `Cerca del ${s(next.water.median)}% de tu agua` : `About ${s(next.water.median)}% of your water`)
+      : (es ? `Pasa de usar el ${s(base.water.median)}% al ${s(next.water.median)}% de tu agua (cerca de ${about(Math.abs(dw), locale)} m³ ${dw < 0 ? "menos" : "más"} por hectárea al año)` : `From ${s(base.water.median)}% to ${s(next.water.median)}% of your water (about ${about(Math.abs(dw), locale)} m³ ${dw < 0 ? "less" : "more"} per hectare a year)`),
   });
 
   const di = next.income.median - base.income.median;
@@ -205,9 +211,9 @@ function plainDeltas(next: RotationResult, base: RotationResult, es: boolean, n:
     key: "income", icon: BadgeDollarSign, label: es ? "Dinero" : "Money",
     tone: iSame ? "neutral" : di > 0 ? "good" : "bad",
     statement: iSame ? (es ? "Ganas casi lo mismo" : "You earn about the same")
-      : di > 0 ? (es ? `Ganas S/ ${n.format(di)} más por hectárea al año` : `You earn S/ ${n.format(di)} more per hectare per year`)
-      : (es ? `Ganas S/ ${n.format(-di)} menos por hectárea al año` : `You earn S/ ${n.format(-di)} less per hectare per year`),
-    detail: es ? `S/ ${n.format(base.income.median)} → S/ ${n.format(next.income.median)} de ganancia estimada` : `S/ ${n.format(base.income.median)} → S/ ${n.format(next.income.median)} estimated profit`,
+      : di > 0 ? (es ? `Ganas cerca de S/ ${about(di, locale)} más por hectárea al año` : `You earn about S/ ${about(di, locale)} more per hectare a year`)
+      : (es ? `Ganas cerca de S/ ${about(-di, locale)} menos por hectárea al año` : `You earn about S/ ${about(-di, locale)} less per hectare a year`),
+    detail: es ? `De unos S/ ${about(base.income.median, locale)} a unos S/ ${about(next.income.median, locale)} al año (estimado)` : `From about S/ ${about(base.income.median, locale)} to about S/ ${about(next.income.median, locale)} a year (estimate)`,
   });
 
   const s0 = Math.round(base.soil * 100), s1 = Math.round(next.soil * 100);
@@ -223,7 +229,7 @@ function plainDeltas(next: RotationResult, base: RotationResult, es: boolean, n:
     key: "risk", icon: ShieldAlert, label: es ? "Riesgo" : "Risk",
     tone: r1 === r0 ? "neutral" : r1 < r0 ? "good" : "bad",
     statement: r1 === r0 ? (es ? "El mismo riesgo de perder cosecha" : "The same risk of losing harvest") : r1 < r0 ? (es ? "Menos riesgo de perder cosecha" : "Less risk of losing harvest") : (es ? "Más riesgo de perder cosecha" : "More risk of losing harvest"),
-    detail: es ? `En un año normal se pierde cerca del ${r1}% de la cosecha por clima o falta de agua (antes ${r0}%)` : `In a normal year about ${r1}% of the harvest is lost to weather or lack of water (before ${r0}%)`,
+    detail: es ? `En un año normal perderías cerca del ${r1}% de la cosecha, en vez del ${r0}%` : `In a normal year you would lose about ${r1}% of the harvest, instead of ${r0}%`,
   });
   return out;
 }

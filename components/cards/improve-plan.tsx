@@ -7,6 +7,7 @@ import { Panel } from "@/components/ui/kit";
 import type { Priorities, Rotation, RotationResult } from "@/lib/contract";
 import { CROPS, cropName, efficiency } from "@/lib/crop-calendar";
 import { useFarm } from "@/lib/farm-store";
+import { about, shareOfWater } from "@/lib/plain";
 
 type Row = { rotation: Rotation; result: RotationResult; color: string };
 type Action = { title: string; impact: string; href?: string; cta?: string };
@@ -41,8 +42,8 @@ export function ImprovePlan({ rows, current }: { rows: Row[]; current: Row }) {
       water.push({
         title: es ? "Cambia a riego por goteo" : "Switch to drip irrigation",
         impact: es
-          ? `Necesitarías unos ${n.format(dripNeed)} m³ por hectárea: ${n.format(save)} menos al año (${Math.round((save / cur.water.median) * 100)}%).${fitsWithDrip ? " Así te alcanzaría el agua." : ""}`
-          : `You would need about ${n.format(dripNeed)} m³ per hectare: ${n.format(save)} less per year (${Math.round((save / cur.water.median) * 100)}%).${fitsWithDrip ? " Your water would then be enough." : ""}`,
+          ? `Usarías cerca de ${Math.round((save / cur.water.median) * 100)}% menos agua: pasarías del ${shareOfWater(cur.water.median, available)}% al ${shareOfWater(dripNeed, available)}% de tu agua.${fitsWithDrip ? " Así te alcanzaría." : ""}`
+          : `You would use about ${Math.round((save / cur.water.median) * 100)}% less water: from ${shareOfWater(cur.water.median, available)}% to ${shareOfWater(dripNeed, available)}% of your water.${fitsWithDrip ? " Then it would be enough." : ""}`,
         href: path("parcela"), cta: es ? "Cambiar mi riego" : "Change my irrigation",
       });
     }
@@ -59,7 +60,7 @@ export function ImprovePlan({ rows, current }: { rows: Row[]; current: Row }) {
   if (lessWater && lessWater.result.water.median < cur.water.median * 0.98) {
     water.push({
       title: es ? `Prueba ${lessWater.rotation.name}` : `Try ${lessWater.rotation.name}`,
-      impact: es ? `Necesita ${n.format(cur.water.median - lessWater.result.water.median)} m³ menos por hectárea al año.` : `It needs ${n.format(cur.water.median - lessWater.result.water.median)} m³ less per hectare per year.`,
+      impact: es ? `Usa el ${shareOfWater(lessWater.result.water.median, available)}% de tu agua, en vez del ${shareOfWater(cur.water.median, available)}%.` : `It uses ${shareOfWater(lessWater.result.water.median, available)}% of your water, instead of ${shareOfWater(cur.water.median, available)}%.`,
       href: "#cmp-detail", cta: es ? "Ver su detalle" : "See its detail",
     });
   }
@@ -72,8 +73,8 @@ export function ImprovePlan({ rows, current }: { rows: Row[]; current: Row }) {
     money.push({
       title: es ? `Prueba ${richer.rotation.name}` : `Try ${richer.rotation.name}`,
       impact: es
-        ? `Ganarías unos S/ ${n.format(richer.result.income.median - cur.income.median)} más por hectárea al año${extraWater > 50 ? `, pero necesita ${n.format(extraWater)} m³ más de agua` : ""}.`
-        : `You would earn about S/ ${n.format(richer.result.income.median - cur.income.median)} more per hectare per year${extraWater > 50 ? `, but it needs ${n.format(extraWater)} m³ more water` : ""}.`,
+        ? `Ganarías cerca de S/ ${about(richer.result.income.median - cur.income.median, locale)} más por hectárea al año${extraWater > 50 ? `, pero usa más agua (el ${shareOfWater(richer.result.water.median, available)}% de la tuya)` : ""}.`
+        : `You would earn about S/ ${about(richer.result.income.median - cur.income.median, locale)} more per hectare a year${extraWater > 50 ? `, but it uses more water (${shareOfWater(richer.result.water.median, available)}% of yours)` : ""}.`,
       href: "#cmp-detail", cta: es ? "Ver su detalle" : "See its detail",
     });
   }
@@ -134,7 +135,7 @@ export function ImprovePlan({ rows, current }: { rows: Row[]; current: Row }) {
   if (stress.length) {
     risk.push({
       title: es ? `Guarda agua para ${list(stress.map(monthName))}` : `Save water for ${list(stress.map(monthName))}`,
-      impact: es ? `Esos meses el cultivo pide más que tu cuota mensual (unos ${n.format(available / 12)} m³ por hectárea). Planifica turnos o almacena agua antes.` : `In those months the crop needs more than your monthly share (about ${n.format(available / 12)} m³ per hectare). Plan turns or store water ahead.`,
+      impact: es ? "Esos meses el cultivo pide más agua de la que te toca en un mes normal. Pide más turnos o guarda agua antes." : "In those months the crop asks for more water than you get in a normal month. Ask for extra turns or store water ahead.",
       href: path("tiempo"), cta: es ? "Ver mes a mes" : "See month by month",
     });
   }
@@ -158,9 +159,9 @@ export function ImprovePlan({ rows, current }: { rows: Row[]; current: Row }) {
   const short = Math.max(0, cur.water.median - available);
   const indicators: Indicator[] = ([
     { key: "water", icon: Droplets, label: es ? "Agua" : "Water", actions: water,
-      today: es ? `Hoy necesita ${n.format(cur.water.median)} m³ por hectárea al año${short > 0 ? ` y te faltan ${n.format(short)}` : " y te alcanza"}` : `Today it needs ${n.format(cur.water.median)} m³ per hectare per year${short > 0 ? ` and you are short ${n.format(short)}` : " and you have enough"}` },
+      today: es ? (short > 0 ? `Hoy necesita el ${shareOfWater(cur.water.median, available)}% de tu agua: te falta` : `Hoy usa el ${shareOfWater(cur.water.median, available)}% de tu agua: te alcanza`) : (short > 0 ? `Today it needs ${shareOfWater(cur.water.median, available)}% of your water: you fall short` : `Today it uses ${shareOfWater(cur.water.median, available)}% of your water: you have enough`) },
     { key: "income", icon: BadgeDollarSign, label: es ? "Dinero" : "Money", actions: money,
-      today: es ? `Hoy ganas unos S/ ${n.format(cur.income.median)} por hectárea al año` : `Today you earn about S/ ${n.format(cur.income.median)} per hectare per year` },
+      today: es ? `Hoy ganas cerca de S/ ${about(cur.income.median, locale)} por hectárea al año` : `Today you earn about S/ ${about(cur.income.median, locale)} per hectare a year` },
     { key: "soil", icon: Leaf, label: es ? "Suelo" : "Soil", actions: soil,
       today: es ? `Hoy la salud del suelo es ${Math.round(cur.soil * 100)} de 100` : `Today soil health is ${Math.round(cur.soil * 100)} out of 100` },
     { key: "risk", icon: ShieldAlert, label: es ? "Riesgo" : "Risk", actions: risk,

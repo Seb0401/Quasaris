@@ -67,19 +67,19 @@ export function CalendarioClient() {
   const climate = climateResult?.data;
   const copy = es ? {
     subtitle: "Revisa el ciclo aproximado de los cultivos de tu rotación y el clima histórico de la parcela.",
-    timing: "Las fechas son aproximadas: solo se conoce el mes de siembra y las duraciones deben validarse localmente.",
+    timing: "Las fechas son aproximadas: conocemos el mes de siembra, pero la duración real depende de tu variedad y tu campo.",
     sow: "Siembra", duration: "duración aprox.", days: "días", unknown: "Cultivo sin datos de duración", allYear: "Cultivo perenne: presente todo el año; los cortes no están programados.",
-    historical: "Clima histórico de esta semana", frost: "Años con mínima ≤ 2 °C", heat: "Años con máxima ≥ 30 °C", disclaimer: "Datos históricos de 2005–2025: porcentaje de años con al menos un día que superó el umbral general en esta semana. No es pronóstico ni probabilidad de daño para un cultivo.",
+    historical: "Clima histórico de esta semana", frost: "Años con helada (2 °C o menos)", heat: "Años con calor fuerte (30 °C o más)", disclaimer: "Cuenta en cuántos de los últimos 21 años (2005 a 2025) hubo al menos un día así en esta semana. Es historia, no un pronóstico: sirve para estar atento.",
     unavailable: "No se pudieron cargar los datos climáticos. Los ciclos de cultivo siguen disponibles.", cached: "Usando datos climáticos guardados para esta ubicación.",
-    water: "Demanda bruta aproximada de agua para siete días", waterNote: "Estimación histórica basada en ET0, etapa del cultivo y eficiencia de riego; no incluye lluvia ni indica el agua asignada. No es una instrucción de riego.",
+    water: "Agua que necesitaría tu cultivo esta semana", waterNote: "Estimado con el clima de esta semana en años pasados, la etapa del cultivo y tu tipo de riego. No cuenta la lluvia. Úsalo como guía, no como orden de riego.",
     noRotation: "No hay rotaciones disponibles.", noActive: "No hay cultivos programados esta semana.",
   } : {
     subtitle: "Review approximate crop cycles in your rotation and historical climate for the parcel.",
-    timing: "Dates are approximate: only the planting month is known and durations require local validation.",
+    timing: "Dates are approximate: we know the planting month, but the real length depends on your variety and your field.",
     sow: "Planting", duration: "approx. duration", days: "days", unknown: "Crop duration unavailable", allYear: "Perennial crop: present year-round; cuttings are not scheduled.",
-    historical: "Historical climate this week", frost: "Years with low ≤ 2 °C", heat: "Years with high ≥ 30 °C", disclaimer: "Historical data from 2005–2025: percentage of years with at least one day reaching the general threshold in this week. This is not a forecast or a crop-specific probability of damage.",
+    historical: "Historical climate this week", frost: "Years with frost (2 °C or less)", heat: "Years with strong heat (30 °C or more)", disclaimer: "Counts in how many of the last 21 years (2005 to 2025) there was at least one such day in this week. It is history, not a forecast: use it to stay alert.",
     unavailable: "Climate data could not be loaded. Crop cycles are still available.", cached: "Using saved climate data for this location.",
-    water: "Approximate gross water demand for seven days", waterNote: "Historical estimate based on ET0, crop stage and irrigation efficiency; excludes rainfall and does not represent your water allocation. It is not an irrigation instruction.",
+    water: "Water your crop would need this week", waterNote: "Estimated from this week's weather in past years, the crop's stage and your irrigation type. Rain is not counted. Use it as a guide, not as an irrigation order.",
     noRotation: "No rotations available.", noActive: "No crops are scheduled this week.",
   };
   const [rotationId, setRotationId] = useState<string | null>(null);

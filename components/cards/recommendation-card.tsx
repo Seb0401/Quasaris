@@ -7,6 +7,7 @@ import { ProfitIcon, ShieldIcon, SoilIcon, TargetIcon, WaterIcon } from "@/compo
 import { RotationIcons } from "@/components/icons/rotation-icons";
 import type { Recommendation, Reason } from "@/lib/recommendation";
 import { waterFit } from "@/lib/water-fit";
+import { shareOfWater, yearsSentence } from "@/lib/plain";
 
 const REASON_ICON = { water: WaterIcon, income: ProfitIcon, soil: SoilIcon, risk: ShieldIcon };
 
@@ -37,7 +38,7 @@ export function RecommendationCard({ rec, waterAvailable }: { rec: Recommendatio
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">{t("reco.kicker")}</p>
           <h2 className="text-xl font-bold leading-tight">
-            {rec.verdict === "keep" ? t("reco.keep") : rec.verdict === "noneViable" ? t("reco.noneViable", { m3: n.format(fit.shortfallM3ha) }) : t("reco.switch")}
+            {rec.verdict === "keep" ? t("reco.keep") : rec.verdict === "noneViable" ? t("reco.noneViable", { pct: Math.max(1, shareOfWater(rec.best.water.median, waterAvailable) - 100) }) : t("reco.switch")}
           </h2>
           <p className="mt-1 flex flex-wrap items-center gap-2 text-base font-semibold">
             <RotationIcons rotation={rec.bestRotation} size={20} className="text-brand" />
@@ -48,12 +49,12 @@ export function RecommendationCard({ rec, waterAvailable }: { rec: Recommendatio
 
       {rec.verdict === "noneViable" ? (
         <div className="flex flex-col gap-2 text-sm">
-          <p>{t("reco.noneText", { need: n.format(rec.best.water.median), have: n.format(waterAvailable), n: fit.yearsFit, total: fit.years })}</p>
+          <p>{t("reco.noneText", { years: yearsSentence(fit.yearsFit, fit.years, locale) })}</p>
           <ul className="flex flex-col gap-1.5">
             {rec.dripWaterM3ha !== null && (
               <li className="flex items-start gap-2 rounded-xl bg-background px-3 py-2">
                 <WaterIcon size={18} className="mt-0.5 shrink-0" />
-                {t("reco.tryDrip", { m3: n.format(rec.dripWaterM3ha) })}
+                {t("reco.tryDrip", { share: shareOfWater(rec.dripWaterM3ha, waterAvailable) })}
               </li>
             )}
             {rec.plantableShare !== null && (
