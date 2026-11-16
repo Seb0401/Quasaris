@@ -63,6 +63,13 @@ export function CompararClient() {
         <Link href={`/${locale}/agrupaciones`} className="ui-btn ui-btn-ghost ui-btn-sm"><Combine size={14} />{t("group.title")}</Link>
       </div>
 
+
+      {data.source.power === "mock" && <p className="ui-alert tone-warn"><FlaskConical size={16} />{t("comparar.mockWarning")}</p>}
+
+      {best && current && <Verdict best={best} current={current} rows={rows} anyViable={viable.length > 0} all={rows.map((r) => r.result)} />}
+
+      {current && <Reveal><ImprovePlan rows={rows} current={current} /></Reveal>}
+
       <section className="rot-cta">
         <span className="rot-cta-icon"><Repeat2 size={22} /></span>
         <div className="rot-cta-copy">
@@ -71,12 +78,6 @@ export function CompararClient() {
         </div>
         <Link href={`/${locale}/rotaciones`} className="ui-btn"><PencilLine size={16} />{es ? "Gestionar mis rotaciones" : "Manage my rotations"}</Link>
       </section>
-
-      {data.source.power === "mock" && <p className="ui-alert tone-warn"><FlaskConical size={16} />{t("comparar.mockWarning")}</p>}
-
-      {best && current && <Verdict best={best} current={current} rows={rows} anyViable={viable.length > 0} all={rows.map((r) => r.result)} />}
-
-      {current && <Reveal><ImprovePlan rows={rows} current={current} /></Reveal>}
 
       <section className="rot-cta">
         <span className="rot-cta-icon"><Sprout size={22} /></span>

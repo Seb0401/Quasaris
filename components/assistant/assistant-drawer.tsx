@@ -32,6 +32,13 @@ export function AssistantDrawer() {
     };
   }, [open]);
 
+  // en el celular el asistente se abre desde la barra superior (app-nav), no desde el botón flotante
+  useEffect(() => {
+    const openFromHeader = () => setOpen(true);
+    window.addEventListener("farmtwin:open-assistant", openFromHeader);
+    return () => window.removeEventListener("farmtwin:open-assistant", openFromHeader);
+  }, []);
+
   function closeDrawer() {
     setOpen(false);
     setVoiceState("idle");

@@ -473,7 +473,6 @@
   .map-panel { inset: auto 0 0; max-height: 72%; border-radius: 20px 20px 0 0; }
   .map-panel.open { height: 62%; }
   .map-panel.search-collapsed { inset: var(--search-panel-top, 350px) 0 auto; height: auto; max-height: none; }
-  .map-panel-foot { padding-right: 72px; } /* deja sitio al botón del asistente */
   .map-view .gm-layers-anchor, .map-view .gm-controls { bottom: 128px; }
   .map-view .gm-coords { display: none; }
   .map-view .gm-date { top: 66px; }
@@ -984,7 +983,7 @@
   .farm-twin.has-panel .farm-timeline { bottom: calc(46% + 8px); }
   .farm-palette { display: flex; overflow-x: auto; }
   .farm-palette > button { width: 144px; flex-shrink: 0; }
-  .farm-timeline { left: 8px; right: 64px; flex-wrap: wrap; border-radius: 18px; transform: none; } /* deja sitio al asistente */
+  .farm-timeline { left: 8px; right: 8px; flex-wrap: wrap; border-radius: 18px; transform: none; }
   .farm-tl-months { order: -1; flex-basis: 100%; }
   .farm-tl-play { flex: 1; justify-content: center; }
   .farm-chip { height: 34px; padding: 0 11px; font-size: 12px; }
@@ -1761,3 +1760,79 @@
 .quasaris-mark .quasaris-mark-light { display: none; }
 :root[data-theme="light"] .quasaris-mark .quasaris-mark-dark { display: none; }
 :root[data-theme="light"] .quasaris-mark .quasaris-mark-light { display: block; }
+
+/* ---------------------------------------------------------------- móvil: navegación "Más", lectura y toques */
+.assistant-host { display: contents; }
+.mobile-bottom-nav button { position: relative; display: flex; width: 100%; min-height: 52px; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 0; border: 0; border-radius: 14px; color: var(--muted); background: none; font: inherit; font-size: 10.5px; font-weight: 650; line-height: 1.1; cursor: pointer; transition: .25s var(--ease); }
+.mobile-bottom-nav button.active { color: var(--nav-active); background: var(--nav-active-bg); }
+.mobile-bottom-nav button span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+.mobile-bottom-nav a { font-size: 10.5px; }
+.mobile-bottom-nav a:focus-visible, .mobile-bottom-nav button:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+
+.more-backdrop { position: fixed; z-index: 1150; inset: 0; background: rgba(2, 10, 16, .55); backdrop-filter: blur(3px); animation: fadeIn .2s ease both; }
+.more-sheet { position: fixed; z-index: 1200; inset: auto 10px calc(84px + env(safe-area-inset-bottom)); max-height: calc(100dvh - 170px); overflow-y: auto; padding: 14px; border: 1px solid var(--border-strong); border-radius: 22px; color: var(--foreground); background: var(--nav-bg-strong); box-shadow: 0 24px 60px var(--hud-shadow); backdrop-filter: blur(22px); animation: sheetUp .28s var(--ease) both; }
+.more-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 2px 12px; }
+.more-sheet-head b { font-size: 15px; }
+.more-close { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid var(--border); border-radius: 12px; color: var(--muted); background: var(--tint); cursor: pointer; }
+.more-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.more-grid a { display: flex; height: 100%; min-height: 64px; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 16px; color: var(--foreground); background: var(--inset); transition: .2s var(--ease); }
+.more-grid a:active, .more-grid a:hover { border-color: var(--border-strong); background: var(--inset-strong); }
+.more-grid a.active { border-color: var(--brand); background: var(--nav-active-bg); }
+.more-icon { display: grid; flex-shrink: 0; width: 36px; height: 36px; place-items: center; border-radius: 11px; color: var(--brand-text); background: color-mix(in srgb, var(--brand) 16%, transparent); }
+.more-text { min-width: 0; }
+.more-text b { display: block; font-size: 13.5px; line-height: 1.25; overflow-wrap: anywhere; }
+.more-text small { display: block; margin-top: 3px; color: var(--muted); font-size: 11.5px; line-height: 1.35; }
+@keyframes sheetUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (min-width: 1050px) { .more-sheet, .more-backdrop { display: none; } }
+
+@media (max-width: 1049px) {
+  /* el botón del asistente: más discreto y fuera de Mi parcela, donde tapa "Comparar rotaciones" */
+  .assistant-orb { display: none; }
+  .header-assistant { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; border: 1px solid color-mix(in srgb, var(--brand) 55%, transparent); border-radius: 12px; color: var(--brand-ink); background: var(--brand); font: inherit; font-size: 12.5px; font-weight: 750; cursor: pointer; box-shadow: 0 6px 18px color-mix(in srgb, var(--brand) 25%, transparent); }
+  .header-assistant:focus-visible { outline: 2px solid var(--foreground); outline-offset: 2px; }
+  /* el contenido termina por encima de la barra inferior */
+  .app-main { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 520px) {
+  /* cabeceras: lo justo para ubicarse; la información importante sube a la primera pantalla */
+  .ui-hero { gap: 12px; padding: 14px 14px 14px; border-radius: 18px; }
+  .ui-hero-copy h1 { margin: 4px 0 4px; font-size: 25px; }
+  .ui-hero-copy p { font-size: 12.5px; }
+  .ui-hero-aside { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); }
+  .ui-hero-stat { padding: 6px 8px 6px 6px; }
+  .ui-hero-stat small { font-size: 9px; letter-spacing: .04em; }
+  .ui-hero > .ai-mark { top: 10px; right: 10px; bottom: auto; padding: 2px 6px; font-size: 9px; }
+  .ui-hero-scan { display: none; }
+
+  /* botones y enlaces pequeños: al menos 40 px de alto para el dedo */
+  .ui-btn-sm { min-height: 40px; }
+  .improve-link { min-height: 36px; }
+  .rotation-details summary, .score-details summary { min-height: 44px; }
+
+  /* Comparar: los pasos ya se recorren con el scroll y las agrupaciones están en "Más" */
+  .compare-toolbar { display: none; }
+  .rot-cta { padding: 14px; gap: 12px; }
+  .rot-cta-icon { width: 40px; height: 40px; border-radius: 12px; }
+  .rot-cta-copy { min-width: 0; flex-basis: calc(100% - 56px); }
+  .rot-cta-copy b { font-size: 15px; }
+
+  /* Recomendaciones: perfil compacto en dos columnas */
+  .reco-profile { gap: 10px; padding: 14px; }
+  .reco-profile-head p { font-size: 12.5px; }
+  .reco-chips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .reco-chips li { padding: 8px 10px; font-size: 12.5px; }
+  .reco-chips li:first-child { grid-column: 1 / -1; }
+  .reco-rotations { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 6px; scrollbar-width: none; }
+  .reco-rotations button { flex-shrink: 0; }
+}
+
+/* Mi parcela en el celular: el texto de ayuda arriba y el botón a todo el ancho, fácil de tocar */
+@media (max-width: 759px) {
+  .map-panel-foot { flex-direction: column; align-items: stretch; gap: 8px; }
+  .map-panel-foot p { font-size: 12px; }
+  .map-panel-foot .ui-btn { width: 100%; min-height: 46px; justify-content: center; font-size: 14px; }
+}
+
+@media (min-width: 1050px) { .header-assistant { display: none; } }
+@media (max-width: 360px) { .header-assistant span { display: none; } .header-assistant { padding: 0 10px; } }
