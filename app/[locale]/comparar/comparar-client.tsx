@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ChevronDown, ChevronRight, Plus, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Repeat2, Satellite, ShieldAlert, Sparkles, Sprout, Target, TriangleAlert } from "lucide-react";
+import { ArrowRight, ChevronDown, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Repeat2, Satellite, ShieldAlert, Sparkles, Sprout, Target, TriangleAlert } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
 import { ScoreBreakdown } from "@/components/cards/score-breakdown";
@@ -130,19 +130,17 @@ function VerdictCrops({ rotation }: { rotation: Rotation }) {
   const crops = [...rotation.crops].sort((a, b) => (together ? 0 : a.sowMonth - b.sowMonth)).filter((c, i, all) => all.findIndex((x) => x.cropId === c.cropId) === i);
   if (!crops.length) return null;
   const month = (m: number) => new Intl.DateTimeFormat(locale, { month: "short" }).format(new Date(2025, m - 1, 1));
-  const Sep = together ? Plus : ChevronRight;
   return (
-    <ul className="verdict-crops" aria-label={together ? (es ? "Cultivos sembrados juntos" : "Crops grown together") : (es ? "Cultivos en orden de siembra" : "Crops in planting order")}>
+    <ol className={`crop-journey ${together ? "is-together" : ""}`} aria-label={together ? (es ? "Cultivos sembrados juntos" : "Crops grown together") : (es ? "Cultivos en orden de siembra" : "Crops in planting order")}>
       {crops.map((c, i) => (
-        <li key={c.cropId}>
-          {i > 0 && <Sep size={14} className="verdict-crops-sep" aria-hidden />}
-          <span className="verdict-crop">
-            <CropArtwork crop={c.cropId} size={46} />
-            <span><b>{cropName(c.cropId, locale)}</b>{!together && <small>{es ? "Siembra" : "Sow"} {month(c.sowMonth)}</small>}</span>
-          </span>
+        <li key={c.cropId} className="crop-step" style={{ animationDelay: `${120 + i * 90}ms` } as React.CSSProperties}>
+          {!together && <span className="crop-step-num" aria-hidden>{i + 1}</span>}
+          <span className="crop-step-art"><CropArtwork crop={c.cropId} size={60} /></span>
+          <b>{cropName(c.cropId, locale)}</b>
+          <small>{together ? (es ? "Junto a los demás" : "Grown together") : `${es ? "Siembra" : "Sow"} · ${month(c.sowMonth)}`}</small>
         </li>
       ))}
-    </ul>
+    </ol>
   );
 }
 
