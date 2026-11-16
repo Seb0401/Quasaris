@@ -64,7 +64,7 @@ The Majes crop integration and illustrated crop picker were also developed with 
 
 `public/images/farm-twin.webp` is not AI-generated: it is a screenshot of the app's own 3D farm. The screenshots in `docs/screenshots/` are also captures of the real app.
 
-The app icon and logo are hand-written SVG (`scripts/make_icons.mjs`).
+The Quasaris logo was designed by the team, not generated with AI. The app icons, favicon and PWA icons are built from it by `scripts/make_icons.mjs` (resize and background only).
 
 **Demo video** (`FarmTwin_demo_SpaceApps_30s.mp4`): the app footage is a screen recording of the real app. The same two ChatGPT illustrations appear as backgrounds in the opening and the closing scenes and carry a visible "AI-generated image" mark on screen. The editing and animation were done with code written with Claude's help. The music is original and was synthesized by Python code written with Claude's help (no samples, no AI music generator). The voiceover is **AI-generated speech**: a Microsoft neural text-to-speech voice (en-US Andrew) reading the script the team wrote; there is no human voice in the video. The video file's metadata (title, comment) states all of this.
 
