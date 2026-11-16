@@ -14,11 +14,9 @@ import {
   Sprout,
   Sun,
   Target,
-  Tractor,
   TrendingDown,
   WheatOff,
 } from "lucide-react";
-import { QuasarisMark } from "@/components/brand/quasaris-mark";
 
 /**
  * Home: problemática → solución (panel del hero) y la sección de impacto (objetivo, alcance y metas).
@@ -42,22 +40,22 @@ function useReducedMotion() {
   return useSyncExternalStore(subscribeReducedMotion, () => window.matchMedia(REDUCED_MOTION).matches, () => false);
 }
 
-export function ImpactVisual({ locale, paused = false }: { locale: string; paused?: boolean }) {
+export function ImpactVisual({ locale }: { locale: string }) {
   const es = locale === "es";
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (reduced || paused) return; // oculta en el carrusel del hero: no anima en segundo plano
+    if (reduced) return;
     const id = window.setInterval(() => setStep((s) => (s + 1) % STEPS), STEP_MS);
     return () => window.clearInterval(id);
-  }, [reduced, paused]);
+  }, [reduced]);
 
   // sin animación se ve todo a la vez: los dos problemas y la solución
   const state = (i: number) => (reduced ? "is-active" : step === i ? "is-active" : step === 2 && i < 2 ? "is-resolved" : "");
-  const captions = es
-    ? ["Menos agua cada campaña: la represa que riega Majes está a menos de la mitad.", "Sin ver el riesgo, las cosechas se secan a medio ciclo y se pierde el ingreso.", "FarmTwin planifica cada rotación con el agua que realmente habrá."]
-    : ["Less water every season: the reservoir that irrigates Majes is under half full.", "Without seeing the risk, crops dry out mid-season and income is lost.", "FarmTwin plans every rotation with the water there will really be."];
+  // el detalle de cada cifra no ocupa espacio: queda para lectores de pantalla y como texto al pasar el mouse
+  const drought = es ? "Represa Condoroma al 46 % de su capacidad (noviembre 2026); ya se recortó un 10 % el agua de riego" : "Condoroma reservoir at 46% of capacity (November 2026); irrigation water already cut by 10%";
+  const loss = es ? "La producción agrícola de Arequipa cayó 13,1 % en el segundo trimestre de 2026" : "Arequipa's farm output fell 13.1% in Q2 2026";
 
   return (
     <div className="qx-signal-card qx-impact-card" role="group" aria-label={es ? "Del problema a la solución" : "From problem to solution"}>
@@ -68,131 +66,35 @@ export function ImpactVisual({ locale, paused = false }: { locale: string; pause
 
       <div className={`qx-imp-stage ${reduced ? "is-static" : ""}`} data-step={step}>
         <svg className="qx-imp-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden>
-          <path className={`qx-imp-link ${state(0)} ${step === 2 || reduced ? "is-flowing" : ""}`} d="M25 30 C 25 55, 50 50, 50 68" />
-          <path className={`qx-imp-link ${state(1)} ${step === 2 || reduced ? "is-flowing" : ""}`} d="M75 30 C 75 55, 50 50, 50 68" />
+          <path className={`qx-imp-link ${state(0)} ${step === 2 || reduced ? "is-flowing" : ""}`} d="M25 26 C 25 55, 50 50, 50 70" />
+          <path className={`qx-imp-link ${state(1)} ${step === 2 || reduced ? "is-flowing" : ""}`} d="M75 26 C 75 55, 50 50, 50 70" />
         </svg>
 
-        <article className={`qx-imp-node qx-imp-problem tone-drought ${state(0)}`}>
+        <article className={`qx-imp-node qx-imp-problem tone-drought ${state(0)}`} aria-label={drought} title={drought}>
           <div className="qx-imp-badge"><DropletOff size={26} strokeWidth={1.7} /></div>
-          <small>{es ? "PROBLEMA 01" : "PROBLEM 01"}</small>
           <h3>{es ? "Sequía" : "Drought"}</h3>
           <strong>46 %</strong>
-          <p>{es ? "Condoroma, nov. 2026 · −10 % de agua para riego" : "Condoroma, Nov 2026 · −10% irrigation water"}</p>
         </article>
 
-        <article className={`qx-imp-node qx-imp-problem tone-loss ${state(1)}`}>
+        <article className={`qx-imp-node qx-imp-problem tone-loss ${state(1)}`} aria-label={loss} title={loss}>
           <div className="qx-imp-badge"><WheatOff size={26} strokeWidth={1.7} /></div>
-          <small>{es ? "PROBLEMA 02" : "PROBLEM 02"}</small>
           <h3>{es ? "Cosechas perdidas" : "Lost harvests"}</h3>
           <strong>{es ? "−13,1 %" : "−13.1%"}</strong>
-          <p>{es ? "Agro de Arequipa, 2.º trim. 2026 · 31 % del Perú con inseguridad alimentaria" : "Arequipa farming, Q2 2026 · 31% of Peru food insecure"}</p>
         </article>
 
-        <article className={`qx-imp-node qx-imp-solution ${state(2)}`}>
-          <div className="qx-imp-logo">
-            <span className="qx-imp-ring" aria-hidden />
-            <QuasarisMark width={58} height={58} aria-hidden />
+        <article className={`qx-imp-node qx-imp-solution ${state(2)}`} aria-label={es ? "Solución: Quasaris, gemelo digital de la chacra" : "Solution: Quasaris, a digital twin of the farm"}>
+          <div className="qx-imp-farm">
+            {/* la misma granja 3D del modo granja, en miniatura (public/images/farm-twin.webp) */}
+            <Image src="/images/farm-twin.webp" alt="" fill sizes="(min-width: 1050px) 260px, 60vw" priority />
           </div>
-          <small>{es ? "SOLUCIÓN" : "SOLUTION"}</small>
-          <h3>FarmTwin</h3>
-          <p>{es ? "Rotaciones que caben en el agua real" : "Rotations that fit the real water"}</p>
-          <ul aria-label={es ? "Fuentes de datos" : "Data sources"}><li>NASA POWER</li><li>SRTM</li><li>FAO-56</li></ul>
+          <h3 className="qx-imp-brand">QUASARIS</h3>
         </article>
       </div>
 
       <footer>
-        <span className="qx-imp-caption" aria-live="polite">{reduced ? captions[2] : captions[step]}</span>
-        <Link href={`/${locale}/granja`} className="qx-farm-cta">{es ? "Probar en la granja" : "Try it on the farm"}<ArrowUpRight size={15} /></Link>
+        <div className="qx-imp-dots" aria-hidden>{Array.from({ length: STEPS }, (_, i) => <i key={i} className={reduced || step === i ? "on" : ""} />)}</div>
+        <Link href={`/${locale}/granja`} className="qx-farm-cta">{es ? "Abrir la granja" : "Open the farm"}<ArrowUpRight size={15} /></Link>
       </footer>
-      <div className="qx-imp-dots" aria-hidden>{Array.from({ length: STEPS }, (_, i) => <i key={i} className={reduced || step === i ? "on" : ""} />)}</div>
-    </div>
-  );
-}
-
-// ---------- hero: dos vistas (impacto y granja 3D) ----------
-
-type HeroView = "impact" | "farm";
-const VIEW_MS = 9000; // cada vista dura ~una vuelta completa de la animación de impacto
-
-/**
- * Panel derecho del hero con dos vistas superpuestas: la animación problema → solución y la granja 3D.
- * Cambian solas cada VIEW_MS (se pausa con el mouse encima) y con los botones; elegir una a mano
- * detiene el cambio automático. Con "reducir animaciones" no hay cambio automático.
- */
-export function HeroShowcase({ locale }: { locale: string }) {
-  const es = locale === "es";
-  const reduced = useReducedMotion();
-  const [view, setView] = useState<HeroView>("impact");
-  const [auto, setAuto] = useState(true);
-  const [hover, setHover] = useState(false);
-  const [round, setRound] = useState(0); // reinicia la animación de impacto cada vez que vuelve a verse
-  const rotating = auto && !reduced && !hover;
-
-  useEffect(() => {
-    if (!rotating) return;
-    const id = window.setTimeout(() => {
-      setView((v) => (v === "impact" ? "farm" : "impact"));
-      setRound((r) => r + 1);
-    }, VIEW_MS);
-    return () => window.clearTimeout(id);
-  }, [rotating, view]);
-
-  const choose = (v: HeroView) => {
-    setAuto(false);
-    if (v !== view) {
-      setView(v);
-      setRound((r) => r + 1);
-    }
-  };
-
-  const tabs: { id: HeroView; label: string; icon: typeof Target }[] = [
-    { id: "impact", label: es ? "Impacto" : "Impact", icon: Target },
-    { id: "farm", label: es ? "Granja 3D" : "3D farm", icon: Tractor },
-  ];
-
-  return (
-    <div className="qx-hero-showcase" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onFocus={() => setHover(true)} onBlur={() => setHover(false)}>
-      <div className="qx-view-switch" role="tablist" aria-label={es ? "Vista del panel" : "Panel view"}>
-        {tabs.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            type="button"
-            role="tab"
-            id={`qx-view-tab-${id}`}
-            aria-selected={view === id}
-            aria-controls={`qx-view-${id}`}
-            className={`${view === id ? "active" : ""} ${view === id && rotating ? "is-auto" : ""}`}
-            style={{ "--view-ms": `${VIEW_MS}ms` } as React.CSSProperties}
-            onClick={() => choose(id)}
-          >
-            <Icon size={14} /> {label}
-            {view === id && rotating && <i key={`${round}-${id}`} className="qx-view-progress" aria-hidden />}
-          </button>
-        ))}
-      </div>
-
-      <div className="qx-hero-views">
-        <div className="qx-view qx-view-impact" id="qx-view-impact" role="tabpanel" aria-labelledby="qx-view-tab-impact" aria-hidden={view !== "impact"} inert={view !== "impact"}>
-          <ImpactVisual key={`impact-${round}`} locale={locale} paused={view !== "impact"} />
-        </div>
-
-        <div className="qx-view qx-view-farm" id="qx-view-farm" role="tabpanel" aria-labelledby="qx-view-tab-farm" aria-hidden={view !== "farm"} inert={view !== "farm"}>
-          <Link href={`/${locale}/granja`} className="qx-signal-card qx-farm-card" aria-label={es ? "Abrir el modo granja" : "Open farm mode"}>
-            <header>
-              <div><span className="qx-live-dot" /><small>{es ? "GEMELO DIGITAL 3D" : "3D DIGITAL TWIN"}</small></div>
-              <span>{es ? "MODO GRANJA" : "FARM MODE"}</span>
-            </header>
-            <div className="qx-satellite-frame qx-farm-frame">
-              {/* captura real del modo granja (public/images/farm-twin.webp) */}
-              <Image src="/images/farm-twin.webp" alt={es ? "Gemelo digital 3D de una chacra con parcelas sembradas, casa, animales y reservorio" : "3D digital twin of a farm with planted plots, a house, animals and a reservoir"} fill sizes="(min-width: 1050px) 640px, 92vw" priority />
-            </div>
-            <footer>
-              <span>{es ? "Juega la próxima campaña antes de sembrar" : "Play next season before you sow"}</span>
-              <span className="qx-farm-cta">{es ? "Abrir la granja" : "Open the farm"}<ArrowUpRight size={15} /></span>
-            </footer>
-          </Link>
-        </div>
-      </div>
     </div>
   );
 }

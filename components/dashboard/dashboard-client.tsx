@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HeroShowcase, ImpactSection } from "@/components/dashboard/impact";
+import { ImpactSection, ImpactVisual } from "@/components/dashboard/impact";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -150,8 +150,8 @@ export function DashboardClient() {
             </div>
           </div>
 
-          {/* dos vistas: problemática → solución y granja 3D (components/dashboard/impact.tsx) */}
-          <HeroShowcase locale={locale} />
+          {/* problemática → solución (components/dashboard/impact.tsx) */}
+          <ImpactVisual locale={locale} />
         </div>
 
         <button className="qx-scroll-cue" onClick={() => document.getElementById("qx-story")?.scrollIntoView({ behavior: "smooth" })}>
