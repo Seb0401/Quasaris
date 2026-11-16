@@ -1836,3 +1836,16 @@
 
 @media (min-width: 1050px) { .header-assistant { display: none; } }
 @media (max-width: 360px) { .header-assistant span { display: none; } .header-assistant { padding: 0 10px; } }
+
+/* Comparar: ilustraciones de los cultivos de la rotación recomendada (debajo del nombre) */
+.verdict-crops { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 2px 0 12px; padding: 0; list-style: none; }
+.verdict-crops li { display: flex; align-items: center; gap: 6px; }
+.verdict-crops-sep { flex-shrink: 0; color: var(--muted); }
+.verdict-crop { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--inset); }
+.verdict-crop > span:last-child { display: flex; flex-direction: column; line-height: 1.15; }
+.verdict-crop b { font-size: 13px; font-weight: 650; }
+.verdict-crop small { color: var(--muted); font-size: 11px; }
+@media (max-width: 520px) {
+  .verdict-crop { padding-right: 10px; gap: 6px; }
+  .verdict-crop b { font-size: 12.5px; }
+}

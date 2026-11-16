@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ChevronDown, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Repeat2, Satellite, ShieldAlert, Sparkles, Sprout, Target, TriangleAlert } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronRight, Plus, BadgeDollarSign, BarChart3, Combine, Crown, Droplets, FlaskConical, Leaf, PencilLine, Repeat2, Satellite, ShieldAlert, Sparkles, Sprout, Target, TriangleAlert } from "lucide-react";
 import { useLocale, useT } from "@/components/i18n-provider";
 import { MonthLegend, RotationCard, type MetricScale } from "@/components/cards/rotation-card";
 import { ScoreBreakdown } from "@/components/cards/score-breakdown";
@@ -15,6 +15,8 @@ import { waterFit } from "@/lib/water-fit";
 import { about, marginPct, scoreWord, shareOfWater, waterVsYours, yearsSentence } from "@/lib/plain";
 import type { Rotation, RotationResult } from "@/lib/contract";
 import { CropModelNotes } from "@/components/crop-model-notes";
+import { CropArtwork } from "@/components/crops/crop-artwork";
+import { cropName } from "@/lib/crop-calendar";
 
 type Row = { rotation: Rotation; result: RotationResult; color: string };
 
@@ -119,6 +121,31 @@ export function CompararClient() {
   );
 }
 
+/** Los cultivos de la rotación recomendada con sus ilustraciones, en el orden en que se siembran. */
+function VerdictCrops({ rotation }: { rotation: Rotation }) {
+  const locale = useLocale();
+  const es = locale === "es";
+  const together = rotation.mode === "association";
+  // en orden de siembra; un mismo cultivo repetido se muestra una sola vez
+  const crops = [...rotation.crops].sort((a, b) => (together ? 0 : a.sowMonth - b.sowMonth)).filter((c, i, all) => all.findIndex((x) => x.cropId === c.cropId) === i);
+  if (!crops.length) return null;
+  const month = (m: number) => new Intl.DateTimeFormat(locale, { month: "short" }).format(new Date(2025, m - 1, 1));
+  const Sep = together ? Plus : ChevronRight;
+  return (
+    <ul className="verdict-crops" aria-label={together ? (es ? "Cultivos sembrados juntos" : "Crops grown together") : (es ? "Cultivos en orden de siembra" : "Crops in planting order")}>
+      {crops.map((c, i) => (
+        <li key={c.cropId}>
+          {i > 0 && <Sep size={14} className="verdict-crops-sep" aria-hidden />}
+          <span className="verdict-crop">
+            <CropArtwork crop={c.cropId} size={46} />
+            <span><b>{cropName(c.cropId, locale)}</b>{!together && <small>{es ? "Siembra" : "Sow"} {month(c.sowMonth)}</small>}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /** El resultado en una frase, con el puntaje y lo que cambia frente a lo que siembras hoy, dicho en simple. */
 function Verdict({ best, current, rows, anyViable, all }: { best: Row; current: Row; rows: Row[]; anyViable: boolean; all: RotationResult[] }) {
   const farm = useFarm();
@@ -140,6 +167,7 @@ function Verdict({ best, current, rows, anyViable, all }: { best: Row; current: 
           <div className="verdict-copy">
             <span className="ui-kicker"><Crown size={14} /> {anyViable ? (es ? "NUESTRA RECOMENDACIÓN" : "OUR RECOMMENDATION") : (es ? "LA MÁS CERCANA" : "THE CLOSEST OPTION")}</span>
             <h2>{best.rotation.name}</h2>
+            <VerdictCrops rotation={best.rotation} />
             <p>{t(`explain.${best.result.explain.whyKey}`)}</p>
             {!anyViable && (
               <p className="verdict-warning"><TriangleAlert size={16} />{waterVsYours(best.result.water.median, farm.waterAvailableM3ha, locale)}. {yearsSentence(fit.yearsFit, fit.years, locale)} {es ? "Aun así es la que mejor cumple lo que te importa; con riego por goteo o sembrando un área más pequeña podría alcanzar." : "Even so, it is the one that best fits what matters to you; with drip irrigation or a smaller planted area it could fit."}</p>
